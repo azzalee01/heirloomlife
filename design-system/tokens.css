@@ -1,0 +1,72 @@
+/* ===========================================================
+   Heirloom Life — Platform Design Tokens (CSS)
+   Mirrors the marketing site's token system exactly.
+   Import once at the application root.
+   =========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+:root {
+  /* Color */
+  --ink: #0E1310;
+  --teal: #2AB4AE;
+  --teal-deep: #163E3B;
+  --paper: #FBFAF7;
+  --paper-warm: #F5F3EE;
+  --neutral: #8A8D87;
+  --line: rgba(14, 19, 16, 0.10);
+  --line-soft: rgba(14, 19, 16, 0.06);
+
+  /* Typography */
+  --font-serif: 'Instrument Serif', Georgia, serif;
+  --font-sans: 'DM Sans', -apple-system, sans-serif;
+
+  /* Layout */
+  --max-width: 1180px;
+  --max-width-narrow: 700px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration: 500ms;
+}
+
+/* Reference utility classes — adapt to your existing class naming conventions */
+
+.heirloom-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.heirloom-btn-primary {
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 15px 30px;
+  border-radius: 0;
+  background: transparent;
+  color: var(--teal-deep);
+  border: 1px solid var(--teal);
+  cursor: pointer;
+  transition: all var(--duration) var(--ease);
+}
+.heirloom-btn-primary:hover {
+  background: var(--teal);
+  color: var(--ink);
+}
+
+.heirloom-card {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 40px 36px;
+}
+
+.heirloom-hairline {
+  border: none;
+  border-top: 1px solid var(--line);
+}
