@@ -5,9 +5,11 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr';
+import { supabaseAdmin } from '@/src/lib/supabase-server';
 import LogoutButton from '@/src/components/LogoutButton';
 import AiChat from './_components/AiChat';
 import IntroAnimationLoader from './_components/IntroAnimationLoader';
+import PlanCTA from './_components/PlanCTA';
 
 // ─── DB row types ─────────────────────────────────────────────────────────────
 type Will = { id: string; status: string; updated_at: string }
@@ -91,11 +93,30 @@ function Icon({ d, color, size = 18 }: { d: string; color: string; size?: number
   );
 }
 
+// ─── Plan status config ───────────────────────────────────────────────────────
+const PLAN_LABELS: Record<string, string> = {
+  will: 'Will Document',
+  vault: 'Living Vault',
+}
+
+const PLAN_STATUS_LABELS: Record<string, { label: string; bg: string; color: string }> = {
+  active:    { label: 'Active',    bg: '#ecfdf5', color: '#065f46' },
+  past_due:  { label: 'Past due',  bg: '#fffbeb', color: '#92400e' },
+  cancelled: { label: 'Cancelled', bg: 'var(--paper-warm)', color: 'var(--neutral)' },
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect('/auth/login');
+
+  const sp = await searchParams;
+  const paymentSuccess = sp.payment === 'success';
 
   const firstName = user.user_metadata?.full_name?.split(' ')[0] ?? user.email?.split('@')[0] ?? 'there';
 
@@ -104,6 +125,15 @@ export default async function DashboardPage() {
     .eq('user_id', user.id).order('created_at', { ascending: false }).limit(1);
 
   const will = (willRows?.[0] as Will) ?? null;
+
+  const { data: profileRow } = await supabaseAdmin
+    .from('profiles')
+    .select('plan, plan_status')
+    .eq('id', user.id)
+    .single();
+
+  const plan = (profileRow?.plan as string) ?? 'free';
+  const planStatus = (profileRow?.plan_status as string | null) ?? null;
 
   let assets: AssetRow[] = [];
   let beneficiaries: BeneficiaryRow[] = [];
@@ -143,6 +173,22 @@ export default async function DashboardPage() {
       </header>
 
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
+
+        {/* ── Payment success banner ────────────────────────────────────────── */}
+        {paymentSuccess && (
+          <div
+            className="rounded-lg border px-5 py-4 flex items-center gap-3"
+            style={{ borderColor: '#bbf7d0', background: '#f0fdf4' }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
+            </svg>
+            <p className="text-sm font-medium" style={{ color: '#166534' }}>
+              Payment received — your plan will be activated shortly.
+            </p>
+          </div>
+        )}
 
         {/* ── Will status card ──────────────────────────────────────────────── */}
         {!will ? (
@@ -212,6 +258,57 @@ export default async function DashboardPage() {
               </Link>
             </div>
           </div>
+        )}
+
+        {/* ── Plan status / upgrade CTA ─────────────────────────────────────── */}
+        {will && plan !== 'free' && planStatus && (
+          <div
+            className="rounded-lg border px-5 py-4 flex items-center justify-between gap-3"
+            style={{ borderColor: 'var(--line)', background: 'white' }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: 'var(--paper-warm)' }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="var(--teal)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </div>
+              <div>
+                <span className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>
+                  {PLAN_LABELS[plan] ?? plan}
+                </span>
+                {PLAN_STATUS_LABELS[planStatus] && (
+                  <span
+                    className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold"
+                    style={{ background: PLAN_STATUS_LABELS[planStatus].bg, color: PLAN_STATUS_LABELS[planStatus].color }}
+                  >
+                    {PLAN_STATUS_LABELS[planStatus].label}
+                  </span>
+                )}
+                {plan === 'will' && (
+                  <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
+                    Upgrade to Living Vault for ongoing updates and document storage.
+                  </p>
+                )}
+              </div>
+            </div>
+            {plan === 'will' && (
+              <Link
+                href="#upgrade"
+                className="text-xs font-semibold shrink-0"
+                style={{ color: 'var(--teal)' }}
+              >
+                Upgrade →
+              </Link>
+            )}
+          </div>
+        )}
+
+        {will && plan === 'free' && (
+          <PlanCTA />
         )}
 
         {/* ── Two-column grid ───────────────────────────────────────────────── */}
