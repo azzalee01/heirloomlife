@@ -1,7 +1,9 @@
 import { NextRequest } from 'next/server'
-import { stripe, priceId, type Product } from '@/src/lib/stripe'
+import { getStripe, priceId, type Product } from '@/src/lib/stripe'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
+
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   const supabase = await createSupabaseServerClient()
@@ -17,6 +19,8 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     return Response.json({ error: (err as Error).message }, { status: 500 })
   }
+
+  const stripe = getStripe()
 
   // Get or create a Stripe customer, storing the ID on the profile
   const { data: profile } = await supabaseAdmin

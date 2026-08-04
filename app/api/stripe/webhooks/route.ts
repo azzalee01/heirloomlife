@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
-import { stripe } from '@/src/lib/stripe'
+import { getStripe } from '@/src/lib/stripe'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 
 export const dynamic = 'force-dynamic'
@@ -16,6 +16,8 @@ export async function POST(request: NextRequest) {
   const body = await request.text()
   const sig = request.headers.get('stripe-signature')
   if (!sig) return new Response('Missing stripe-signature header', { status: 400 })
+
+  const stripe = getStripe()
 
   let event: Stripe.Event
   try {
