@@ -65,7 +65,7 @@ function Divider() {
 }
 
 export default function StepReview({ formData, activeSteps, onJumpToStep }: Props) {
-  const { personalDetails: pd, spouseDetails: sd, childrenData: cd, executorsData: ed, assets, beneficiariesData: bd, specificGifts } = formData
+  const { personalDetails: pd, spouseDetails: sd, childrenData: cd, executorsData: ed, assets, beneficiariesData: bd, specificGifts, petCare: pc, lifeInterest: li } = formData
 
   const maritalLabel: Record<string, string> = {
     single: 'Single', married: 'Married', domestic_partner: 'Domestic Partner',
@@ -234,6 +234,21 @@ export default function StepReview({ formData, activeSteps, onJumpToStep }: Prop
             <Row label="Relationship" value={g.recipientRelationship} />
           </div>
         ))}
+      </Section>
+
+      {/* Wishes & Trusts */}
+      <Section title={STEP_LABELS.wishes} stepId="wishes" activeSteps={activeSteps} onEdit={edit('wishes')}>
+        <Row label="Survivorship" value={`${formData.survivorshipDays} days`} />
+        {cd.hasChildren === 'yes' && cd.children.some((c) => c.isDependent) && (
+          <Row label="Age of vesting" value={cd.ageOfVesting} />
+        )}
+        <Row label="Funeral wishes" value={formData.funeralWishes} />
+        <Row label="Pre-paid funeral plan" value={formData.hasFuneralPlan ? formData.funeralPlanDetails || 'Yes' : ''} />
+        <Row label="Pets" value={pc.hasPets === 'yes' ? pc.description || 'Yes' : ''} />
+        {pc.hasPets === 'yes' && <Row label="Pet caregiver" value={[pc.caregiverName, pc.caregiverRelationship].filter(Boolean).join(' — ')} />}
+        <Row label="Life interest" value={li.enabled ? `${li.propertyDescription || 'Property'} — ${li.lifeTenantName || 'unnamed'}` : ''} />
+        <Row label="Overseas assets" value={formData.assetsOutsideAustralia ? formData.otherJurisdictions || 'Yes' : ''} />
+        <Row label="Document location" value={formData.importantDocumentsLocation} />
       </Section>
 
       <div className="border border-amber-100 bg-amber-50 px-4 py-3">

@@ -22,7 +22,36 @@ function emptyAsset(): Asset {
     bankName: '', bsb: '', accountNumber: '', fundName: '', memberNumber: '',
     companyName: '', numberOfShares: '', insurerName: '', policyNumber: '',
     coverAmount: '', make: '', model: '', year: '', rego: '', description: '', otherValue: '',
+    hasDeathBenefitNomination: false, deathBenefitNominees: '', isOverseas: false, overseasCountry: '',
   }
+}
+
+function DeathBenefitNomination({ asset, onChange, kind }: { asset: Asset; onChange: (asset: Asset) => void; kind: 'super' | 'insurance' }) {
+  return (
+    <div className="border border-amber-100 bg-amber-50 p-3 space-y-2">
+      <label className="flex items-start gap-2.5 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={asset.hasDeathBenefitNomination}
+          onChange={(e) => onChange({ ...asset, hasDeathBenefitNomination: e.target.checked })}
+          className="w-4 h-4 mt-0.5 accent-[var(--teal)]"
+        />
+        <span className="text-xs text-amber-700">
+          This {kind === 'super' ? 'super fund' : 'policy'} has a binding death benefit nomination on file with
+          the provider. <strong>Note:</strong> {kind === 'super' ? 'superannuation' : 'life insurance proceeds'} often
+          pass directly to the nominated person and are not controlled by this will.
+        </span>
+      </label>
+      {asset.hasDeathBenefitNomination && (
+        <input
+          className={inp}
+          placeholder="Nominated beneficiary/ies"
+          value={asset.deathBenefitNominees}
+          onChange={(e) => onChange({ ...asset, deathBenefitNominees: e.target.value })}
+        />
+      )}
+    </div>
+  )
 }
 
 interface AssetCardProps {
@@ -70,6 +99,15 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
         </div>
       </div>
 
+      {asset.ownershipType === 'joint_tenants' && (
+        <div className="border border-amber-100 bg-amber-50 px-3 py-2.5">
+          <p className="text-xs text-amber-700">
+            Assets held as joint tenants pass automatically to the surviving owner and are <strong>not</strong>{' '}
+            distributed by this will.
+          </p>
+        </div>
+      )}
+
       {asset.assetType === 'real_estate' && (
         <div className="space-y-3">
           <div>
@@ -101,15 +139,18 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
       )}
 
       {asset.assetType === 'superannuation' && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className={lbl}>Fund name</label>
-            <input className={inp} placeholder="e.g. AustralianSuper" value={asset.fundName} onChange={(e) => set('fundName', e.target.value)} />
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className={lbl}>Fund name</label>
+              <input className={inp} placeholder="e.g. AustralianSuper" value={asset.fundName} onChange={(e) => set('fundName', e.target.value)} />
+            </div>
+            <div>
+              <label className={lbl}>Member number</label>
+              <input className={inp} value={asset.memberNumber} onChange={(e) => set('memberNumber', e.target.value)} />
+            </div>
           </div>
-          <div>
-            <label className={lbl}>Member number</label>
-            <input className={inp} value={asset.memberNumber} onChange={(e) => set('memberNumber', e.target.value)} />
-          </div>
+          <DeathBenefitNomination asset={asset} onChange={onChange} kind="super" />
         </div>
       )}
 
@@ -127,19 +168,22 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
       )}
 
       {asset.assetType === 'life_insurance' && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label className={lbl}>Insurer</label>
-            <input className={inp} placeholder="e.g. TAL" value={asset.insurerName} onChange={(e) => set('insurerName', e.target.value)} />
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className={lbl}>Insurer</label>
+              <input className={inp} placeholder="e.g. TAL" value={asset.insurerName} onChange={(e) => set('insurerName', e.target.value)} />
+            </div>
+            <div>
+              <label className={lbl}>Policy number</label>
+              <input className={inp} value={asset.policyNumber} onChange={(e) => set('policyNumber', e.target.value)} />
+            </div>
+            <div>
+              <label className={lbl}>Cover amount</label>
+              <input className={inp} placeholder="$0" value={asset.coverAmount} onChange={(e) => set('coverAmount', e.target.value)} />
+            </div>
           </div>
-          <div>
-            <label className={lbl}>Policy number</label>
-            <input className={inp} value={asset.policyNumber} onChange={(e) => set('policyNumber', e.target.value)} />
-          </div>
-          <div>
-            <label className={lbl}>Cover amount</label>
-            <input className={inp} placeholder="$0" value={asset.coverAmount} onChange={(e) => set('coverAmount', e.target.value)} />
-          </div>
+          <DeathBenefitNomination asset={asset} onChange={onChange} kind="insurance" />
         </div>
       )}
 
@@ -174,6 +218,28 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
             <label className={lbl}>Estimated value</label>
             <input className={inp} placeholder="$0" value={asset.otherValue} onChange={(e) => set('otherValue', e.target.value)} />
           </div>
+        </div>
+      )}
+
+      {asset.assetType && (
+        <div className="pt-1 space-y-2">
+          <label className="flex items-center gap-2.5 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={asset.isOverseas}
+              onChange={(e) => onChange({ ...asset, isOverseas: e.target.checked })}
+              className="w-4 h-4 accent-[var(--teal)]"
+            />
+            <span className="text-sm text-[var(--ink)]">This asset is located outside Australia</span>
+          </label>
+          {asset.isOverseas && (
+            <input
+              className={inp}
+              placeholder="Which country?"
+              value={asset.overseasCountry}
+              onChange={(e) => onChange({ ...asset, overseasCountry: e.target.value })}
+            />
+          )}
         </div>
       )}
     </div>

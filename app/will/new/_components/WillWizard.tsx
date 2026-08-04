@@ -25,6 +25,7 @@ import StepExecutors from './StepExecutors'
 import StepAssets from './StepAssets'
 import StepBeneficiaries from './StepBeneficiaries'
 import StepSpecificGifts from './StepSpecificGifts'
+import StepWishes from './StepWishes'
 import StepReview from './StepReview'
 
 function activeStepsFor(maritalStatus: string): StepId[] {
@@ -181,6 +182,13 @@ export default function WillWizard({ initialData, initialStep }: Props) {
               <StepSpecificGifts
                 data={form.specificGifts}
                 onChange={(specificGifts: SpecificGift[]) => update('specificGifts', specificGifts)}
+              />
+            )}
+            {currentStep === 'wishes' && (
+              <StepWishes
+                formData={form}
+                hasDependentChildren={form.childrenData.hasChildren === 'yes' && form.childrenData.children.some((c) => c.isDependent)}
+                onChange={(updates) => setForm((prev) => ({ ...prev, ...updates }))}
               />
             )}
             {currentStep === 'review' && (

@@ -13,6 +13,7 @@ function emptyGift(): SpecificGift {
     amount: '',
     recipientName: '',
     recipientRelationship: '',
+    substituteBeneficiary: '',
   }
 }
 
@@ -141,6 +142,15 @@ export default function StepSpecificGifts({ data, onChange }: Props) {
                     placeholder="e.g. Niece, Close friend"
                     value={gift.recipientRelationship}
                     onChange={(e) => updateGift(gift.id, { recipientRelationship: e.target.value })}
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label className={lbl}>If they don&apos;t survive me, this gift goes to (optional)</label>
+                  <input
+                    className={inp}
+                    placeholder="Leave blank for it to fall into the residuary estate"
+                    value={gift.substituteBeneficiary}
+                    onChange={(e) => updateGift(gift.id, { substituteBeneficiary: e.target.value })}
                   />
                 </div>
               </div>

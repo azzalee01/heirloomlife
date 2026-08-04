@@ -11,6 +11,9 @@ Flag needsReview=true for things like:
 - Business assets, trusts, overseas assets, or other structures beyond simple personal assets
 - Residuary beneficiary percentages that don't sum to 100%, or gifts that conflict with each other
 - No executor named, or an executor who is also a major beneficiary in a way that could raise concerns
+- Beneficiaries or specific gifts with no substitute/fallback named — a real risk if that person predeceases the testator
+- A life interest (right to reside) provision, which needs careful drafting to avoid ambiguity
+- Assets with a binding death benefit nomination noted, since those may conflict with the will's residuary intentions
 - Any other circumstance a solicitor would specifically want to look at before this will is signed
 
 Do not flag routine, simple estates with no red flags — most straightforward wills should return needsReview=false.`
@@ -39,6 +42,7 @@ function summarizeForReview(formData: WillFormData): string {
     maritalStatus: pd.maritalStatus,
     children: formData.childrenData.children.map((c) => ({ isDependent: c.isDependent })),
     hasGuardianNamed: !!formData.childrenData.guardian.firstName,
+    ageOfVesting: formData.childrenData.ageOfVesting,
     hasPrimaryExecutor: !!formData.executorsData.primary.firstName,
     executorIsAlsoBeneficiary:
       formData.executorsData.primary.firstName &&
@@ -46,8 +50,14 @@ function summarizeForReview(formData: WillFormData): string {
         (p) => p.name?.toLowerCase() === `${formData.executorsData.primary.firstName} ${formData.executorsData.primary.lastName}`.toLowerCase()
       ),
     assetTypes: formData.assets.map((a) => a.assetType),
+    assetsWithDeathBenefitNomination: formData.assets.filter((a) => a.hasDeathBenefitNomination).length,
+    overseasAssetCount: formData.assets.filter((a) => a.isOverseas).length,
     residuaryBeneficiaryPercentageTotal: totalPct,
+    residuaryBeneficiariesMissingSubstitute: [...formData.beneficiariesData.people, ...formData.beneficiariesData.charities].filter((b) => !b.substituteBeneficiary).length,
     specificGiftCount: formData.specificGifts.length,
+    survivorshipDays: formData.survivorshipDays,
+    lifeInterestEnabled: formData.lifeInterest.enabled,
+    hasPets: formData.petCare.hasPets === 'yes',
   })
 }
 

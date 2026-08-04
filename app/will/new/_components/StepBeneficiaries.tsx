@@ -7,11 +7,11 @@ const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
 const eyebrow = 'text-xs font-semibold uppercase tracking-widest text-[var(--neutral)] mb-3'
 
 function emptyPerson(): PersonBeneficiary {
-  return { id: crypto.randomUUID(), name: '', relationship: '', percentage: '' }
+  return { id: crypto.randomUUID(), name: '', relationship: '', percentage: '', substituteBeneficiary: '' }
 }
 
 function emptyCharity(): CharityBeneficiary {
-  return { id: crypto.randomUUID(), name: '', abn: '', percentage: '' }
+  return { id: crypto.randomUUID(), name: '', abn: '', percentage: '', substituteBeneficiary: '' }
 }
 
 function totalAllocated(data: BeneficiariesData): number {
@@ -50,7 +50,10 @@ export default function StepBeneficiaries({ data, onChange }: Props) {
       <div>
         <h2 className="text-xl font-semibold text-[var(--ink)]">Beneficiaries</h2>
         <p className="text-sm text-[var(--neutral)] mt-1">
-          Specify who inherits your estate and the percentage each receives.
+          Specify who inherits your estate and the percentage each receives. This forms your{' '}
+          <strong>residuary clause</strong> — it covers everything not given away as a specific gift, so it&apos;s
+          the most important section of your will. Missing it means part of your estate could be distributed
+          under intestacy rules instead of your wishes.
         </p>
       </div>
 
@@ -122,6 +125,15 @@ export default function StepBeneficiaries({ data, onChange }: Props) {
                   />
                 </div>
               </div>
+              <div>
+                <label className={lbl}>If they don&apos;t survive me, their share goes to (optional)</label>
+                <input
+                  className={inp}
+                  placeholder="e.g. Their children equally, or a named person"
+                  value={person.substituteBeneficiary}
+                  onChange={(e) => updatePerson(person.id, { substituteBeneficiary: e.target.value })}
+                />
+              </div>
             </div>
           ))
         )}
@@ -171,6 +183,15 @@ export default function StepBeneficiaries({ data, onChange }: Props) {
                     onChange={(e) => updateCharity(charity.id, { percentage: e.target.value })}
                   />
                 </div>
+              </div>
+              <div>
+                <label className={lbl}>If this charity no longer exists, their share goes to (optional)</label>
+                <input
+                  className={inp}
+                  placeholder="e.g. Another named charity"
+                  value={charity.substituteBeneficiary}
+                  onChange={(e) => updateCharity(charity.id, { substituteBeneficiary: e.target.value })}
+                />
               </div>
             </div>
           ))

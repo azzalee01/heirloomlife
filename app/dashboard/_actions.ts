@@ -262,13 +262,17 @@ export async function applyAmendment(proposal: AmendmentProposal): Promise<void>
           rego: str(input.rego),
           description: str(input.description),
           otherValue: str(input.otherValue),
+          hasDeathBenefitNomination: false,
+          deathBenefitNominees: '',
+          isOverseas: false,
+          overseasCountry: '',
         },
       ]
       await saveStep(willId, 'assets', { ...formData, assets }, proposal.summary)
       break
     }
     case 'add_beneficiary': {
-      const entry = { id: randomUUID(), name: str(input.name), percentage: str(input.percentage) }
+      const entry = { id: randomUUID(), name: str(input.name), percentage: str(input.percentage), substituteBeneficiary: '' }
       const beneficiariesData =
         input.kind === 'organisation'
           ? { ...formData.beneficiariesData, charities: [...formData.beneficiariesData.charities, { ...entry, abn: str(input.abn) }] }
@@ -286,6 +290,7 @@ export async function applyAmendment(proposal: AmendmentProposal): Promise<void>
           amount: str(input.amount),
           recipientName: str(input.recipientName),
           recipientRelationship: str(input.recipientRelationship),
+          substituteBeneficiary: '',
         },
       ]
       await saveStep(willId, 'gifts', { ...formData, specificGifts }, proposal.summary)

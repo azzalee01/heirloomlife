@@ -15,6 +15,8 @@ import type {
   CharityBeneficiary,
   SpecificGift,
   MaritalStatus,
+  PetCareData,
+  LifeInterestData,
 } from './_types'
 
 type SupabaseClient = Awaited<ReturnType<typeof createSupabaseServerClient>>
@@ -36,9 +38,21 @@ type TestatorRow = {
   marital_status: string | null
   has_previous_will: boolean | null
   previous_will_location: string | null
+  has_funeral_plan: boolean | null
+  funeral_plan_details: string | null
+  funeral_wishes: string | null
+  assets_outside_australia: boolean | null
+  other_jurisdictions: string[] | null
+  important_documents_location: string | null
 }
 
-type ChildRow = { id: string; first_name: string | null; date_of_birth: string | null; is_dependent: boolean }
+type WillRow = {
+  survivorship_days: number | null
+  pet_care: Record<string, unknown> | null
+  life_interest: Record<string, unknown> | null
+}
+
+type ChildRow = { id: string; first_name: string | null; date_of_birth: string | null; is_dependent: boolean; distribution_age: number | null }
 type GuardianRow = { first_name: string | null; last_name: string | null; relationship: string | null; phone: string | null; email: string | null }
 type ExecutorRow = { first_name: string | null; last_name: string | null; relationship: string | null; phone: string | null; email: string | null; address_line_1: string | null; is_primary: boolean }
 
@@ -56,6 +70,10 @@ type AssetRow = {
   vehicle_model: string | null
   vehicle_year: string | null
   vehicle_rego: string | null
+  has_death_benefit_nomination: boolean | null
+  death_benefit_nominees: string | null
+  is_overseas: boolean | null
+  overseas_country: string | null
 }
 
 type BeneficiaryRow = {
@@ -66,6 +84,7 @@ type BeneficiaryRow = {
   abn: string | null
   relationship: string | null
   share_percentage: number | null
+  lapse_fallback: string | null
 }
 
 type GiftRow = {
@@ -75,6 +94,7 @@ type GiftRow = {
   cash_amount: number | string | null
   recipient_first_name: string | null
   recipient_relationship: string | null
+  lapse_fallback: string | null
 }
 
 // ─── Defaults (used for any section with no saved rows) ──────────────────────
@@ -98,6 +118,7 @@ export const EMPTY_WILL_FORM_DATA: WillFormData = {
   childrenData: {
     hasChildren: '', children: [],
     guardian: { firstName: '', lastName: '', relationship: '', phone: '', email: '' },
+    ageOfVesting: '18',
   },
   executorsData: {
     primary: { ...EMPTY_EXECUTOR },
@@ -107,6 +128,18 @@ export const EMPTY_WILL_FORM_DATA: WillFormData = {
   assets: [],
   beneficiariesData: { people: [], charities: [] },
   specificGifts: [],
+  funeralWishes: '',
+  hasFuneralPlan: false,
+  funeralPlanDetails: '',
+  assetsOutsideAustralia: false,
+  otherJurisdictions: '',
+  importantDocumentsLocation: '',
+  survivorshipDays: '30',
+  petCare: { hasPets: '', description: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
+  lifeInterest: {
+    enabled: false, propertyDescription: '', lifeTenantName: '', lifeTenantRelationship: '',
+    condition: '', remainderBeneficiaryName: '', remainderBeneficiaryRelationship: '',
+  },
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -164,6 +197,10 @@ function mapAsset(a: AssetRow): Asset {
     insurerName: '', policyNumber: '', coverAmount: '',
     make: '', model: '', year: '', rego: '',
     description: '', otherValue: '',
+    hasDeathBenefitNomination: !!a.has_death_benefit_nomination,
+    deathBenefitNominees: str(a.death_benefit_nominees),
+    isOverseas: !!a.is_overseas,
+    overseasCountry: str(a.overseas_country),
   }
 
   switch (a.asset_type) {
@@ -184,6 +221,30 @@ function mapAsset(a: AssetRow): Asset {
   }
 }
 
+function mapPetCare(v: WillRow['pet_care']): PetCareData {
+  if (!v) return { ...EMPTY_WILL_FORM_DATA.petCare }
+  return {
+    hasPets: (v.hasPets as PetCareData['hasPets']) ?? '',
+    description: str(v.description as string | undefined),
+    caregiverName: str(v.caregiverName as string | undefined),
+    caregiverRelationship: str(v.caregiverRelationship as string | undefined),
+    careFundAmount: str(v.careFundAmount as string | undefined),
+  }
+}
+
+function mapLifeInterest(v: WillRow['life_interest']): LifeInterestData {
+  if (!v) return { ...EMPTY_WILL_FORM_DATA.lifeInterest }
+  return {
+    enabled: !!v.enabled,
+    propertyDescription: str(v.propertyDescription as string | undefined),
+    lifeTenantName: str(v.lifeTenantName as string | undefined),
+    lifeTenantRelationship: str(v.lifeTenantRelationship as string | undefined),
+    condition: (v.condition as LifeInterestData['condition']) ?? '',
+    remainderBeneficiaryName: str(v.remainderBeneficiaryName as string | undefined),
+    remainderBeneficiaryRelationship: str(v.remainderBeneficiaryRelationship as string | undefined),
+  }
+}
+
 // ─── Main loader ───────────────────────────────────────────────────────────────
 
 export async function loadWillFormData(
@@ -191,12 +252,13 @@ export async function loadWillFormData(
   userId: string,
   willIdParam?: string
 ): Promise<{ willId: string | null; formData: WillFormData }> {
-  const baseQuery = supabase.from('wills').select('id').eq('user_id', userId)
+  const baseQuery = supabase.from('wills').select('id, survivorship_days, pet_care, life_interest').eq('user_id', userId)
   const { data: willRows } = willIdParam
     ? await baseQuery.eq('id', willIdParam).limit(1)
     : await baseQuery.order('created_at', { ascending: false }).limit(1)
 
-  const willId = willRows?.[0]?.id as string | undefined
+  const willRow = willRows?.[0] as (WillRow & { id: string }) | undefined
+  const willId = willRow?.id
   if (!willId) return { willId: null, formData: EMPTY_WILL_FORM_DATA }
 
   const [testatorRes, childrenRes, guardianRes, executorRes, assetRes, beneficiaryRes, giftRes] = await Promise.all([
@@ -226,6 +288,7 @@ export async function loadWillFormData(
     dateOfBirth: str(c.date_of_birth),
     isDependent: !!c.is_dependent,
   }))
+  const firstDistributionAge = childRows.find((c) => c.distribution_age != null)?.distribution_age
   const guardianRow = ((guardianRes.data ?? [])[0] as GuardianRow | undefined) ?? null
   const guardian: Guardian = guardianRow
     ? {
@@ -241,6 +304,7 @@ export async function loadWillFormData(
     hasChildren: children.length > 0 ? 'yes' : '',
     children,
     guardian,
+    ageOfVesting: firstDistributionAge != null ? String(firstDistributionAge) : EMPTY_WILL_FORM_DATA.childrenData.ageOfVesting,
   }
 
   const executorRows = (executorRes.data ?? []) as ExecutorRow[]
@@ -257,10 +321,10 @@ export async function loadWillFormData(
   const beneficiaryRows = (beneficiaryRes.data ?? []) as BeneficiaryRow[]
   const people: PersonBeneficiary[] = beneficiaryRows
     .filter((b) => b.beneficiary_type !== 'organisation')
-    .map((b) => ({ id: b.id, name: str(b.first_name), relationship: str(b.relationship), percentage: numStr(b.share_percentage) }))
+    .map((b) => ({ id: b.id, name: str(b.first_name), relationship: str(b.relationship), percentage: numStr(b.share_percentage), substituteBeneficiary: str(b.lapse_fallback) }))
   const charities: CharityBeneficiary[] = beneficiaryRows
     .filter((b) => b.beneficiary_type === 'organisation')
-    .map((b) => ({ id: b.id, name: str(b.organisation_name), abn: str(b.abn), percentage: numStr(b.share_percentage) }))
+    .map((b) => ({ id: b.id, name: str(b.organisation_name), abn: str(b.abn), percentage: numStr(b.share_percentage), substituteBeneficiary: str(b.lapse_fallback) }))
   const beneficiariesData: BeneficiariesData = { people, charities }
 
   const specificGifts: SpecificGift[] = ((giftRes.data ?? []) as GiftRow[]).map((g) => ({
@@ -270,7 +334,10 @@ export async function loadWillFormData(
     amount: numStr(g.cash_amount),
     recipientName: str(g.recipient_first_name),
     recipientRelationship: str(g.recipient_relationship),
+    substituteBeneficiary: str(g.lapse_fallback),
   }))
+
+  const primaryTestatorFull = testators.find((t) => t.marital_status !== null) ?? testators[0] ?? null
 
   return {
     willId,
@@ -283,6 +350,15 @@ export async function loadWillFormData(
       assets,
       beneficiariesData,
       specificGifts,
+      funeralWishes: str(primaryTestatorFull?.funeral_wishes),
+      hasFuneralPlan: !!primaryTestatorFull?.has_funeral_plan,
+      funeralPlanDetails: str(primaryTestatorFull?.funeral_plan_details),
+      assetsOutsideAustralia: !!primaryTestatorFull?.assets_outside_australia,
+      otherJurisdictions: (primaryTestatorFull?.other_jurisdictions ?? []).join(', '),
+      importantDocumentsLocation: str(primaryTestatorFull?.important_documents_location),
+      survivorshipDays: willRow?.survivorship_days != null ? String(willRow.survivorship_days) : EMPTY_WILL_FORM_DATA.survivorshipDays,
+      petCare: mapPetCare(willRow?.pet_care ?? null),
+      lifeInterest: mapLifeInterest(willRow?.life_interest ?? null),
     },
   }
 }

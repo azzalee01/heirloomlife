@@ -8,6 +8,65 @@ import { STEP_LABELS, type WillFormData, type StepId } from './_types'
 
 type SupabaseClient = Awaited<ReturnType<typeof createSupabaseServerClient>>
 
+// testators rows are fully replaced on every save (personal, spouse, and
+// wishes steps all touch this table) — build the complete row set from
+// current form state every time so no step ever clobbers another's fields.
+function buildTestatorRows(formData: WillFormData): Record<string, unknown>[] {
+  const pd = formData.personalDetails
+  const sd = formData.spouseDetails
+  const wishesFields = {
+    has_funeral_plan: formData.hasFuneralPlan,
+    funeral_plan_details: formData.hasFuneralPlan ? formData.funeralPlanDetails || null : null,
+    funeral_wishes: formData.funeralWishes || null,
+    assets_outside_australia: formData.assetsOutsideAustralia,
+    other_jurisdictions: formData.assetsOutsideAustralia
+      ? formData.otherJurisdictions.split(',').map((s) => s.trim()).filter(Boolean)
+      : null,
+    important_documents_location: formData.importantDocumentsLocation || null,
+  }
+
+  const primaryRow = {
+    first_name: pd.firstName,
+    middle_name: pd.middleName || null,
+    last_name: pd.lastName,
+    date_of_birth: pd.dateOfBirth || null,
+    address_line_1: pd.addressLine1,
+    suburb: pd.suburb,
+    state: pd.state,
+    postcode: pd.postcode,
+    phone_mobile: pd.phoneMobile,
+    email: pd.email,
+    occupation: pd.occupation,
+    marital_status: pd.maritalStatus,
+    has_previous_will: pd.previousWill === 'yes',
+    previous_will_location: pd.previousWill === 'yes' ? pd.previousWillLocation : null,
+    ...wishesFields,
+  }
+
+  const rows: Record<string, unknown>[] = [primaryRow]
+
+  if (pd.maritalStatus === 'married' || pd.maritalStatus === 'domestic_partner') {
+    rows.push({
+      first_name: sd.firstName,
+      middle_name: sd.middleName || null,
+      last_name: sd.lastName,
+      date_of_birth: sd.dateOfBirth || null,
+      address_line_1: sd.addressLine1,
+      suburb: sd.suburb,
+      state: sd.state,
+      postcode: sd.postcode,
+      phone_mobile: sd.phoneMobile,
+      email: sd.email,
+      occupation: sd.occupation,
+      marital_status: null,
+      has_previous_will: sd.previousWill === 'yes',
+      previous_will_location: sd.previousWill === 'yes' ? sd.previousWillLocation : null,
+    })
+  }
+
+  return rows
+}
+
 // Inserts the new rows before deleting the old ones (by id), so a failed
 // insert never leaves a step's data wiped out with nothing to replace it.
 async function replaceRows(
@@ -52,6 +111,7 @@ export async function saveStep(
 
   // Create will record on the first save
   let id = willId
+  let willStatus = 'draft'
   if (!id) {
     const { data, error } = await supabase
       .from('wills')
@@ -60,77 +120,26 @@ export async function saveStep(
       .single()
     if (error) throw new Error(error.message)
     id = data.id as string
+  } else {
+    const { data } = await supabase.from('wills').select('status').eq('id', id).single()
+    willStatus = (data?.status as string | undefined) ?? 'draft'
   }
+  // Only a will that's already been completed once is a "live" document —
+  // edits to it (via the wizard or the AI chat) warrant a fresh legal review.
+  // Steps during the original intake wizard are skipped since the data is
+  // incomplete until all steps are done (see completeWill).
+  const isAmendmentToLiveWill = willStatus !== 'draft'
 
   switch (step) {
     // ─── Personal details ────────────────────────────────────────────────────
     case 'personal': {
-      const pd = formData.personalDetails
-      // testators has no type column — replace with primary row only.
-      // The spouse case replaces with both rows so we never orphan the primary.
-      await replaceRows(supabase, 'testators', id, [
-        {
-          will_id: id,
-          first_name: pd.firstName,
-          middle_name: pd.middleName || null,
-          last_name: pd.lastName,
-          date_of_birth: pd.dateOfBirth || null,
-          address_line_1: pd.addressLine1,
-          suburb: pd.suburb,
-          state: pd.state,
-          postcode: pd.postcode,
-          phone_mobile: pd.phoneMobile,
-          email: pd.email,
-          occupation: pd.occupation,
-          marital_status: pd.maritalStatus,
-          has_previous_will: pd.previousWill === 'yes',
-          previous_will_location: pd.previousWill === 'yes' ? pd.previousWillLocation : null,
-        },
-      ])
+      await replaceRows(supabase, 'testators', id, buildTestatorRows(formData).map((r) => ({ ...r, will_id: id })))
       break
     }
 
     // ─── Spouse/partner details ───────────────────────────────────────────────
     case 'spouse': {
-      const pd = formData.personalDetails
-      const sd = formData.spouseDetails
-      // Replace all testators with both rows so neither is lost on edit.
-      await replaceRows(supabase, 'testators', id, [
-        {
-          will_id: id,
-          first_name: pd.firstName,
-          middle_name: pd.middleName || null,
-          last_name: pd.lastName,
-          date_of_birth: pd.dateOfBirth || null,
-          address_line_1: pd.addressLine1,
-          suburb: pd.suburb,
-          state: pd.state,
-          postcode: pd.postcode,
-          phone_mobile: pd.phoneMobile,
-          email: pd.email,
-          occupation: pd.occupation,
-          marital_status: pd.maritalStatus,
-          has_previous_will: pd.previousWill === 'yes',
-          previous_will_location: pd.previousWill === 'yes' ? pd.previousWillLocation : null,
-        },
-        {
-          will_id: id,
-          first_name: sd.firstName,
-          middle_name: sd.middleName || null,
-          last_name: sd.lastName,
-          date_of_birth: sd.dateOfBirth || null,
-          address_line_1: sd.addressLine1,
-          suburb: sd.suburb,
-          state: sd.state,
-          postcode: sd.postcode,
-          phone_mobile: sd.phoneMobile,
-          email: sd.email,
-          occupation: sd.occupation,
-          marital_status: null,
-          has_previous_will: sd.previousWill === 'yes',
-          previous_will_location: sd.previousWill === 'yes' ? sd.previousWillLocation : null,
-        },
-      ])
+      await replaceRows(supabase, 'testators', id, buildTestatorRows(formData).map((r) => ({ ...r, will_id: id })))
       break
     }
 
@@ -138,6 +147,7 @@ export async function saveStep(
     case 'children': {
       const cd = formData.childrenData
 
+      const vestingAge = parseInt(cd.ageOfVesting, 10) || null
       const childRows =
         cd.hasChildren === 'yes'
           ? cd.children.map((c) => ({
@@ -145,6 +155,10 @@ export async function saveStep(
               first_name: c.name, // form collects a single name field
               date_of_birth: c.dateOfBirth || null,
               is_dependent: c.isDependent,
+              // Testamentary trust: a minor/dependent beneficiary's share is
+              // held on trust until they reach this age, rather than vesting
+              // immediately at 18 by default.
+              distribution_age: c.isDependent ? vestingAge : null,
             }))
           : []
       await replaceRows(supabase, 'children', id, childRows)
@@ -223,6 +237,8 @@ export async function saveStep(
           description = `${a.numberOfShares} shares${description ? ` — ${description}` : ''}`
         }
 
+        const nominationApplies = a.assetType === 'superannuation' || a.assetType === 'life_insurance'
+
         return {
           will_id: id,
           asset_type: a.assetType || null,
@@ -238,6 +254,10 @@ export async function saveStep(
           vehicle_model: a.model || null,
           vehicle_year: a.year || null,
           vehicle_rego: a.rego || null,
+          has_death_benefit_nomination: nominationApplies ? a.hasDeathBenefitNomination : null,
+          death_benefit_nominees: nominationApplies && a.hasDeathBenefitNomination ? a.deathBenefitNominees || null : null,
+          is_overseas: a.isOverseas,
+          overseas_country: a.isOverseas ? a.overseasCountry || null : null,
         }
       })
       await replaceRows(supabase, 'assets', id, rows)
@@ -254,6 +274,9 @@ export async function saveStep(
           first_name: b.name, // form collects a single name field
           relationship: b.relationship,
           share_percentage: parseFloat(b.percentage) || 0,
+          // Who takes this share if this beneficiary doesn't survive the
+          // testator by the survivorship period (see wills.survivorship_days).
+          lapse_fallback: b.substituteBeneficiary || null,
           order_index: i,
         })),
         ...bd.charities.map((b, i) => ({
@@ -262,6 +285,7 @@ export async function saveStep(
           organisation_name: b.name,
           abn: b.abn || null,
           share_percentage: parseFloat(b.percentage) || 0,
+          lapse_fallback: b.substituteBeneficiary || null,
           order_index: bd.people.length + i,
         })),
       ]
@@ -279,9 +303,29 @@ export async function saveStep(
         recipient_type: 'individual',
         recipient_first_name: g.recipientName || null,
         recipient_relationship: g.recipientRelationship || null,
+        lapse_fallback: g.substituteBeneficiary || null,
         order_index: i,
       }))
       await replaceRows(supabase, 'specific_gifts', id, rows)
+      break
+    }
+
+    // ─── Wishes & Trusts ────────────────────────────────────────────────────
+    case 'wishes': {
+      // funeral/jurisdiction fields live on testators — rebuild via the
+      // shared builder so personal/spouse data already saved isn't clobbered.
+      await replaceRows(supabase, 'testators', id, buildTestatorRows(formData).map((r) => ({ ...r, will_id: id })))
+
+      const survivorshipDays = parseInt(formData.survivorshipDays, 10) || 30
+      const { error: willError } = await supabase
+        .from('wills')
+        .update({
+          survivorship_days: survivorshipDays,
+          pet_care: formData.petCare.hasPets === 'yes' ? formData.petCare : null,
+          life_interest: formData.lifeInterest.enabled ? formData.lifeInterest : null,
+        })
+        .eq('id', id)
+      if (willError) throw new Error(willError.message)
       break
     }
 
@@ -295,7 +339,7 @@ export async function saveStep(
   if (step !== 'review') {
     try {
       const { formData: latest } = await loadWillFormData(supabase, user.id, id)
-      await recordVersion(supabase, id, step, changeSummary ?? `Updated ${STEP_LABELS[step]}`, latest)
+      await recordVersion(supabase, id, step, changeSummary ?? `Updated ${STEP_LABELS[step]}`, latest, isAmendmentToLiveWill)
     } catch (versionError) {
       console.error('Version recording failed for', id, versionError)
     }
@@ -324,6 +368,10 @@ export async function completeWill(willId: string): Promise<void> {
     const { formData } = await loadWillFormData(supabase, user.id, willId)
     const documentText = await generateWillDocumentText(formData)
     await supabase.from('wills').update({ document_text: documentText }).eq('id', willId)
+
+    // Run the AI legal review exactly once here, now that all 7 steps are
+    // in and the full picture is available — not on every step along the way.
+    await recordVersion(supabase, willId, null, 'Completed will intake', formData, true)
   } catch (draftError) {
     console.error('Will drafting failed for', willId, draftError)
   }

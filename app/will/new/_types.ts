@@ -67,6 +67,9 @@ export interface ChildrenData {
   hasChildren: 'yes' | 'no' | ''
   children: Child[]
   guardian: Guardian
+  // Age at which a minor/dependent beneficiary's share vests outright,
+  // held on trust until then — the standard testamentary trust provision.
+  ageOfVesting: string
 }
 
 export interface ExecutorPerson {
@@ -113,6 +116,13 @@ export interface Asset {
   // other
   description: string
   otherValue: string
+  // superannuation / life insurance — these commonly pass outside the will
+  // via a binding nomination with the provider, not via this document.
+  hasDeathBenefitNomination: boolean
+  deathBenefitNominees: string
+  // overseas assets
+  isOverseas: boolean
+  overseasCountry: string
 }
 
 export interface PersonBeneficiary {
@@ -120,6 +130,9 @@ export interface PersonBeneficiary {
   name: string
   relationship: string
   percentage: string
+  // Who takes this share if this beneficiary doesn't survive the testator
+  // by the survivorship period (see WillFormData.survivorshipDays).
+  substituteBeneficiary: string
 }
 
 export interface CharityBeneficiary {
@@ -127,6 +140,7 @@ export interface CharityBeneficiary {
   name: string
   abn: string
   percentage: string
+  substituteBeneficiary: string
 }
 
 export interface BeneficiariesData {
@@ -141,6 +155,25 @@ export interface SpecificGift {
   amount: string
   recipientName: string
   recipientRelationship: string
+  substituteBeneficiary: string
+}
+
+export interface PetCareData {
+  hasPets: 'yes' | 'no' | ''
+  description: string
+  caregiverName: string
+  caregiverRelationship: string
+  careFundAmount: string
+}
+
+export interface LifeInterestData {
+  enabled: boolean
+  propertyDescription: string
+  lifeTenantName: string
+  lifeTenantRelationship: string
+  condition: 'death' | 'remarriage' | 'death_or_remarriage' | ''
+  remainderBeneficiaryName: string
+  remainderBeneficiaryRelationship: string
 }
 
 export interface WillFormData {
@@ -152,6 +185,16 @@ export interface WillFormData {
   assets: Asset[]
   beneficiariesData: BeneficiariesData
   specificGifts: SpecificGift[]
+  // ── Wishes & Trusts ──────────────────────────────────────────────────────
+  funeralWishes: string
+  hasFuneralPlan: boolean
+  funeralPlanDetails: string
+  assetsOutsideAustralia: boolean
+  otherJurisdictions: string // comma-separated countries
+  importantDocumentsLocation: string
+  survivorshipDays: string
+  petCare: PetCareData
+  lifeInterest: LifeInterestData
 }
 
 export const STEP_IDS = [
@@ -162,6 +205,7 @@ export const STEP_IDS = [
   'assets',
   'beneficiaries',
   'gifts',
+  'wishes',
   'review',
 ] as const
 
@@ -175,5 +219,6 @@ export const STEP_LABELS: Record<StepId, string> = {
   assets: 'Assets',
   beneficiaries: 'Beneficiaries',
   gifts: 'Specific Gifts',
+  wishes: 'Wishes & Trusts',
   review: 'Review',
 }
