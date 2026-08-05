@@ -30,5 +30,13 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "components/marketing", "components/ui/Button.tsx"]
+  "exclude": [
+    "node_modules",
+    "components/marketing/FeatureShowcase.tsx",
+    "components/marketing/FinalCTA.tsx",
+    "components/marketing/Hero.tsx",
+    "components/marketing/ProductToggle.tsx",
+    "components/marketing/SocialProof.tsx",
+    "components/ui/Button.tsx"
+  ]
 }
