@@ -245,41 +245,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── THE FOLDER ───────────────────────────────────────────────────── */}
-      <section id="the-folder" style={{ ...SECTION_PAD, background: 'var(--mkt-paper)' }}>
-        <div className="md:px-10 lg:grid-cols-2 lg:items-center" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem' }}>
-          <div style={{ maxWidth: '34rem' }}>
-            <span style={SECTION_LABEL}>The Folder</span>
-            <H2>Something to hold,<br/>not just a login to <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>remember</em>.</H2>
-            <Sub>Every Heirloom member receives a cloth-bound folder — a permanent shell that houses a replaceable Will insert, updated by mail every time your Vault changes.</Sub>
-            <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {[
-                'The folder is permanent — only the insert is replaced as your Will is amended.',
-                'Your executor receives printed access instructions, sealed inside the folder.',
-                'Access unlocks only after death certificate lodgement and executor identity verification.',
-              ].map((point, i) => (
-                <div key={i} style={{ display: 'flex', gap: '.9rem', alignItems: 'flex-start' }}>
-                  <svg width="18" height="18" style={{ flexShrink: 0, marginTop: '.2rem' }} viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3 3 7-7" stroke="var(--teal-deep)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  <p style={{ fontSize: '.92rem', color: 'var(--mkt-ink-text)', lineHeight: 1.55, margin: 0 }}>{point}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ aspectRatio: '4/3', borderRadius: 14, background: '#fff', border: '1px solid var(--teal)', position: 'relative', overflow: 'hidden', boxShadow: '0 30px 70px rgba(18,32,29,.08)' }}>
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg width="120" height="120" viewBox="0 0 120 120" fill="none" aria-hidden="true" style={{ filter: 'drop-shadow(0 20px 40px rgba(18,32,29,.18))' }}>
-                <circle cx="60" cy="60" r="56" fill="none" stroke="#2ab4ae" strokeWidth="1" opacity="0.4"/>
-                <circle cx="60" cy="60" r="44" stroke="#2ab4ae" strokeWidth="1.6"/>
-              </svg>
-            </div>
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1.5rem', borderTop: '1px solid var(--mkt-line)' }}>
-              <p style={{ color: 'var(--mkt-ink-text)', fontSize: '.78rem', letterSpacing: '.08em', textTransform: 'uppercase', fontWeight: 600, margin: 0 }}>The Heirloom Folder</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── PRICING PREVIEW ──────────────────────────────────────────────── */}
+{/* ─── PRICING PREVIEW ──────────────────────────────────────────────── */}
       <section style={{ ...SECTION_PAD, background: 'var(--mkt-surface-2)' }}>
         <div className="md:px-10" style={W}>
           <div style={{ maxWidth: '34rem' }}>
