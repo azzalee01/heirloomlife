@@ -1,59 +1,88 @@
 import Link from 'next/link'
 
+const COLUMNS = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'The Will', href: '/the-will' },
+      { label: 'Living Vault', href: '/living-vault' },
+      { label: 'Pricing', href: '/pricing' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'For Advisers', href: '/for-advisers' },
+    ],
+  },
+  {
+    title: 'Legal',
+    links: [
+      { label: 'Terms of Service', href: '/terms' },
+      { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'FAQ', href: '/faq' },
+    ],
+  },
+]
+
 export default function MarketingFooter() {
   return (
-    <footer
-      className="border-t"
-      style={{ borderColor: 'var(--line)', background: 'var(--paper)' }}
-    >
-      <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
-          <div className="max-w-xs">
-            <p
-              className="text-xl font-semibold"
-              style={{
-                color: 'var(--teal-deep)',
-                fontFamily: "'Instrument Serif', Georgia, serif",
-                fontStyle: 'italic',
-              }}
-            >
+    <footer style={{ background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
+      <div style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '2.5rem', paddingBlock: '3.5rem 2rem' }}>
+
+        {/* Main row */}
+        <div style={{ display: 'flex', gap: '4rem', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+
+          {/* Brand */}
+          <div style={{ flex: '0 0 auto', maxWidth: '22rem' }}>
+            <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '1.2rem', color: 'var(--mkt-ink-text)' }}>
               Heirloom Life
-            </p>
-            <p className="text-sm mt-2 leading-relaxed" style={{ color: 'var(--neutral)' }}>
-              Estate planning for Australians who care about the people they leave behind.
+            </span>
+            <p style={{ marginTop: '1rem', fontSize: '.85rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
+              An estate command centre for Australians — the Will, the Vault, and the folder, kept in one place.
             </p>
           </div>
 
-          <div className="flex gap-12 text-sm">
-            <div className="space-y-3">
-              <p className="font-semibold text-xs uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
-                Product
-              </p>
-              <div className="space-y-2.5">
-                <Link href="/pricing" className="block" style={{ color: 'var(--ink)' }}>Pricing</Link>
-                <Link href="/auth/signup" className="block" style={{ color: 'var(--ink)' }}>Get started</Link>
-                <Link href="/auth/login" className="block" style={{ color: 'var(--ink)' }}>Log in</Link>
+          {/* Link columns */}
+          <div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
+            {COLUMNS.map(col => (
+              <div key={col.title}>
+                <h4 style={{
+                  margin: '0 0 1rem',
+                  fontSize: '.72rem', fontWeight: 700,
+                  letterSpacing: '.1em', textTransform: 'uppercase',
+                  color: 'var(--mkt-ink-text)',
+                }}>
+                  {col.title}
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '.65rem' }}>
+                  {col.links.map(l => (
+                    <Link key={l.href} href={l.href} className="mkt-link" style={{ fontSize: '.875rem' }}>
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="space-y-3">
-              <p className="font-semibold text-xs uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
-                Legal
-              </p>
-              <div className="space-y-2.5">
-                <Link href="/privacy" className="block" style={{ color: 'var(--ink)' }}>Privacy policy</Link>
-                <Link href="/terms" className="block" style={{ color: 'var(--ink)' }}>Terms of service</Link>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        <div
-          className="mt-10 pt-6 border-t flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
-          style={{ borderColor: 'var(--line)', color: 'var(--neutral)' }}
-        >
-          <p>© {new Date().getFullYear()} Heirloom Life. All rights reserved.</p>
-          <p>Australian estate planning services</p>
+        {/* Bottom bar */}
+        <div style={{
+          marginTop: '3rem', paddingTop: '1.5rem',
+          borderTop: '1px solid var(--mkt-line)',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: '1rem',
+          fontSize: '.78rem', color: 'var(--mkt-stone)',
+        }}>
+          <p style={{ margin: 0 }}>© 2026 Heirloom Life Pty Ltd. All rights reserved.</p>
+          <div style={{ display: 'flex', gap: '1.5rem' }}>
+            <Link href="/terms" className="mkt-link" style={{ fontSize: '.78rem' }}>Terms</Link>
+            <Link href="/privacy" className="mkt-link" style={{ fontSize: '.78rem' }}>Privacy</Link>
+          </div>
         </div>
+
       </div>
     </footer>
   )

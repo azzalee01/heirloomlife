@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heirloom — Estate Planning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,300;0,6..96,400;1,6..96,300;1,6..96,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --teal: #0ABAB5;
+  --teal-light: #81D8D0;
+  --teal-pale: #C8EEED;
+  --teal-deep: #007F7A;
+  --white: #FFFFFF;
+  --off-white: #F8FAFA;
+  --black: #0D0D0D;
+  --charcoal: #1A1A1A;
+  --mid: #6B6B6B;
+  --light: #B8B8B8;
+  --border: #E0EEEE;
+  --serif: 'Bodoni Moda', 'Times New Roman', serif;
+  --sans: 'Montserrat', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--sans);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2rem 5rem;
+  background: rgba(255,255,255,0.97);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.4s;
+}
+nav.scrolled { border-bottom-color: var(--border); }
+
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mid);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--black); }
+
+.nav-cta {
+  font-size: 0.68rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.2em !important;
+  text-transform: uppercase !important;
+  color: var(--white) !important;
+  background: var(--teal) !important;
+  padding: 0.7rem 1.75rem !important;
+  text-decoration: none !important;
+  transition: background 0.25s !important;
+}
+.nav-cta:hover { background: var(--teal-deep) !important; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 5.5rem;
+}
+
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 7rem 5rem;
+  background: var(--teal);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Large decorative H watermark */
+.hero-left::before {
+  content: 'H';
+  position: absolute;
+  font-family: var(--serif);
+  font-size: 55vw;
+  font-weight: 300;
+  color: rgba(255,255,255,0.05);
+  bottom: -15%;
+  left: -10%;
+  line-height: 1;
+  pointer-events: none;
+  letter-spacing: -0.05em;
+}
+
+.hero-eyebrow {
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 2.5rem;
+}
+
+.hero-heading {
+  font-family: var(--serif);
+  font-size: clamp(3rem, 4.5vw, 5rem);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: 0.01em;
+  color: var(--white);
+  margin-bottom: 2.5rem;
+}
+.hero-heading em {
+  font-style: italic;
+  display: block;
+}
+
+.hero-subtext {
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.75);
+  max-width: 380px;
+  margin-bottom: 3.5rem;
+  letter-spacing: 0.02em;
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.btn-white {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--white);
+  color: var(--teal-deep);
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 1.1rem 2.5rem;
+  text-decoration: none;
+  transition: background 0.25s, transform 0.2s;
+  border: none;
+  cursor: pointer;
+}
+.btn-white:hover { background: var(--off-white); transform: translateY(-1px); }
+
+.btn-ghost-white {
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  padding-bottom: 3px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-ghost-white:hover { color: var(--white); border-color: var(--white); }
+
+/* Hero right — product visual */
+.hero-right {
+  background: var(--off-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 4rem;
+}
+
+.hero-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 39px,
+    var(--border) 39px,
+    var(--border) 40px
+  );
+  opacity: 0.4;
+}
+
+.box-visual {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.gift-box {
+  width: 220px;
+  height: 160px;
+  background: var(--teal);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Box ribbon vertical */
+.gift-box::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  background: var(--white);
+  opacity: 0.25;
+}
+/* Box ribbon horizontal */
+.gift-box::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 20px;
+  background: var(--white);
+  opacity: 0.25;
+}
+
+.box-logo {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.9);
+  position: relative;
+  z-index: 1;
+}
+
+.box-lid {
+  width: 232px;
+  height: 28px;
+  background: var(--teal-deep);
+  position: absolute;
+  top: -14px;
+  left: -6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.box-lid::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  background: var(--white);
+  opacity: 0.2;
+}
+
+.box-tag {
+  margin-top: 2rem;
+  text-align: center;
+}
+.box-tag-inner {
+  display: inline-block;
+  background: var(--white);
+  border: 1px solid var(--border);
+  padding: 1.25rem 2rem;
+  position: relative;
+}
+.box-tag-inner::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -2rem;
+  width: 2rem;
+  height: 1px;
+  background: var(--light);
+}
+.box-tag-name {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--black);
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.05em;
+}
+.box-tag-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  background: var(--black);
+  padding: 1.75rem 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255,255,255,0.4);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0 3rem;
+  border-right: 1px solid rgba(255,255,255,0.1);
+}
+.trust-item:last-child { border-right: none; }
+.trust-item strong {
+  color: var(--white);
+  font-weight: 400;
+}
+
+/* ── SECTIONS ── */
+section { padding: 8rem 5rem; }
+
+.section-eyebrow {
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 2rem;
+}
+
+.section-heading {
+  font-family: var(--serif);
+  font-size: clamp(2.2rem, 3vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--black);
+  margin-bottom: 1.75rem;
+  letter-spacing: 0.01em;
+}
+.section-heading em { font-style: italic; }
+
+.section-body {
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--mid);
+  max-width: 480px;
+  letter-spacing: 0.02em;
+}
+
+/* ── HOW IT WORKS ── */
+.how-section { background: var(--white); }
+.how-inner { max-width: 1100px; margin: 0 auto; }
+.how-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: end;
+  margin-bottom: 6rem;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--border);
+}
+
+.step-card {
+  padding: 3rem 2.5rem;
+  border-right: 1px solid var(--border);
+  position: relative;
+  transition: background 0.3s;
+}
+.step-card:last-child { border-right: none; }
+.step-card:hover { background: var(--teal-pale); }
+
+.step-num {
+  font-family: var(--serif);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--teal);
+  margin-bottom: 2rem;
+  display: block;
+}
+
+.step-title {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: var(--black);
+  margin-bottom: 1rem;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+.step-desc {
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--mid);
+  letter-spacing: 0.01em;
+}
+
+/* ── WHY SECTION ── */
+.why-section {
+  background: var(--teal);
+  color: var(--white);
+}
+.why-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7rem;
+  align-items: start;
+}
+.why-section .section-eyebrow { color: rgba(255,255,255,0.6); }
+.why-section .section-heading { color: var(--white); }
+.why-section .section-body { color: rgba(255,255,255,0.7); max-width: 100%; }
+
+.pillars { display: flex; flex-direction: column; gap: 0; }
+.pillar {
+  padding: 2rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  transition: padding-left 0.25s;
+  cursor: default;
+}
+.pillar:first-child { border-top: 1px solid rgba(255,255,255,0.15); }
+.pillar:hover { padding-left: 0.5rem; }
+
+.pillar-num {
+  font-family: var(--serif);
+  font-size: 0.8rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.5);
+  padding-top: 3px;
+}
+.pillar-title {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 300;
+  color: var(--white);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+}
+.pillar-desc {
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 1.75;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.01em;
+}
+
+/* ── TESTIMONIAL ── */
+.testimonial-section {
+  background: var(--off-white);
+  padding: 8rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.testimonial-section::before {
+  content: '\201C';
+  position: absolute;
+  font-family: var(--serif);
+  font-size: 30rem;
+  color: var(--teal-pale);
+  top: -4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  line-height: 1;
+  pointer-events: none;
+}
+.testimonial-inner { position: relative; max-width: 680px; margin: 0 auto; }
+.testimonial-quote {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--black);
+  line-height: 1.55;
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.01em;
+}
+.testimonial-rule {
+  width: 2rem;
+  height: 1px;
+  background: var(--teal);
+  margin: 0 auto 1.5rem;
+}
+.testimonial-attr {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+/* ── PRICING ── */
+.pricing-section { background: var(--white); }
+.pricing-inner { max-width: 900px; margin: 0 auto; }
+.pricing-inner .section-eyebrow { text-align: center; }
+.pricing-inner .section-heading { text-align: center; }
+.pricing-inner .section-body { text-align: center; margin: 0 auto 5rem; }
+
+.pricing-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border: 1px solid var(--border);
+}
+
+.pricing-card {
+  padding: 3.5rem 3rem;
+  border-right: 1px solid var(--border);
+  transition: background 0.3s;
+  position: relative;
+}
+.pricing-card:last-child { border-right: none; }
+
+.pricing-card.featured {
+  background: var(--teal);
+  color: var(--white);
+  border-right: none;
+}
+
+.pricing-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--teal-pale);
+  color: var(--teal-deep);
+  padding: 0.35rem 0.9rem;
+  margin-bottom: 2rem;
+}
+.pricing-card.featured .pricing-badge {
+  background: rgba(255,255,255,0.2);
+  color: var(--white);
+}
+
+.pricing-tier {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+.pricing-card.featured .pricing-tier { color: var(--white); }
+
+.pricing-price {
+  font-family: var(--serif);
+  font-size: 3.5rem;
+  font-weight: 300;
+  color: var(--black);
+  line-height: 1;
+  margin: 1.25rem 0 0.4rem;
+  letter-spacing: -0.02em;
+}
+.pricing-card.featured .pricing-price { color: var(--white); }
+
+.pricing-period {
+  font-size: 0.7rem;
+  color: var(--light);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+}
+.pricing-card.featured .pricing-period { color: rgba(255,255,255,0.55); }
+
+.pricing-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 2rem 0;
+}
+.pricing-card.featured .pricing-divider { background: rgba(255,255,255,0.2); }
+
+.pricing-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+.pricing-features li {
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--mid);
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+.pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.8); }
+.pricing-features li::before {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--teal);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+.pricing-card.featured .pricing-features li::before { background: rgba(255,255,255,0.6); }
+
+.pricing-cta {
+  display: block;
+  text-align: center;
+  padding: 1rem;
+  border: 1px solid var(--black);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.pricing-cta:hover { background: var(--black); color: var(--white); }
+.pricing-card.featured .pricing-cta {
+  border-color: var(--white);
+  color: var(--white);
+  background: transparent;
+}
+.pricing-card.featured .pricing-cta:hover { background: var(--white); color: var(--teal); }
+
+/* ── FAQ ── */
+.faq-section { background: var(--off-white); }
+.faq-inner { max-width: 680px; margin: 0 auto; }
+.faq-header { margin-bottom: 4rem; }
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 0;
+  cursor: pointer;
+}
+.faq-item:first-of-type { border-top: 1px solid var(--border); }
+
+.faq-question {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--black);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  letter-spacing: 0.01em;
+}
+.faq-icon {
+  font-size: 1.1rem;
+  color: var(--teal);
+  flex-shrink: 0;
+  transition: transform 0.3s;
+  font-style: normal;
+  font-family: var(--sans);
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+
+.faq-answer {
+  font-size: 0.85rem;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--mid);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s;
+  letter-spacing: 0.01em;
+}
+.faq-item.open .faq-answer {
+  max-height: 300px;
+  padding-top: 1.25rem;
+}
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: var(--black);
+  padding: 8rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-teal-stripe {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--teal);
+}
+.cta-inner { position: relative; max-width: 600px; margin: 0 auto; }
+.cta-heading {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 4vw, 4.5rem);
+  font-weight: 300;
+  line-height: 1.12;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.01em;
+}
+.cta-heading em { font-style: italic; color: var(--teal-light); }
+.cta-sub {
+  font-size: 0.88rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 3.5rem;
+  letter-spacing: 0.03em;
+}
+.cta-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+}
+.btn-teal {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--teal);
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 1.1rem 2.75rem;
+  text-decoration: none;
+  transition: background 0.25s, transform 0.2s;
+  border: none;
+  cursor: pointer;
+}
+.btn-teal:hover { background: var(--teal-deep); transform: translateY(-1px); }
+.btn-ghost-dark {
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 3px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-ghost-dark:hover { color: var(--white); border-color: var(--teal); }
+
+/* ── FOOTER ── */
+footer {
+  background: #0A0A0A;
+  padding: 5rem;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+.footer-logo {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+.footer-tagline {
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.3);
+  line-height: 1.75;
+  max-width: 220px;
+  letter-spacing: 0.02em;
+}
+.footer-col-title {
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 1.5rem;
+}
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.footer-links a {
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--white); }
+
+.footer-bottom {
+  background: #0A0A0A;
+  padding: 1.75rem 5rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-copy {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.footer-legal {
+  display: flex;
+  gap: 2rem;
+}
+.footer-legal a {
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.2);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.footer-legal a:hover { color: rgba(255,255,255,0.6); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { opacity: 0; animation: fadeUp 0.9s ease forwards; }
+.delay-1 { animation-delay: 0.15s; }
+.delay-2 { animation-delay: 0.3s; }
+.delay-3 { animation-delay: 0.5s; }
+.delay-4 { animation-delay: 0.65s; }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-logo" href="#">Heirloom</a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#why">Why Heirloom</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a class="nav-cta" href="#start">Begin your will</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow fade-up">Estate planning, redesigned</div>
+    <h1 class="hero-heading fade-up delay-1">
+      Design the life<br>
+      you leave<br>
+      <em>behind.</em>
+    </h1>
+    <p class="hero-subtext fade-up delay-2">
+      Not another form to fill. A guided experience for people who build intentionally — and want their legacy to reflect it.
+    </p>
+    <div class="hero-actions fade-up delay-3">
+      <a class="btn-white" href="#start">Begin your will →</a>
+      <a class="btn-ghost-white" href="#how">See how it works</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="box-visual fade-up delay-2">
+      <div style="position: relative; margin-bottom: 0;">
+        <div class="gift-box">
+          <div class="box-lid"></div>
+          <span class="box-logo">Heirloom</span>
+        </div>
+      </div>
+      <div class="box-tag">
+        <div class="box-tag-inner">
+          <div class="box-tag-name">For James &amp; Sarah</div>
+          <div class="box-tag-label">Heirloom · Estate Planning</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><strong>Lawyer-reviewed</strong>&nbsp;documents</div>
+  <div class="trust-item"><strong>Legally binding</strong>&nbsp;across Australia</div>
+  <div class="trust-item">Ready in&nbsp;<strong>under 30 minutes</strong></div>
+  <div class="trust-item"><strong>Guided</strong>&nbsp;at every step</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="how-inner">
+    <div class="how-header">
+      <div>
+        <div class="section-eyebrow">The process</div>
+        <h2 class="section-heading">Three steps to a life well<br><em>documented.</em></h2>
+      </div>
+      <p class="section-body">Most estate planning tools treat a will like a form. We treat it like a design exercise — one that asks you to think carefully about what you're building and who inherits it.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <span class="step-num">01</span>
+        <div class="step-title">Tell us<br>your story</div>
+        <p class="step-desc">Guided prompts help you map your assets, relationships, and wishes — without legal jargon. It reads like a conversation, not a questionnaire.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">02</span>
+        <div class="step-title">We draft it<br>properly</div>
+        <p class="step-desc">Your will is prepared to Australian legal standards and reviewed by a qualified solicitor. Nothing generic. Everything specific to your situation.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">03</span>
+        <div class="step-title">Sign and<br>store it</div>
+        <p class="step-desc">Sign with two witnesses and your will is valid. Store it securely in your Heirloom vault — updated whenever your life changes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY HEIRLOOM -->
+<section class="why-section" id="why">
+  <div class="why-inner">
+    <div>
+      <div class="section-eyebrow">Why Heirloom</div>
+      <h2 class="section-heading">This isn't death admin.<br><em>It's life design.</em></h2>
+      <p class="section-body">The people who use Heirloom aren't thinking about dying. They're thinking about what they've built, who they love, and what kind of person they are.</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <span class="pillar-num">i.</span>
+        <div>
+          <div class="pillar-title">Designed for the intentional</div>
+          <p class="pillar-desc">Not the anxious, not the dying — the people who plan ahead because that's who they are.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <span class="pillar-num">ii.</span>
+        <div>
+          <div class="pillar-title">Premium without the price</div>
+          <p class="pillar-desc">The quality of a solicitor-drafted will at a fraction of the cost. Because a good will isn't a luxury.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <span class="pillar-num">iii.</span>
+        <div>
+          <div class="pillar-title">Built for modern lives</div>
+          <p class="pillar-desc">Property, super, digital assets, blended families. We ask the right questions because modern estates are complex.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <span class="pillar-num">iv.</span>
+        <div>
+          <div class="pillar-title">Lives with you</div>
+          <p class="pillar-desc">Update your will as life changes. Your Heirloom vault keeps everything current and accessible.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<div class="testimonial-section">
+  <div class="testimonial-inner">
+    <p class="testimonial-quote">"I'd been putting it off for years. Heirloom made it feel like something I was proud to have done — not something I'd been avoiding."</p>
+    <div class="testimonial-rule"></div>
+    <p class="testimonial-attr">Emma R. &nbsp;·&nbsp; Property owner, Sydney, 34</p>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="section-eyebrow">Simple pricing</div>
+    <h2 class="section-heading">One decision.<br><em>Sorted for good.</em></h2>
+    <p class="section-body">No hidden fees. A will for life, at a price that makes sense.</p>
+    <div class="pricing-cards">
+      <div class="pricing-card">
+        <div class="pricing-tier">Individual Will</div>
+        <div class="pricing-price">$149</div>
+        <div class="pricing-period">One-time · includes legal review</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Guided will creation</li>
+          <li>Solicitor review and sign-off</li>
+          <li>Legally valid across all Australian states</li>
+          <li>Secure digital vault storage</li>
+          <li>One free update within 12 months</li>
+        </ul>
+        <a class="pricing-cta" href="#start">Begin your will</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most chosen</div>
+        <div class="pricing-tier">Couple's Wills</div>
+        <div class="pricing-price">$249</div>
+        <div class="pricing-period">One-time for two · includes legal review</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Two complete wills, drafted together</li>
+          <li>Mirror will option for couples</li>
+          <li>Solicitor review for both</li>
+          <li>Shared Heirloom vault</li>
+          <li>Unlimited updates for 24 months</li>
+          <li>Powers of attorney included</li>
+        </ul>
+        <a class="pricing-cta" href="#start">Begin together</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <div class="section-eyebrow">Questions</div>
+      <h2 class="section-heading">What people<br><em>ask first.</em></h2>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">Is a will made through Heirloom legally valid?<span class="faq-icon">+</span></div>
+      <div class="faq-answer">Yes. Every Heirloom will is reviewed by a qualified Australian solicitor and prepared to meet the Wills Act requirements in your state or territory. You'll sign it in front of two witnesses, which is all that's required to make it legally binding.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">How is this different from a DIY will kit?<span class="faq-icon">+</span></div>
+      <div class="faq-answer">A DIY kit gives you a blank form. Heirloom gives you a guided experience, a lawyer's eyes on your document, and ongoing storage and updates. The difference between a form and a finished will that actually reflects your life.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">What if my situation is complicated?<span class="faq-icon">+</span></div>
+      <div class="faq-answer">Heirloom is designed for modern Australian lives — blended families, superannuation nominations, digital assets, property in multiple states, business interests. If your situation is genuinely complex, we'll connect you with a specialist solicitor at no extra cost.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">Can I update my will later?<span class="faq-icon">+</span></div>
+      <div class="faq-answer">Yes — and you should. Life changes. Your Individual plan includes one free update within 12 months; the Couple's plan includes unlimited updates for 24 months. After that, updates are $49 per change.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">How long does it take?<span class="faq-icon">+</span></div>
+      <div class="faq-answer">Most people complete their guided questionnaire in 20–30 minutes. Solicitor review is typically returned within one business day. Then you sign, witness, and you're done.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner" id="start">
+  <div class="cta-teal-stripe"></div>
+  <div class="cta-inner">
+    <h2 class="cta-heading">The best time<br>was <em>yesterday.</em></h2>
+    <p class="cta-sub">The second best is now. It takes less time than you think and gives you more peace than you'd expect.</p>
+    <div class="cta-actions">
+      <a class="btn-teal" href="#">Start your will today →</a>
+      <a class="btn-ghost-dark" href="#how">Learn more first</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">Heirloom</div>
+    <p class="footer-tagline">Estate planning for people who build intentionally.</p>
+  </div>
+  <div>
+    <div class="footer-col-title">Product</div>
+    <ul class="footer-links">
+      <li><a href="#">How it works</a></li>
+      <li><a href="#">Pricing</a></li>
+      <li><a href="#">For couples</a></li>
+      <li><a href="#">Powers of attorney</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Company</div>
+    <ul class="footer-links">
+      <li><a href="#">About</a></li>
+      <li><a href="#">Our lawyers</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Legal</div>
+    <ul class="footer-links">
+      <li><a href="#">Privacy policy</a></li>
+      <li><a href="#">Terms of service</a></li>
+      <li><a href="#">Legal disclaimer</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span class="footer-copy">© 2025 Heirloom · Australian estate planning</span>
+  <div class="footer-legal">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Disclaimer</a>
+  </div>
+</div>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+  function toggleFaq(el) {
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+</script>
+</body>
+</html>

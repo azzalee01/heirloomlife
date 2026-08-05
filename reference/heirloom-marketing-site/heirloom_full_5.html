@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heirloom Life — Your estate command centre. Starting with your Will.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --blue-950:#0a1628;
+  --blue-900:#0f2040;
+  --blue-800:#163358;
+  --blue-700:#1e4a7a;
+  --blue-600:#2563a8;
+  --blue-500:#3b82d4;
+  --blue-400:#60a5e8;
+  --blue-300:#93c5f8;
+  --blue-200:#bfdbfe;
+  --blue-100:#dbeafe;
+  --blue-50:#eff6ff;
+  --aqua:#7dd3d0;
+  --aqua-deep:#2ab4ae;
+  --aqua-pale:#e6f7f7;
+  --aqua-light:#b3e8e6;
+  --aqua-ink:#1a7a76;
+  --white:#ffffff;
+  --gray-50:#f8fafc;
+  --gray-100:#f1f5f9;
+  --gray-200:#e2e8f0;
+  --gray-300:#cbd5e1;
+  --gray-400:#94a3b8;
+  --gray-500:#64748b;
+  --gray-600:#475569;
+  --gray-700:#334155;
+  --gray-800:#1e293b;
+  --gray-900:#0f172a;
+  --serif:'Instrument Serif',Georgia,serif;
+  --sans:'DM Sans',system-ui,sans-serif;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --ease-out:cubic-bezier(0,0,0.2,1);
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--sans);color:var(--gray-900);background:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+
+/* ── CUSTOM CURSOR ── */
+.cur{position:fixed;width:6px;height:6px;background:var(--aqua-deep);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width 0.2s,height 0.2s,background 0.2s;}
+.cur-ring{position:fixed;width:28px;height:28px;border:1.5px solid rgba(142,206,201,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width 0.35s var(--ease),height 0.35s var(--ease),border-color 0.3s;}
+.cur.active{width:10px;height:10px;background:var(--aqua-deep);}
+.cur-ring.active{width:44px;height:44px;border-color:rgba(74,158,153,0.7);}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;display:flex;align-items:center;padding:0 2rem;}
+nav::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(37,99,168,0.08);opacity:0;transition:opacity 0.4s;}
+nav.scrolled::before{opacity:1;}
+.nav-inner{width:100%;max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1;}
+.nav-logo{font-family:var(--serif);font-size:1.25rem;font-weight:400;color:var(--gray-900);text-decoration:none;letter-spacing:0.01em;}
+.nav-links{display:flex;align-items:center;gap:2rem;}
+.nav-links a{font-size:0.8rem;font-weight:400;color:var(--gray-500);text-decoration:none;letter-spacing:0.01em;transition:color 0.2s;}
+.nav-links a:hover{color:var(--gray-900);}
+.nav-btn{background:var(--aqua-deep);color:var(--white)!important;padding:0.5rem 1.25rem;border-radius:8px;font-size:0.78rem!important;font-weight:500!important;transition:background 0.2s!important;border:none;cursor:pointer;font-family:var(--sans);}
+.nav-btn:hover{background:var(--aqua-ink)!important;color:var(--white)!important;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:5.5rem 2rem 4rem;position:relative;overflow:hidden;background:var(--white);}
+.hero-glow{position:absolute;top:-20%;right:-10%;width:700px;height:600px;background:radial-gradient(ellipse at center,rgba(125,211,208,0.1) 0%,rgba(42,180,174,0.04) 45%,transparent 70%);pointer-events:none;}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(142,206,201,0.07) 1px,transparent 1px),linear-gradient(90deg,rgba(142,206,201,0.07) 1px,transparent 1px);background-size:48px 48px;mask-image:radial-gradient(ellipse 80% 60% at 50% 50%,black 40%,transparent 100%);pointer-events:none;}
+.hero-split{position:relative;z-index:2;width:100%;max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1.15fr;gap:3rem;align-items:center;min-height:calc(100vh - 120px);}
+.hero-left{display:flex;flex-direction:column;align-items:flex-start;}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--aqua-pale);border:1px solid var(--aqua-light);border-radius:100px;padding:5px 14px;font-size:0.72rem;font-weight:500;color:var(--aqua-ink);margin-bottom:2rem;letter-spacing:0.02em;opacity:0;animation:fadeUp 0.8s var(--ease) 0.1s forwards;}
+.hero-badge-dot{width:5px;height:5px;background:var(--aqua-deep);border-radius:50%;}
+.hero-h1{font-family:var(--serif);font-size:clamp(2.6rem,4.8vw,4.6rem);font-weight:400;line-height:1.08;color:var(--gray-900);margin-bottom:1.5rem;letter-spacing:-0.01em;opacity:0;animation:fadeUp 0.8s var(--ease) 0.2s forwards;text-align:left;}
+.hero-h1 em{font-style:italic;color:var(--aqua-deep);}
+.hero-sub{font-size:0.95rem;color:var(--gray-500);line-height:1.8;max-width:440px;margin:0 0 1.25rem;font-weight:300;opacity:0;animation:fadeUp 0.8s var(--ease) 0.35s forwards;text-align:left;}
+.hero-note{font-size:0.8rem;color:var(--gray-400);margin-bottom:2.2rem;opacity:0;animation:fadeUp 0.8s var(--ease) 0.45s forwards;text-align:left;}
+.hero-note strong{color:var(--gray-600);font-weight:500;}
+.hero-actions{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp 0.8s var(--ease) 0.55s forwards;}
+.hero-right{opacity:0;animation:fadeUp 0.9s var(--ease) 0.4s forwards;}
+
+/* ── WILL PREVIEW CARD ── */
+.will-preview{background:var(--white);border:1px solid var(--gray-200);border-radius:20px;box-shadow:0 8px 16px rgba(0,0,0,0.05),0 32px 80px rgba(0,0,0,0.1);overflow:hidden;font-family:var(--sans);width:100%;}
+.will-preview-header{background:var(--gray-50);border-bottom:1px solid var(--gray-100);padding:1.75rem 2.25rem 1.4rem;}
+.will-preview-title-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;}
+.will-preview-logo{font-family:var(--serif);font-size:1rem;font-weight:400;color:var(--gray-400);letter-spacing:0.04em;}
+.will-preview-badge{font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;background:var(--aqua-pale);color:var(--aqua-deep);border:1px solid var(--aqua-light);border-radius:100px;padding:3px 11px;}
+.will-preview-doc-title{font-family:var(--serif);font-size:1.5rem;font-weight:400;color:var(--gray-900);margin-bottom:4px;letter-spacing:0.01em;}
+.will-preview-sub{font-size:0.88rem;color:var(--gray-400);font-weight:300;}
+.will-preview-name{color:var(--gray-600);font-weight:400;}
+.will-preview-body{padding:1.75rem 2.25rem;display:flex;flex-direction:column;gap:1.25rem;}
+.will-preview-clause{display:grid;grid-template-columns:1.4rem 1fr;gap:0.75rem;align-items:start;}
+.will-preview-clause-num{font-size:0.82rem;font-weight:500;color:var(--gray-300);padding-top:0.1rem;font-family:var(--serif);}
+.will-preview-clause-text{font-size:0.9rem;color:var(--gray-600);line-height:1.75;font-weight:300;}
+.will-preview-clause-faded .will-preview-clause-text{color:var(--gray-200);}
+.will-preview-clause-faded .will-preview-clause-num{color:var(--gray-200);}
+.will-asset{display:inline-block;color:var(--aqua-deep);font-weight:500;border-bottom:2px solid var(--aqua-light);position:relative;transition:opacity 0.35s;}
+.will-asset.fade{opacity:0;}
+.will-preview-footer{border-top:1px solid var(--gray-100);padding:1.4rem 2.25rem;}
+.will-preview-sig-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem;}
+.will-preview-sig-block{display:flex;flex-direction:column;gap:5px;}
+.will-preview-sig-line{height:1px;background:var(--gray-200);width:100%;}
+.will-preview-sig-label{font-size:0.68rem;color:var(--gray-300);font-weight:300;}
+.will-preview-reviewed{display:flex;align-items:center;gap:6px;font-size:0.72rem;color:var(--aqua-deep);font-weight:500;letter-spacing:0.04em;}
+.will-preview-reviewed svg{flex-shrink:0;}
+.btn{display:inline-flex;align-items:center;gap:8px;font-family:var(--sans);font-size:0.85rem;font-weight:500;border-radius:10px;padding:0.75rem 1.5rem;cursor:pointer;transition:all 0.2s;text-decoration:none;border:none;}
+.btn-primary{background:var(--aqua-deep);color:var(--white);box-shadow:0 1px 3px rgba(74,158,153,0.3),0 4px 12px rgba(74,158,153,0.15);}
+.btn-primary:hover{background:var(--aqua-ink);box-shadow:0 2px 6px rgba(74,158,153,0.35),0 8px 24px rgba(74,158,153,0.2);transform:translateY(-1px);}
+.btn-secondary{background:var(--white);color:var(--gray-700);border:1px solid var(--gray-200);box-shadow:0 1px 2px rgba(0,0,0,0.06);}
+.btn-secondary:hover{border-color:var(--gray-300);background:var(--gray-50);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--gray-500);font-size:0.82rem;}
+.btn-ghost:hover{color:var(--gray-900);}
+.btn svg{width:16px;height:16px;flex-shrink:0;}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fadeIn 1s var(--ease) 1.2s forwards;}
+.hero-scroll-text{font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-300);}
+.hero-scroll-line{width:1px;height:32px;background:linear-gradient(to bottom,var(--aqua),transparent);}
+
+/* ── TRUST BAR ── */
+.trust-bar{border-top:1px solid var(--gray-100);border-bottom:1px solid var(--gray-100);background:var(--gray-50);padding:0.85rem 2rem;}
+.trust-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:7px;font-size:0.72rem;font-weight:400;color:var(--gray-500);}
+.trust-item svg{color:var(--aqua-deep);flex-shrink:0;}
+.trust-sep{width:1px;height:14px;background:var(--gray-200);}
+
+/* ── SECTIONS ── */
+.section{padding:6rem 2rem;}
+.section-inner{max-width:1100px;margin:0 auto;}
+.section-label{display:inline-flex;align-items:center;gap:6px;font-size:0.7rem;font-weight:500;color:var(--aqua-deep);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1rem;}
+.section-label-dot{width:4px;height:4px;background:var(--aqua-deep);border-radius:50%;}
+.section-h2{font-family:var(--serif);font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:400;color:var(--gray-900);line-height:1.15;margin-bottom:1rem;}
+.section-body{font-size:0.95rem;color:var(--gray-500);line-height:1.8;max-width:520px;font-weight:300;}
+
+/* ── STATS ── */
+.stats-section{background:var(--blue-950);padding:4rem 2rem;}
+.stats-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,0.06);}
+.stat-cell{background:var(--blue-950);padding:3rem 2.5rem;}
+.stat-num{font-family:var(--serif);font-size:3.2rem;font-weight:400;color:var(--white);display:block;letter-spacing:-0.02em;margin-bottom:0.4rem;line-height:1;}
+.stat-label{font-size:0.78rem;color:rgba(255,255,255,0.4);line-height:1.6;font-weight:300;}
+
+/* ── POSITIONING ── */
+.position-section{background:var(--blue-950);padding:5rem 2rem;border-top:1px solid rgba(255,255,255,0.06);}
+.position-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center;}
+.position-left{font-family:var(--serif);font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:400;color:var(--white);line-height:1.25;}
+.position-left em{font-style:italic;color:var(--blue-300);}
+.position-right p{font-size:0.88rem;color:rgba(255,255,255,0.45);line-height:1.9;font-weight:300;}
+.position-right p+p{margin-top:1rem;}
+.position-right strong{color:rgba(255,255,255,0.72);font-weight:400;}
+
+/* ── FEATURES ── */
+.features-section{background:var(--white);padding:6rem 2rem;}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray-100);margin-top:3.5rem;border-radius:16px;overflow:hidden;}
+.feature-card{background:var(--white);padding:2rem 1.75rem;transition:background 0.25s;}
+.feature-card:hover{background:var(--aqua-pale);}
+.feature-card.highlight{background:var(--aqua-pale);}
+.feature-tag{font-size:0.65rem;font-weight:500;color:var(--aqua-deep);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;}
+.feature-title{font-size:0.95rem;font-weight:500;color:var(--gray-900);margin-bottom:0.5rem;}
+.feature-desc{font-size:0.82rem;color:var(--gray-500);line-height:1.75;font-weight:300;}
+.feature-icon{width:32px;height:32px;background:var(--aqua-pale);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;}
+.feature-icon svg{width:16px;height:16px;color:var(--aqua-deep);}
+
+/* ── HOW IT WORKS ── */
+.how-section{background:var(--gray-50);padding:6rem 2rem;border-top:1px solid var(--gray-100);border-bottom:1px solid var(--gray-100);}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:3.5rem;}
+.how-step{padding:2rem 1.75rem;border-right:1px solid var(--gray-100);position:relative;}
+.how-step:last-child{border-right:none;}
+.how-step-num{font-family:var(--serif);font-size:0.75rem;color:var(--aqua);letter-spacing:0.1em;margin-bottom:1.2rem;display:block;}
+.how-step-title{font-size:0.9rem;font-weight:500;color:var(--gray-900);margin-bottom:0.5rem;}
+.how-step-desc{font-size:0.8rem;color:var(--gray-500);line-height:1.75;font-weight:300;}
+.how-step-line{position:absolute;top:2.9rem;right:-1px;width:1px;height:24px;background:var(--blue-300);display:none;}
+
+/* ── QUOTE ── */
+.quote-section{padding:5rem 2rem;border-bottom:1px solid var(--gray-100);}
+.quote-inner{max-width:700px;margin:0 auto;text-align:center;}
+.quote-text{font-family:var(--serif);font-size:clamp(1.3rem,2.5vw,1.9rem);font-weight:400;font-style:italic;color:var(--gray-800);line-height:1.5;margin-bottom:1.2rem;}
+.quote-attr{font-size:0.72rem;color:var(--aqua-deep);letter-spacing:0.1em;text-transform:uppercase;font-weight:500;}
+
+/* ── PRICING ── */
+.pricing-section{padding:6rem 2rem;background:var(--white);}
+.pricing-intro{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-bottom:3.5rem;}
+.pricing-note{background:var(--aqua-pale);border:1px solid var(--aqua-light);border-radius:12px;padding:1.5rem;}
+.pricing-note p{font-size:0.82rem;color:var(--gray-700);line-height:1.8;font-weight:300;}
+.pricing-note strong{font-weight:500;color:var(--gray-900);}
+.will-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+.will-card{border:1px solid var(--gray-200);border-radius:14px;padding:1.75rem;background:var(--white);transition:all 0.2s;}
+.will-card:hover{border-color:var(--aqua);box-shadow:0 4px 20px rgba(142,206,201,0.15);}
+.will-card.featured{background:var(--blue-950);border-color:var(--blue-950);}
+.will-badge{font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--aqua-deep);margin-bottom:1rem;display:block;}
+.will-card.featured .will-badge{color:var(--blue-300);}
+.will-name{font-family:var(--serif);font-size:1.3rem;font-weight:400;color:var(--gray-900);margin-bottom:0.25rem;}
+.will-card.featured .will-name{color:var(--white);}
+.will-tag{font-size:0.75rem;color:var(--gray-400);margin-bottom:1.25rem;font-weight:300;}
+.will-card.featured .will-tag{color:rgba(255,255,255,0.35);}
+.will-price{font-family:var(--serif);font-size:2.4rem;font-weight:400;color:var(--aqua-ink);line-height:1;}
+.will-card.featured .will-price{color:var(--white);}
+.will-price-note{font-size:0.7rem;color:var(--gray-400);margin-top:0.25rem;margin-bottom:1.5rem;font-weight:300;}
+.will-card.featured .will-price-note{color:rgba(255,255,255,0.3);}
+.will-divider{border:none;border-top:1px solid var(--gray-100);margin-bottom:1.2rem;}
+.will-card.featured .will-divider{border-color:rgba(255,255,255,0.08);}
+.will-item{font-size:0.78rem;color:var(--gray-500);margin-bottom:0.55rem;display:flex;align-items:flex-start;gap:8px;line-height:1.5;font-weight:300;}
+.will-card.featured .will-item{color:rgba(255,255,255,0.45);}
+.will-check{width:14px;height:14px;flex-shrink:0;margin-top:1px;color:var(--aqua-deep);}
+.will-card.featured .will-check{color:var(--blue-400);}
+.will-btn{width:100%;padding:0.75rem;font-size:0.78rem;font-weight:500;border-radius:8px;background:var(--aqua-deep);color:var(--white);border:none;cursor:pointer;font-family:var(--sans);margin-top:1.5rem;transition:all 0.2s;}
+.will-btn:hover{background:var(--aqua-ink);}
+.will-card.featured .will-btn{background:var(--aqua);color:var(--white);}
+.will-card.featured .will-btn:hover{background:var(--aqua-deep);}
+.vault-strip{border:1px solid var(--gray-200);border-radius:14px;padding:1.5rem 2rem;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2rem;background:var(--gray-50);}
+.vault-strip-title{font-size:0.9rem;font-weight:500;color:var(--gray-900);margin-bottom:0.25rem;}
+.vault-strip-desc{font-size:0.8rem;color:var(--gray-500);line-height:1.7;font-weight:300;max-width:560px;}
+.vault-strip-desc strong{color:var(--gray-700);font-weight:500;}
+.vault-strip-right{text-align:right;flex-shrink:0;}
+.vault-price{font-family:var(--serif);font-size:2rem;font-weight:400;color:var(--aqua-deep);}
+.vault-per{font-size:0.7rem;color:var(--gray-400);margin-bottom:0.75rem;}
+.vault-btn{background:var(--aqua-deep);color:var(--white);padding:0.6rem 1.4rem;border-radius:8px;font-size:0.78rem;font-weight:500;border:none;cursor:pointer;font-family:var(--sans);transition:background 0.2s;white-space:nowrap;}
+.vault-btn:hover{background:var(--aqua-ink);}
+
+/* ── FOR WHOM ── */
+.whom-section{background:var(--gray-50);padding:6rem 2rem;border-top:1px solid var(--gray-100);}
+.trigger-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--gray-200);max-width:640px;border-radius:14px;overflow:hidden;margin-top:3rem;}
+.trigger-card{background:var(--gray-50);padding:1.75rem;transition:background 0.2s;}
+.trigger-card:hover{background:var(--aqua-pale);}
+.trigger-num{font-size:0.65rem;color:var(--aqua-deep);letter-spacing:0.1em;margin-bottom:0.65rem;display:block;font-weight:500;}
+.trigger-title{font-size:0.88rem;font-weight:500;color:var(--gray-900);margin-bottom:0.35rem;}
+.trigger-desc{font-size:0.78rem;color:var(--gray-500);line-height:1.7;font-weight:300;}
+
+/* ── PARTNERS ── */
+.partners-section{background:var(--white);padding:6rem 2rem;border-top:1px solid var(--gray-100);}
+.partner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray-100);margin-top:3.5rem;border-radius:14px;overflow:hidden;}
+.partner-card{background:var(--white);padding:1.75rem;transition:background 0.2s;}
+.partner-card:hover{background:var(--aqua-pale);}
+.partner-title{font-size:0.85rem;font-weight:500;color:var(--gray-900);margin-bottom:0.4rem;}
+.partner-desc{font-size:0.78rem;color:var(--gray-500);line-height:1.75;font-weight:300;}
+.partner-icon{width:28px;height:28px;background:var(--aqua-pale);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:0.85rem;}
+.partner-icon svg{width:14px;height:14px;color:var(--aqua-deep);}
+
+/* ── CTA BAND ── */
+.cta-band{background:var(--blue-950);padding:5.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+.cta-band::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(142,206,201,0.18) 0%,transparent 70%);pointer-events:none;}
+.cta-band-inner{position:relative;z-index:1;}
+.cta-band h2{font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:400;font-style:italic;color:var(--white);margin-bottom:0.75rem;}
+.cta-band p{font-size:0.9rem;color:rgba(255,255,255,0.5);font-weight:300;margin-bottom:0.4rem;line-height:1.8;}
+.cta-band .price-note{font-size:0.78rem;color:rgba(255,255,255,0.3);margin-bottom:2.5rem;}
+.cta-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;}
+.btn-white{background:var(--white);color:var(--aqua-ink);font-weight:500;}
+.btn-white:hover{background:var(--blue-50);}
+.btn-outline-white{background:transparent;color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.2);font-size:0.82rem;}
+.btn-outline-white:hover{color:var(--white);border-color:rgba(255,255,255,0.4);}
+
+/* ── FOOTER ── */
+footer{background:var(--blue-950);border-top:1px solid rgba(255,255,255,0.05);padding:2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+footer-inner{max-width:1100px;margin:0 auto;}
+.footer-logo{font-family:var(--serif);font-size:1.1rem;color:var(--white);text-decoration:none;font-weight:400;}
+.footer-note{font-size:0.7rem;color:rgba(255,255,255,0.25);}
+.footer-links{display:flex;gap:1.5rem;}
+.footer-links a{font-size:0.7rem;color:rgba(255,255,255,0.3);text-decoration:none;letter-spacing:0.06em;text-transform:uppercase;transition:color 0.2s;}
+.footer-links a:hover{color:rgba(255,255,255,0.6);}
+
+/* ── INTAKE OVERLAY ── */
+.overlay{position:fixed;inset:0;z-index:300;background:var(--white);display:none;flex-direction:column;}
+.overlay.active{display:flex;}
+.overlay-progress{position:absolute;top:0;left:0;height:2px;background:var(--aqua-deep);transition:width 0.5s var(--ease);z-index:10;}
+.overlay-nav{height:60px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;flex-shrink:0;}
+.overlay-logo{font-family:var(--serif);font-size:1.1rem;color:var(--gray-900);}
+.overlay-step{font-size:0.72rem;color:var(--gray-400);letter-spacing:0.06em;}
+.overlay-close{background:var(--gray-100);border:none;border-radius:8px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray-600);transition:all 0.2s;}
+.overlay-close:hover{background:var(--gray-200);}
+.overlay-body{flex:1;display:flex;align-items:center;justify-content:center;padding:4rem 2rem 3rem;overflow-y:auto;}
+.intake-screen{display:none;flex-direction:column;width:100%;max-width:520px;animation:slideIn 0.4s var(--ease) forwards;}
+.intake-screen.active{display:flex;}
+.intake-screen.exit{animation:slideOut 0.3s var(--ease) forwards;}
+.intake-label{font-size:0.68rem;font-weight:500;color:var(--aqua-deep);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1rem;}
+.intake-q{font-family:var(--serif);font-size:clamp(1.6rem,3vw,2.3rem);font-weight:400;color:var(--gray-900);line-height:1.2;margin-bottom:0.6rem;}
+.intake-q em{font-style:italic;color:var(--aqua-deep);}
+.intake-hint{font-size:0.82rem;color:var(--gray-400);margin-bottom:2rem;line-height:1.7;font-weight:300;}
+.intake-input{width:100%;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:0.85rem 1rem;font-family:var(--sans);font-size:0.9rem;color:var(--gray-900);outline:none;transition:all 0.2s;margin-bottom:0.75rem;}
+.intake-input:focus{border-color:var(--aqua);background:var(--white);box-shadow:0 0 0 3px rgba(142,206,201,0.2);}
+.intake-input::placeholder{color:var(--gray-300);}
+.intake-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;}
+.intake-options{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.75rem;}
+.intake-option{display:flex;align-items:center;gap:0.85rem;padding:0.85rem 1rem;border:1px solid var(--gray-200);border-radius:10px;cursor:pointer;transition:all 0.2s;font-size:0.88rem;color:var(--gray-700);background:var(--white);}
+.intake-option:hover{border-color:var(--aqua);background:var(--aqua-pale);color:var(--gray-900);}
+.intake-option.selected{border-color:var(--aqua-deep);background:var(--aqua-pale);color:var(--gray-900);}
+.intake-option-check{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--gray-300);flex-shrink:0;transition:all 0.2s;display:flex;align-items:center;justify-content:center;}
+.intake-option.selected .intake-option-check{background:var(--aqua-deep);border-color:var(--aqua-deep);}
+.intake-option-check-inner{width:7px;height:7px;background:var(--white);border-radius:50%;display:none;}
+.intake-option.selected .intake-option-check-inner{display:block;}
+.intake-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1.75rem;}
+.intake-actions{display:flex;align-items:center;justify-content:space-between;margin-top:0.5rem;}
+.intake-back{background:none;border:none;font-size:0.78rem;color:var(--gray-400);cursor:pointer;font-family:var(--sans);display:flex;align-items:center;gap:6px;transition:color 0.2s;padding:0;}
+.intake-back:hover{color:var(--gray-700);}
+.intake-next{background:var(--aqua-deep);color:var(--white);padding:0.75rem 1.75rem;border-radius:10px;font-size:0.82rem;font-weight:500;border:none;cursor:pointer;font-family:var(--sans);transition:all 0.2s;display:flex;align-items:center;gap:8px;}
+.intake-next:hover{background:var(--aqua-ink);}
+.intake-plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.6rem;margin-bottom:1.75rem;}
+.intake-plan{padding:1.25rem 0.85rem;border:1px solid var(--gray-200);border-radius:10px;cursor:pointer;text-align:center;transition:all 0.2s;background:var(--white);}
+.intake-plan:hover,.intake-plan.selected{border-color:var(--aqua-deep);background:var(--aqua-pale);}
+.intake-plan-name{font-size:0.8rem;font-weight:500;color:var(--gray-700);margin-bottom:0.3rem;}
+.intake-plan-price{font-family:var(--serif);font-size:1.5rem;font-weight:400;color:var(--aqua-deep);}
+.intake-plan-note{font-size:0.65rem;color:var(--gray-400);margin-top:0.2rem;}
+.vault-toggle{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.1rem;border:1px solid var(--gray-200);border-radius:10px;margin-bottom:1.75rem;background:var(--gray-50);}
+.vault-toggle-left strong{display:block;font-size:0.85rem;color:var(--gray-900);font-weight:500;margin-bottom:2px;}
+.vault-toggle-left span{font-size:0.75rem;color:var(--gray-400);font-weight:300;}
+.vault-toggle-right{display:flex;align-items:center;gap:10px;}
+.vault-toggle-price{font-size:0.9rem;font-weight:500;color:var(--aqua-deep);}
+.toggle-sw{width:38px;height:22px;background:var(--gray-200);border-radius:11px;cursor:pointer;position:relative;transition:background 0.25s;flex-shrink:0;border:none;}
+.toggle-sw::after{content:'';position:absolute;width:16px;height:16px;background:var(--white);border-radius:50%;top:3px;left:3px;transition:transform 0.25s;box-shadow:0 1px 3px rgba(0,0,0,0.15);}
+.toggle-sw.on{background:var(--aqua-deep);}
+.toggle-sw.on::after{transform:translateX(16px);}
+.intake-dots{display:flex;gap:5px;justify-content:center;margin-top:1.75rem;}
+.intake-dot{width:5px;height:5px;border-radius:50%;background:var(--gray-200);transition:all 0.3s;}
+.intake-dot.active{background:var(--blue-500);width:14px;border-radius:3px;}
+.confirm-wrap{text-align:center;display:flex;flex-direction:column;align-items:center;}
+.confirm-ring{width:56px;height:56px;border-radius:50%;background:var(--aqua-pale);border:1.5px solid var(--aqua-light);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;animation:scaleIn 0.5s var(--ease);}
+.confirm-ring svg{width:22px;height:22px;color:var(--aqua-deep);}
+.confirm-stats{display:flex;gap:2.5rem;justify-content:center;margin-top:2rem;flex-wrap:wrap;}
+.confirm-stat-num{font-family:var(--serif);font-size:1.6rem;font-weight:400;color:var(--aqua-deep);display:block;}
+.confirm-stat-label{font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-400);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideIn{from{opacity:0;transform:translateX(32px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-32px);}}
+@keyframes scaleIn{from{transform:scale(0.6);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:860px){
+  .nav-links a:not(.nav-btn){display:none;}
+  nav{padding:0 1.25rem;}
+  .hero,.section,.pricing-section,.whom-section,.partners-section,.features-section,.how-section,.quote-section{padding-left:1.25rem;padding-right:1.25rem;}
+  .hero-split{grid-template-columns:1fr;gap:2.5rem;}
+  .hero-right{display:none;}
+  .hero-h1,.hero-sub,.hero-note{text-align:left;}
+  .stats-inner,.position-inner,.pricing-intro,.will-grid,.how-grid,.partner-grid,.features-grid{grid-template-columns:1fr;}
+  .stat-cell{border-bottom:1px solid rgba(255,255,255,0.06);}
+  .how-step{border-right:none;border-bottom:1px solid var(--gray-100);}
+  .trigger-grid{grid-template-columns:1fr;max-width:100%;}
+  .vault-strip{grid-template-columns:1fr;}
+  .vault-strip-right{text-align:left;}
+  .overlay-nav{padding:0 1.25rem;}
+  .overlay-body{padding:3rem 1.25rem 2rem;}
+  .intake-row,.intake-grid,.intake-plan-grid{grid-template-columns:1fr;}
+  .cta-actions{flex-direction:column;align-items:center;}
+  footer{flex-direction:column;align-items:flex-start;gap:1rem;padding:1.5rem;}
+}
+</style>
+</head>
+<body>
+
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="curRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">Heirloom Life</a>
+    <div class="nav-links">
+      <a href="#platform">Platform</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#partners">Partners</a>
+      <button class="nav-btn" onclick="openIntake()">Get your Will — $149</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-split">
+    <div class="hero-left">
+      <div class="hero-badge"><span class="hero-badge-dot"></span>Australia's premium estate planning platform</div>
+      <h1 class="hero-h1">Your Will.<br>Your estate.<br><em>Always current.</em></h1>
+      <p class="hero-sub">A lawyer-reviewed, legally binding Will — plus a living platform that keeps your entire estate organised, current, and ready for the people who matter most.</p>
+      <p class="hero-note"><strong>Lawyer-reviewed Will from $149.</strong> Add the living vault for $79/year.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" onclick="openIntake()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Get my Will — from $149
+        </button>
+        <a href="#platform" class="btn btn-secondary">
+          See how it works
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="will-preview">
+        <div class="will-preview-header">
+          <div class="will-preview-title-row">
+            <div class="will-preview-logo">Heirloom Life</div>
+            <div class="will-preview-badge">Draft</div>
+          </div>
+          <div class="will-preview-doc-title">Last Will and Testament</div>
+          <div class="will-preview-sub">of <span class="will-preview-name" id="willName">Your Name</span></div>
+        </div>
+        <div class="will-preview-body">
+          <div class="will-preview-clause">
+            <div class="will-preview-clause-num">I.</div>
+            <div class="will-preview-clause-text">I, <span class="will-preview-name" id="willName2">Your Name</span>, of New South Wales, Australia, being of sound mind, hereby revoke all former Wills and declare this to be my Last Will and Testament.</div>
+          </div>
+          <div class="will-preview-clause">
+            <div class="will-preview-clause-num">II.</div>
+            <div class="will-preview-clause-text">I appoint <span class="will-preview-name">Your Executor</span> as my Executor to administer my estate in accordance with the terms of this Will.</div>
+          </div>
+          <div class="will-preview-clause">
+            <div class="will-preview-clause-num">III.</div>
+            <div class="will-preview-clause-text will-preview-highlight-wrap">I give and bequeath my <span class="will-asset" id="willAsset">Pyrmont apartment</span> to <span class="will-preview-name">Your Beneficiary</span>, absolutely and free of all encumbrances.</div>
+          </div>
+          <div class="will-preview-clause">
+            <div class="will-preview-clause-num">IV.</div>
+            <div class="will-preview-clause-text">The residue of my estate I give to my beneficiaries in equal shares, as listed in Schedule A.</div>
+          </div>
+          <div class="will-preview-clause will-preview-clause-faded">
+            <div class="will-preview-clause-num">V.</div>
+            <div class="will-preview-clause-text">I appoint <span class="will-preview-name">Your Guardian</span> as Guardian of any minor children...</div>
+          </div>
+        </div>
+        <div class="will-preview-footer">
+          <div class="will-preview-sig-row">
+            <div class="will-preview-sig-block">
+              <div class="will-preview-sig-line"></div>
+              <div class="will-preview-sig-label">Testator signature</div>
+            </div>
+            <div class="will-preview-sig-block">
+              <div class="will-preview-sig-line"></div>
+              <div class="will-preview-sig-label">Witness 1</div>
+            </div>
+            <div class="will-preview-sig-block">
+              <div class="will-preview-sig-line"></div>
+              <div class="will-preview-sig-label">Witness 2</div>
+            </div>
+          </div>
+          <div class="will-preview-reviewed">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Reviewed by Heirloom Legal
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span class="hero-scroll-text">Scroll</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Lawyer-reviewed Will</div>
+    <div class="trust-sep"></div>
+    <div class="trust-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Delivered in 24 hours</div>
+    <div class="trust-sep"></div>
+    <div class="trust-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>Legally binding across Australia</div>
+    <div class="trust-sep"></div>
+    <div class="trust-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Australian data sovereignty</div>
+    <div class="trust-sep"></div>
+    <div class="trust-item"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Will from $149 · Vault from $79/yr</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stats-inner">
+    <div class="stat-cell">
+      <span class="stat-num">60%</span>
+      <span class="stat-label">of Australians have no Will — including many who own property, a business, or have children</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">24 hrs</span>
+      <span class="stat-label">from submission to a lawyer-reviewed, legally binding Will delivered to your inbox</span>
+    </div>
+    <div class="stat-cell">
+      <span class="stat-num">$149</span>
+      <span class="stat-label">for a single Will. $249 for couples. Add the living vault platform for $79 per year.</span>
+    </div>
+  </div>
+</div>
+
+<!-- POSITIONING -->
+<div class="position-section">
+  <div class="position-inner">
+    <div class="position-left">The Will is chapter one.<br><em>The platform is the book.</em></div>
+    <div class="position-right">
+      <p>Most online Will services sell you a document. You answer questions, get a PDF, and file it. <strong>That Will is already becoming outdated.</strong> You'll buy a property. Have a child. Start a business. Change your mind about who should be your executor.</p>
+      <p>Heirloom Life is built around the idea that <strong>your estate plan should evolve as your life does.</strong> The Will gets you started. The living platform — your asset register, executor portal, digital vault, and quarterly reviews — keeps it accurate for years. <strong>Unlike a one-time document service, Heirloom Life keeps your Will current as your life changes.</strong></p>
+    </div>
+  </div>
+</div>
+
+<!-- PLATFORM / FEATURES -->
+<section class="features-section" id="platform">
+  <div class="section-inner">
+    <div class="section-label"><span class="section-label-dot"></span>The platform</div>
+    <h2 class="section-h2">Your estate command centre.</h2>
+    <p class="section-body">Start with a lawyer-reviewed Will. Build out the full estate picture over time. Everything connected, everything current.</p>
+    <div class="features-grid">
+      <div class="feature-card highlight">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <div class="feature-tag">Included in every Will</div>
+        <div class="feature-title">Lawyer-reviewed Will</div>
+        <div class="feature-desc">A legally binding Will reviewed by a qualified Australian solicitor. Generated from your actual life picture. Delivered within 24 hours.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+        <div class="feature-title">Your wealth picture</div>
+        <div class="feature-desc">Property, super, investments, business interests, digital assets — all organised in one living register. The clarity most people never have.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+        <div class="feature-title">Your circle of trust</div>
+        <div class="feature-desc">Executors, beneficiaries, guardians, and attorneys — their roles, contact details, and relationship to your estate. Always current.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
+        <div class="feature-title">Quarterly design reviews</div>
+        <div class="feature-desc">Every quarter, Heirloom Life checks in. Does your Will still reflect your life? Life event prompts mean your plan never falls behind reality.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="feature-title">Executor portal</div>
+        <div class="feature-desc">When something happens, the people you trust have exactly what they need. Everything accessible, clearly organised. No searching, no delays.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="feature-title">Digital asset vault</div>
+        <div class="feature-desc">Accounts, crypto, subscriptions — documented, stored securely, accessible to the right people at the right time.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+  <div class="section-inner">
+    <div class="section-label"><span class="section-label-dot"></span>How it works</div>
+    <h2 class="section-h2">Simple by design.</h2>
+    <div class="how-grid">
+      <div class="how-step">
+        <span class="how-step-num">01</span>
+        <div class="how-step-title">Write your Will</div>
+        <div class="how-step-desc">Guided questions about your assets, people, and intentions. About 25 minutes. Feels like clarity, not a legal form.</div>
+      </div>
+      <div class="how-step">
+        <span class="how-step-num">02</span>
+        <div class="how-step-title">Solicitor reviews</div>
+        <div class="how-step-desc">A qualified Australian solicitor reviews and approves your Will. Legally binding across Australia. Delivered within 24 hours.</div>
+      </div>
+      <div class="how-step">
+        <span class="how-step-num">03</span>
+        <div class="how-step-title">Build your estate picture</div>
+        <div class="how-step-desc">Add assets, people, and digital accounts to the living platform. The fuller your picture, the more protected your estate.</div>
+      </div>
+      <div class="how-step">
+        <span class="how-step-num">04</span>
+        <div class="how-step-title">Keep it current</div>
+        <div class="how-step-desc">Quarterly check-ins and life event prompts mean your Will always reflects who you are now — not who you were when you first signed up.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<div class="quote-section">
+  <div class="quote-inner">
+    <p class="quote-text">"A Will isn't something you do when you're old. It's something you do when you've built something worth protecting."</p>
+    <span class="quote-attr">The Heirloom Life principle</span>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="section-inner">
+    <div class="pricing-intro">
+      <div>
+        <div class="section-label"><span class="section-label-dot"></span>Pricing</div>
+        <h2 class="section-h2">Start with your Will.<br>Add the platform when you're ready.</h2>
+        <p class="section-body">Your lawyer-reviewed Will is a one-off purchase. The living vault is an optional annual subscription. No forced bundles. No hidden costs.</p>
+      </div>
+      <div class="pricing-note">
+        <p><strong>Why this model?</strong><br><br>We've separated the Will from the platform. You pay for the Will once and own it. The vault subscription only makes sense if you use it — and once you've built your estate picture here, it doesn't exist anywhere else. That's what makes it worth keeping.</p>
+      </div>
+    </div>
+    <div class="will-grid">
+      <div class="will-card">
+        <span class="will-badge">Individual Will</span>
+        <div class="will-name">Single</div>
+        <div class="will-tag">You've built something. Protect it.</div>
+        <div class="will-price">$149</div>
+        <div class="will-price-note">one-off — yours to keep</div>
+        <hr class="will-divider">
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Lawyer-reviewed Will in 24hrs</div>
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Legally binding across Australia</div>
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Executor briefing summary</div>
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Digital copy stored securely</div>
+        <button class="will-btn" onclick="openIntake()">Get my Will</button>
+      </div>
+      <div class="will-card featured">
+        <span class="will-badge">Most chosen</span>
+        <div class="will-name">Couple</div>
+        <div class="will-tag">Two Wills. One seamless experience.</div>
+        <div class="will-price">$249</div>
+        <div class="will-price-note">one-off — $124.50 each</div>
+        <hr class="will-divider">
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Two lawyer-reviewed Wills</div>
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Mirrored or independent instructions</div>
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Joint asset picture</div>
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Shared executor portal</div>
+        <button class="will-btn" onclick="openIntake()">Get our Wills</button>
+      </div>
+      <div class="will-card">
+        <span class="will-badge">Complete protection</span>
+        <div class="will-name">Will + Vault</div>
+        <div class="will-tag">Will now. Platform for life.</div>
+        <div class="will-price">$228</div>
+        <div class="will-price-note">$149 Will + first year vault included</div>
+        <hr class="will-divider">
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Lawyer-reviewed Will</div>
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Full living platform — 1 year</div>
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Asset register + executor portal</div>
+        <div class="will-item"><svg class="will-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Quarterly design reviews</div>
+        <button class="will-btn" onclick="openIntake()">Get started</button>
+      </div>
+    </div>
+    <div class="vault-strip">
+      <div>
+        <div class="vault-strip-title">The Living Vault — add to any Will</div>
+        <div class="vault-strip-desc">Asset register, executor portal, digital asset vault, quarterly design reviews, and unlimited Will updates. <strong>Once you've built your estate picture here, it doesn't exist anywhere else — that's what makes it worth keeping.</strong></div>
+      </div>
+      <div class="vault-strip-right">
+        <div class="vault-price">$79</div>
+        <div class="vault-per">per year</div>
+        <button class="vault-btn" onclick="openIntake()">Add to my Will</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHOM -->
+<section class="whom-section">
+  <div class="section-inner">
+    <div class="section-label"><span class="section-label-dot"></span>For whom</div>
+    <h2 class="section-h2">You've built something.<br>Now protect it.</h2>
+    <p class="section-body" style="max-width:560px;">60% of Australians don't have a Will. Most who do have one that no longer reflects their life. Heirloom Life is for people who want to fix that — properly, without the friction of a $1,500 solicitor appointment or a generic $69 form.</p>
+    <div class="trigger-grid">
+      <div class="trigger-card"><span class="trigger-num">01</span><div class="trigger-title">Just bought property</div><div class="trigger-desc">Your mortgage is signed. Your Will needs to reflect who inherits that asset — and how.</div></div>
+      <div class="trigger-card"><span class="trigger-num">02</span><div class="trigger-title">Growing your family</div><div class="trigger-desc">Children mean guardianship decisions, updated beneficiaries, and a plan that accounts for their future.</div></div>
+      <div class="trigger-card"><span class="trigger-num">03</span><div class="trigger-title">Building a business</div><div class="trigger-desc">Your equity, IP, and stake — your Will needs to address business interests explicitly.</div></div>
+      <div class="trigger-card"><span class="trigger-num">04</span><div class="trigger-title">Accumulating wealth</div><div class="trigger-desc">Super, shares, investment property. A growing estate needs a Will that grows with it.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="partners-section" id="partners">
+  <div class="section-inner">
+    <div class="section-label"><span class="section-label-dot"></span>Partners</div>
+    <h2 class="section-h2">We sit at every milestone<br>your clients reach.</h2>
+    <p class="section-body">Referral fees, white-label options, and co-branded client packs available. Enquire at <a href="mailto:hello@heirloomlife.com.au" style="color:var(--aqua-deep);text-decoration:none;">hello@heirloomlife.com.au</a></p>
+    <div class="partner-grid">
+      <div class="partner-card"><div class="partner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><div class="partner-title">Mortgage brokers</div><div class="partner-desc">Post-settlement is the highest-intent moment in estate planning. Your clients just took on their largest liability.</div></div>
+      <div class="partner-card"><div class="partner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="partner-title">Financial planners</div><div class="partner-desc">Estate planning is a natural extension of wealth management. Heirloom Life fills the gap between advice and document.</div></div>
+      <div class="partner-card"><div class="partner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div><div class="partner-title">Conveyancers</div><div class="partner-desc">You see property change hands every week. A referral at settlement is the most natural Will conversation in the market.</div></div>
+      <div class="partner-card"><div class="partner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div><div class="partner-title">Accountants</div><div class="partner-desc">EOFY and business structure conversations surface estate planning gaps regularly.</div></div>
+      <div class="partner-card"><div class="partner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="partner-title">HR &amp; employee benefits</div><div class="partner-desc">A Will is one of the most universally relevant employee benefits — and one of the most overlooked.</div></div>
+      <div class="partner-card"><div class="partner-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="partner-title">Insurance brokers</div><div class="partner-desc">Life insurance without a Will is incomplete protection. Heirloom Life completes the picture for your clients.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <div class="cta-band-inner">
+    <h2>Your Will. Done properly.</h2>
+    <p>Lawyer-reviewed and legally binding in 24 hours.</p>
+    <p class="price-note">Single Will $149 · Couple $249 · Will + Vault $228</p>
+    <div class="cta-actions">
+      <button class="btn btn-white" onclick="openIntake()">Get my Will — from $149</button>
+      <a href="mailto:hello@heirloomlife.com.au" class="btn btn-outline-white">Partner with us</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">Heirloom Life</a>
+  <div class="footer-note">Lawyer-reviewed Wills. Legally binding across Australia. heirloomlife.com.au</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Partners</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<!-- INTAKE OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="overlay-progress" id="progress"></div>
+  <div class="overlay-nav">
+    <span class="overlay-logo">Heirloom Life</span>
+    <span class="overlay-step" id="stepCount"></span>
+    <button class="overlay-close" onclick="closeIntake()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="overlay-body">
+
+    <!-- 1 -->
+    <div class="intake-screen active" id="s1">
+      <div class="intake-label">Your Will starts here</div>
+      <h2 class="intake-q">Let's write your<br><em>Will together.</em></h2>
+      <p class="intake-hint">About 25 minutes. Your lawyer-reviewed, legally binding Will will be delivered within 24 hours. You can save and return at any time.</p>
+      <div class="intake-row">
+        <input class="intake-input" type="text" placeholder="First name">
+        <input class="intake-input" type="text" placeholder="Last name">
+      </div>
+      <input class="intake-input" type="email" placeholder="Email address" style="margin-bottom:1.25rem;">
+      <p style="font-size:0.72rem;font-weight:500;color:var(--gray-500);margin-bottom:0.6rem;letter-spacing:0.04em;">Your state</p>
+      <div class="intake-grid">
+        <div class="intake-option" onclick="sel(this,'state')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>New South Wales</div>
+        <div class="intake-option" onclick="sel(this,'state')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>Victoria</div>
+        <div class="intake-option" onclick="sel(this,'state')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>Queensland</div>
+        <div class="intake-option" onclick="sel(this,'state')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>Western Australia</div>
+        <div class="intake-option" onclick="sel(this,'state')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>South Australia</div>
+        <div class="intake-option" onclick="sel(this,'state')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>Other</div>
+      </div>
+      <div class="intake-actions"><span></span><button class="intake-next" onclick="go(2)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
+      <div class="intake-dots"></div>
+    </div>
+
+    <!-- 2 -->
+    <div class="intake-screen" id="s2">
+      <div class="intake-label">Your moment</div>
+      <h2 class="intake-q">What brought you<br><em>here today?</em></h2>
+      <p class="intake-hint">Understanding your life stage helps us ask the right questions about your estate.</p>
+      <div class="intake-options">
+        <div class="intake-option" onclick="sel(this,'trig')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>I just bought or own property</div>
+        <div class="intake-option" onclick="sel(this,'trig')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>I have or am expecting children</div>
+        <div class="intake-option" onclick="sel(this,'trig')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>I own or am building a business</div>
+        <div class="intake-option" onclick="sel(this,'trig')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>I'm accumulating significant assets</div>
+        <div class="intake-option" onclick="sel(this,'trig')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>I want to get my affairs in order</div>
+        <div class="intake-option" onclick="sel(this,'trig')"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>I'm updating an existing Will</div>
+      </div>
+      <div class="intake-actions"><button class="intake-back" onclick="go(1)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button><button class="intake-next" onclick="go(3)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
+    </div>
+
+    <!-- 3 -->
+    <div class="intake-screen" id="s3">
+      <div class="intake-label">Your executor</div>
+      <h2 class="intake-q">Who will carry out<br><em>your Will?</em></h2>
+      <p class="intake-hint">Your executor manages your estate after you're gone. Choose someone organised, trustworthy, and willing to take responsibility.</p>
+      <input class="intake-input" type="text" placeholder="Executor full name">
+      <input class="intake-input" type="text" placeholder="Your relationship to them">
+      <input class="intake-input" type="email" placeholder="Their email address" style="margin-bottom:1.75rem;">
+      <div class="intake-actions"><button class="intake-back" onclick="go(2)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button><button class="intake-next" onclick="go(4)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
+    </div>
+
+    <!-- 4 -->
+    <div class="intake-screen" id="s4">
+      <div class="intake-label">Your beneficiaries</div>
+      <h2 class="intake-q">Who inherits<br><em>your estate?</em></h2>
+      <p class="intake-hint">Add everyone who will inherit under your Will. Include full names — your Will needs to identify them precisely.</p>
+      <div id="benList">
+        <input class="intake-input" type="text" placeholder="Beneficiary name and relationship">
+        <input class="intake-input" type="text" placeholder="Second beneficiary — name and relationship">
+      </div>
+      <button onclick="addBen()" style="font-size:0.78rem;font-weight:500;color:var(--aqua-deep);background:none;border:none;cursor:pointer;font-family:var(--sans);margin-bottom:1.75rem;padding:0;display:flex;align-items:center;gap:5px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add another</button>
+      <div class="intake-actions"><button class="intake-back" onclick="go(3)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button><button class="intake-next" onclick="go(5)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
+    </div>
+
+    <!-- 5 -->
+    <div class="intake-screen" id="s5">
+      <div class="intake-label">Your estate</div>
+      <h2 class="intake-q">What does your<br><em>estate include?</em></h2>
+      <p class="intake-hint">Select all that apply. Your Will should cover every asset type you hold.</p>
+      <div class="intake-grid" style="margin-bottom:1.75rem;">
+        <div class="intake-option" onclick="tog(this)"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>Real property</div>
+        <div class="intake-option" onclick="tog(this)"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>Superannuation</div>
+        <div class="intake-option" onclick="tog(this)"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>Investments / shares</div>
+        <div class="intake-option" onclick="tog(this)"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>Business interests</div>
+        <div class="intake-option" onclick="tog(this)"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>Digital assets / crypto</div>
+        <div class="intake-option" onclick="tog(this)"><div class="intake-option-check"><div class="intake-option-check-inner"></div></div>Vehicles / valuables</div>
+      </div>
+      <div class="intake-actions"><button class="intake-back" onclick="go(4)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button><button class="intake-next" onclick="go(6)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
+    </div>
+
+    <!-- 6 -->
+    <div class="intake-screen" id="s6">
+      <div class="intake-label">Choose your plan</div>
+      <h2 class="intake-q">Select your plan<br><em>and get your Will.</em></h2>
+      <p class="intake-hint">Your lawyer-reviewed Will is a one-off purchase. The living vault is optional — add it now or any time later.</p>
+      <div class="intake-plan-grid">
+        <div class="intake-plan" onclick="selPlan(this)"><div class="intake-plan-name">Single</div><div class="intake-plan-price">$149</div><div class="intake-plan-note">Individual Will</div></div>
+        <div class="intake-plan selected" onclick="selPlan(this)"><div class="intake-plan-name">Couple</div><div class="intake-plan-price">$249</div><div class="intake-plan-note">Two Wills</div></div>
+        <div class="intake-plan" onclick="selPlan(this)"><div class="intake-plan-name">Will + Vault</div><div class="intake-plan-price">$228</div><div class="intake-plan-note">Will + 1yr platform</div></div>
+      </div>
+      <div class="vault-toggle">
+        <div class="vault-toggle-left"><strong>Add the Living Vault</strong><span>Asset register, executor portal, quarterly reviews + unlimited Will updates</span></div>
+        <div class="vault-toggle-right"><span class="vault-toggle-price">+$79/yr</span><button class="toggle-sw" id="vaultSw" onclick="togVault()"></button></div>
+      </div>
+      <div class="intake-actions"><button class="intake-back" onclick="go(5)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Back</button><button class="intake-next" onclick="go(7)">Review &amp; pay <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button></div>
+    </div>
+
+    <!-- 7 -->
+    <div class="intake-screen" id="s7">
+      <div class="confirm-wrap">
+        <div class="confirm-ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <div class="intake-label">Your Will is being prepared</div>
+        <h2 class="intake-q" style="text-align:center;margin-bottom:0.75rem;">Welcome to<br><em>Heirloom Life.</em></h2>
+        <p style="font-size:0.82rem;color:var(--gray-400);max-width:400px;text-align:center;line-height:1.85;font-weight:300;margin-bottom:0;">Your Will has been sent to a qualified Australian solicitor for review. You'll receive a confirmation email shortly, and your legally binding Will within 24 hours.</p>
+        <div class="confirm-stats">
+          <div><span class="confirm-stat-num">24hr</span><span class="confirm-stat-label">Solicitor review</span></div>
+          <div><span class="confirm-stat-num">100%</span><span class="confirm-stat-label">Legally binding</span></div>
+          <div><span class="confirm-stat-num">AU</span><span class="confirm-stat-label">Data residency</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const cur=document.getElementById('cur'),ring=document.getElementById('curRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.transform=`translate(${mx-3}px,${my-3}px)`;
+});
+(function loop(){rx+=(mx-rx)*0.1;ry+=(my-ry)*0.1;
+  ring.style.transform=`translate(${rx-14}px,${ry-14}px)`;
+  requestAnimationFrame(loop);
+})();
+document.querySelectorAll('a,button,[onclick]').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.classList.add('active');ring.classList.add('active');});
+  el.addEventListener('mouseleave',()=>{cur.classList.remove('active');ring.classList.remove('active');});
+});
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>20));
+
+let cur_s=1;const TOTAL=7;
+function updateUI(){
+  const pct=((cur_s-1)/(TOTAL-1))*100;
+  document.getElementById('progress').style.width=pct+'%';
+  document.getElementById('stepCount').textContent=cur_s<TOTAL?`Step ${cur_s} of ${TOTAL-1}`:'';
+  document.querySelectorAll('.intake-dots').forEach(c=>{
+    c.innerHTML='';
+    for(let i=1;i<TOTAL;i++){const d=document.createElement('div');d.className='intake-dot'+(i===cur_s?' active':'');c.appendChild(d);}
+  });
+}
+function openIntake(){document.getElementById('overlay').classList.add('active');document.body.style.overflow='hidden';cur_s=1;show(1);updateUI();}
+function closeIntake(){document.getElementById('overlay').classList.remove('active');document.body.style.overflow='';}
+function show(n){document.querySelectorAll('.intake-screen').forEach(s=>s.classList.remove('active','exit'));const s=document.getElementById('s'+n);if(s)s.classList.add('active');}
+function go(n){
+  const c=document.getElementById('s'+cur_s);
+  if(c){c.classList.add('exit');setTimeout(()=>c.classList.remove('active','exit'),320);}
+  cur_s=n;setTimeout(()=>{show(n);updateUI();},320);
+}
+function sel(el,g){el.closest('.intake-options,.intake-grid').querySelectorAll('.intake-option').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');}
+function tog(el){el.classList.toggle('selected');}
+function selPlan(el){document.querySelectorAll('.intake-plan').forEach(p=>p.classList.remove('selected'));el.classList.add('selected');}
+function addBen(){const i=document.createElement('input');i.className='intake-input';i.type='text';i.placeholder='Beneficiary name and relationship';document.getElementById('benList').appendChild(i);i.focus();}
+let vOn=false;
+function togVault(){vOn=!vOn;document.getElementById('vaultSw').classList.toggle('on',vOn);}
+updateUI();
+
+// Will preview cycling animation
+const assets = [
+  'Pyrmont apartment',
+  '2024 Tesla Model 3',
+  'investment portfolio',
+  'beach house in Manly',
+  'superannuation balance',
+  'business equity stake',
+  'cryptocurrency holdings',
+  'vintage watch collection',
+  'share portfolio',
+  'family home in Mosman',
+];
+let assetIdx = 0;
+const assetEl = document.getElementById('willAsset');
+function cycleAsset() {
+  if (!assetEl) return;
+  assetEl.classList.add('fade');
+  setTimeout(() => {
+    assetIdx = (assetIdx + 1) % assets.length;
+    assetEl.textContent = assets[assetIdx];
+    assetEl.classList.remove('fade');
+  }, 350);
+}
+setInterval(cycleAsset, 2200);
+</script>
+</body>
+</html>

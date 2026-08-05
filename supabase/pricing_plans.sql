@@ -2,66 +2,100 @@
 -- Run in Supabase Dashboard > SQL Editor.
 
 create table if not exists public.pricing_plans (
-  id           uuid primary key default gen_random_uuid(),
-  slug         text not null unique,          -- 'will' | 'vault' — must match Product type in stripe.ts
-  name         text not null,
-  tagline      text not null,
-  price_amount integer not null,              -- AUD cents (display only — source of truth is Stripe)
-  price_label  text not null,                 -- e.g. '$199' or '$299/year'
-  billing_type text not null,                 -- 'one_time' | 'annual'
-  description  text not null,
-  features     text[] not null default '{}',
-  highlight    boolean not null default false,
-  sort_order   integer not null default 0,
-  active       boolean not null default true,
-  created_at   timestamptz not null default now()
+  id              uuid primary key default gen_random_uuid(),
+  slug            text not null unique,
+  name            text not null,
+  tagline         text not null,
+  price_amount    integer,                        -- AUD cents; null = not yet confirmed
+  price_label     text not null,                 -- e.g. '$490' or 'TBC'
+  billing_type    text not null,                 -- 'one_time' | 'annual'
+  description     text not null,
+  features        text[] not null default '{}',
+  highlight       boolean not null default false,
+  sort_order      integer not null default 0,
+  active          boolean not null default true,
+  is_placeholder  boolean not null default false, -- true = pricing not yet confirmed; show badge
+  created_at      timestamptz not null default now()
 );
+
+-- Add is_placeholder column if migrating an existing table
+alter table public.pricing_plans
+  add column if not exists is_placeholder boolean not null default false;
 
 -- Public read — pricing is not sensitive
 alter table public.pricing_plans enable row level security;
 
-create policy "pricing_plans_public_read"
+create policy if not exists "pricing_plans_public_read"
   on public.pricing_plans for select
   using (active = true);
 
--- Seed
+-- Seed (upsert so re-running is safe)
 insert into public.pricing_plans
-  (slug, name, tagline, price_amount, price_label, billing_type, description, features, highlight, sort_order)
+  (slug, name, tagline, price_amount, price_label, billing_type, description, features, highlight, sort_order, is_placeholder)
 values
   (
-    'will',
-    'Will Document',
-    'One-off purchase',
-    19900,
-    '$199',
+    'will-single',
+    'The Will — Single',
+    'One-off, solicitor reviewed',
+    null,
+    'TBC',
     'one_time',
-    'A legally valid will drafted by AI, reviewed by a qualified solicitor, and ready to sign.',
+    'A legally valid Will drafted with guidance, reviewed by a solicitor, and ready to sign.',
     ARRAY[
-      'AI-guided will builder',
+      'Seven-step guided drafting',
+      'State-specific legal compliance',
       'Solicitor review included',
-      'Downloadable & printable PDF',
-      'Valid in all Australian states',
-      'Covers assets, beneficiaries & executors'
+      'Printed Will, cloth-bound folder'
     ],
     false,
-    1
+    1,
+    true
+  ),
+  (
+    'will-couple',
+    'The Will — Couple',
+    'One-off, both partners',
+    null,
+    'TBC',
+    'one_time',
+    'Two mirrored Wills for partners, cross-referenced and sharing one asset register.',
+    ARRAY[
+      'Two mirrored Wills, cross-referenced',
+      'Shared asset register',
+      'Both solicitor reviews included',
+      'Two folders, one Vault'
+    ],
+    false,
+    2,
+    true
   ),
   (
     'vault',
     'Living Vault',
-    'Annual subscription',
-    29900,
-    '$299/year',
+    'Ongoing membership',
+    null,
+    'TBC',
     'annual',
-    'Everything in Will Document, plus a secure digital vault to keep your estate plan current as life changes.',
+    'Life-event tracking, annual solicitor review, and executor access — keeping your estate current as your life changes.',
     ARRAY[
-      'Everything in Will Document',
-      'Secure document vault',
-      'Unlimited will updates',
-      'Remote witnessing sessions',
-      'Priority solicitor support'
+      'Life-event tracking and alerts',
+      'Included annual solicitor review',
+      'Executor access and Legacy Key',
+      'Will version history',
+      'Cancel anytime'
     ],
     true,
-    2
+    3,
+    true
   )
-on conflict (slug) do nothing;
+on conflict (slug) do update
+  set
+    name           = excluded.name,
+    tagline        = excluded.tagline,
+    price_label    = excluded.price_label,
+    billing_type   = excluded.billing_type,
+    description    = excluded.description,
+    features       = excluded.features,
+    highlight      = excluded.highlight,
+    sort_order     = excluded.sort_order,
+    is_placeholder = excluded.is_placeholder;

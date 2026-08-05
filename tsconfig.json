@@ -32,6 +32,7 @@
   ],
   "exclude": [
     "node_modules",
+    "reference",
     "components/marketing/FeatureShowcase.tsx",
     "components/marketing/FinalCTA.tsx",
     "components/marketing/Hero.tsx",

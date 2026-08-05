@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heirloom — Estate Planning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --blue: #82D7D2;
+  --blue-deep: #5ABFBA;
+  --blue-dark: #3A9E99;
+  --blue-pale: #E8F8F7;
+  --white: #FFFFFF;
+  --black: #0A0A0A;
+  --charcoal: #1C1C1C;
+  --mid: #666666;
+  --light-gray: #EEEEEE;
+  --border: #DDDDDD;
+  --serif: 'Libre Baskerville', Georgia, serif;
+  --sans: 'Montserrat', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--sans);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4rem;
+  height: 72px;
+  background: rgba(255,255,255,0.98);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+nav.scrolled { border-bottom-color: var(--border); }
+
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 1.15rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--mid);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--black); }
+
+/* Tiffany-style rectangular CTA button — no border-radius */
+.nav-cta {
+  display: inline-block;
+  font-size: 0.62rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  color: var(--white) !important;
+  background: var(--blue) !important;
+  padding: 0.65rem 1.5rem !important;
+  text-decoration: none !important;
+  border-radius: 0 !important;
+  transition: background 0.2s !important;
+}
+.nav-cta:hover { background: var(--blue-dark) !important; }
+
+/* ── HERO — SPLIT SCREEN ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding-top: 72px;
+}
+
+/* LEFT — White/editorial side */
+.hero-left {
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 6rem 4rem 6rem 5rem;
+  position: relative;
+}
+
+.hero-eyebrow {
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 2.5rem;
+}
+
+.hero-heading {
+  font-family: var(--serif);
+  font-size: clamp(2.8rem, 4vw, 4.5rem);
+  font-weight: 400;
+  line-height: 1.12;
+  color: var(--black);
+  margin-bottom: 2.5rem;
+  letter-spacing: 0.01em;
+}
+.hero-heading em {
+  font-style: italic;
+  display: block;
+}
+
+.hero-subtext {
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 2;
+  color: var(--mid);
+  max-width: 360px;
+  margin-bottom: 3.5rem;
+  letter-spacing: 0.04em;
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.25rem;
+}
+
+/* Tiffany-style CTA button — rectangular, no border radius */
+.btn-teal {
+  display: inline-block;
+  background: var(--blue);
+  color: var(--white);
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.9rem 2.25rem;
+  text-decoration: none;
+  border-radius: 0;
+  transition: background 0.2s;
+  border: none;
+  cursor: pointer;
+}
+.btn-teal:hover { background: var(--blue-dark); }
+
+.btn-text-link {
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mid);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-text-link:hover { color: var(--black); border-color: var(--black); }
+
+/* RIGHT — Full Tiffany Blue with ribbon motif */
+.hero-right {
+  background: var(--blue);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Ribbon — vertical white stripe down centre */
+.hero-right::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  background: rgba(255,255,255,0.35);
+  z-index: 1;
+}
+
+/* Ribbon — horizontal white stripe */
+.hero-right::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 18px;
+  background: rgba(255,255,255,0.35);
+  z-index: 1;
+}
+
+.hero-right-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 3rem;
+}
+
+.bow-svg {
+  width: 120px;
+  height: 80px;
+  margin-bottom: 2.5rem;
+}
+
+.hero-right-wordmark {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.hero-right-sub {
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 3rem;
+}
+
+.hero-right-tagline {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.7;
+  max-width: 240px;
+  margin: 0 auto;
+}
+
+/* ── MANIFESTO BAR — spaced caps like the brand book section headers ── */
+.manifesto-bar {
+  background: var(--black);
+  padding: 2rem 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+}
+.manifesto-item {
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+}
+.manifesto-item strong {
+  color: var(--white);
+  font-weight: 400;
+}
+.manifesto-rule {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.15);
+}
+
+/* ── SECTIONS ── */
+section { padding: 8rem 5rem; }
+
+/* Section header block — teal full-width label like the brand book */
+.section-label-block {
+  display: inline-block;
+  background: var(--blue);
+  padding: 0.75rem 1.5rem;
+  margin-bottom: 4rem;
+}
+.section-label-text {
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.section-heading {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 3vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--black);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.01em;
+}
+.section-heading em { font-style: italic; }
+
+.section-body {
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 2;
+  color: var(--mid);
+  max-width: 460px;
+  letter-spacing: 0.03em;
+}
+
+/* ── HOW IT WORKS ── */
+.how-inner { max-width: 1100px; margin: 0 auto; }
+.how-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: end;
+  margin-bottom: 5rem;
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--border);
+}
+.step-card {
+  padding: 3rem 2.5rem;
+  border-right: 1px solid var(--border);
+  transition: background 0.25s;
+}
+.step-card:last-child { border-right: none; }
+.step-card:hover { background: var(--blue-pale); }
+
+.step-num {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  color: var(--blue-dark);
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+.step-title {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--black);
+  margin-bottom: 1rem;
+  line-height: 1.35;
+}
+.step-desc {
+  font-size: 0.8rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--mid);
+  letter-spacing: 0.02em;
+}
+
+/* ── SPLIT STATEMENT — like the magazine spread ── */
+.split-statement {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 60vh;
+}
+.split-left {
+  background: var(--light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+/* Large italic serif quote on grey — like the black & white photo side */
+.split-quote {
+  font-family: var(--serif);
+  font-size: clamp(1.6rem, 2.5vw, 2.5rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--black);
+  max-width: 400px;
+  position: relative;
+  z-index: 1;
+}
+.split-quote-attr {
+  margin-top: 2rem;
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+.split-right {
+  background: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+/* Ribbon on the teal side */
+.split-right::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  background: rgba(255,255,255,0.2);
+}
+.split-right-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  max-width: 340px;
+}
+.split-right-heading {
+  font-family: var(--serif);
+  font-size: clamp(1.8rem, 2.5vw, 2.8rem);
+  font-weight: 400;
+  color: var(--white);
+  line-height: 1.3;
+  margin-bottom: 2rem;
+}
+.split-right-heading em { font-style: italic; }
+.split-right-body {
+  font-size: 0.8rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: rgba(255,255,255,0.75);
+  letter-spacing: 0.03em;
+}
+
+/* ── WHY HEIRLOOM ── */
+.why-section { background: var(--white); }
+.why-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7rem;
+}
+
+.pillars { display: flex; flex-direction: column; }
+.pillar {
+  padding: 2.25rem 0;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 1.5rem;
+  transition: padding-left 0.25s;
+  cursor: default;
+}
+.pillar:first-child { border-top: 1px solid var(--border); }
+.pillar:hover { padding-left: 0.75rem; }
+.pillar-num {
+  font-family: var(--serif);
+  font-size: 0.75rem;
+  font-style: italic;
+  color: var(--blue-dark);
+  padding-top: 3px;
+}
+.pillar-title {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--black);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.02em;
+}
+.pillar-desc {
+  font-size: 0.8rem;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--mid);
+  letter-spacing: 0.02em;
+}
+
+/* ── PRICING ── */
+.pricing-section { background: var(--white); }
+.pricing-inner {
+  max-width: 920px;
+  margin: 0 auto;
+}
+.pricing-head { margin-bottom: 5rem; }
+
+.pricing-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--border);
+}
+.pricing-card {
+  padding: 3.5rem 3rem;
+  border-right: 1px solid var(--border);
+  transition: background 0.2s;
+}
+.pricing-card:last-child { border-right: none; }
+.pricing-card:hover { background: var(--blue-pale); }
+.pricing-card.featured {
+  background: var(--blue);
+  border-right: none;
+}
+.pricing-card.featured:hover { background: var(--blue-deep); }
+
+.pricing-badge {
+  display: inline-block;
+  font-size: 0.58rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  background: var(--blue-pale);
+  color: var(--blue-dark);
+  padding: 0.3rem 0.75rem;
+  margin-bottom: 2rem;
+  border-radius: 0;
+}
+.pricing-card.featured .pricing-badge {
+  background: rgba(255,255,255,0.25);
+  color: var(--white);
+}
+
+.pricing-tier {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+.pricing-card.featured .pricing-tier { color: var(--white); }
+
+.pricing-price {
+  font-family: var(--serif);
+  font-size: 3.5rem;
+  font-weight: 400;
+  color: var(--black);
+  line-height: 1;
+  margin: 1.25rem 0 0.4rem;
+  letter-spacing: -0.02em;
+}
+.pricing-card.featured .pricing-price { color: var(--white); }
+
+.pricing-period {
+  font-size: 0.65rem;
+  color: var(--mid);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+}
+.pricing-card.featured .pricing-period { color: rgba(255,255,255,0.6); }
+
+.pricing-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 2rem 0;
+}
+.pricing-card.featured .pricing-divider { background: rgba(255,255,255,0.25); }
+
+.pricing-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+.pricing-features li {
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--mid);
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+.pricing-card.featured .pricing-features li { color: rgba(255,255,255,0.85); }
+.pricing-features li::before {
+  content: '—';
+  color: var(--blue-dark);
+  font-size: 0.7rem;
+  flex-shrink: 0;
+}
+.pricing-card.featured .pricing-features li::before { color: rgba(255,255,255,0.5); }
+
+/* Tiffany-style rectangular CTA — no border radius */
+.pricing-cta {
+  display: block;
+  text-align: center;
+  padding: 0.9rem;
+  border: 1px solid var(--black);
+  border-radius: 0;
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--black);
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.pricing-cta:hover { background: var(--black); color: var(--white); }
+.pricing-card.featured .pricing-cta {
+  border-color: var(--white);
+  color: var(--white);
+  background: transparent;
+}
+.pricing-card.featured .pricing-cta:hover { background: var(--white); color: var(--blue); }
+
+/* ── FAQ ── */
+.faq-section { background: var(--light-gray); }
+.faq-inner { max-width: 680px; margin: 0 auto; }
+.faq-header { margin-bottom: 4rem; }
+.faq-item {
+  border-bottom: 1px solid var(--border);
+  padding: 2rem 0;
+  cursor: pointer;
+}
+.faq-item:first-of-type { border-top: 1px solid var(--border); }
+.faq-question {
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--black);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  letter-spacing: 0.01em;
+}
+.faq-icon {
+  font-size: 1rem;
+  color: var(--blue-dark);
+  flex-shrink: 0;
+  transition: transform 0.3s;
+  font-family: var(--sans);
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-answer {
+  font-size: 0.8rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--mid);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s;
+  letter-spacing: 0.02em;
+}
+.faq-item.open .faq-answer { max-height: 300px; padding-top: 1.25rem; }
+
+/* ── CTA BANNER ── */
+.cta-banner {
+  background: var(--blue);
+  padding: 8rem 5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+/* Ribbon cross on CTA */
+.cta-banner::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  background: rgba(255,255,255,0.15);
+}
+.cta-banner::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 16px;
+  background: rgba(255,255,255,0.15);
+}
+.cta-inner { position: relative; z-index: 1; max-width: 580px; margin: 0 auto; }
+.cta-eyebrow {
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 1.5rem;
+}
+.cta-heading {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 4vw, 4.5rem);
+  font-weight: 400;
+  line-height: 1.12;
+  color: var(--white);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.01em;
+}
+.cta-heading em { font-style: italic; }
+.cta-sub {
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 2;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 3.5rem;
+  letter-spacing: 0.03em;
+}
+.cta-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+}
+.btn-white-solid {
+  display: inline-block;
+  background: var(--white);
+  color: var(--blue-dark);
+  font-family: var(--sans);
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.9rem 2.25rem;
+  text-decoration: none;
+  border-radius: 0;
+  transition: background 0.2s;
+}
+.btn-white-solid:hover { background: var(--blue-pale); }
+.btn-ghost-white {
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  padding-bottom: 2px;
+  transition: color 0.2s, border-color 0.2s;
+}
+.btn-ghost-white:hover { color: var(--white); border-color: var(--white); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--black);
+  padding: 5rem;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 4rem;
+}
+.footer-logo {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 1rem;
+}
+.footer-tagline {
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.3);
+  line-height: 1.8;
+  letter-spacing: 0.03em;
+  max-width: 200px;
+}
+.footer-col-title {
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 1.5rem;
+}
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.footer-links a {
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.4);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--white); }
+
+.footer-bottom {
+  background: var(--black);
+  padding: 1.5rem 5rem;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-copy {
+  font-size: 0.62rem;
+  font-weight: 300;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.footer-legal {
+  display: flex;
+  gap: 2rem;
+}
+.footer-legal a {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.2);
+  text-decoration: none;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.footer-legal a:hover { color: rgba(255,255,255,0.6); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { opacity: 0; animation: fadeUp 0.9s ease forwards; }
+.d1 { animation-delay: 0.1s; }
+.d2 { animation-delay: 0.25s; }
+.d3 { animation-delay: 0.4s; }
+.d4 { animation-delay: 0.55s; }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="nav-logo" href="#">Heirloom</a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#why">Why Heirloom</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a class="nav-cta" href="#start">Begin your will</a></li>
+  </ul>
+</nav>
+
+<!-- HERO — SPLIT SCREEN -->
+<section class="hero">
+  <!-- Left: editorial white -->
+  <div class="hero-left">
+    <div class="hero-eyebrow fade-up">Estate planning, redesigned</div>
+    <h1 class="hero-heading fade-up d1">
+      Design the life<br>
+      you leave<br>
+      <em>behind.</em>
+    </h1>
+    <p class="hero-subtext fade-up d2">
+      Not another form to fill. A guided experience for people who build intentionally — and want their legacy to reflect it.
+    </p>
+    <div class="hero-actions fade-up d3">
+      <a class="btn-teal" href="#start">Begin your will</a>
+      <a class="btn-text-link" href="#how">See how it works</a>
+    </div>
+  </div>
+
+  <!-- Right: full Tiffany blue with ribbon and bow -->
+  <div class="hero-right">
+    <div class="hero-right-content fade-up d2">
+      <!-- SVG Bow — ribbon device from brand book -->
+      <svg class="bow-svg" viewBox="0 0 120 80" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Left loop -->
+        <path d="M60 40 Q30 10 10 20 Q0 30 20 40 Q40 48 60 40Z" fill="rgba(255,255,255,0.4)" stroke="rgba(255,255,255,0.6)" stroke-width="0.5"/>
+        <!-- Right loop -->
+        <path d="M60 40 Q90 10 110 20 Q120 30 100 40 Q80 48 60 40Z" fill="rgba(255,255,255,0.4)" stroke="rgba(255,255,255,0.6)" stroke-width="0.5"/>
+        <!-- Left tail -->
+        <path d="M60 40 Q35 55 20 70" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Right tail -->
+        <path d="M60 40 Q85 55 100 70" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Knot -->
+        <ellipse cx="60" cy="40" rx="6" ry="5" fill="rgba(255,255,255,0.7)"/>
+      </svg>
+
+      <div class="hero-right-wordmark">Heirloom</div>
+      <div class="hero-right-sub">Australian Estate Planning</div>
+      <p class="hero-right-tagline">
+        "A life built with intention<br>deserves a legacy<br>that reflects it."
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO BAR -->
+<div class="manifesto-bar">
+  <div class="manifesto-item"><strong>Lawyer-reviewed</strong>&nbsp;documents</div>
+  <div class="manifesto-rule"></div>
+  <div class="manifesto-item"><strong>Legally binding</strong>&nbsp;across Australia</div>
+  <div class="manifesto-rule"></div>
+  <div class="manifesto-item">Ready in&nbsp;<strong>under 30 minutes</strong></div>
+  <div class="manifesto-rule"></div>
+  <div class="manifesto-item"><strong>Guided</strong>&nbsp;at every step</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="how-inner">
+    <div class="how-header">
+      <div>
+        <div class="section-label-block">
+          <span class="section-label-text">The process</span>
+        </div>
+        <h2 class="section-heading">Three steps to a life well<br><em>documented.</em></h2>
+      </div>
+      <p class="section-body">Most estate planning tools treat a will like a form. We treat it like a design exercise — one that asks you to think carefully about what you're building and who inherits it.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <span class="step-num">01</span>
+        <div class="step-title">Tell us<br>your story</div>
+        <p class="step-desc">Guided prompts help you map your assets, relationships, and wishes — without legal jargon. It reads like a conversation, not a questionnaire.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">02</span>
+        <div class="step-title">We draft it<br>properly</div>
+        <p class="step-desc">Your will is prepared to Australian legal standards and reviewed by a qualified solicitor. Nothing generic. Everything specific to your situation.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">03</span>
+        <div class="step-title">Sign and<br>store it</div>
+        <p class="step-desc">Sign with two witnesses and your will is valid. Store it securely in your Heirloom vault — updated whenever your life changes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPLIT STATEMENT SECTION — magazine spread layout from brand book -->
+<div class="split-statement">
+  <div class="split-left">
+    <div>
+      <p class="split-quote">"I'd been putting it off for years. Heirloom made it feel like something I was proud to have done — not something I'd been avoiding."</p>
+      <p class="split-quote-attr">Emma R. &nbsp;·&nbsp; Property owner, Sydney, 34</p>
+    </div>
+  </div>
+  <div class="split-right">
+    <div class="split-right-content">
+      <h2 class="split-right-heading">This isn't death admin.<br><em>It's life design.</em></h2>
+      <p class="split-right-body">The people who use Heirloom aren't thinking about dying. They're thinking about what they've built, who they love, and what kind of person they are.</p>
+    </div>
+  </div>
+</div>
+
+<!-- WHY HEIRLOOM -->
+<section class="why-section" id="why">
+  <div class="why-inner">
+    <div>
+      <div class="section-label-block">
+        <span class="section-label-text">Why Heirloom</span>
+      </div>
+      <h2 class="section-heading">For people who<br>plan <em>ahead.</em></h2>
+      <p class="section-body" style="margin-top: 1.5rem;">Not the anxious. Not the elderly. The 32-year-old who just settled on a property and knows it's time. The couple who just had a baby and wants to do this properly.</p>
+    </div>
+    <div class="pillars">
+      <div class="pillar">
+        <span class="pillar-num">i.</span>
+        <div>
+          <div class="pillar-title">Designed for the intentional</div>
+          <p class="pillar-desc">People who plan ahead because that's who they are — not because they've been forced to.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <span class="pillar-num">ii.</span>
+        <div>
+          <div class="pillar-title">Premium without the price</div>
+          <p class="pillar-desc">The quality of a solicitor-drafted will at a fraction of the cost. A good will isn't a luxury.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <span class="pillar-num">iii.</span>
+        <div>
+          <div class="pillar-title">Built for modern lives</div>
+          <p class="pillar-desc">Property, super, digital assets, blended families. We ask the right questions because modern estates are complex.</p>
+        </div>
+      </div>
+      <div class="pillar">
+        <span class="pillar-num">iv.</span>
+        <div>
+          <div class="pillar-title">Lives with you</div>
+          <p class="pillar-desc">Update your will as life changes. Your Heirloom vault keeps everything current and accessible.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-inner">
+    <div class="pricing-head">
+      <div class="section-label-block">
+        <span class="section-label-text">Pricing</span>
+      </div>
+      <h2 class="section-heading">One decision.<br><em>Sorted for good.</em></h2>
+    </div>
+    <div class="pricing-cards">
+      <div class="pricing-card">
+        <div class="pricing-tier">Individual Will</div>
+        <div class="pricing-price">$149</div>
+        <div class="pricing-period">One-time · includes legal review</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Guided will creation</li>
+          <li>Solicitor review and sign-off</li>
+          <li>Legally valid across all Australian states</li>
+          <li>Secure digital vault storage</li>
+          <li>One free update within 12 months</li>
+        </ul>
+        <a class="pricing-cta" href="#start">Begin your will</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most chosen</div>
+        <div class="pricing-tier">Couple's Wills</div>
+        <div class="pricing-price">$249</div>
+        <div class="pricing-period">One-time for two · includes legal review</div>
+        <div class="pricing-divider"></div>
+        <ul class="pricing-features">
+          <li>Two complete wills, drafted together</li>
+          <li>Mirror will option for couples</li>
+          <li>Solicitor review for both</li>
+          <li>Shared Heirloom vault</li>
+          <li>Unlimited updates for 24 months</li>
+          <li>Powers of attorney included</li>
+        </ul>
+        <a class="pricing-cta" href="#start">Begin together</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section" id="faq">
+  <div class="faq-inner">
+    <div class="faq-header">
+      <div class="section-label-block">
+        <span class="section-label-text">Questions</span>
+      </div>
+      <h2 class="section-heading">What people<br><em>ask first.</em></h2>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">Is a will made through Heirloom legally valid?<span class="faq-icon">+</span></div>
+      <div class="faq-answer">Yes. Every Heirloom will is reviewed by a qualified Australian solicitor and prepared to meet the Wills Act requirements in your state or territory. You sign it in front of two witnesses — which is all that's required to make it legally binding.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">How is this different from a DIY will kit?<span class="faq-icon">+</span></div>
+      <div class="faq-answer">A DIY kit gives you a blank form. Heirloom gives you a guided experience, a lawyer's eyes on your document, and ongoing storage and updates. The difference between a form and a finished will that actually reflects your life.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">What if my situation is complicated?<span class="faq-icon">+</span></div>
+      <div class="faq-answer">Heirloom is designed for modern Australian lives — blended families, superannuation nominations, digital assets, interstate property, business interests. If your situation is genuinely complex, we'll connect you with a specialist solicitor at no extra cost.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">Can I update my will later?<span class="faq-icon">+</span></div>
+      <div class="faq-answer">Yes — and you should. Life changes. Your Individual plan includes one free update within 12 months; the Couple's plan includes unlimited updates for 24 months. After that, updates are $49 per change.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-question">How long does it take?<span class="faq-icon">+</span></div>
+      <div class="faq-answer">Most people complete their guided questionnaire in 20–30 minutes. Solicitor review is typically returned within one business day. Then you sign, witness, and you're done.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER — full Tiffany blue with ribbon cross -->
+<section class="cta-banner" id="start">
+  <div class="cta-inner">
+    <div class="cta-eyebrow">Heirloom · Australian Estate Planning</div>
+    <h2 class="cta-heading">The best time<br>was <em>yesterday.</em></h2>
+    <p class="cta-sub">The second best is now. It takes less time than you think and gives you more peace than you'd expect.</p>
+    <div class="cta-actions">
+      <a class="btn-white-solid" href="#">Start your will today</a>
+      <a class="btn-ghost-white" href="#how">Learn more first</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">Heirloom</div>
+    <p class="footer-tagline">Estate planning for people who build intentionally.</p>
+  </div>
+  <div>
+    <div class="footer-col-title">Product</div>
+    <ul class="footer-links">
+      <li><a href="#">How it works</a></li>
+      <li><a href="#">Pricing</a></li>
+      <li><a href="#">For couples</a></li>
+      <li><a href="#">Powers of attorney</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Company</div>
+    <ul class="footer-links">
+      <li><a href="#">About</a></li>
+      <li><a href="#">Our lawyers</a></li>
+      <li><a href="#">Blog</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </div>
+  <div>
+    <div class="footer-col-title">Legal</div>
+    <ul class="footer-links">
+      <li><a href="#">Privacy policy</a></li>
+      <li><a href="#">Terms of service</a></li>
+      <li><a href="#">Legal disclaimer</a></li>
+    </ul>
+  </div>
+</footer>
+<div class="footer-bottom">
+  <span class="footer-copy">© 2025 Heirloom · Australian estate planning</span>
+  <div class="footer-legal">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Disclaimer</a>
+  </div>
+</div>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+  function toggleFaq(el) {
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+</script>
+</body>
+</html>

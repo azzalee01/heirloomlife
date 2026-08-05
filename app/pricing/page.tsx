@@ -14,306 +14,229 @@ type Plan = {
   features: string[]
   highlight: boolean
   sort_order: number
+  is_placeholder: boolean
 }
 
-// ─── Fallback static plans (used when the table doesn't exist yet) ────────────
+// ─── Static fallback (all marked placeholder until pricing is confirmed) ───────
 const STATIC_PLANS: Plan[] = [
   {
-    slug: 'will',
-    name: 'Will Document',
-    tagline: 'One-off purchase',
-    price_label: '$199',
+    slug: 'will-single',
+    name: 'The Will — Single',
+    tagline: 'One-off, solicitor reviewed',
+    price_label: 'TBC',
     billing_type: 'one_time',
-    description: 'A legally valid will drafted by AI, reviewed by a qualified solicitor, and ready to sign.',
+    description: 'A legally valid Will drafted with guidance, reviewed by a solicitor, and ready to sign.',
     features: [
-      'AI-guided will builder',
+      'Seven-step guided drafting',
+      'State-specific legal compliance',
       'Solicitor review included',
-      'Downloadable & printable PDF',
-      'Valid in all Australian states',
-      'Covers assets, beneficiaries & executors',
+      'Printed Will, cloth-bound folder',
     ],
     highlight: false,
     sort_order: 1,
+    is_placeholder: true,
+  },
+  {
+    slug: 'will-couple',
+    name: 'The Will — Couple',
+    tagline: 'One-off, both partners',
+    price_label: 'TBC',
+    billing_type: 'one_time',
+    description: 'Two mirrored Wills for partners, cross-referenced and sharing one asset register.',
+    features: [
+      'Two mirrored Wills, cross-referenced',
+      'Shared asset register',
+      'Both solicitor reviews included',
+      'Two folders, one Vault',
+    ],
+    highlight: false,
+    sort_order: 2,
+    is_placeholder: true,
   },
   {
     slug: 'vault',
     name: 'Living Vault',
-    tagline: 'Annual subscription',
-    price_label: '$299/year',
+    tagline: 'Ongoing membership',
+    price_label: 'TBC',
     billing_type: 'annual',
-    description: 'Everything in Will Document, plus a secure digital vault to keep your estate plan current as life changes.',
+    description: 'Life-event tracking, annual solicitor review, and executor access — keeping your estate current as your life changes.',
     features: [
-      'Everything in Will Document',
-      'Secure document vault',
-      'Unlimited will updates',
-      'Remote witnessing sessions',
-      'Priority solicitor support',
+      'Life-event tracking and alerts',
+      'Included annual solicitor review',
+      'Executor access instructions',
+      'Will version history',
+      'Cancel anytime',
     ],
     highlight: true,
-    sort_order: 2,
+    sort_order: 3,
+    is_placeholder: true,
   },
 ]
-
-const FAQ = [
-  {
-    q: 'Is my will legally valid in Australia?',
-    a: 'Yes. Every will created through Heirloom Life is reviewed by a qualified Australian solicitor and drafted to meet the legal requirements of all Australian states and territories.',
-  },
-  {
-    q: 'What happens if I need to update my will?',
-    a: 'Will Document purchasers can update at any time for a small admin fee. Living Vault subscribers get unlimited updates included — as often as life changes.',
-  },
-  {
-    q: 'How does remote witnessing work?',
-    a: 'Once your will is ready, you schedule a video call with two independent witnesses arranged by Heirloom Life. You sign the document on-screen, witnesses countersign, and it\'s done — no office required.',
-  },
-  {
-    q: 'What does the Living Vault store?',
-    a: 'The Vault holds your will, any codicils, power of attorney documents, insurance policies, and any other estate documents you choose to upload — encrypted and accessible only to you.',
-  },
-  {
-    q: 'Can I try before I buy?',
-    a: 'Yes — create a free account, start your will, and see the full draft before you pay. You only pay when you\'re ready to submit for solicitor review.',
-  },
-]
-
-async function getPlans(): Promise<Plan[]> {
-  try {
-    const { data, error } = await supabaseAdmin
-      .from('pricing_plans')
-      .select('slug, name, tagline, price_label, billing_type, description, features, highlight, sort_order')
-      .eq('active', true)
-      .order('sort_order')
-    if (error || !data?.length) return STATIC_PLANS
-    return data as Plan[]
-  } catch {
-    return STATIC_PLANS
-  }
-}
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default async function PricingPage() {
-  const plans = await getPlans()
+  // Fetch from DB; fall back to static if table doesn't exist or has no rows
+  let plans: Plan[] = STATIC_PLANS
+  try {
+    const { data } = await supabaseAdmin
+      .from('pricing_plans')
+      .select('slug, name, tagline, price_label, billing_type, description, features, highlight, sort_order, is_placeholder')
+      .eq('active', true)
+      .order('sort_order')
+    if (data && data.length > 0) {
+      plans = data as Plan[]
+    }
+  } catch {
+    // table not yet migrated — use static fallback
+  }
+
+  const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
+  const SECTION_LABEL: React.CSSProperties = {
+    fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
+    fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block',
+  }
 
   return (
-    <div style={{ background: 'var(--paper)' }}>
+    <>
       <MarketingNav />
 
-      {/* ── Page hero ─────────────────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 pt-20 pb-16 sm:pt-28 sm:pb-20">
-        <p
-          className="text-xs font-semibold uppercase tracking-[0.22em] mb-4"
-          style={{ color: 'var(--teal)' }}
-        >
-          Pricing
-        </p>
-        <h1
-          className="text-[clamp(2rem,4vw,3rem)] font-semibold leading-tight mb-4"
-          style={{
-            color: 'var(--ink)',
-            fontFamily: "'Instrument Serif', Georgia, serif",
-            fontStyle: 'italic',
-          }}
-        >
-          Simple, honest pricing.
-        </h1>
-        <p className="text-base max-w-md" style={{ color: 'var(--neutral)' }}>
-          One plan to get your will done. Another to keep your estate plan alive. No hidden fees.
-        </p>
+      {/* Hero */}
+      <section style={{ paddingTop: '8rem', paddingBottom: '4rem', background: 'var(--mkt-surface)' }}>
+        <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
+          <span style={SECTION_LABEL}>Membership</span>
+          <h1 style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
+            letterSpacing: '-.02em', fontWeight: 500,
+            color: 'var(--mkt-ink-text)', margin: 0,
+          }}>
+            Priced like something worth{' '}
+            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.
+          </h1>
+          <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
+            A one-off Will to get your estate in order, and a Vault membership to keep it that way. No per-clause upsells, no surprise renewals. All prices include GST.
+          </p>
+          {plans.some(p => p.is_placeholder) && (
+            <div style={{ marginTop: '1.5rem', padding: '1rem 1.25rem', borderRadius: 4, border: '1px solid var(--mkt-line)', background: '#fff', fontSize: '.85rem', color: 'var(--mkt-stone)', lineHeight: 1.5 }}>
+              <strong style={{ color: 'var(--mkt-ink-text)' }}>Pricing is being finalised.</strong>{' '}
+              The figures shown below are indicative. We&#8217;ll publish confirmed prices, inclusive of GST, before launch.
+            </div>
+          )}
+        </div>
       </section>
 
-      {/* ── Plan cards ────────────────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 pb-24 sm:pb-32">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-px max-w-3xl" style={{ background: 'var(--line)' }}>
-          {plans.map((plan) => (
-            <div
-              key={plan.slug}
-              className="flex flex-col"
-              style={{
-                background: plan.highlight ? 'var(--ink)' : 'var(--paper)',
-              }}
-            >
-              {/* Plan header */}
+      {/* Plan cards */}
+      <section style={{ paddingBlock: '4rem 6rem', background: 'var(--mkt-surface-2)' }}>
+        <div className="md:px-10" style={W}>
+          <div
+            className="md:grid-cols-3"
+            style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}
+          >
+            {plans.map(plan => (
               <div
-                className="px-8 py-7 border-b"
-                style={{ borderColor: plan.highlight ? 'rgba(255,255,255,0.1)' : 'var(--line)' }}
+                key={plan.slug}
+                style={{
+                  borderRadius: 14, border: `1px solid ${plan.highlight ? 'var(--teal)' : 'var(--mkt-line)'}`,
+                  background: '#fff', padding: '2.2rem',
+                  display: 'flex', flexDirection: 'column',
+                  boxShadow: plan.highlight ? '0 20px 50px rgba(0,0,0,.08)' : 'none',
+                }}
               >
-                {plan.highlight && (
-                  <p
-                    className="text-xs font-semibold uppercase tracking-[0.18em] mb-3"
-                    style={{ color: 'var(--teal)' }}
-                  >
-                    Most popular
-                  </p>
+                {plan.is_placeholder && (
+                  <span style={{
+                    alignSelf: 'flex-start', marginBottom: '1rem',
+                    fontSize: '.65rem', fontWeight: 600,
+                    padding: '.28rem .65rem', borderRadius: 99,
+                    border: '1px solid var(--mkt-line)', color: 'var(--mkt-stone)',
+                  }}>
+                    Indicative pricing
+                  </span>
                 )}
-                <p
-                  className="text-xs font-semibold uppercase tracking-[0.18em] mb-1"
-                  style={{ color: plan.highlight ? 'rgba(255,255,255,0.45)' : 'var(--neutral)' }}
-                >
-                  {plan.tagline}
-                </p>
-                <h2
-                  className="text-[1.35rem] font-semibold mb-1"
-                  style={{
-                    color: plan.highlight ? 'white' : 'var(--ink)',
-                    fontFamily: "'Instrument Serif', Georgia, serif",
-                  }}
-                >
+                {plan.highlight && !plan.is_placeholder && (
+                  <span style={{
+                    alignSelf: 'flex-start', marginBottom: '1rem',
+                    fontSize: '.65rem', fontWeight: 600,
+                    padding: '.28rem .65rem', borderRadius: 99,
+                    border: '1px solid var(--teal)', color: 'var(--mkt-ink-text)',
+                  }}>
+                    Recommended
+                  </span>
+                )}
+
+                <p style={{ fontSize: '.78rem', letterSpacing: '.08em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--mkt-stone)', margin: 0 }}>
                   {plan.name}
-                </h2>
-                <p
-                  className="text-3xl font-bold mt-3 mb-1"
-                  style={{ color: plan.highlight ? 'white' : 'var(--ink)' }}
-                >
+                </p>
+                <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '2.6rem', color: 'var(--mkt-ink-text)', marginTop: '.75rem', lineHeight: 1 }}>
                   {plan.price_label}
                 </p>
-                {plan.billing_type === 'annual' && (
-                  <p className="text-xs" style={{ color: plan.highlight ? 'rgba(255,255,255,0.45)' : 'var(--neutral)' }}>
-                    billed annually
-                  </p>
-                )}
-                {plan.billing_type === 'one_time' && (
-                  <p className="text-xs" style={{ color: plan.highlight ? 'rgba(255,255,255,0.45)' : 'var(--neutral)' }}>
-                    one-time payment
-                  </p>
-                )}
-              </div>
+                <p style={{ fontSize: '.85rem', color: 'var(--mkt-stone)', marginTop: '.3rem' }}>{plan.tagline}</p>
 
-              {/* Features */}
-              <div className="px-8 py-7 flex-1">
-                <p
-                  className="text-sm leading-relaxed mb-6"
-                  style={{ color: plan.highlight ? 'rgba(255,255,255,0.6)' : 'var(--neutral)' }}
-                >
-                  {plan.description}
-                </p>
-                <ul className="space-y-3">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-sm">
-                      <svg
-                        className="shrink-0 mt-0.5"
-                        width="14" height="14" viewBox="0 0 24 24"
-                        fill="none" stroke="var(--teal)" strokeWidth="2.5"
-                        strokeLinecap="round" strokeLinejoin="round"
-                      >
-                        <path d="M20 6L9 17l-5-5" />
+                <ul style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '.65rem', fontSize: '.9rem', color: 'var(--mkt-stone)', listStyle: 'none', padding: 0, flex: 1 }}>
+                  {plan.features.map(f => (
+                    <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start' }}>
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: '.15rem', color: 'var(--teal-deep)' }} aria-hidden="true">
+                        <path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
-                      <span style={{ color: plan.highlight ? 'rgba(255,255,255,0.8)' : 'var(--ink)' }}>
-                        {f}
-                      </span>
+                      {f}
                     </li>
                   ))}
                 </ul>
-              </div>
 
-              {/* CTA */}
-              <div
-                className="px-8 pb-8"
-              >
                 <Link
-                  href="/auth/signup"
-                  className="btn btn-lg w-full justify-center"
-                  style={
-                    plan.highlight
-                      ? { background: 'var(--teal)', color: 'white', borderColor: 'var(--teal)' }
-                      : { background: 'var(--paper-warm)', color: 'var(--ink)', borderColor: 'var(--line)' }
-                  }
+                  href="/will/new"
+                  className={plan.highlight ? 'mkt-btn-ink-m' : 'mkt-btn-ghost-m'}
+                  style={{ marginTop: '2rem' }}
                 >
-                  {plan.billing_type === 'one_time' ? 'Get your Will' : 'Start Living Vault'}
+                  {plan.billing_type === 'annual' ? 'Join the Vault' : 'Start your Will'}
                 </Link>
               </div>
-            </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section style={{ paddingBlock: '5.5rem', background: '#fff' }}>
+        <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
+          <h2 style={{ fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 2.5rem' }}>
+            Common questions about pricing
+          </h2>
+          {[
+            {
+              q: 'Is the Will one-off, or do I pay to update it?',
+              a: 'The Will document itself is a one-off purchase. If your life changes and you want ongoing updates with annual solicitor review and life-event tracking, the Living Vault membership covers that.',
+            },
+            {
+              q: 'Are prices inclusive of GST?',
+              a: 'Yes. All prices shown will be GST-inclusive. The final confirmed price will be the figure you pay — no GST surprises at checkout.',
+            },
+            {
+              q: 'Can I cancel the Vault membership?',
+              a: 'Yes, at any time. You retain access until the end of your current billing period, and your Will document remains yours.',
+            },
+            {
+              q: 'What if I started a Will and decide I want the Vault?',
+              a: 'You can upgrade at any time. Contact us and we\'ll make sure you\'re not paying twice for overlapping periods.',
+            },
+          ].map(item => (
+            <details
+              key={item.q}
+              style={{ borderTop: '1px solid var(--mkt-line)', paddingBlock: '1.25rem' }}
+            >
+              <summary style={{ cursor: 'pointer', fontWeight: 600, fontSize: '.95rem', color: 'var(--mkt-ink-text)', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+                {item.q}
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, color: 'var(--mkt-stone)' }} aria-hidden="true">
+                  <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </svg>
+              </summary>
+              <p style={{ marginTop: '.75rem', fontSize: '.92rem', lineHeight: 1.65, color: 'var(--mkt-stone)', paddingRight: '2rem' }}>{item.a}</p>
+            </details>
           ))}
-        </div>
-
-        <p className="mt-6 text-xs" style={{ color: 'var(--neutral)' }}>
-          Not sure? Create a free account — you only pay when you submit for solicitor review.
-        </p>
-      </section>
-
-      {/* ── Guarantee strip ───────────────────────────────────────────────── */}
-      <section style={{ background: 'var(--paper-warm)', borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)' }}>
-        <div className="max-w-6xl mx-auto px-6 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-            {[
-              { icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z', label: 'Solicitor review on every will', detail: 'Human expert eyes before it\'s finalised.' },
-              { icon: 'M3 10h18M3 14h18M5 6l7-3 7 3M4 10v10M20 10v10', label: 'No lock-in on Will Document', detail: 'Pay once, own your will permanently.' },
-              { icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z', label: 'Private & encrypted', detail: 'Your documents are yours alone.' },
-            ].map((g) => (
-              <div key={g.label} className="flex items-start gap-4">
-                <div
-                  className="w-9 h-9 border flex items-center justify-center shrink-0"
-                  style={{ borderColor: 'var(--line)', background: 'var(--paper)' }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                    stroke="var(--teal)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d={g.icon} />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>{g.label}</p>
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>{g.detail}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── FAQ ───────────────────────────────────────────────────────────── */}
-      <section className="max-w-6xl mx-auto px-6 py-24 sm:py-32">
-        <div className="max-w-2xl">
-          <p
-            className="text-xs font-semibold uppercase tracking-[0.22em] mb-4"
-            style={{ color: 'var(--teal)' }}
-          >
-            FAQ
-          </p>
-          <h2
-            className="text-[clamp(1.6rem,3vw,2.2rem)] font-semibold leading-tight mb-12"
-            style={{
-              color: 'var(--ink)',
-              fontFamily: "'Instrument Serif', Georgia, serif",
-              fontStyle: 'italic',
-            }}
-          >
-            Common questions.
-          </h2>
-
-          <div className="divide-y" style={{ borderColor: 'var(--line)' }}>
-            {FAQ.map((item) => (
-              <div key={item.q} className="py-6">
-                <p className="text-sm font-semibold mb-2" style={{ color: 'var(--ink)' }}>
-                  {item.q}
-                </p>
-                <p className="text-sm leading-relaxed" style={{ color: 'var(--neutral)' }}>
-                  {item.a}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Bottom CTA ────────────────────────────────────────────────────── */}
-      <section style={{ background: 'var(--ink)' }}>
-        <div className="max-w-6xl mx-auto px-6 py-20 sm:py-24 text-center">
-          <h2
-            className="text-[clamp(1.8rem,3.5vw,2.6rem)] font-semibold leading-tight text-white mb-4"
-            style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic' }}
-          >
-            Ready to write your will?
-          </h2>
-          <p className="text-sm mb-8" style={{ color: 'rgba(255,255,255,0.5)' }}>
-            Start free. Pay when you submit for review.
-          </p>
-          <Link href="/auth/signup" className="btn btn-primary btn-lg">
-            Get started
-          </Link>
+          <div style={{ borderTop: '1px solid var(--mkt-line)', paddingTop: '1.25rem' }}/>
         </div>
       </section>
 
       <MarketingFooter />
-    </div>
+    </>
   )
 }

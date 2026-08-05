@@ -1,54 +1,93 @@
+'use client'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
+const NAV_LINKS = [
+  { label: 'The Will', href: '/the-will' },
+  { label: 'Living Vault', href: '/living-vault' },
+  { label: 'How it works', href: '/how-it-works' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'For Advisers', href: '/for-advisers' },
+]
+
 export default function MarketingNav() {
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 24)
+    window.addEventListener('scroll', fn, { passive: true })
+    fn()
+    return () => window.removeEventListener('scroll', fn)
+  }, [])
+
   return (
     <header
-      className="sticky top-0 z-30 border-b"
-      style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}
+      style={{
+        position: 'fixed',
+        left: 0, right: 0, top: 0,
+        zIndex: 50,
+        transition: 'background .4s ease, border-color .4s ease, box-shadow .3s ease',
+        borderBottom: '1px solid',
+        borderColor: scrolled ? 'var(--mkt-line)' : 'transparent',
+        background: scrolled ? 'rgba(255,255,255,0.88)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(14px)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(14px)' : 'none',
+        boxShadow: scrolled ? '0 1px 0 var(--mkt-line)' : 'none',
+      }}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
-        <Link
-          href="/"
-          className="text-xl font-semibold tracking-tight shrink-0"
-          style={{
-            color: 'var(--teal-deep)',
-            fontFamily: "'Instrument Serif', Georgia, serif",
-            fontStyle: 'italic',
-          }}
-        >
+      <div
+        className="md:px-10"
+        style={{
+          maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 76,
+        }}
+      >
+        {/* Brand mark */}
+        <Link href="/" style={{ color: 'var(--mkt-ink-text)', textDecoration: 'none', fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '1.35rem', letterSpacing: '.01em' }}>
           Heirloom Life
         </Link>
 
-        <nav className="hidden sm:flex items-center gap-1">
-          <Link
-            href="/pricing"
-            className="px-4 py-2 text-sm font-medium transition-colors rounded"
-            style={{ color: 'var(--neutral)' }}
-          >
-            Pricing
-          </Link>
+        {/* Desktop nav */}
+        <nav className="hidden lg:flex items-center" style={{ gap: '2.4rem' }} aria-label="Main">
+          {NAV_LINKS.map(l => (
+            <Link
+              key={l.href}
+              href={l.href}
+              style={{ fontSize: '.85rem', color: 'var(--mkt-stone)', textDecoration: 'none', transition: 'color .2s ease' }}
+              onMouseOver={e => { e.currentTarget.style.color = 'var(--mkt-ink-text)' }}
+              onMouseOut={e => { e.currentTarget.style.color = 'var(--mkt-stone)' }}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right actions */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
           <Link
             href="/auth/login"
-            className="px-4 py-2 text-sm font-medium transition-colors"
-            style={{ color: 'var(--ink)' }}
+            className="hidden lg:block"
+            style={{ fontSize: '.85rem', color: 'var(--mkt-stone)', textDecoration: 'none', transition: 'color .2s ease' }}
+            onMouseOver={e => { e.currentTarget.style.color = 'var(--mkt-ink-text)' }}
+            onMouseOut={e => { e.currentTarget.style.color = 'var(--mkt-stone)' }}
           >
             Log in
           </Link>
           <Link
-            href="/auth/signup"
-            className="btn btn-primary btn-sm ml-2"
+            href="/will/new"
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              height: '2.6rem', paddingInline: '1.3rem', borderRadius: 4,
+              background: 'var(--mkt-ink)', color: '#fff', fontWeight: 600, fontSize: '.82rem',
+              border: '1px solid var(--mkt-ink)', textDecoration: 'none',
+              transition: 'background .2s ease',
+            }}
+            onMouseOver={e => { e.currentTarget.style.background = 'var(--mkt-ink-soft)' }}
+            onMouseOut={e => { e.currentTarget.style.background = 'var(--mkt-ink)' }}
           >
-            Get started
+            Start your Will
           </Link>
-        </nav>
-
-        {/* Mobile */}
-        <Link
-          href="/auth/signup"
-          className="sm:hidden btn btn-primary btn-sm"
-        >
-          Get started
-        </Link>
+        </div>
       </div>
     </header>
   )

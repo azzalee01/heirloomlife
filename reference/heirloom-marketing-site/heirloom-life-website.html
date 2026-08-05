@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heirloom Life | An Estate Command Centre for Australians</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a1615;
+    --ink-2:#0f201d;
+    --ink-3:#152b27;
+    --teal:#2ab4ae;
+    --teal-deep:#1f8f8a;
+    --teal-pale:#dff2f0;
+    --surface:#F7F9F9;
+    --surface-2:#eef2f1;
+    --paper:#faf8f4;
+    --ink-text:#12201d;
+    --stone:#5b6b67;
+    --stone-soft:#8a9591;
+    --line:rgba(18,32,29,0.1);
+    --line-dark:rgba(255,255,255,0.14);
+    --on-dark:rgba(255,255,255,0.86);
+    --on-dark-soft:rgba(255,255,255,0.58);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--surface);
+    color:var(--ink-text);
+    font-family:'DM Sans',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  .serif{font-family:'Instrument Serif', serif; font-weight:400;}
+  .serif-i{font-family:'Instrument Serif', serif; font-style:italic;}
+  h1,h2,h3{margin:0;}
+  p{margin:0;}
+  a{text-decoration:none;color:inherit;}
+  .wrap{max-width:1240px;margin-inline:auto;padding-inline:1.5rem;}
+  @media(min-width:768px){.wrap{padding-inline:2.5rem;}}
+
+  /* ---- nav ---- */
+  header.site-nav{
+    position:fixed;inset-inline:0;top:0;z-index:50;
+    transition:background .4s ease, border-color .4s ease, padding .3s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.site-nav[data-scrolled="true"]{
+    background:rgba(10,22,21,0.82);
+    backdrop-filter:blur(14px);
+    border-color:var(--line-dark);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:76px;}
+  .brand{display:flex;align-items:center;gap:.6rem;color:#fff;}
+  .brand span{font-family:'Instrument Serif',serif;font-size:1.35rem;letter-spacing:.01em;}
+  .nav-links{display:none;gap:2.4rem;font-size:.85rem;color:var(--on-dark-soft);}
+  @media(min-width:1024px){.nav-links{display:flex;}}
+  .nav-links a{transition:color .2s ease;}
+  .nav-links a:hover{color:#fff;}
+  .nav-cta{
+    display:inline-flex;align-items:center;justify-content:center;
+    height:2.6rem;padding-inline:1.3rem;border-radius:4px;
+    background:#0a1615;color:#fff;font-weight:600;font-size:.82rem;
+    border:1px solid var(--teal);
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .nav-cta:hover{background:#000;border-color:#3fc4be;}
+
+  /* ---- seal mark ---- */
+  .seal{display:block;flex-shrink:0;}
+
+  /* ---- buttons ---- */
+  .btn-primary{
+    display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+    height:3.1rem;padding-inline:1.75rem;border-radius:4px;
+    background:#0a1615;color:#fff;font-weight:600;font-size:.92rem;
+    border:1px solid var(--teal);
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .btn-primary:hover{background:#000;border-color:#3fc4be;}
+  .btn-ghost{
+    display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+    height:3.1rem;padding-inline:1.6rem;border-radius:4px;
+    border:1px solid var(--line-dark);color:#fff;font-weight:500;font-size:.92rem;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .btn-ghost:hover{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.05);}
+  .btn-dark{
+    display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+    height:3rem;padding-inline:1.6rem;border-radius:4px;
+    background:var(--ink);color:#fff;font-weight:600;font-size:.88rem;
+    transition:background .2s ease;
+  }
+  .btn-dark:hover{background:var(--ink-3);}
+
+  /* ---- hero ---- */
+  .hero{
+    position:relative;min-height:100svh;overflow:hidden;
+    background:linear-gradient(150deg, #030504 0%, #0a0d0c 45%, #141816 100%);
+    color:#fff;
+  }
+  .hero::after{
+    content:'';position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg, transparent, var(--teal), transparent);
+    opacity:.5;
+  }
+  .grain{position:absolute;inset:0;opacity:.05;mix-blend-mode:overlay;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .hero-inner{
+    position:relative;z-index:2;min-height:100svh;display:flex;flex-direction:column;
+    justify-content:flex-end;padding-top:7rem;padding-bottom:0;
+  }
+  .hero-content{max-width:44rem;padding-bottom:4.5rem;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:.5rem;
+    font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--teal);font-weight:600;margin-bottom:1.6rem;
+  }
+  .eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--teal);}
+  .hero h1{
+    font-size:clamp(2.7rem,6.2vw,5.4rem);line-height:.98;letter-spacing:-.01em;
+  }
+  .hero h1 em{font-style:italic;color:var(--teal);}
+  .hero p.lede{
+    margin-top:1.75rem;max-width:34rem;font-size:1.15rem;line-height:1.65;color:var(--on-dark-soft);
+  }
+  .hero-actions{margin-top:2.5rem;display:flex;flex-wrap:wrap;gap:.9rem;}
+  .trust-bar{
+    position:relative;z-index:2;border-top:1px solid var(--line-dark);
+    background:rgba(0,0,0,0.18);backdrop-filter:blur(10px);
+  }
+  .trust-inner{
+    display:grid;grid-template-columns:1fr;gap:1.4rem;padding-block:1.6rem;
+    font-size:.8rem;color:var(--on-dark-soft);
+  }
+  @media(min-width:768px){.trust-inner{grid-template-columns:repeat(3,1fr);gap:2rem;}}
+  .trust-item{display:flex;align-items:center;gap:.65rem;}
+  .trust-item svg{flex-shrink:0;color:var(--teal);}
+
+  /* ---- section shells ---- */
+  section{position:relative;}
+  .section-pad{padding-block:5.5rem;}
+  @media(min-width:1024px){.section-pad{padding-block:8rem;}}
+  .section-label{
+    font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;
+    color:var(--teal-deep);margin-bottom:1.1rem;display:block;
+  }
+  .section-label.on-dark{color:var(--teal);}
+  h2.section-title{
+    font-size:clamp(1.9rem,3.2vw,3.1rem);line-height:1.08;letter-spacing:-.02em;font-weight:500;
+    font-family:'DM Sans',sans-serif;color:var(--ink-text);
+  }
+  h2.section-title em{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:var(--teal-deep);}
+  .section-sub{margin-top:1.1rem;max-width:34rem;font-size:1.05rem;line-height:1.65;color:var(--stone);}
+
+  /* ---- product mockup (The Will) ---- */
+  .doc-card{
+    border-radius:12px;background:#fff;border:1px solid var(--line);
+    box-shadow:0 30px 80px rgba(15,30,28,0.1);overflow:hidden;
+  }
+  .doc-tabs{display:flex;gap:1.6rem;padding-inline:1.5rem;border-bottom:1px solid var(--line);overflow-x:auto;}
+  .doc-tab{
+    padding-block:1rem;font-size:.78rem;font-weight:600;color:var(--stone-soft);
+    white-space:nowrap;position:relative;border:none;background:none;cursor:pointer;font-family:inherit;
+  }
+  .doc-tab[aria-selected="true"]{color:var(--ink-text);}
+  .doc-tab[aria-selected="true"]::after{
+    content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--teal);
+  }
+  .doc-panel{padding:1.75rem 1.5rem;min-height:20rem;}
+  .clause-row{
+    display:flex;gap:1rem;padding:1rem 0;border-bottom:1px solid var(--line);
+  }
+  .clause-row:last-child{border-bottom:none;}
+  .clause-num{
+    flex-shrink:0;width:2rem;height:2rem;border-radius:6px;background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--teal-deep);
+  }
+  .pill{
+    display:inline-flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:600;
+    padding:.32rem .7rem;border-radius:99px;background:#fff;color:var(--ink-text);
+    border:1px solid var(--teal);
+  }
+  .pill.amber{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.35);}
+  .pill.quiet{background:transparent;color:var(--stone);border:1px solid var(--line);}
+
+  /* ---- command centre cards ---- */
+  .cc-grid{display:grid;gap:1.1rem;grid-template-columns:1fr;}
+  @media(min-width:1024px){.cc-grid{grid-template-columns:1.15fr 1fr;grid-template-rows:repeat(2,minmax(0,1fr));}}
+  .cc-card{
+    border-radius:14px;background:var(--ink-2);color:#fff;padding:2rem;
+    display:flex;flex-direction:column;justify-content:space-between;min-height:20rem;
+    border:1px solid var(--line-dark);position:relative;overflow:hidden;
+  }
+  .cc-card.tall{min-height:26rem;}
+  @media(min-width:1024px){.cc-card.tall{grid-row:span 2;min-height:0;}}
+  .cc-card h3{font-size:1.4rem;font-weight:500;letter-spacing:-.015em;max-width:20rem;}
+  .cc-card p{margin-top:.75rem;font-size:.92rem;line-height:1.6;color:var(--on-dark-soft);max-width:26rem;}
+  .cc-glow{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg, transparent, var(--teal) 30%, var(--teal) 70%, transparent);pointer-events:none;}
+
+  /* ---- stats ---- */
+  .stat-grid{display:grid;grid-template-columns:1fr;border-top:1px solid var(--line);border-left:1px solid var(--line);}
+  @media(min-width:768px){.stat-grid{grid-template-columns:repeat(3,1fr);}}
+  .stat-cell{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:2.4rem 2rem;}
+  .stat-num{font-family:'Instrument Serif',serif;font-size:clamp(3rem,5vw,4.6rem);line-height:.9;color:var(--ink-text);}
+  .stat-label{margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line);font-size:.8rem;color:var(--stone);letter-spacing:.02em;}
+
+  /* ---- manifesto ---- */
+  .manifesto{
+    background:linear-gradient(160deg,#020403 0%,#0a0c0b 60%,#141715 100%);color:#fff;
+    border-top:1px solid var(--line-dark);border-bottom:1px solid var(--line-dark);
+  }
+  .manifesto blockquote{
+    font-family:'Instrument Serif',serif;font-style:italic;
+    font-size:clamp(1.7rem,2.9vw,2.6rem);line-height:1.25;letter-spacing:-.01em;color:#fff;max-width:46rem;
+  }
+
+  /* ---- physical product ---- */
+  .seal-large{filter:drop-shadow(0 20px 40px rgba(18,32,29,.18));}
+  .folder-mock{
+    aspect-ratio:4/3;border-radius:14px;
+    background:linear-gradient(155deg, #050706 0%, #0c0f0e 55%, #171b19 100%);
+    border:1px solid var(--teal);
+    position:relative;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.25);
+  }
+  .folder-mock::before{
+    content:'';position:absolute;inset:0;
+    background:repeating-linear-gradient(115deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 14px);
+  }
+
+  /* ---- pricing ---- */
+  .price-card{
+    border-radius:14px;border:1px solid var(--line);background:#fff;padding:2.2rem;
+    display:flex;flex-direction:column;height:100%;
+  }
+  .price-card.featured{border-color:var(--teal);box-shadow:0 20px 50px rgba(0,0,0,.1);}
+  .price-tag{font-family:'Instrument Serif',serif;font-size:2.6rem;color:var(--ink-text);}
+  .price-list{margin-top:1.5rem;display:flex;flex-direction:column;gap:.65rem;font-size:.9rem;color:var(--stone);}
+  .price-list li{display:flex;gap:.6rem;align-items:flex-start;list-style:none;}
+  .price-list svg{flex-shrink:0;margin-top:.15rem;color:var(--teal-deep);}
+
+  /* ---- footer ---- */
+  footer{background:var(--ink);color:var(--on-dark-soft);}
+  footer h4{color:#fff;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:1.1rem;}
+  footer a{font-size:.88rem;transition:color .2s ease;}
+  footer a:hover{color:#fff;}
+  .footer-grid{display:grid;grid-template-columns:1fr;gap:2.5rem;padding-block:4rem;border-bottom:1px solid var(--line-dark);}
+  @media(min-width:768px){.footer-grid{grid-template-columns:1.4fr 1fr 1fr 1fr;}}
+  .footer-base{display:flex;flex-direction:column;gap:1rem;padding-block:1.75rem;font-size:.78rem;}
+  @media(min-width:768px){.footer-base{flex-direction:row;justify-content:space-between;align-items:center;}}
+
+  /* reveal-on-scroll */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<header class="site-nav" data-scrolled="false">
+  <div class="wrap nav-inner">
+    <a href="#" class="brand">
+      <svg class="seal" width="30" height="30" viewBox="0 0 40 40" fill="none">
+        <circle cx="20" cy="20" r="19" stroke="#2ab4ae" stroke-width="1.4"/>
+        <path d="M20 9 L23 17 L31.5 17 L24.7 22.2 L27.3 30.5 L20 25.6 L12.7 30.5 L15.3 22.2 L8.5 17 L17 17 Z" fill="#2ab4ae" opacity="0.9"/>
+      </svg>
+      <span>Heirloom Life</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#product">The Will</a>
+      <a href="#vault">Living Vault</a>
+      <a href="#physical">The Folder</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#partners">For Advisers</a>
+    </nav>
+    <a href="#pricing" class="nav-cta">Start your Will</a>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="grain"></div>
+  <div class="wrap hero-inner">
+    <div class="hero-content">
+      <span class="eyebrow">Estate planning, reimagined</span>
+      <h1 class="serif">Your life, <em>organised</em><br>for those who follow.</h1>
+      <p class="lede">Heirloom Life is the estate command centre for Australians who've built something worth protecting — a living Will, a private Vault, and a physical record built to last, not a form you fill in once and forget.</p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn-primary">Start your Will<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a href="#product" class="btn-ghost">See how it works</a>
+      </div>
+    </div>
+  </div>
+  <div class="trust-bar">
+    <div class="wrap trust-inner">
+      <div class="trust-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z" stroke="currentColor" stroke-width="1.4"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Drafted against Australian succession law, state by state</div>
+      <div class="trust-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z" stroke="currentColor" stroke-width="1.4"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>A living document, amended as your life changes</div>
+      <div class="trust-item"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="4" y="10" width="16" height="10" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.4"/></svg>Solicitor reviewed, encrypted, executor-ready</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRODUCT: THE WILL ================= -->
+<section id="product" class="section-pad">
+  <div class="wrap">
+    <div class="reveal" style="max-width:38rem;">
+      <span class="section-label">The Will</span>
+      <h2 class="section-title">Not a document you sign once<br>and hope you never think about <em>again</em>.</h2>
+      <p class="section-sub">Most Wills are static PDFs, filed away and forgotten until it's too late to matter. Yours lives in your Vault — readable in plain English, reviewed by solicitors when it counts, and versioned every time your life moves forward.</p>
+    </div>
+
+    <div class="reveal" style="margin-top:3.5rem;">
+      <div class="doc-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--line);">
+          <div style="display:flex;align-items:center;gap:.9rem;">
+            <div style="width:2.6rem;height:2.6rem;border-radius:8px;background:var(--ink-2);display:flex;align-items:center;justify-content:center;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 2h8l4 4v8H2V2Z" stroke="#2ab4ae" stroke-width="1.2"/><path d="M10 2v4h4" stroke="#2ab4ae" stroke-width="1.2"/></svg>
+            </div>
+            <div>
+              <p style="font-weight:600;font-size:.95rem;">Aaron Lee — Last Will &amp; Testament</p>
+              <p style="font-size:.75rem;color:var(--stone-soft);margin-top:.15rem;">Version 4 · Last amended 12 Jun 2026</p>
+            </div>
+          </div>
+          <span class="pill">Solicitor reviewed</span>
+        </div>
+
+        <div class="doc-tabs" role="tablist" aria-label="Will document sections" id="willTabs">
+          <button class="doc-tab" role="tab" aria-selected="true" data-panel="clauses">Clauses</button>
+          <button class="doc-tab" role="tab" aria-selected="false" data-panel="executor">Executor Access</button>
+          <button class="doc-tab" role="tab" aria-selected="false" data-panel="versions">Version History</button>
+          <button class="doc-tab" role="tab" aria-selected="false" data-panel="suggestions">Suggested Edits</button>
+        </div>
+
+        <div class="doc-panel" id="panel-clauses">
+          <div class="clause-row">
+            <div class="clause-num">1</div>
+            <div>
+              <p style="font-weight:600;font-size:.9rem;">Appointment of Executor</p>
+              <p style="font-size:.83rem;color:var(--stone);margin-top:.3rem;line-height:1.55;">Names who carries out your wishes. Plain-English explanation: your executor gathers your assets, pays any debts, and distributes what remains as you've set out below.</p>
+            </div>
+          </div>
+          <div class="clause-row">
+            <div class="clause-num">2</div>
+            <div>
+              <p style="font-weight:600;font-size:.9rem;">Guardianship of Minor Children</p>
+              <p style="font-size:.83rem;color:var(--stone);margin-top:.3rem;line-height:1.55;">Flagged for review — a change to your family situation since your last amendment may affect this clause.</p>
+              <span class="pill amber" style="margin-top:.6rem;background:transparent;color:var(--ink-text);border:1px solid var(--ink-text);">Included review recommended</span>
+            </div>
+          </div>
+          <div class="clause-row">
+            <div class="clause-num">3</div>
+            <div>
+              <p style="font-weight:600;font-size:.9rem;">Distribution of Residuary Estate</p>
+              <p style="font-size:.83rem;color:var(--stone);margin-top:.3rem;line-height:1.55;">Sets out how everything not otherwise gifted is divided. Last confirmed against your asset register two months ago.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-panel" id="panel-executor" hidden>
+          <p style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;font-weight:600;color:var(--stone);">Legacy Key access</p>
+          <div style="margin-top:1rem;border:1px solid var(--line);border-radius:10px;overflow:hidden;">
+            <div style="display:grid;grid-template-columns:9rem 1fr;border-bottom:1px solid var(--line);">
+              <div style="background:var(--surface-2);padding:.85rem 1rem;font-size:.7rem;font-weight:600;color:var(--stone);">Executor</div>
+              <div style="padding:.85rem 1rem;font-size:.85rem;">Sarah Lee</div>
+            </div>
+            <div style="display:grid;grid-template-columns:9rem 1fr;border-bottom:1px solid var(--line);">
+              <div style="background:var(--surface-2);padding:.85rem 1rem;font-size:.7rem;font-weight:600;color:var(--stone);">Access trigger</div>
+              <div style="padding:.85rem 1rem;font-size:.85rem;">Death certificate lodgement + identity verification</div>
+            </div>
+            <div style="display:grid;grid-template-columns:9rem 1fr;">
+              <div style="background:var(--surface-2);padding:.85rem 1rem;font-size:.7rem;font-weight:600;color:var(--stone);">Physical record</div>
+              <div style="padding:.85rem 1rem;font-size:.85rem;">Sealed in your Heirloom folder, cross-referenced to the Vault</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-panel" id="panel-versions" hidden>
+          <div style="display:flex;flex-direction:column;gap:.9rem;">
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:.9rem;">
+              <div><p style="font-size:.85rem;font-weight:600;">Version 4</p><p style="font-size:.75rem;color:var(--stone-soft);">Guardianship clause updated after second child</p></div>
+              <span style="font-size:.75rem;color:var(--stone-soft);">12 Jun 2026</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:.9rem;">
+              <div><p style="font-size:.85rem;font-weight:600;">Version 3</p><p style="font-size:.75rem;color:var(--stone-soft);">Asset register refreshed after property purchase</p></div>
+              <span style="font-size:.75rem;color:var(--stone-soft);">3 Feb 2026</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;">
+              <div><p style="font-size:.85rem;font-weight:600;">Version 2</p><p style="font-size:.75rem;color:var(--stone-soft);">Executor reassigned following marriage</p></div>
+              <span style="font-size:.75rem;color:var(--stone-soft);">19 Sep 2025</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="doc-panel" id="panel-suggestions" hidden>
+          <div style="border:1px solid var(--line);border-radius:10px;padding:1.1rem;background:var(--surface-2);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
+              <div>
+                <p style="font-size:.85rem;font-weight:600;">Consider adding a testamentary trust</p>
+                <p style="font-size:.8rem;color:var(--stone);margin-top:.4rem;line-height:1.55;">Your Vault shows two beneficiaries under 18. A trust structure can protect their inheritance until an age you choose, rather than passing directly at 18.</p>
+              </div>
+              <span class="pill quiet" style="flex-shrink:0;">Low severity</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin:0 1.5rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-radius:8px;background:var(--ink);padding:1rem 1.25rem;color:#fff;">
+          <span style="font-size:.85rem;font-weight:600;">Request solicitor review</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMMAND CENTRE ================= -->
+<section id="vault" class="section-pad" style="background:var(--surface-2);">
+  <div class="wrap">
+    <div class="reveal" style="max-width:38rem;">
+      <span class="section-label">The Command Centre</span>
+      <h2 class="section-title">A single home for everything<br>your estate needs to <em>keep working</em>.</h2>
+      <p class="section-sub">Your Will is the start, not the finish. The Living Vault keeps your estate current as your life does — your assets, your people, your instructions, always in step.</p>
+    </div>
+
+    <div class="reveal cc-grid" style="margin-top:3.5rem;">
+      <div class="cc-card tall">
+        <div class="cc-glow"></div>
+        <div style="position:relative;z-index:1;">
+          <span class="pill quiet" style="background:rgba(255,255,255,.08);color:#fff;">Living Vault</span>
+          <h3 style="margin-top:1rem;">Your estate, kept current.</h3>
+          <p>Marriage, a new child, a property purchase, a business sold — each one can quietly invalidate parts of a Will. The Vault tracks the life events that matter and prompts an update before a gap becomes a problem for the people you've named.</p>
+        </div>
+        <div style="position:relative;z-index:1;margin-top:2rem;display:flex;flex-direction:column;gap:.6rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;border-radius:8px;background:rgba(255,255,255,.06);font-size:.82rem;">
+            <span>Marriage automatically revokes a prior Will in most Australian states</span>
+            <span class="pill amber">Action needed</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;border-radius:8px;background:rgba(255,255,255,.06);font-size:.82rem;">
+            <span>New asset added: Investment property, Bondi</span>
+            <span class="pill">Synced</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cc-card">
+        <div class="cc-glow"></div>
+        <div style="position:relative;z-index:1;">
+          <span class="pill quiet" style="background:rgba(255,255,255,.08);color:#fff;">Lawyer Review</span>
+          <h3 style="margin-top:1rem;">Included where it matters, priced where it doesn't.</h3>
+          <p>High-severity flags — guardianship, trusts, business succession — come with included solicitor review each year. Minor changes stay self-serve, so premium attention goes where the stakes are highest.</p>
+        </div>
+      </div>
+
+      <div class="cc-card">
+        <div class="cc-glow"></div>
+        <div style="position:relative;z-index:1;">
+          <span class="pill quiet" style="background:rgba(255,255,255,.08);color:#fff;">Executor Access</span>
+          <h3 style="margin-top:1rem;">Built for the day it's actually needed.</h3>
+          <p>A verified path from death certificate to executor access — digital and physical, cross-referenced, so the people you trust aren't left guessing at the worst possible time.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section class="section-pad">
+  <div class="wrap">
+    <div class="reveal" style="max-width:40rem;">
+      <span class="section-label">Why now</span>
+      <h2 class="section-title">Estate planning has been <em>deprioritised</em>,<br>not because it doesn't matter.</h2>
+    </div>
+    <div class="reveal stat-grid" style="margin-top:3rem;">
+      <div class="stat-cell">
+        <p class="stat-num">7</p>
+        <p class="stat-label">Guided steps from first login to a complete, structured Will</p>
+      </div>
+      <div class="stat-cell">
+        <p class="stat-num">8</p>
+        <p class="stat-label">Australian states and territories, each with its own succession rules — accounted for</p>
+      </div>
+      <div class="stat-cell">
+        <p class="stat-num">1</p>
+        <p class="stat-label">Place your Will, your Vault, and your executor's instructions all live</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MANIFESTO ================= -->
+<section class="manifesto section-pad">
+  <div class="wrap">
+    <div class="reveal">
+      <p style="font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--teal);margin-bottom:2rem;">From the founder</p>
+      <blockquote>"We built Heirloom Life because a Will isn't paperwork — it's the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet."</blockquote>
+      <p style="margin-top:2rem;font-weight:600;color:#fff;">Aaron Lee</p>
+      <p style="margin-top:.2rem;color:var(--on-dark-soft);font-size:.9rem;">Founder, Heirloom Life</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PHYSICAL PRODUCT ================= -->
+<section id="physical" class="section-pad" style="background:var(--paper);">
+  <div class="wrap" style="display:grid;grid-template-columns:1fr;gap:3rem;align-items:center;">
+    <div class="reveal" style="max-width:34rem;">
+      <span class="section-label">The Folder</span>
+      <h2 class="section-title">Something to hold,<br>not just a login to <em>remember</em>.</h2>
+      <p class="section-sub">Every Heirloom member receives a cloth-bound folder — a permanent shell that houses a replaceable Will insert, updated by mail every time your Vault changes. Inside, a wax-sealed Legacy Key holds the code your executor will need, the day it's needed.</p>
+      <div style="margin-top:2rem;display:flex;flex-direction:column;gap:1rem;">
+        <div style="display:flex;gap:.9rem;align-items:flex-start;">
+          <svg width="18" height="18" style="flex-shrink:0;margin-top:.2rem;" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="#1f8f8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p style="font-size:.92rem;color:var(--ink-text);">The folder is permanent — only the insert is replaced as your Will is amended.</p>
+        </div>
+        <div style="display:flex;gap:.9rem;align-items:flex-start;">
+          <svg width="18" height="18" style="flex-shrink:0;margin-top:.2rem;" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="#1f8f8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p style="font-size:.92rem;color:var(--ink-text);">No QR codes, no links to expire — the Legacy Key is a physical, alphanumeric record.</p>
+        </div>
+        <div style="display:flex;gap:.9rem;align-items:flex-start;">
+          <svg width="18" height="18" style="flex-shrink:0;margin-top:.2rem;" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="#1f8f8a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p style="font-size:.92rem;color:var(--ink-text);">Access unlocks only after death certificate lodgement and executor identity verification.</p>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="folder-mock">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+          <svg class="seal-large" width="120" height="120" viewBox="0 0 120 120" fill="none">
+            <circle cx="60" cy="60" r="56" fill="none" stroke="#2ab4ae" stroke-width="1" opacity="0.4"/>
+            <circle cx="60" cy="60" r="44" stroke="#2ab4ae" stroke-width="1.6"/>
+            <path d="M60 30 L67 46 L84 46 L70.5 56.5 L76 73 L60 62.8 L44 73 L49.5 56.5 L36 46 L53 46 Z" fill="#2ab4ae"/>
+          </svg>
+        </div>
+        <div style="position:absolute;bottom:0;left:0;right:0;padding:1.5rem;background:linear-gradient(0deg, rgba(6,15,14,.7), transparent);">
+          <p style="color:#fff;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;">The Legacy Key</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="pricing" class="section-pad" style="background:var(--surface-2);">
+  <div class="wrap">
+    <div class="reveal" style="max-width:34rem;">
+      <span class="section-label">Membership</span>
+      <h2 class="section-title">Priced like something<br>worth <em>getting right</em>.</h2>
+      <p class="section-sub">A one-off Will to get your estate in order, and a Vault membership to keep it that way. No per-clause upsells, no surprise renewals.</p>
+    </div>
+
+    <div class="reveal" style="margin-top:3rem;display:grid;grid-template-columns:1fr;gap:1.5rem;">
+      <div style="display:grid;grid-template-columns:1fr;gap:1.5rem;" class="pricing-grid">
+        <div class="price-card">
+          <p style="font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--stone);">The Will — Single</p>
+          <p class="price-tag" style="margin-top:.75rem;">$490</p>
+          <p style="font-size:.85rem;color:var(--stone);margin-top:.3rem;">One-off, solicitor reviewed</p>
+          <ul class="price-list">
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Seven-step guided drafting</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>State-specific legal compliance</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Printed Will, cloth-bound folder</li>
+          </ul>
+          <a href="#" class="btn-dark" style="margin-top:2rem;">Start your Will</a>
+        </div>
+
+        <div class="price-card">
+          <p style="font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--stone);">The Will — Couple</p>
+          <p class="price-tag" style="margin-top:.75rem;">$790</p>
+          <p style="font-size:.85rem;color:var(--stone);margin-top:.3rem;">One-off, both partners</p>
+          <ul class="price-list">
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Two mirrored Wills, cross-referenced</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Shared asset register</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Two folders, one Vault</li>
+          </ul>
+          <a href="#" class="btn-dark" style="margin-top:2rem;">Start together</a>
+        </div>
+
+        <div class="price-card featured">
+          <span class="pill" style="align-self:flex-start;">Recommended</span>
+          <p style="font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--stone);margin-top:1rem;">Living Vault</p>
+          <p class="price-tag" style="margin-top:.75rem;">$18<span style="font-size:1rem;font-family:'DM Sans',sans-serif;color:var(--stone);">/mo</span></p>
+          <p style="font-size:.85rem;color:var(--stone);margin-top:.3rem;">Ongoing, cancel anytime</p>
+          <ul class="price-list">
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Life-event tracking &amp; alerts</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Included annual solicitor review</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Executor access &amp; Legacy Key</li>
+          </ul>
+          <a href="#" class="btn-primary" style="margin-top:2rem;">Join the Vault</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>@media(min-width:900px){.pricing-grid{grid-template-columns:repeat(3,1fr) !important;}}</style>
+</section>
+
+<!-- ================= PARTNERS / FINAL CTA ================= -->
+<section id="partners" style="border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--surface);">
+  <div class="wrap" style="display:flex;flex-direction:column;gap:1.5rem;padding-block:2.2rem;align-items:flex-start;">
+    <div style="display:flex;flex-direction:column;gap:1.5rem;width:100%;" class="cta-row">
+      <h2 style="font-size:clamp(1.4rem,2vw,1.9rem);font-weight:500;letter-spacing:-.02em;max-width:32rem;">Refer your clients into an estate plan they'll actually finish.</h2>
+      <a href="#" class="btn-dark" style="align-self:flex-start;">Partner with Heirloom</a>
+    </div>
+  </div>
+  <style>@media(min-width:768px){.cta-row{flex-direction:row !important;align-items:center;justify-content:space-between;}}</style>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div style="display:flex;align-items:center;gap:.6rem;">
+          <svg width="26" height="26" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="19" stroke="#2ab4ae" stroke-width="1.4"/><path d="M20 9 L23 17 L31.5 17 L24.7 22.2 L27.3 30.5 L20 25.6 L12.7 30.5 L15.3 22.2 L8.5 17 L17 17 Z" fill="#2ab4ae" opacity="0.9"/></svg>
+          <span style="font-family:'Instrument Serif',serif;font-size:1.25rem;color:#fff;">Heirloom Life</span>
+        </div>
+        <p style="margin-top:1.1rem;font-size:.85rem;max-width:20rem;line-height:1.6;">An estate command centre for Australians — the Will, the Vault, and the Legacy Key, kept in one place.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <div style="display:flex;flex-direction:column;gap:.7rem;">
+          <a href="#product">The Will</a>
+          <a href="#vault">Living Vault</a>
+          <a href="#physical">The Folder</a>
+        </div>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <div style="display:flex;flex-direction:column;gap:.7rem;">
+          <a href="#pricing">Pricing</a>
+          <a href="#partners">For Advisers</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+      <div>
+        <h4>Direct</h4>
+        <div style="display:flex;flex-direction:column;gap:.7rem;">
+          <a href="mailto:hello@heirloomlife.com.au">hello@heirloomlife.com.au</a>
+          <span style="font-size:.85rem;">Sydney, NSW</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-base">
+      <p>© 2026 Heirloom Life. All rights reserved.</p>
+      <div style="display:flex;gap:1.5rem;">
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // nav scroll state
+  const nav = document.querySelector('.site-nav');
+  const onScroll = () => { nav.dataset.scrolled = window.scrollY > 24 ? 'true' : 'false'; };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // will document tabs
+  const tabs = document.querySelectorAll('#willTabs .doc-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('aria-selected', String(t === tab)));
+      document.querySelectorAll('.doc-panel').forEach(p => p.hidden = true);
+      document.getElementById('panel-' + tab.dataset.panel).hidden = false;
+    });
+  });
+
+  // reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

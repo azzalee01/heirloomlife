@@ -17,6 +17,17 @@
   --teal-soft:        #D6F0EF;
   --teal-hover:       #239E99;
 
+  /* Marketing site tokens — heirloom-life-website_2.html reference */
+  --mkt-surface:    #F7F9F9;
+  --mkt-surface-2:  #eef2f1;
+  --mkt-paper:      #faf8f4;
+  --mkt-ink:        #0a0a0a;
+  --mkt-ink-soft:   #1a1a1a;
+  --mkt-ink-text:   #12201d;
+  --mkt-stone:      #5b6b67;
+  --mkt-stone-soft: #8a9591;
+  --mkt-line:       rgba(18,32,29,0.1);
+
   /* Sizing (mirrors Donna's knob system) */
   --btn-r:      8px;
   --card-r:     10px;
@@ -24,6 +35,83 @@
   --control-h:  34px;
   --sidebar-w:  240px;
   --sidebar-collapsed-w: 56px;
+}
+
+/* ── Marketing buttons (server-component safe — hover via CSS) ───────────────── */
+.mkt-btn-ink-l {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  height: 3.1rem; padding-inline: 1.75rem; border-radius: 4px;
+  background: var(--mkt-ink); color: #fff; font-weight: 600; font-size: .92rem;
+  border: 1px solid var(--mkt-ink); text-decoration: none;
+  transition: background .2s ease;
+}
+.mkt-btn-ink-l:hover { background: var(--mkt-ink-soft); }
+.mkt-btn-ink-l:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.mkt-btn-ink-m {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  height: 3rem; padding-inline: 1.6rem; border-radius: 4px;
+  background: var(--mkt-ink); color: #fff; font-weight: 600; font-size: .88rem;
+  border: 1px solid var(--mkt-ink); text-decoration: none;
+  transition: background .2s ease;
+}
+.mkt-btn-ink-m:hover { background: var(--mkt-ink-soft); }
+.mkt-btn-ink-m:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.mkt-btn-ink-sm {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 2.8rem; padding-inline: 1.4rem; border-radius: 4px;
+  background: var(--mkt-ink); color: #fff; font-weight: 600; font-size: .85rem;
+  border: 1px solid var(--mkt-ink); text-decoration: none;
+  transition: background .2s ease;
+}
+.mkt-btn-ink-sm:hover { background: var(--mkt-ink-soft); }
+
+.mkt-btn-ghost-l {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 3.1rem; padding-inline: 1.6rem; border-radius: 4px;
+  border: 1px solid var(--mkt-ink-text); color: var(--mkt-ink-text);
+  font-weight: 500; font-size: .92rem; text-decoration: none;
+  transition: background .2s ease;
+}
+.mkt-btn-ghost-l:hover { background: rgba(18,32,29,.05); }
+.mkt-btn-ghost-l:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.mkt-btn-ghost-m {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 3rem; padding-inline: 1.6rem; border-radius: 4px;
+  border: 1px solid var(--mkt-ink-text); color: var(--mkt-ink-text);
+  font-weight: 500; font-size: .88rem; text-decoration: none;
+  transition: background .2s ease;
+}
+.mkt-btn-ghost-m:hover { background: rgba(18,32,29,.05); }
+.mkt-btn-ghost-m:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.mkt-link {
+  color: var(--mkt-stone); text-decoration: none; transition: color .2s ease;
+}
+.mkt-link:hover { color: var(--mkt-ink-text); }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: .7; }
+  40%            { transform: translateY(-4px); opacity: 1; }
+}
+@keyframes slideInRow {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes flashTeal {
+  0%   { background: #fff; }
+  25%  { background: rgba(42,180,174,.14); }
+  100% { background: #fff; }
+}
+@keyframes slideUpCard {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(42,180,174,.5); }
+  50%       { box-shadow: 0 0 0 7px rgba(42,180,174,0); }
 }
 
 /* ── Base ────────────────────────────────────────────────────────────────────── */

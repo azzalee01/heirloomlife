@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heirloom Life — Built for people who build.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#0f0f0d;
+  --ink-soft:#3d3d38;
+  --ink-muted:#7a7970;
+  --paper:#faf8f4;
+  --paper-warm:#f5f2ec;
+  --paper-deep:#ede9e0;
+  --aqua:#7ec8c2;
+  --aqua-deep:#3d9994;
+  --aqua-pale:#e8f5f4;
+  --gold:#b8a882;
+  --gold-light:#d4c9a8;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'Jost',sans-serif;
+  --ease-luxury:cubic-bezier(0.25,0.1,0.25,1);
+  --ease-soft:cubic-bezier(0.4,0,0.2,1);
+}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+.cursor{position:fixed;top:0;left:0;width:8px;height:8px;background:var(--aqua-deep);border-radius:50%;pointer-events:none;z-index:9999;transition:transform 0.15s var(--ease-luxury),opacity 0.3s;transform:translate(-50%,-50%);}
+.cursor-ring{position:fixed;top:0;left:0;width:32px;height:32px;border:1px solid rgba(61,153,148,0.4);border-radius:50%;pointer-events:none;z-index:9998;transition:transform 0.35s var(--ease-luxury),width 0.3s,height 0.3s,border-color 0.3s;transform:translate(-50%,-50%);}
+body:has(a:hover,.btn:hover,.nav-cta:hover) .cursor-ring{width:48px;height:48px;border-color:rgba(61,153,148,0.7);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 3rem;height:72px;display:flex;align-items:center;justify-content:space-between;transition:background 0.4s var(--ease-luxury),backdrop-filter 0.4s;}
+nav.scrolled{background:rgba(250,248,244,0.92);backdrop-filter:blur(20px);border-bottom:0.5px solid rgba(184,168,130,0.2);}
+.nav-logo{font-family:var(--serif);font-size:1.5rem;font-weight:300;letter-spacing:0.08em;color:var(--ink);text-decoration:none;}
+.nav-links{display:flex;align-items:center;gap:2.5rem;}
+.nav-links a{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-muted);text-decoration:none;transition:color 0.3s;}
+.nav-links a:hover{color:var(--ink);}
+.nav-cta{font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:0.65rem 1.6rem;border:none;cursor:none;font-family:var(--sans);font-weight:400;transition:background 0.3s,color 0.3s;text-decoration:none;}
+.nav-cta:hover{background:var(--aqua-deep);color:#fff;}
+
+/* HERO */
+.hero{height:100vh;min-height:700px;display:flex;flex-direction:column;justify-content:flex-end;padding:0 3rem 5rem;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:var(--paper);}
+.hero-grain{position:absolute;inset:0;opacity:0.4;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");background-size:200px;}
+.hero-bloom{position:absolute;top:-10%;right:-5%;width:65vw;height:80vh;background:radial-gradient(ellipse at 70% 30%, rgba(126,200,194,0.12) 0%, rgba(126,200,194,0.04) 45%, transparent 70%);pointer-events:none;}
+.hero-bloom-2{position:absolute;bottom:10%;left:-10%;width:40vw;height:40vh;background:radial-gradient(ellipse, rgba(184,168,130,0.07) 0%, transparent 70%);pointer-events:none;}
+.hero-content{position:relative;z-index:2;max-width:900px;}
+.hero-eyebrow{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--aqua-deep);margin-bottom:2rem;opacity:0;animation:fadeUp 1s var(--ease-luxury) 0.3s forwards;}
+.hero-h1{font-family:var(--serif);font-size:clamp(3.5rem,7vw,6.5rem);font-weight:300;line-height:1.05;color:var(--ink);margin-bottom:2rem;opacity:0;animation:fadeUp 1s var(--ease-luxury) 0.5s forwards;}
+.hero-h1 em{font-style:italic;color:var(--aqua-deep);}
+.hero-h1 .line-2{display:block;}
+.hero-sub{font-size:0.9rem;letter-spacing:0.04em;color:var(--ink-muted);line-height:1.9;max-width:460px;font-weight:300;margin-bottom:3rem;opacity:0;animation:fadeUp 1s var(--ease-luxury) 0.7s forwards;}
+.hero-actions{display:flex;align-items:center;gap:2.5rem;opacity:0;animation:fadeUp 1s var(--ease-luxury) 0.9s forwards;}
+.btn-primary{display:inline-block;font-size:0.68rem;letter-spacing:0.18em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:1rem 2.5rem;border:none;cursor:none;font-family:var(--sans);font-weight:400;transition:background 0.35s var(--ease-luxury),letter-spacing 0.3s;text-decoration:none;position:relative;overflow:hidden;}
+.btn-primary::after{content:'';position:absolute;inset:0;background:var(--aqua-deep);transform:translateX(-101%);transition:transform 0.4s var(--ease-luxury);}
+.btn-primary:hover::after{transform:translateX(0);}
+.btn-primary span{position:relative;z-index:1;}
+.btn-ghost{font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink);border-bottom:0.5px solid currentColor;padding-bottom:2px;text-decoration:none;transition:color 0.3s,border-color 0.3s;}
+.btn-ghost:hover{color:var(--aqua-deep);}
+.hero-scroll{position:absolute;bottom:2.5rem;right:3rem;display:flex;align-items:center;gap:1rem;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-muted);opacity:0;animation:fadeIn 1s var(--ease-luxury) 1.4s forwards;}
+.scroll-line{width:40px;height:0.5px;background:var(--gold);transform-origin:left;animation:growLine 1.5s var(--ease-luxury) 1.6s forwards;transform:scaleX(0);}
+
+/* STATS BAND */
+.stats-band{display:grid;grid-template-columns:repeat(3,1fr);border-top:0.5px solid rgba(184,168,130,0.3);border-bottom:0.5px solid rgba(184,168,130,0.3);}
+.stat-cell{padding:3rem;border-right:0.5px solid rgba(184,168,130,0.3);position:relative;}
+.stat-cell:last-child{border-right:none;}
+.stat-num{font-family:var(--serif);font-size:3.2rem;font-weight:300;color:var(--aqua-deep);display:block;letter-spacing:-0.02em;margin-bottom:0.5rem;}
+.stat-label{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);line-height:1.6;font-weight:300;}
+
+/* PLATFORM SECTION */
+.section{padding:8rem 3rem;}
+.section-eyebrow{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--aqua-deep);margin-bottom:1.5rem;}
+.section-h2{font-family:var(--serif);font-size:clamp(2.2rem,4vw,3.5rem);font-weight:300;line-height:1.15;color:var(--ink);margin-bottom:1.5rem;max-width:600px;}
+.section-body{font-size:0.88rem;color:var(--ink-muted);line-height:1.9;max-width:500px;font-weight:300;margin-bottom:4rem;}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5px;background:rgba(184,168,130,0.15);}
+.feature-card{background:var(--paper);padding:2.5rem 2rem;transition:background 0.3s var(--ease-luxury);}
+.feature-card:hover{background:var(--aqua-pale);}
+.feature-dot{width:6px;height:6px;background:var(--aqua);border-radius:50%;margin-bottom:1.5rem;}
+.feature-title{font-family:var(--serif);font-size:1.15rem;font-weight:400;color:var(--ink);margin-bottom:0.75rem;letter-spacing:0.01em;}
+.feature-desc{font-size:0.8rem;color:var(--ink-muted);line-height:1.8;font-weight:300;}
+
+/* HOW IT WORKS */
+.how-section{background:var(--ink);padding:8rem 3rem;}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);}
+.how-step{padding:3rem 2.5rem;border-right:0.5px solid rgba(255,255,255,0.07);}
+.how-step:last-child{border-right:none;}
+.how-num{font-family:var(--serif);font-size:0.7rem;letter-spacing:0.15em;color:var(--aqua);margin-bottom:1.5rem;display:block;}
+.how-title{font-family:var(--serif);font-size:1.2rem;font-weight:300;color:#f5f2ec;margin-bottom:0.75rem;}
+.how-desc{font-size:0.78rem;color:rgba(255,255,255,0.4);line-height:1.85;font-weight:300;}
+
+/* QUOTE */
+.quote-section{padding:8rem 3rem;border-bottom:0.5px solid rgba(184,168,130,0.25);border-left:2px solid var(--aqua);}
+.quote-text{font-family:var(--serif);font-size:clamp(1.4rem,3vw,2.2rem);font-weight:300;font-style:italic;color:var(--ink);line-height:1.5;max-width:700px;margin-bottom:1.5rem;}
+.quote-attr{font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--aqua-deep);}
+
+/* PRICING */
+.pricing-section{background:var(--ink);padding:8rem 3rem;}
+.pricing-eyebrow{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--aqua);margin-bottom:1rem;}
+.pricing-h2{font-family:var(--serif);font-size:clamp(2rem,3.5vw,3rem);font-weight:300;color:#f5f2ec;margin-bottom:1rem;}
+.pricing-sub{font-size:0.82rem;color:rgba(255,255,255,0.35);font-weight:300;margin-bottom:4rem;max-width:440px;line-height:1.8;}
+.tier-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.5px;background:rgba(255,255,255,0.06);}
+.tier-card{background:#161614;padding:2.8rem 2.2rem;transition:background 0.3s var(--ease-luxury);}
+.tier-card.featured{background:#1a2828;}
+.tier-card:hover{background:#1e1e1b;}
+.tier-card.featured:hover{background:#1e2e2e;}
+.tier-badge{font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--aqua);margin-bottom:1.5rem;display:block;}
+.tier-badge.hi{color:var(--aqua);border:0.5px solid rgba(126,200,194,0.35);display:inline-block;padding:3px 10px;}
+.tier-name{font-family:var(--serif);font-size:1.6rem;font-weight:300;color:#f5f2ec;margin-bottom:0.4rem;}
+.tier-tag{font-size:0.72rem;color:rgba(255,255,255,0.3);margin-bottom:1.8rem;font-weight:300;}
+.tier-price{font-family:var(--serif);font-size:2.4rem;font-weight:300;color:var(--aqua);margin-bottom:0.2rem;}
+.tier-price-note{font-size:0.7rem;color:rgba(255,255,255,0.25);margin-bottom:2rem;font-weight:300;}
+.tier-divider{border:none;border-top:0.5px solid rgba(255,255,255,0.06);margin-bottom:1.5rem;}
+.tier-item{font-size:0.77rem;color:rgba(255,255,255,0.45);margin-bottom:0.65rem;display:flex;align-items:flex-start;gap:0.7rem;line-height:1.5;font-weight:300;}
+.tier-check{width:12px;height:12px;flex-shrink:0;margin-top:1px;color:var(--aqua);}
+.tier-btn{width:100%;padding:0.9rem;font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;background:transparent;color:rgba(126,200,194,0.8);border:0.5px solid rgba(126,200,194,0.25);cursor:none;font-family:var(--sans);margin-top:2rem;transition:all 0.3s var(--ease-luxury);}
+.tier-btn:hover{background:rgba(126,200,194,0.08);color:var(--aqua);}
+.tier-btn.featured-btn{background:var(--aqua-deep);color:#fff;border-color:var(--aqua-deep);}
+.tier-btn.featured-btn:hover{background:var(--aqua);}
+
+/* FOR WHOM */
+.whom-section{padding:8rem 3rem;}
+.trigger-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.5px;background:rgba(184,168,130,0.15);max-width:680px;}
+.trigger-card{background:var(--paper);padding:2.2rem 2rem;transition:background 0.3s var(--ease-luxury);}
+.trigger-card:hover{background:var(--aqua-pale);}
+.trigger-title{font-family:var(--serif);font-size:1.05rem;font-weight:400;color:var(--ink);margin-bottom:0.5rem;}
+.trigger-desc{font-size:0.78rem;color:var(--ink-muted);line-height:1.7;font-weight:300;}
+.trigger-num{font-family:var(--serif);font-size:0.65rem;color:var(--aqua-deep);letter-spacing:0.12em;margin-bottom:1rem;display:block;}
+
+/* CTA BAND */
+.cta-band{background:var(--aqua-deep);padding:7rem 3rem;text-align:center;}
+.cta-band h2{font-family:var(--serif);font-size:clamp(2rem,4vw,3.2rem);font-weight:300;color:#fff;margin-bottom:1rem;font-style:italic;}
+.cta-band p{font-size:0.82rem;color:rgba(255,255,255,0.65);font-weight:300;margin-bottom:3rem;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.85;}
+.btn-white{display:inline-block;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;background:#fff;color:var(--aqua-deep);padding:1rem 2.5rem;border:none;cursor:none;font-family:var(--sans);transition:all 0.3s;text-decoration:none;}
+.btn-white:hover{background:var(--ink);color:#fff;}
+
+/* FOOTER */
+footer{padding:3rem;display:flex;justify-content:space-between;align-items:center;border-top:0.5px solid rgba(184,168,130,0.25);flex-wrap:wrap;gap:1rem;}
+.footer-logo{font-family:var(--serif);font-size:1.1rem;font-weight:300;letter-spacing:0.06em;color:var(--ink);text-decoration:none;}
+.footer-note{font-size:0.65rem;letter-spacing:0.08em;color:var(--ink-muted);}
+.footer-links{display:flex;gap:2rem;}
+.footer-links a{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);text-decoration:none;transition:color 0.3s;}
+.footer-links a:hover{color:var(--aqua-deep);}
+
+/* INTAKE OVERLAY */
+.intake-overlay{position:fixed;inset:0;z-index:200;display:none;background:var(--paper);}
+.intake-overlay.active{display:flex;}
+.intake-progress{position:absolute;top:0;left:0;height:2px;background:var(--aqua-deep);transition:width 0.5s var(--ease-luxury);}
+.intake-nav{position:absolute;top:0;left:0;right:0;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;border-bottom:0.5px solid rgba(184,168,130,0.2);}
+.intake-logo{font-family:var(--serif);font-size:1.2rem;font-weight:300;letter-spacing:0.08em;color:var(--ink);}
+.intake-step-count{font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-muted);}
+.intake-close{font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ink-muted);background:none;border:none;cursor:none;font-family:var(--sans);transition:color 0.3s;}
+.intake-close:hover{color:var(--ink);}
+.intake-body{flex:1;display:flex;align-items:center;justify-content:center;padding:6rem 3rem 4rem;}
+.intake-screen{display:none;flex-direction:column;width:100%;max-width:600px;animation:slideIn 0.45s var(--ease-luxury) forwards;}
+.intake-screen.active{display:flex;}
+.intake-screen.exit{animation:slideOut 0.35s var(--ease-luxury) forwards;}
+.intake-eyebrow{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--aqua-deep);margin-bottom:1.5rem;}
+.intake-q{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:300;color:var(--ink);line-height:1.2;margin-bottom:0.75rem;}
+.intake-q em{font-style:italic;color:var(--aqua-deep);}
+.intake-hint{font-size:0.78rem;color:var(--ink-muted);margin-bottom:2.5rem;line-height:1.7;font-weight:300;}
+.intake-input{width:100%;border:none;border-bottom:1.5px solid rgba(184,168,130,0.4);background:transparent;padding:0.9rem 0;font-family:var(--serif);font-size:1.3rem;font-weight:300;color:var(--ink);outline:none;transition:border-color 0.3s;margin-bottom:0.5rem;}
+.intake-input:focus{border-color:var(--aqua-deep);}
+.intake-input::placeholder{color:rgba(122,121,112,0.4);}
+.intake-input-group{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;}
+.intake-select-group{display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem;}
+.intake-option{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;border:0.5px solid rgba(184,168,130,0.3);cursor:none;transition:all 0.25s var(--ease-luxury);font-family:var(--serif);font-size:1rem;font-weight:300;color:var(--ink-soft);}
+.intake-option:hover{border-color:var(--aqua-deep);color:var(--ink);background:var(--aqua-pale);}
+.intake-option.selected{border-color:var(--aqua-deep);background:var(--aqua-pale);color:var(--ink);}
+.intake-option-dot{width:8px;height:8px;border-radius:50%;border:1.5px solid rgba(184,168,130,0.5);flex-shrink:0;transition:all 0.2s;}
+.intake-option.selected .intake-option-dot{background:var(--aqua-deep);border-color:var(--aqua-deep);}
+.intake-radio-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:2rem;}
+.intake-actions{display:flex;align-items:center;justify-content:space-between;margin-top:1rem;}
+.intake-back{font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-muted);background:none;border:none;cursor:none;font-family:var(--sans);transition:color 0.3s;display:flex;align-items:center;gap:0.5rem;}
+.intake-back:hover{color:var(--ink);}
+.intake-next{font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;background:var(--ink);color:var(--paper);padding:0.9rem 2.2rem;border:none;cursor:none;font-family:var(--sans);position:relative;overflow:hidden;transition:all 0.3s;}
+.intake-next::after{content:'';position:absolute;inset:0;background:var(--aqua-deep);transform:translateX(-101%);transition:transform 0.4s var(--ease-luxury);}
+.intake-next:hover::after{transform:translateX(0);}
+.intake-next span{position:relative;z-index:1;}
+.intake-plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-bottom:2rem;}
+.intake-plan{padding:1.5rem;border:0.5px solid rgba(184,168,130,0.3);cursor:none;transition:all 0.3s var(--ease-luxury);text-align:center;}
+.intake-plan:hover,.intake-plan.selected{border-color:var(--aqua-deep);background:var(--aqua-pale);}
+.intake-plan-name{font-family:var(--serif);font-size:1.1rem;font-weight:300;color:var(--ink);margin-bottom:0.25rem;}
+.intake-plan-price{font-family:var(--serif);font-size:1.6rem;font-weight:300;color:var(--aqua-deep);margin-bottom:0.25rem;}
+.intake-plan-note{font-size:0.65rem;letter-spacing:0.08em;color:var(--ink-muted);}
+.intake-confirmation{text-align:center;display:flex;flex-direction:column;align-items:center;}
+.intake-confirmation .check-ring{width:64px;height:64px;border-radius:50%;border:1.5px solid var(--aqua-deep);display:flex;align-items:center;justify-content:center;margin-bottom:2rem;animation:scaleIn 0.5s var(--ease-luxury);}
+.intake-progress-dots{display:flex;gap:0.5rem;justify-content:center;margin-top:2rem;}
+.progress-dot{width:4px;height:4px;border-radius:50%;background:rgba(184,168,130,0.3);transition:all 0.3s;}
+.progress-dot.active{background:var(--aqua-deep);width:16px;border-radius:2px;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes growLine{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+@keyframes slideIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+@keyframes slideOut{from{opacity:1;transform:translateX(0);}to{opacity:0;transform:translateX(-40px);}}
+@keyframes scaleIn{from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;}}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  nav{padding:0 1.5rem;}
+  .nav-links a:not(.nav-cta){display:none;}
+  .hero{padding:0 1.5rem 4rem;}
+  .stats-band,.feature-grid,.how-grid,.tier-grid{grid-template-columns:1fr;}
+  .stat-cell,.how-step{border-right:none;border-bottom:0.5px solid rgba(184,168,130,0.2);}
+  .section,.pricing-section,.how-section,.whom-section{padding:5rem 1.5rem;}
+  .trigger-grid{grid-template-columns:1fr;max-width:100%;}
+  .intake-nav,.intake-body{padding-left:1.5rem;padding-right:1.5rem;}
+  .intake-input-group,.intake-radio-grid,.intake-plan-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">Heirloom Life</a>
+  <div class="nav-links">
+    <a href="#platform">The platform</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#" class="nav-cta" onclick="openIntake();return false;">Begin your plan</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-bloom"></div>
+  <div class="hero-bloom-2"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Lifestyle design for what matters most</p>
+    <h1 class="hero-h1">
+      Built for people<br>
+      <span class="line-2">who <em>build intentionally.</em></span>
+    </h1>
+    <p class="hero-sub">You've designed your career, your home, your financial life. Heirloom Life is the platform that protects all of it — and ensures everything you've built goes exactly where you intend.</p>
+    <div class="hero-actions">
+      <a href="#" class="btn-primary" onclick="openIntake();return false;"><span>Begin your plan</span></a>
+      <a href="#platform" class="btn-ghost">Discover the platform</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stat-cell">
+    <span class="stat-num">60%</span>
+    <span class="stat-label">of Australians have no plan<br>for what they've built</span>
+  </div>
+  <div class="stat-cell">
+    <span class="stat-num">30 min</span>
+    <span class="stat-label">to build your complete<br>life protection picture</span>
+  </div>
+  <div class="stat-cell">
+    <span class="stat-num">$99</span>
+    <span class="stat-label">per year. Everything included.<br>No surprises.</span>
+  </div>
+</div>
+
+<!-- PLATFORM -->
+<section class="section" id="platform">
+  <p class="section-eyebrow">The platform</p>
+  <h2 class="section-h2">Your life's work deserves a living plan.</h2>
+  <p class="section-body">Most people treat estate planning as a one-time task — a document filed and forgotten. Heirloom Life is different. A living platform that stays current as your life evolves.</p>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-dot"></div>
+      <div class="feature-title">Your wealth picture</div>
+      <div class="feature-desc">Property, superannuation, investments, business interests, digital assets — organised in one living picture. The clarity most people never have about their own financial life.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-dot"></div>
+      <div class="feature-title">Your circle of trust</div>
+      <div class="feature-desc">The people who matter, their roles, their relationship to what you've built. Add, update, and manage as your life changes — always current, always intentional.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-dot"></div>
+      <div class="feature-title">Your instructions</div>
+      <div class="feature-desc">A legally binding expression of your intentions, reviewed by a lawyer, generated from your actual life picture. Updated as you are.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-dot"></div>
+      <div class="feature-title">Quarterly design review</div>
+      <div class="feature-desc">Every quarter, Heirloom Life checks in. Does your plan still reflect your life? Life event prompts before life moves ahead of your intentions.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-dot"></div>
+      <div class="feature-title">Executor continuity</div>
+      <div class="feature-desc">When something happens, the people you trust have exactly what they need — instantly accessible, clearly organised, no searching, no delays.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-dot"></div>
+      <div class="feature-title">Digital asset vault</div>
+      <div class="feature-desc">Accounts, crypto, subscriptions — documented, stored securely, accessible to the right people at the right time.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <p class="section-eyebrow" style="color:var(--aqua);margin-bottom:3rem;">How it works</p>
+  <div class="how-grid">
+    <div class="how-step">
+      <span class="how-num">01</span>
+      <div class="how-title">Map your life</div>
+      <div class="how-desc">Build your complete picture — assets, people, intentions. Guided, unhurried, designed to feel like clarity rather than admin.</div>
+    </div>
+    <div class="how-step">
+      <span class="how-num">02</span>
+      <div class="how-title">Get it reviewed</div>
+      <div class="how-desc">A qualified Australian solicitor reviews your instructions. Legally binding across Australia. Done within 24 hours.</div>
+    </div>
+    <div class="how-step">
+      <span class="how-num">03</span>
+      <div class="how-title">Keep it current</div>
+      <div class="how-desc">Your life changes. Heirloom Life stays in step. Quarterly check-ins mean your plan always reflects who you are now.</div>
+    </div>
+    <div class="how-step">
+      <span class="how-num">04</span>
+      <div class="how-title">Leave nothing undone</div>
+      <div class="how-desc">When it matters, everything is exactly where it needs to be — for the people who matter most.</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<div class="quote-section">
+  <p class="quote-text">"This isn't something you do when you're old. It's something you do when you've built something worth protecting."</p>
+  <span class="quote-attr">— The Heirloom Life principle</span>
+</div>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <p class="pricing-eyebrow">Pricing</p>
+  <h2 class="pricing-h2">One price. Everything included.</h2>
+  <p class="pricing-sub">No transaction fees. No hidden costs. A platform that works as hard as you do — every year.</p>
+  <div class="tier-grid">
+    <div class="tier-card">
+      <span class="tier-badge">Builder</span>
+      <div class="tier-name">Annual</div>
+      <div class="tier-tag">You're building. This is the foundation.</div>
+      <div class="tier-price">$99</div>
+      <div class="tier-price-note">per year — renews annually</div>
+      <hr class="tier-divider">
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Complete asset and people register</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Lawyer-reviewed instructions</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Quarterly design reviews</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>One update per year</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Executor access</div>
+      <button class="tier-btn" onclick="openIntake()">Begin</button>
+    </div>
+    <div class="tier-card featured">
+      <span class="tier-badge hi">Architect — most chosen</span>
+      <div class="tier-name">Five years</div>
+      <div class="tier-tag">You're established. Lock it in.</div>
+      <div class="tier-price">$449</div>
+      <div class="tier-price-note">$90/year — save $45 over annual</div>
+      <hr class="tier-divider">
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Everything in Builder</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Priority review — 12 hours</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Unlimited updates</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Executor briefing pack</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Couple's joint platform</div>
+      <button class="tier-btn featured-btn" onclick="openIntake()">Begin</button>
+    </div>
+    <div class="tier-card">
+      <span class="tier-badge">Legacy</span>
+      <div class="tier-name">Ten years</div>
+      <div class="tier-tag">You've built something significant.</div>
+      <div class="tier-price">$799</div>
+      <div class="tier-price-note">$80/year — the definitive commitment</div>
+      <hr class="tier-divider">
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Everything in Architect</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Physical document portfolio</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Legacy letter template</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Named relationship manager</div>
+      <div class="tier-item"><svg class="tier-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Powers of attorney included</div>
+      <button class="tier-btn" onclick="openIntake()">Begin</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHOM -->
+<section class="whom-section">
+  <p class="section-eyebrow">For whom</p>
+  <h2 class="section-h2" style="margin-bottom:1rem;">You've just hit a milestone.<br>This is the next one.</h2>
+  <p class="section-body">The 30-something who just settled on their first property. The couple who just had a child. The founder who just incorporated.</p>
+  <div class="trigger-grid">
+    <div class="trigger-card">
+      <span class="trigger-num">01</span>
+      <div class="trigger-title">Just bought property</div>
+      <div class="trigger-desc">Your mortgage is signed. Is your plan to protect it?</div>
+    </div>
+    <div class="trigger-card">
+      <span class="trigger-num">02</span>
+      <div class="trigger-title">Growing your family</div>
+      <div class="trigger-desc">The people you love most deserve more than good intentions.</div>
+    </div>
+    <div class="trigger-card">
+      <span class="trigger-num">03</span>
+      <div class="trigger-title">Building a business</div>
+      <div class="trigger-desc">Your equity, your IP, your stake — does your plan account for all of it?</div>
+    </div>
+    <div class="trigger-card">
+      <span class="trigger-num">04</span>
+      <div class="trigger-title">Accumulating wealth</div>
+      <div class="trigger-desc">Super, shares, property. A growing picture needs a current plan.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2>Built for people who build.</h2>
+  <p>Start with clarity. Update as you grow. Leave nothing undone.</p>
+  <a href="#" class="btn-white" onclick="openIntake();return false;">Begin your plan</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="footer-logo">Heirloom Life</a>
+  <div class="footer-note">Lawyer-reviewed. Legally binding across Australia.</div>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<!-- INTAKE OVERLAY -->
+<div class="intake-overlay" id="intakeOverlay">
+  <div class="intake-progress" id="intakeProgress"></div>
+
+  <div class="intake-nav">
+    <span class="intake-logo">Heirloom Life</span>
+    <span class="intake-step-count" id="stepCount"></span>
+    <button class="intake-close" onclick="closeIntake()">Close ✕</button>
+  </div>
+
+  <div class="intake-body">
+
+    <!-- Screen 1: Welcome -->
+    <div class="intake-screen active" id="screen-1">
+      <p class="intake-eyebrow">Begin your plan</p>
+      <h2 class="intake-q">Let's start with<br><em>who you are.</em></h2>
+      <p class="intake-hint">This takes about 25 minutes. You can save and return at any time.</p>
+      <div class="intake-input-group">
+        <div>
+          <input class="intake-input" type="text" placeholder="First name" id="firstName">
+        </div>
+        <div>
+          <input class="intake-input" type="text" placeholder="Last name" id="lastName">
+        </div>
+      </div>
+      <input class="intake-input" type="email" placeholder="Email address" id="email" style="margin-bottom:1.5rem;">
+      <div style="margin-bottom:2.5rem;">
+        <p style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:0.75rem;">Your state</p>
+        <div class="intake-radio-grid">
+          <div class="intake-option" onclick="selectOption(this,'state')"><div class="intake-option-dot"></div>New South Wales</div>
+          <div class="intake-option" onclick="selectOption(this,'state')"><div class="intake-option-dot"></div>Victoria</div>
+          <div class="intake-option" onclick="selectOption(this,'state')"><div class="intake-option-dot"></div>Queensland</div>
+          <div class="intake-option" onclick="selectOption(this,'state')"><div class="intake-option-dot"></div>Western Australia</div>
+          <div class="intake-option" onclick="selectOption(this,'state')"><div class="intake-option-dot"></div>South Australia</div>
+          <div class="intake-option" onclick="selectOption(this,'state')"><div class="intake-option-dot"></div>Other</div>
+        </div>
+      </div>
+      <div class="intake-actions">
+        <span></span>
+        <button class="intake-next" onclick="nextScreen(2)"><span>Continue →</span></button>
+      </div>
+      <div class="intake-progress-dots" id="dots-1"></div>
+    </div>
+
+    <!-- Screen 2: The plan milestone -->
+    <div class="intake-screen" id="screen-2">
+      <p class="intake-eyebrow">Your moment</p>
+      <h2 class="intake-q">What brought you<br><em>here today?</em></h2>
+      <p class="intake-hint">Understanding your life stage helps us build a plan that fits exactly where you are.</p>
+      <div class="intake-select-group">
+        <div class="intake-option" onclick="selectOption(this,'milestone')"><div class="intake-option-dot"></div>I just bought or own property</div>
+        <div class="intake-option" onclick="selectOption(this,'milestone')"><div class="intake-option-dot"></div>I have or am expecting children</div>
+        <div class="intake-option" onclick="selectOption(this,'milestone')"><div class="intake-option-dot"></div>I own or am building a business</div>
+        <div class="intake-option" onclick="selectOption(this,'milestone')"><div class="intake-option-dot"></div>I'm accumulating significant assets</div>
+        <div class="intake-option" onclick="selectOption(this,'milestone')"><div class="intake-option-dot"></div>I want to get my affairs in order</div>
+      </div>
+      <div class="intake-actions">
+        <button class="intake-back" onclick="prevScreen(1)">← Back</button>
+        <button class="intake-next" onclick="nextScreen(3)"><span>Continue →</span></button>
+      </div>
+    </div>
+
+    <!-- Screen 3: Executor -->
+    <div class="intake-screen" id="screen-3">
+      <p class="intake-eyebrow">Your circle of trust</p>
+      <h2 class="intake-q">Who do you trust to<br><em>carry out your wishes?</em></h2>
+      <p class="intake-hint">This person will manage your estate when you're gone. Choose someone organised, trustworthy, and willing to take on the responsibility.</p>
+      <input class="intake-input" type="text" placeholder="Their full name" style="margin-bottom:1.5rem;">
+      <input class="intake-input" type="text" placeholder="Your relationship to them" style="margin-bottom:1.5rem;">
+      <input class="intake-input" type="email" placeholder="Their email address" style="margin-bottom:2rem;">
+      <div class="intake-actions">
+        <button class="intake-back" onclick="prevScreen(2)">← Back</button>
+        <button class="intake-next" onclick="nextScreen(4)"><span>Continue →</span></button>
+      </div>
+    </div>
+
+    <!-- Screen 4: Beneficiaries -->
+    <div class="intake-screen" id="screen-4">
+      <p class="intake-eyebrow">Your people</p>
+      <h2 class="intake-q">Who receives<br><em>what you've built?</em></h2>
+      <p class="intake-hint">Add the people — or organisations — who will inherit your estate. You'll assign percentages at the end.</p>
+      <div id="beneficiary-list">
+        <input class="intake-input" type="text" placeholder="First beneficiary — name and relationship" style="margin-bottom:1rem;">
+        <input class="intake-input" type="text" placeholder="Second beneficiary — name and relationship" style="margin-bottom:1rem;">
+      </div>
+      <button onclick="addBeneficiary()" style="font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--aqua-deep);background:none;border:none;cursor:none;font-family:var(--sans);margin-bottom:2rem;padding:0;">+ Add another</button>
+      <div class="intake-actions">
+        <button class="intake-back" onclick="prevScreen(3)">← Back</button>
+        <button class="intake-next" onclick="nextScreen(5)"><span>Continue →</span></button>
+      </div>
+    </div>
+
+    <!-- Screen 5: Assets -->
+    <div class="intake-screen" id="screen-5">
+      <p class="intake-eyebrow">Your wealth picture</p>
+      <h2 class="intake-q">What have<br><em>you built?</em></h2>
+      <p class="intake-hint">Select all that apply. We'll ask for details on each in your full platform — this gives us the shape of your estate.</p>
+      <div class="intake-radio-grid" style="margin-bottom:2rem;">
+        <div class="intake-option" onclick="toggleOption(this)"><div class="intake-option-dot"></div>Property</div>
+        <div class="intake-option" onclick="toggleOption(this)"><div class="intake-option-dot"></div>Superannuation</div>
+        <div class="intake-option" onclick="toggleOption(this)"><div class="intake-option-dot"></div>Investments / shares</div>
+        <div class="intake-option" onclick="toggleOption(this)"><div class="intake-option-dot"></div>Business interests</div>
+        <div class="intake-option" onclick="toggleOption(this)"><div class="intake-option-dot"></div>Digital assets / crypto</div>
+        <div class="intake-option" onclick="toggleOption(this)"><div class="intake-option-dot"></div>Vehicles</div>
+      </div>
+      <div class="intake-actions">
+        <button class="intake-back" onclick="prevScreen(4)">← Back</button>
+        <button class="intake-next" onclick="nextScreen(6)"><span>Continue →</span></button>
+      </div>
+    </div>
+
+    <!-- Screen 6: Choose plan -->
+    <div class="intake-screen" id="screen-6">
+      <p class="intake-eyebrow">Your commitment</p>
+      <h2 class="intake-q">Choose your<br><em>Heirloom Life plan.</em></h2>
+      <p class="intake-hint">One price. Everything included. No transaction fees, no hidden costs.</p>
+      <div class="intake-plan-grid">
+        <div class="intake-plan" onclick="selectPlan(this,'annual')">
+          <div class="intake-plan-name">Builder</div>
+          <div class="intake-plan-price">$99</div>
+          <div class="intake-plan-note">per year</div>
+        </div>
+        <div class="intake-plan selected" onclick="selectPlan(this,'five')">
+          <div class="intake-plan-name">Architect</div>
+          <div class="intake-plan-price">$449</div>
+          <div class="intake-plan-note">5 years · $90/yr</div>
+        </div>
+        <div class="intake-plan" onclick="selectPlan(this,'ten')">
+          <div class="intake-plan-name">Legacy</div>
+          <div class="intake-plan-price">$799</div>
+          <div class="intake-plan-note">10 years · $80/yr</div>
+        </div>
+      </div>
+      <div class="intake-actions">
+        <button class="intake-back" onclick="prevScreen(5)">← Back</button>
+        <button class="intake-next" onclick="nextScreen(7)"><span>Secure my plan →</span></button>
+      </div>
+    </div>
+
+    <!-- Screen 7: Confirmation -->
+    <div class="intake-screen" id="screen-7">
+      <div class="intake-confirmation">
+        <div class="check-ring">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--aqua-deep)" stroke-width="1.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <p class="intake-eyebrow">Your plan is being created</p>
+        <h2 class="intake-q" style="text-align:center;margin-bottom:1rem;">Welcome to<br><em>Heirloom Life.</em></h2>
+        <p style="font-size:0.82rem;color:var(--ink-muted);max-width:400px;text-align:center;line-height:1.85;font-weight:300;margin-bottom:2.5rem;">We're setting up your platform. You'll receive a confirmation within 60 seconds, and your solicitor-reviewed plan will be ready within 24 hours.</p>
+        <div style="display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="font-family:var(--serif);font-size:1.8rem;font-weight:300;color:var(--aqua-deep);">24hr</div>
+            <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);">Solicitor review</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-family:var(--serif);font-size:1.8rem;font-weight:300;color:var(--aqua-deep);">100%</div>
+            <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);">Legally binding</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-family:var(--serif);font-size:1.8rem;font-weight:300;color:var(--aqua-deep);">AU</div>
+            <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-muted);">Data sovereignty</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /intake-body -->
+</div><!-- /intake-overlay -->
+
+<script>
+// Cursor
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.transform=`translate(${mx-4}px,${my-4}px)`;});
+(function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;cursorRing.style.transform=`translate(${rx-16}px,${ry-16}px)`;requestAnimationFrame(animRing);})();
+
+// Nav scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>50);
+});
+
+// Intake state
+let currentScreen=1;const totalScreens=7;
+function updateProgress(){
+  const pct=((currentScreen-1)/(totalScreens-1))*100;
+  document.getElementById('intakeProgress').style.width=pct+'%';
+  document.getElementById('stepCount').textContent=currentScreen<totalScreens?currentScreen+' of '+(totalScreens-1):'';
+  updateDots();
+}
+function updateDots(){
+  document.querySelectorAll('.intake-progress-dots').forEach(container=>{
+    container.innerHTML='';
+    for(let i=1;i<=totalScreens-1;i++){
+      const d=document.createElement('div');
+      d.className='progress-dot'+(i===currentScreen?' active':'');
+      container.appendChild(d);
+    }
+  });
+}
+
+function openIntake(){
+  document.getElementById('intakeOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  currentScreen=1;
+  showScreen(1);
+  updateProgress();
+}
+function closeIntake(){
+  document.getElementById('intakeOverlay').classList.remove('active');
+  document.body.style.overflow='';
+}
+function showScreen(n){
+  document.querySelectorAll('.intake-screen').forEach(s=>s.classList.remove('active','exit'));
+  const s=document.getElementById('screen-'+n);
+  if(s)s.classList.add('active');
+}
+function nextScreen(n){
+  const cur=document.getElementById('screen-'+currentScreen);
+  if(cur){cur.classList.add('exit');setTimeout(()=>{cur.classList.remove('active','exit');},350);}
+  currentScreen=n;
+  setTimeout(()=>{showScreen(n);updateProgress();},350);
+  window.scrollTo(0,0);
+}
+function prevScreen(n){
+  currentScreen=n;showScreen(n);updateProgress();
+}
+
+function selectOption(el,group){
+  el.closest('.intake-select-group,.intake-radio-grid,div').querySelectorAll('.intake-option').forEach(o=>{
+    if(o.dataset.group===group||!group)o.classList.remove('selected');
+  });
+  el.classList.add('selected');
+}
+function toggleOption(el){el.classList.toggle('selected');}
+function selectPlan(el){
+  document.querySelectorAll('.intake-plan').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function addBeneficiary(){
+  const inp=document.createElement('input');
+  inp.className='intake-input';inp.type='text';
+  inp.placeholder='Beneficiary — name and relationship';
+  inp.style.marginBottom='1rem';
+  document.getElementById('beneficiary-list').appendChild(inp);
+  inp.focus();
+}
+updateProgress();
+</script>
+</body>
+</html>
