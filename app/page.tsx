@@ -61,7 +61,7 @@ export default function HomePage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>current</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Heirloom Life is the estate command centre for Australians who&#8217;ve built something worth protecting — a living Will, a private Vault, and a physical record built to last.
+              Heirloom Life is the estate command centre for Australians who&#8217;ve built something worth protecting — a living Will and a private Vault that keeps your estate current as your life changes.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', flexWrap: 'wrap', gap: '.9rem', justifyContent: 'center' }}>
               <Link href="/will/new" className="mkt-btn-ink-l">
@@ -198,7 +198,7 @@ export default function HomePage() {
             </div>
             {[
               { tag: 'Lawyer Review', h: "Included where it matters, priced where it doesn't.", p: 'High-severity flags — guardianship, trusts, business succession — come with included solicitor review each year. Minor changes stay self-serve.' },
-              { tag: 'Executor Access', h: "Built for the day it's actually needed.", p: "A verified path from death certificate to executor access — digital and physical, cross-referenced, so the people you trust aren't left guessing at the worst possible time." },
+              { tag: 'Executor Access', h: "Built for the day it's actually needed.", p: "A verified path from death certificate to executor access — identity-verified and cross-referenced, so the people you trust aren't left guessing at the worst possible time." },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: '#fff', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--teal) 30%, var(--teal) 70%, transparent)', pointerEvents: 'none' }}/>

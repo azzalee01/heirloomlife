@@ -30,7 +30,7 @@ const STATIC_PLANS: Plan[] = [
       'Seven-step guided drafting',
       'State-specific legal compliance',
       'Solicitor review included',
-      'Printed Will, cloth-bound folder',
+      'Downloadable, solicitor-signed Will document',
     ],
     highlight: false,
     sort_order: 1,

@@ -577,7 +577,7 @@ export default function PlatformPreview() {
                   </div>
                   <div style={{ borderRadius: 8, border: '1px solid var(--line)', background: '#fff', padding: '11px 14px' }}>
                     <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)', marginBottom: 2 }}>Executor Access</div>
-                    <div style={{ fontSize: 11, color: 'var(--neutral)', marginBottom: 9 }}>Printed access instructions sealed in your Heirloom folder.</div>
+                    <div style={{ fontSize: 11, color: 'var(--neutral)', marginBottom: 9 }}>Access granted after death certificate lodgement and identity verification.</div>
                     <div style={{ border: '1px solid var(--line)', borderRadius: 7, overflow: 'hidden' }}>
                       {[
                         ['Executor', 'Michael Chen'],

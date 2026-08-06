@@ -28,7 +28,7 @@ const FAQS = [
   },
   {
     q: 'What happens to my Will if I die?',
-    a: "Your Will is stored in your Vault. Your executor — the person you name to carry out your wishes — receives printed access instructions sealed in your Heirloom folder. The access process requires death certificate lodgement and identity verification. We do not release access automatically.",
+    a: "Your Will is stored in your Vault. Your executor — the person you name to carry out your wishes — is granted access after death certificate lodgement and identity verification. We do not release access automatically.",
   },
   {
     q: 'Is Heirloom Life providing legal advice?',
