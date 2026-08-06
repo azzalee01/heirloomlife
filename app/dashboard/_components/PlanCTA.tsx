@@ -21,7 +21,7 @@ const PLANS: {
       'AI-drafted legal will',
       'Solicitor review included',
       'Downloadable PDF',
-      'Valid in all Australian states',
+      'Currently available in NSW and VIC',
     ],
     highlight: false,
     cta: 'Get your Will',

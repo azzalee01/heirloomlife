@@ -14,7 +14,7 @@ const ITEMS = [
   },
   {
     title: 'Executor access controls',
-    body: 'Your executor cannot access your Vault during your lifetime. Access is gated behind a verified death certificate lodgement and identity verification step. The exact verification process is documented in your Heirloom folder.',
+    body: 'Your executor cannot access your Vault during your lifetime. Access is gated behind a verified death certificate lodgement and identity verification step. The exact verification process is documented in your Vault.',
   },
   {
     title: 'Solicitor review independence',

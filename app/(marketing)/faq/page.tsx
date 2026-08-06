@@ -36,7 +36,7 @@ const FAQS = [
   },
   {
     q: 'What states do you support?',
-    a: "The drafting process covers all eight Australian states and territories. State-specific rules — especially around execution, witnessing, and revocation — are accounted for based on the state you provide at the start of the questionnaire. NSW and VIC have the most state-specific complexity and have been prioritised in our review process.",
+    a: "Heirloom Life currently accepts members in NSW and VIC. If you're in another state or territory, you can join the waitlist — we'll notify you when your state is available. NSW and VIC have been prioritised first due to the volume and complexity of succession law activity in each.",
   },
 ]
 

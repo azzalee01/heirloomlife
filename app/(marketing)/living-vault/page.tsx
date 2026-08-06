@@ -135,7 +135,7 @@ export default function LivingVaultPage() {
             ))}
           </div>
           <p style={{ marginTop: '1.25rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-            Rules vary by state. Heirloom accounts for your state of residence throughout.
+            Rules vary by state. Heirloom Life currently serves NSW and VIC — other states can join the waitlist.
           </p>
         </div>
       </section>

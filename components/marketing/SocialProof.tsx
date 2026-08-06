@@ -19,7 +19,7 @@ const STATS = [
 const TRUST_BADGES = [
   { iconName: 'shield-check', text: 'Solicitor reviewed' },
   { iconName: 'lock', text: 'Secure Australian servers' },
-  { iconName: 'check-circle', text: 'Valid in all Australian states' },
+  { iconName: 'check-circle', text: 'Currently available in NSW and VIC' },
   { iconName: 'refresh-cw', text: 'Update anytime' },
 ];
 
