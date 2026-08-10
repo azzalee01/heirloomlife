@@ -50,13 +50,7 @@ export default function MarketingNav() {
         {/* Desktop nav */}
         <nav className="hidden lg:flex items-center" style={{ gap: '2.4rem' }} aria-label="Main">
           {NAV_LINKS.map(l => (
-            <Link
-              key={l.href}
-              href={l.href}
-              style={{ fontSize: '.85rem', color: 'var(--mkt-stone)', textDecoration: 'none', transition: 'color .2s ease' }}
-              onMouseOver={e => { e.currentTarget.style.color = 'var(--mkt-ink-text)' }}
-              onMouseOut={e => { e.currentTarget.style.color = 'var(--mkt-stone)' }}
-            >
+            <Link key={l.href} href={l.href} className="mkt-nav-link">
               {l.label}
             </Link>
           ))}
@@ -64,27 +58,10 @@ export default function MarketingNav() {
 
         {/* Right actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-          <Link
-            href="/auth/login"
-            className="hidden lg:block"
-            style={{ fontSize: '.85rem', color: 'var(--mkt-stone)', textDecoration: 'none', transition: 'color .2s ease' }}
-            onMouseOver={e => { e.currentTarget.style.color = 'var(--mkt-ink-text)' }}
-            onMouseOut={e => { e.currentTarget.style.color = 'var(--mkt-stone)' }}
-          >
+          <Link href="/auth/login" className="hidden lg:block mkt-nav-link">
             Log in
           </Link>
-          <Link
-            href="/will/new"
-            style={{
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              height: '2.6rem', paddingInline: '1.3rem', borderRadius: 4,
-              background: 'var(--mkt-ink)', color: '#fff', fontWeight: 600, fontSize: '.82rem',
-              border: '1px solid var(--mkt-ink)', textDecoration: 'none',
-              transition: 'background .2s ease',
-            }}
-            onMouseOver={e => { e.currentTarget.style.background = 'var(--mkt-ink-soft)' }}
-            onMouseOut={e => { e.currentTarget.style.background = 'var(--mkt-ink)' }}
-          >
+          <Link href="/will/new" className="mkt-nav-cta">
             Start your Will
           </Link>
         </div>

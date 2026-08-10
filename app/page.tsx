@@ -2,6 +2,7 @@ import Link from 'next/link'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 import PlatformPreview from '@/components/marketing/PlatformPreview'
+import Reveal from '@/components/marketing/Reveal'
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_PAD: React.CSSProperties = { paddingBlock: '5.5rem' }
@@ -115,7 +116,7 @@ export default function HomePage() {
 
       {/* ─── THE WILL ─────────────────────────────────────────────────────── */}
       <section id="the-will" style={{ ...SECTION_PAD, background: '#fff' }}>
-        <div className="md:px-10" style={W}>
+        <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>The Will</span>
             <H2>Not a document you sign once<br/>and hope you never think about <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>again</em>.</H2>
@@ -166,12 +167,12 @@ export default function HomePage() {
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </div>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* ─── LIVING VAULT / COMMAND CENTRE ────────────────────────────────── */}
       <section id="living-vault" style={{ ...SECTION_PAD, background: 'var(--mkt-surface-2)' }}>
-        <div className="md:px-10" style={W}>
+        <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>The Command Centre</span>
             <H2>A single home for everything<br/>your estate needs to <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>keep working</em>.</H2>
@@ -208,12 +209,12 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* ─── STATS ────────────────────────────────────────────────────────── */}
       <section style={SECTION_PAD}>
-        <div className="md:px-10" style={W}>
+        <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '40rem' }}>
             <span style={SECTION_LABEL}>Why now</span>
             <H2>Estate planning has been <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>deprioritised</em>,<br/>not because it doesn&#8217;t matter.</H2>
@@ -230,24 +231,24 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* ─── MANIFESTO ────────────────────────────────────────────────────── */}
       <section style={{ ...SECTION_PAD, background: '#fff', borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10" style={W}>
+        <Reveal className="md:px-10" style={W}>
           <p style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal)', marginBottom: '2rem' }}>From the founder</p>
           <blockquote style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: 'clamp(1.7rem, 2.9vw, 2.6rem)', lineHeight: 1.25, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', maxWidth: '46rem', margin: 0 }}>
             &#8220;We built Heirloom Life because a Will isn&#8217;t paperwork — it&#8217;s the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet.&#8221;
           </blockquote>
           <p style={{ marginTop: '2rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>Aaron Lee</p>
           <p style={{ marginTop: '.2rem', color: 'var(--mkt-stone)', fontSize: '.9rem' }}>Founder, Heirloom Life</p>
-        </div>
+        </Reveal>
       </section>
 
-{/* ─── PRICING PREVIEW ──────────────────────────────────────────────── */}
+      {/* ─── PRICING PREVIEW ──────────────────────────────────────────────── */}
       <section style={{ ...SECTION_PAD, background: 'var(--mkt-surface-2)' }}>
-        <div className="md:px-10" style={W}>
+        <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '34rem' }}>
             <span style={SECTION_LABEL}>Membership</span>
             <H2>Priced like something<br/>worth <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.</H2>
@@ -256,7 +257,7 @@ export default function HomePage() {
           <div style={{ marginTop: '2rem' }}>
             <Link href="/pricing" className="mkt-btn-ink-m">View pricing</Link>
           </div>
-        </div>
+        </Reveal>
       </section>
 
       {/* ─── FOR ADVISERS BAND ────────────────────────────────────────────── */}
