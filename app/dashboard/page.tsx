@@ -156,10 +156,15 @@ export default async function DashboardPage({
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
       <IntroAnimationLoader />
 
-      {/* Page header — matches Donna's in-page toolbar row */}
+      {/* Page header — glass material: content scrolls under the translucent chrome */}
       <header
         className="sticky top-0 z-20 border-b px-6 h-14 flex items-center justify-between"
-        style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}
+        style={{
+          background: 'rgba(255,255,255,0.82)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderColor: 'var(--line)',
+        }}
       >
         <div>
           <h1

@@ -56,8 +56,11 @@ export default function SideNav({ userName, userEmail }: Props) {
 
   return (
     <aside
-      className="shrink-0 flex flex-col bg-[var(--paper)] border-r border-[var(--line)] h-full transition-[width] duration-150 ease-out"
-      style={{ width: expanded ? 'var(--sidebar-w)' : 'var(--sidebar-collapsed-w)' }}
+      className="shrink-0 flex flex-col bg-[var(--paper)] border-r border-[var(--line)] h-full"
+      style={{
+        width: expanded ? 'var(--sidebar-w)' : 'var(--sidebar-collapsed-w)',
+        transition: 'width 0.32s cubic-bezier(0.16,1,0.3,1)',
+      }}
     >
       {/* Wordmark + collapse toggle */}
       <div className="h-14 px-3 flex items-center justify-between shrink-0 border-b border-[var(--line)]">
@@ -77,7 +80,7 @@ export default function SideNav({ userName, userEmail }: Props) {
             <button
               onClick={toggle}
               aria-label="Collapse sidebar"
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--neutral)] hover:bg-[var(--paper-warm)] hover:text-[var(--ink)] transition-colors shrink-0"
+              className="w-8 h-8 flex items-center justify-center rounded-lg text-[var(--neutral)] hover:bg-[var(--paper-warm)] hover:text-[var(--ink)] transition-[background,color,transform] duration-[80ms] active:scale-90 shrink-0"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
                 <path d="M15 18l-6-6 6-6" />

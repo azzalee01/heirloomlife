@@ -14,10 +14,15 @@ export default function AiChat() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const loadedCountRef = useRef(0)
 
   useEffect(() => {
     loadChatHistory()
-      .then((history) => setMessages(history.map((h) => ({ id: h.id, role: h.role, text: h.content }))))
+      .then((history) => {
+        const msgs = history.map((h) => ({ id: h.id, role: h.role, text: h.content }))
+        loadedCountRef.current = msgs.length
+        setMessages(msgs)
+      })
       .catch(() => {
         // No will yet, or not authenticated — chat starts empty; the input
         // will surface the real error on first send attempt.
@@ -75,7 +80,7 @@ export default function AiChat() {
   }
 
   return (
-    <div className="bg-white border border-[var(--line)] overflow-hidden">
+    <div className="bg-white border border-[var(--line)] rounded-xl overflow-hidden">
       {/* Header */}
       <div className="px-6 py-4 border-b border-[var(--line-soft)] flex items-center gap-3">
         <div className="w-8 h-8 flex items-center justify-center shrink-0 bg-[var(--paper-warm)]">
@@ -93,10 +98,10 @@ export default function AiChat() {
       {/* Messages */}
       {(messages.length > 0 || loading) && (
         <div className="px-6 py-4 space-y-3 border-b border-[var(--line-soft)] max-h-[420px] overflow-y-auto">
-          {messages.map((m) => (
-            <div key={m.id} className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+          {messages.map((m, i) => (
+            <div key={m.id} className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : 'justify-start'} ${i >= loadedCountRef.current ? 'msg-in' : ''}`}>
               {m.role === 'assistant' && (
-                <div className="w-6 h-6 flex items-center justify-center shrink-0 mt-0.5 bg-[var(--paper-warm)]">
+                <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-0.5 bg-[var(--paper-warm)]">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
                     stroke="var(--teal)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -105,8 +110,10 @@ export default function AiChat() {
               )}
               <div className="max-w-[76%] space-y-2">
                 <div
-                  className={`px-4 py-2.5 text-sm leading-relaxed ${
-                    m.role === 'user' ? 'text-white' : 'text-[var(--ink)] bg-[var(--paper-warm)]'
+                  className={`px-4 py-2.5 text-sm leading-relaxed rounded-2xl ${
+                    m.role === 'user'
+                      ? 'text-white rounded-tr-sm'
+                      : 'text-[var(--ink)] bg-[var(--paper-warm)] rounded-tl-sm'
                   }`}
                   style={m.role === 'user' ? { backgroundColor: 'var(--teal)' } : {}}
                 >
@@ -114,14 +121,14 @@ export default function AiChat() {
                 </div>
 
                 {m.proposals?.map((p) => (
-                  <div key={p.id} className="border border-[var(--line)] bg-white px-4 py-3 space-y-2">
+                  <div key={p.id} className="border border-[var(--line)] bg-white rounded-lg px-4 py-3 space-y-2">
                     <p className="text-sm font-medium text-[var(--ink)]">{p.summary}</p>
                     {p.status === 'pending' && (
                       <div className="flex gap-2">
                         <button
                           type="button"
                           onClick={() => confirmProposal(m.id, p)}
-                          className="text-xs font-semibold px-3 py-1.5 text-white"
+                          className="text-xs font-semibold px-3 py-1.5 text-white rounded transition-transform duration-[80ms] ease-out active:scale-[0.96]"
                           style={{ backgroundColor: 'var(--teal)' }}
                         >
                           Confirm
@@ -129,7 +136,7 @@ export default function AiChat() {
                         <button
                           type="button"
                           onClick={() => updateProposal(m.id, p.id, 'dismissed')}
-                          className="text-xs font-medium px-3 py-1.5 border border-[var(--line)] text-[var(--neutral)]"
+                          className="text-xs font-medium px-3 py-1.5 border border-[var(--line)] text-[var(--neutral)] rounded transition-transform duration-[80ms] ease-out active:scale-[0.96]"
                         >
                           Dismiss
                         </button>
@@ -181,7 +188,7 @@ export default function AiChat() {
           <button
             onClick={send}
             disabled={!input.trim() || loading}
-            className="w-10 h-10 flex items-center justify-center text-white transition-opacity disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+            className="w-10 h-10 rounded-lg flex items-center justify-center text-white transition-[opacity,transform] duration-[80ms] ease-out active:scale-[0.92] disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
             style={{ backgroundColor: 'var(--teal)' }}
             aria-label="Send"
           >

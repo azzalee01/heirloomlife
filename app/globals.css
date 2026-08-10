@@ -175,28 +175,28 @@ input, textarea, [contenteditable="true"] { user-select: text; -webkit-user-sele
   background: var(--teal); color: #fff; border-color: var(--teal);
 }
 .btn-primary:hover:not(:disabled) { background: var(--teal-hover); border-color: var(--teal-hover); }
-.btn-primary:active:not(:disabled) { transform: translateY(1px); }
+.btn-primary:active:not(:disabled) { transform: scale(0.97); }
 
 /* Secondary — outline */
 .btn-secondary {
   background: var(--paper); color: var(--ink); border-color: var(--line);
 }
 .btn-secondary:hover:not(:disabled) { background: var(--paper-warm); }
-.btn-secondary:active:not(:disabled) { background: var(--teal-light); transform: translateY(1px); }
+.btn-secondary:active:not(:disabled) { background: var(--teal-light); transform: scale(0.97); }
 
 /* Ghost */
 .btn-ghost {
   background: transparent; color: var(--ink); border-color: transparent;
 }
 .btn-ghost:hover:not(:disabled) { background: var(--paper-warm); border-color: var(--line); }
-.btn-ghost:active:not(:disabled) { transform: translateY(1px); }
+.btn-ghost:active:not(:disabled) { transform: scale(0.97); }
 
 /* Dark (ink fill) */
 .btn-dark {
   background: var(--ink); color: #fff; border-color: var(--ink);
 }
 .btn-dark:hover:not(:disabled) { background: #1e2a28; }
-.btn-dark:active:not(:disabled) { transform: translateY(1px); }
+.btn-dark:active:not(:disabled) { transform: scale(0.97); }
 
 /* Glass — Donna pattern: warm paper at 85% opacity + backdrop-blur-xl + subtle border + shadow-sm */
 .btn-glass {
@@ -211,7 +211,7 @@ input, textarea, [contenteditable="true"] { user-select: text; -webkit-user-sele
   background: rgba(247, 249, 249, 0.96);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 1) inset;
 }
-.btn-glass:active:not(:disabled) { transform: translateY(1px); }
+.btn-glass:active:not(:disabled) { transform: scale(0.97); }
 
 /* Glass primary — Donna pattern on teal: semi-transparent teal surface + blur + border */
 .btn-glass-primary {
@@ -227,19 +227,27 @@ input, textarea, [contenteditable="true"] { user-select: text; -webkit-user-sele
   border-color: rgba(42, 180, 174, 0.55);
   box-shadow: 0 2px 12px rgba(42, 180, 174, 0.20), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
 }
-.btn-glass-primary:active:not(:disabled) { transform: translateY(1px); }
+.btn-glass-primary:active:not(:disabled) { transform: scale(0.97); }
 
 /* ── Nav links (sidebar) ─────────────────────────────────────────────────────── */
 .nav-link {
   display: flex; align-items: center; gap: 10px;
   padding: 7px 10px; border-radius: 8px; font-size: 14px;
   color: var(--ink); text-decoration: none;
-  transition: background .12s, color .12s;
+  transition: background .12s, color .12s, transform .08s ease-out;
 }
 .nav-link:hover { background: var(--paper-warm); }
+.nav-link:active { transform: scale(0.97); }
 .nav-link.is-active {
   background: var(--teal-light); color: var(--teal-deep); font-weight: 600;
 }
+
+/* Chat message entrance */
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.msg-in { animation: msg-in 0.35s cubic-bezier(0.16,1,0.3,1) both; }
 
 /* ── Cards ───────────────────────────────────────────────────────────────────── */
 .card {
