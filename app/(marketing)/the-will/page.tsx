@@ -21,7 +21,7 @@ function Pill({ children, variant = 'teal' }: { children: React.ReactNode; varia
   )
 }
 
-export const metadata = { title: 'The Will — Heirloom Life', description: 'A living Will in plain English, solicitor reviewed, and versioned every time your life moves forward.' }
+export const metadata = { title: 'The Will — Heirloom Life', description: 'A living Will in plain English, drafted to your state\'s requirements, and versioned every time your life moves forward.' }
 
 export default function TheWillPage() {
   return (
@@ -121,14 +121,14 @@ export default function TheWillPage() {
           <div style={{ maxWidth: '38rem', marginBottom: '3.5rem' }}>
             <span style={SECTION_LABEL}>How it works</span>
             <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 'clamp(1.9rem, 3.2vw, 2.8rem)', lineHeight: 1.1, letterSpacing: '-.02em', fontWeight: 500, color: 'var(--mkt-ink-text)', margin: 0 }}>
-              Seven guided steps. One solicitor review. A document that actually stays current.
+              Seven guided steps. A document that actually stays current.
             </h2>
           </div>
           <div className="lg:grid-cols-2" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.1rem' }}>
             {[
               { n: '01', title: 'Answer guided questions', body: 'Seven steps covering your assets, beneficiaries, executor, and any guardianship arrangements. Every question has a plain-English explanation.' },
               { n: '02', title: 'Review your draft', body: 'Your answers become a structured Will draft. Review clause by clause. Change your answers and the draft updates immediately.' },
-              { n: '03', title: 'Solicitor reviews the document', body: 'A qualified Australian solicitor reviews your draft for legal completeness and state-specific compliance.' },
+              { n: '03', title: 'Download and sign', body: 'Download your completed Will and sign it with two witnesses. Any complex flags — business interests, blended families, overseas assets — are highlighted in your Vault.' },
               { n: '04', title: 'Sign and witness', body: 'Your Will is valid only once signed in front of two independent witnesses. We walk you through the exact requirements for your state.' },
               { n: '05', title: 'Store and update', body: 'Your signed Will lives in your Vault alongside your asset register and executor access instructions.' },
               { n: '+', title: 'Versioned as your life changes', body: 'Every amendment creates a new version. A change to your family, your assets, or your executors prompts an update — not a whole new Will.' },
@@ -143,17 +143,14 @@ export default function TheWillPage() {
         </div>
       </section>
 
-      {/* ── Solicitor review note ─────────────────────────────────────────── */}
+      {/* ── Solicitor review add-on note ──────────────────────────────────── */}
       <section style={{ ...SECTION_PAD, background: '#fff' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem' }}>
-            Solicitor review: included where it counts.
+            Solicitor review, when you need it.
           </h2>
           <p style={{ fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>
-            High-severity flags — guardianship, trusts, business succession — come with included solicitor review. Minor changes stay self-serve. You&#8217;re not billed per clause or per review request; the review is part of the product where the stakes justify it.
-          </p>
-          <p style={{ fontSize: '.85rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.6, margin: 0 }}>
-            Specific turnaround times for solicitor review are being confirmed before launch.
+            Template Wills are not automatically reviewed by a solicitor — they don&#8217;t need to be for straightforward estates. For situations that are more complex — business succession, blended families, overseas assets, testamentary trusts — your Vault will flag the specific areas of concern. You can then request a solicitor review as an add-on for around $150, and communicate directly with our partner lawyers through the platform.
           </p>
         </div>
       </section>

@@ -122,7 +122,7 @@ export default function PricingPage() {
                 'Unlimited will reviews and quick amendments — chat-based update, immediate redrafted document',
                 'Unlimited quick add/remove of beneficiaries, gifts, and executors',
                 'NSW members only: access to Heirloom\'s team AV witness pool for remote execution',
-                'Solicitor referral for complex or bespoke cases',
+                'Solicitor review add-on available (~$150) with direct access to partner lawyers through the platform',
               ].map((f) => (
                 <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>
                   <Check />
@@ -147,17 +147,12 @@ export default function PricingPage() {
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem',
           }}>
-            A template Will isn&apos;t always enough.
+            Complete your Will — we&apos;ll flag what needs a closer look.
           </h2>
           <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', maxWidth: '36rem', marginBottom: '2rem' }}>
-            If your situation involves things like overseas assets, a business, a blended family, or a beneficiary with special needs, a template Will may not be enough. We can refer you to a solicitor for a bespoke Will.
+            If your estate involves overseas assets, a business, a blended family, or a beneficiary with special needs, complete the questionnaire and your Vault will flag the specific areas of concern. From there you can request a solicitor review for around $150 and communicate directly with our partner lawyers — without starting over.
           </p>
-          <a
-            href="mailto:hello@heirloomlife.com.au?subject=Referral%20enquiry"
-            className="mkt-btn-ghost-m"
-          >
-            Get a referral
-          </a>
+          <a href="/start" className="mkt-btn-ghost-m">Start your Will</a>
         </div>
       </section>
 
@@ -186,7 +181,7 @@ export default function PricingPage() {
             },
             {
               q: 'What if my situation is complex?',
-              a: 'If your estate involves overseas assets, a business, a blended family, or a beneficiary with special needs, a template Will may not be sufficient. We\'ll flag this as you go through the questionnaire, and we can refer you to a solicitor who can prepare a bespoke Will.',
+              a: 'Complete the questionnaire and your Vault will flag the specific areas of concern. You can then request a solicitor review add-on for around $150 and communicate directly with our partner lawyers through the platform. For estates too complex for a template Will entirely, we can refer you to a solicitor for a bespoke engagement.',
             },
           ].map((item) => (
             <details

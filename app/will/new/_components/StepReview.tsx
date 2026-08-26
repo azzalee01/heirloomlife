@@ -270,28 +270,17 @@ export default function StepReview({ formData, activeSteps, onJumpToStep }: Prop
       </Section>
 
       {triggeredFlagLabels(formData).length > 0 && (
-        <div className="border border-amber-200 bg-amber-50 px-4 py-4 space-y-3">
-          <div>
-            <p className="text-sm font-semibold text-amber-900">Before you finish — is a template Will right for you?</p>
-            <p className="text-sm text-amber-800 mt-1.5 leading-relaxed">
-              You told us you have {formatFlagList(triggeredFlagLabels(formData))}. A bespoke Will, prepared by a solicitor, may better suit your situation.
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <a
-              href="mailto:hello@heirloomlife.com.au?subject=Referral%20enquiry"
-              className="text-sm font-semibold text-amber-900 underline hover:no-underline"
-            >
-              Get a referral instead
-            </a>
-            <span className="text-sm text-amber-700">or continue reviewing and complete your Will below</span>
-          </div>
+        <div className="border border-amber-200 bg-amber-50 px-4 py-4 space-y-2">
+          <p className="text-sm font-semibold text-amber-900">Some aspects of your estate may benefit from professional review</p>
+          <p className="text-sm text-amber-800 leading-relaxed">
+            You told us you have {formatFlagList(triggeredFlagLabels(formData))}. Complete your Will below — we&apos;ll flag these in your Vault with a recommendation to add a solicitor review. A review add-on is available from your Vault for around $150.
+          </p>
         </div>
       )}
 
-      <div className="border border-amber-100 bg-amber-50 px-4 py-3">
-        <p className="text-xs text-amber-700">
-          <span className="font-semibold">Important:</span> By completing this will questionnaire, you are providing information for our legal team to prepare your will. A qualified solicitor will review your will before it is finalised.
+      <div className="border border-[var(--line)] bg-[var(--paper-warm)] px-4 py-3">
+        <p className="text-xs" style={{ color: 'var(--neutral)' }}>
+          <span className="font-semibold" style={{ color: 'var(--ink)' }}>Note:</span> Heirloom Life is not a law firm and this is not legal advice. Your Will is prepared using established estate planning standards. It is not reviewed by a solicitor unless you purchase the review add-on from your Vault.
         </p>
       </div>
     </div>

@@ -18,8 +18,8 @@ const STEPS = [
   },
   {
     num: '03',
-    title: 'Solicitor reviews the document',
-    body: 'A qualified Australian solicitor reviews your draft for legal completeness and state-specific compliance. High-severity flags — guardianship, trusts, business succession — are reviewed before your Will is finalised.',
+    title: 'Download and sign your Will',
+    body: 'Download your completed Will and sign it in the presence of two independent witnesses. Complex situations — business succession, blended families, overseas assets — are flagged in your Vault with the option to add a solicitor review for around $150.',
   },
   {
     num: '04',
@@ -100,7 +100,7 @@ export default function HowItWorksPage() {
             Australian succession law is largely state-based. Heirloom Life is available across all states and territories, accounting for each state&#8217;s specific requirements throughout the drafting and review process.
           </p>
           <p style={{ marginTop: '1rem', fontSize: '.85rem', color: 'var(--mkt-stone-soft)' }}>
-            Specific turnaround times for solicitor review are being confirmed before launch — we&#8217;re building to operational commitments, not estimates.
+            Complex situations are flagged in your Vault after you complete your Will. A solicitor review add-on is available from your Vault for around $150 — the same price point as Safewill and similar services.
           </p>
         </div>
       </section>

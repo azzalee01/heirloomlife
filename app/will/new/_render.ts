@@ -199,7 +199,7 @@ export function renderWillText(formData: WillFormData): string {
 
   sections.push(
     'IMPORTANT NOTICE\n\n' +
-      'Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. Our platform is built using established estate planning drafting standards, but we do not review your individual Will or take responsibility for its legal validity or its suitability for your personal circumstances. If your situation involves factors like overseas assets, business ownership, or a blended family, we strongly recommend a bespoke Will prepared by a solicitor.'
+      'Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. Our platform is built using established estate planning drafting standards. This document has not been reviewed by a solicitor unless you have purchased the review add-on. If your situation involves overseas assets, business ownership, or a blended family, a solicitor review is strongly recommended — this is available as an add-on from your Vault.'
   )
 
   return sections.join('\n\n')

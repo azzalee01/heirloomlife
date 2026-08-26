@@ -7,10 +7,7 @@ export default function TriageFlag() {
         <circle cx="8" cy="11.5" r="0.6" fill="currentColor"/>
       </svg>
       <span>
-        This is something a solicitor should look at directly. You can keep going, but we&apos;d recommend a bespoke Will for this.{' '}
-        <a href="/pricing#complex-situation" className="font-semibold underline hover:no-underline">
-          Get a referral
-        </a>
+        This is worth a professional look. Keep going — we&apos;ll flag this in your Vault and you can request a solicitor review from there for around $150.
       </span>
     </div>
   )

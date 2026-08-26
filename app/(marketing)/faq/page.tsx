@@ -12,19 +12,19 @@ const FAQS = [
   },
   {
     q: 'How is this different from downloading a Will kit from a newsagent?',
-    a: "A Will kit gives you a blank form and a set of instructions. Heirloom Life gives you a guided drafting process, a solicitor review, and a Vault to keep your estate current after you sign. The difference is not mainly the document — it's the process around it and the ongoing maintenance.",
+    a: "A Will kit gives you a blank form and a set of instructions. Heirloom Life gives you a guided drafting process, a Vault to keep your estate current, and access to a solicitor review add-on when your situation calls for it. The difference is not mainly the document — it's the process around it and the ongoing maintenance.",
   },
   {
     q: 'What if my estate is complicated — business interests, trusts, overseas assets?',
-    a: "Complex estates are flagged during the drafting process. If your situation involves business succession, testamentary trusts, or overseas assets, the solicitor review step is specifically designed to catch what the questionnaire might not fully resolve. For highly complex estates, we may recommend working with a solicitor directly before finalising your Will through us.",
+    a: "Complete your Will through the questionnaire — we'll flag the specific areas of concern in your Vault. You can then request a solicitor review add-on for around $150 and communicate directly with our partner lawyers through the platform. For very complex estates, a bespoke Will prepared entirely by a solicitor may be more appropriate, and we can refer you.",
   },
   {
     q: 'How long does it take to complete a Will?',
-    a: "Most people complete the guided questionnaire in 30–60 minutes. Solicitor review turnaround times are being confirmed before launch — we will publish specific SLAs when they reflect our operational commitment, not an estimate.",
+    a: "Most people complete the guided questionnaire in 30–60 minutes.",
   },
   {
     q: 'Can I update my Will after signing it?',
-    a: "Yes. You can update your Will at any time. Changes require a new draft, a new solicitor review for high-severity clauses, and new signing and witnessing. The Living Vault membership tracks life events that might trigger a review and prompts you before an oversight becomes a problem.",
+    a: "Yes. You can update your Will at any time through your Vault. Changes require new signing and witnessing. The Living Vault membership tracks life events that might trigger a review and prompts you before an oversight becomes a problem.",
   },
   {
     q: 'What happens to my Will if I die?',
@@ -32,7 +32,7 @@ const FAQS = [
   },
   {
     q: 'Is Heirloom Life providing legal advice?',
-    a: "No. Heirloom Life provides a document drafting service and solicitor review. The solicitor review is conducted by a qualified practitioner who will identify issues with your draft — but using Heirloom Life does not create a solicitor–client relationship with Heirloom Life itself. See our Guidance Notes for a plain-language explanation of what this means.",
+    a: "No. Heirloom Life is not a law firm and does not provide legal advice. Your Will is prepared using established estate planning drafting standards. It is not reviewed by a solicitor unless you purchase the review add-on. Using Heirloom Life does not create a solicitor–client relationship.",
   },
   {
     q: 'What states do you support?',

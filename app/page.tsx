@@ -120,7 +120,7 @@ export default function HomePage() {
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>The Will</span>
             <H2>Not a document you sign once<br/>and hope you never think about <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>again</em>.</H2>
-            <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault — readable in plain English, reviewed by solicitors when it counts, and versioned every time your life moves forward.</Sub>
+            <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault — readable in plain English, versioned every time your life moves forward, with a solicitor review add-on available when your situation calls for it.</Sub>
           </div>
 
           <div style={{ marginTop: '3.5rem', borderRadius: 12, background: '#fff', border: '1px solid var(--mkt-line)', boxShadow: '0 30px 80px rgba(15,30,28,0.10)', overflow: 'hidden' }}>
@@ -198,7 +198,7 @@ export default function HomePage() {
               </div>
             </div>
             {[
-              { tag: 'Lawyer Review', h: "Included where it matters, priced where it doesn't.", p: 'High-severity flags — guardianship, trusts, business succession — come with included solicitor review each year. Minor changes stay self-serve.' },
+              { tag: 'Lawyer Review', h: "Available when it matters, at a flat rate.", p: 'Complex flags — business succession, trusts, blended families — are surfaced in your Vault. A solicitor review add-on is available for around $150, with direct access to our partner lawyers through the platform.' },
               { tag: 'Executor Access', h: "Built for the day it's actually needed.", p: "A verified path from death certificate to executor access — identity-verified and cross-referenced, so the people you trust aren't left guessing at the worst possible time." },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: '#fff', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
