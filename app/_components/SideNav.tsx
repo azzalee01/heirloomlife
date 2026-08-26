@@ -9,7 +9,7 @@ const NAV = [
   {
     key: 'dashboard',
     href: '/dashboard',
-    label: 'Dashboard',
+    label: 'Vault',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <path d="M3 11.5L12 4l9 7.5" />

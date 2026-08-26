@@ -190,8 +190,9 @@ export default async function DashboardPage({
             className="text-base font-medium"
             style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}
           >
-            Hi, {firstName}
+            Your Vault
           </h1>
+          <p className="text-xs" style={{ color: 'var(--neutral)' }}>Hi, {firstName}</p>
         </div>
         <LogoutButton />
       </header>
