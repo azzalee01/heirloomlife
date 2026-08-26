@@ -44,7 +44,7 @@ export default function TheWillPage() {
               Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault — readable in plain English, reviewed by solicitors when it counts, and versioned every time your life moves forward.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <Link href="/will/new" className="mkt-btn-ink-l">
+              <Link href="/start" className="mkt-btn-ink-l">
                 Start your Will
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -164,7 +164,7 @@ export default function TheWillPage() {
           <p style={{ maxWidth: '38rem', fontSize: '.92rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: 0 }}>
             Australian succession law is state-based. Heirloom Life currently serves NSW and VIC, accounting for each state&#8217;s specific requirements around execution, witnessing, and revocation.
           </p>
-          <Link href="/will/new" className="mkt-btn-ink-m" style={{ flexShrink: 0 }}>
+          <Link href="/start" className="mkt-btn-ink-m" style={{ flexShrink: 0 }}>
             Start your Will
           </Link>
         </div>

@@ -57,7 +57,7 @@ export default function AboutPage() {
             See what we&#8217;re building
           </h2>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <Link href="/will/new" className="mkt-btn-ink-m">
+            <Link href="/start" className="mkt-btn-ink-m">
               Try the Will builder
             </Link>
             <a href="mailto:hello@heirloomlife.com.au" className="mkt-btn-ghost-m">

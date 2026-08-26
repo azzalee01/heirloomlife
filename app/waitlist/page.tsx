@@ -45,7 +45,7 @@ export default function WaitlistPage() {
 
           <p style={{ marginTop: '1.25rem', fontSize: '.82rem', color: 'var(--mkt-stone-soft)' }}>
             Already in NSW or VIC?{' '}
-            <Link href="/will/new" style={{ color: 'var(--teal-deep)', textDecoration: 'underline' }}>
+            <Link href="/start" style={{ color: 'var(--teal-deep)', textDecoration: 'underline' }}>
               Start your Will now
             </Link>
             .

@@ -57,7 +57,7 @@ export default function PricingPage() {
             </p>
 
             <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
-              <Link href="/will/new" className="mkt-btn-ink-m">
+              <Link href="/start" className="mkt-btn-ink-m">
                 Start your Will
               </Link>
               <Link href="/will/new?mode=upload" className="mkt-btn-ink-m">

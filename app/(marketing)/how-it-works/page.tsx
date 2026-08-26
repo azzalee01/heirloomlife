@@ -112,7 +112,7 @@ export default function HowItWorksPage() {
             Ready to start?
           </h2>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <Link href="/will/new" className="mkt-btn-ink-l">
+            <Link href="/start" className="mkt-btn-ink-l">
               Start your Will
             </Link>
             <Link href="/pricing" className="mkt-btn-ghost-l">

@@ -44,7 +44,7 @@ export default function LivingVaultPage() {
               Your Will is the start, not the finish. The Living Vault keeps your estate current as your life does — your assets, your people, your instructions, always in step.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <Link href="/will/new" className="mkt-btn-ink-l">
+              <Link href="/start" className="mkt-btn-ink-l">
                 Start your Will
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -173,7 +173,7 @@ export default function LivingVaultPage() {
             Start with the Will. Stay with the Vault.
           </h2>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <Link href="/will/new" className="mkt-btn-ink-m">Start your Will</Link>
+            <Link href="/start" className="mkt-btn-ink-m">Start your Will</Link>
             <Link href="/pricing" className="mkt-btn-ghost-m">See membership</Link>
           </div>
         </div>
