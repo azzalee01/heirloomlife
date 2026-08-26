@@ -13,7 +13,12 @@ const COLUMNS = [
     title: 'Company',
     links: [
       { label: 'About', href: '/about' },
-      { label: 'For Advisers', href: '/for-advisers' },
+    ],
+  },
+  {
+    title: 'For Advisers',
+    links: [
+      { label: 'Overview', href: '/for-advisers' },
     ],
   },
   {

@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { label: 'Living Vault', href: '/living-vault' },
   { label: 'How it works', href: '/how-it-works' },
   { label: 'Learn', href: '/learn' },
+  { label: 'Passing', href: '/passing' },
   { label: 'Pricing', href: '/pricing' },
 ]
 
