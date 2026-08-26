@@ -161,7 +161,6 @@ export default function PricingPage() {
           <a
             href="mailto:hello@heirloomlife.com.au?subject=Referral%20enquiry"
             className="mkt-btn-ghost-m"
-            style={{ display: 'inline-block' }}
           >
             Get a referral
           </a>

@@ -39,7 +39,6 @@ export default function WaitlistPage() {
           <a
             href="mailto:hello@heirloomlife.com.au?subject=Waitlist%20—%20please%20add%20me&body=Hi%2C%0A%0APlease%20add%20me%20to%20the%20waitlist.%0A%0AMy%20state%3A%20"
             className="mkt-btn-ink-m"
-            style={{ display: 'inline-block' }}
           >
             Email to join the waitlist
           </a>
