@@ -64,6 +64,26 @@ function Divider() {
   return <div className="border-t border-[var(--line)] my-3" />
 }
 
+function triggeredFlagLabels(formData: WillFormData): string[] {
+  const labels: string[] = []
+  if (formData.assetsOutsideAustralia || formData.assets.some((a) => a.isOverseas)) {
+    labels.push('overseas assets or non-Australian tax residency')
+  }
+  if (formData.triageFlags.hasBusinessInterest) labels.push('business ownership or commercial interest')
+  if (formData.triageFlags.hasBlendedFamily) labels.push('a blended family or children from different relationships')
+  if (formData.triageFlags.hasExclusionIntent) labels.push('an intention to exclude a spouse, child, or close family member')
+  if (formData.triageFlags.hasVulnerableBeneficiary) labels.push('a beneficiary with a disability or condition affecting mental capacity')
+  if (formData.triageFlags.hasBeneficiaryFinancialChallenges) labels.push('a beneficiary with difficulty managing money')
+  if (formData.triageFlags.hasComplexTrusts) labels.push('complex trust structures')
+  return labels
+}
+
+function formatFlagList(flags: string[]): string {
+  if (flags.length === 0) return ''
+  if (flags.length === 1) return flags[0]
+  return flags.slice(0, -1).join(', ') + ' and ' + flags[flags.length - 1]
+}
+
 export default function StepReview({ formData, activeSteps, onJumpToStep }: Props) {
   const { personalDetails: pd, spouseDetails: sd, childrenData: cd, executorsData: ed, assets, beneficiariesData: bd, specificGifts, petCare: pc, lifeInterest: li } = formData
 
@@ -250,6 +270,26 @@ export default function StepReview({ formData, activeSteps, onJumpToStep }: Prop
         <Row label="Overseas assets" value={formData.assetsOutsideAustralia ? formData.otherJurisdictions || 'Yes' : ''} />
         <Row label="Document location" value={formData.importantDocumentsLocation} />
       </Section>
+
+      {triggeredFlagLabels(formData).length > 0 && (
+        <div className="border border-amber-200 bg-amber-50 px-4 py-4 space-y-3">
+          <div>
+            <p className="text-sm font-semibold text-amber-900">Before you finish — is a template Will right for you?</p>
+            <p className="text-sm text-amber-800 mt-1.5 leading-relaxed">
+              You told us you have {formatFlagList(triggeredFlagLabels(formData))}. A bespoke Will, prepared by a solicitor, may better suit your situation.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <a
+              href="mailto:hello@heirloomlife.com.au?subject=Referral%20enquiry"
+              className="text-sm font-semibold text-amber-900 underline hover:no-underline"
+            >
+              Get a referral instead
+            </a>
+            <span className="text-sm text-amber-700">or continue reviewing and complete your Will below</span>
+          </div>
+        </div>
+      )}
 
       <div className="border border-amber-100 bg-amber-50 px-4 py-3">
         <p className="text-xs text-amber-700">

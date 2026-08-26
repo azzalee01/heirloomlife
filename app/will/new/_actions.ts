@@ -334,6 +334,9 @@ export async function saveStep(
       break
   }
 
+  // Keep triage_flags current on every step save.
+  await supabase.from('wills').update({ triage_flags: formData.triageFlags }).eq('id', id)
+
   // Snapshot the resulting state into version history (skip 'review', which
   // never mutates anything). A failure here shouldn't block the save itself.
   if (step !== 'review') {

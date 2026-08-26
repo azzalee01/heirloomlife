@@ -1,6 +1,7 @@
 'use client'
 
 import type { WillFormData, PetCareData, LifeInterestData } from '../_types'
+import TriageFlag from './TriageFlag'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -216,19 +217,66 @@ export default function StepWishes({ formData, hasDependentChildren, onChange }:
           <span className="text-sm text-[var(--ink)]">I own assets outside Australia</span>
         </label>
         {formData.assetsOutsideAustralia && (
-          <div>
-            <label className={lbl}>Which countries?</label>
-            <input
-              className={inp}
-              placeholder="e.g. New Zealand, United Kingdom"
-              value={formData.otherJurisdictions}
-              onChange={(e) => onChange({ otherJurisdictions: e.target.value })}
-            />
-            <p className="text-xs text-[var(--neutral)] mt-1">
-              Assets in other countries may need a separate will there — worth raising with your solicitor.
-            </p>
+          <div className="space-y-2">
+            <div>
+              <label className={lbl}>Which countries?</label>
+              <input
+                className={inp}
+                placeholder="e.g. New Zealand, United Kingdom"
+                value={formData.otherJurisdictions}
+                onChange={(e) => onChange({ otherJurisdictions: e.target.value })}
+              />
+            </div>
+            <TriageFlag />
           </div>
         )}
+      </section>
+
+      {/* Situation */}
+      <section className="space-y-4">
+        <p className={eyebrow}>Your situation</p>
+        <p className="text-sm text-[var(--neutral)]">
+          These help us flag situations where a template Will may not be enough.
+        </p>
+
+        <div>
+          <label className="flex items-start gap-2.5 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.triageFlags.hasBusinessInterest}
+              onChange={(e) => onChange({ triageFlags: { ...formData.triageFlags, hasBusinessInterest: e.target.checked } })}
+              className="w-4 h-4 mt-0.5 accent-[var(--teal)]"
+            />
+            <span className="text-sm text-[var(--ink)]">I own or have an interest in a business or commercial property</span>
+          </label>
+          {formData.triageFlags.hasBusinessInterest && <TriageFlag />}
+        </div>
+
+        <div>
+          <label className="flex items-start gap-2.5 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.triageFlags.hasBlendedFamily}
+              onChange={(e) => onChange({ triageFlags: { ...formData.triageFlags, hasBlendedFamily: e.target.checked } })}
+              className="w-4 h-4 mt-0.5 accent-[var(--teal)]"
+            />
+            <span className="text-sm text-[var(--ink)]">My estate involves a blended family or children from different relationships</span>
+          </label>
+          {formData.triageFlags.hasBlendedFamily && <TriageFlag />}
+        </div>
+
+        <div>
+          <label className="flex items-start gap-2.5 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={formData.triageFlags.hasComplexTrusts}
+              onChange={(e) => onChange({ triageFlags: { ...formData.triageFlags, hasComplexTrusts: e.target.checked } })}
+              className="w-4 h-4 mt-0.5 accent-[var(--teal)]"
+            />
+            <span className="text-sm text-[var(--ink)]">I need a testamentary trust structure beyond basic trusts for minor beneficiaries</span>
+          </label>
+          {formData.triageFlags.hasComplexTrusts && <TriageFlag />}
+        </div>
       </section>
 
       {/* Important documents */}

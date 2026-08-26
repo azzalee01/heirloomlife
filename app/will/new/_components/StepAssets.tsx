@@ -1,6 +1,7 @@
 'use client'
 
 import type { Asset, AssetType } from '../_types'
+import TriageFlag from './TriageFlag'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -240,6 +241,7 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
               onChange={(e) => onChange({ ...asset, overseasCountry: e.target.value })}
             />
           )}
+          {asset.isOverseas && <TriageFlag />}
         </div>
       )}
     </div>

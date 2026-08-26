@@ -1,6 +1,7 @@
 'use client'
 
-import type { BeneficiariesData, PersonBeneficiary, CharityBeneficiary } from '../_types'
+import type { BeneficiariesData, PersonBeneficiary, CharityBeneficiary, TriageFlags } from '../_types'
+import TriageFlag from './TriageFlag'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -23,9 +24,11 @@ function totalAllocated(data: BeneficiariesData): number {
 interface Props {
   data: BeneficiariesData
   onChange: (data: BeneficiariesData) => void
+  triageFlags: TriageFlags
+  onTriageFlagsChange: (flags: TriageFlags) => void
 }
 
-export default function StepBeneficiaries({ data, onChange }: Props) {
+export default function StepBeneficiaries({ data, onChange, triageFlags, onTriageFlagsChange }: Props) {
   const total = totalAllocated(data)
   const remaining = 100 - total
 
@@ -204,6 +207,79 @@ export default function StepBeneficiaries({ data, onChange }: Props) {
         >
           + Add charity
         </button>
+      </section>
+
+      {/* Triage questions */}
+      <section className="space-y-5 border-t border-[var(--line)] pt-6">
+        <div>
+          <p className={eyebrow}>A few more questions</p>
+          <p className="text-sm text-[var(--neutral)]">
+            These help us flag situations where a template Will may not be enough.
+          </p>
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-[var(--ink)]">
+            Do you intend to exclude a spouse, child, or close family member from your estate?
+          </p>
+          <div className="flex gap-6">
+            {(['yes', 'no'] as const).map((v) => (
+              <label key={v} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="exclusionIntent"
+                  checked={triageFlags.hasExclusionIntent === (v === 'yes')}
+                  onChange={() => onTriageFlagsChange({ ...triageFlags, hasExclusionIntent: v === 'yes' })}
+                  className="w-4 h-4 accent-[var(--teal)]"
+                />
+                <span className="text-sm text-[var(--ink)]">{v === 'yes' ? 'Yes' : 'No'}</span>
+              </label>
+            ))}
+          </div>
+          {triageFlags.hasExclusionIntent && <TriageFlag />}
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-[var(--ink)]">
+            Does any beneficiary have a disability, special needs, or a condition affecting their mental capacity?
+          </p>
+          <div className="flex gap-6">
+            {(['yes', 'no'] as const).map((v) => (
+              <label key={v} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="vulnerableBeneficiary"
+                  checked={triageFlags.hasVulnerableBeneficiary === (v === 'yes')}
+                  onChange={() => onTriageFlagsChange({ ...triageFlags, hasVulnerableBeneficiary: v === 'yes' })}
+                  className="w-4 h-4 accent-[var(--teal)]"
+                />
+                <span className="text-sm text-[var(--ink)]">{v === 'yes' ? 'Yes' : 'No'}</span>
+              </label>
+            ))}
+          </div>
+          {triageFlags.hasVulnerableBeneficiary && <TriageFlag />}
+        </div>
+
+        <div className="space-y-1">
+          <p className="text-sm font-medium text-[var(--ink)]">
+            Does any beneficiary have difficulty managing money or financial challenges?
+          </p>
+          <div className="flex gap-6">
+            {(['yes', 'no'] as const).map((v) => (
+              <label key={v} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="beneficiaryFinancialChallenges"
+                  checked={triageFlags.hasBeneficiaryFinancialChallenges === (v === 'yes')}
+                  onChange={() => onTriageFlagsChange({ ...triageFlags, hasBeneficiaryFinancialChallenges: v === 'yes' })}
+                  className="w-4 h-4 accent-[var(--teal)]"
+                />
+                <span className="text-sm text-[var(--ink)]">{v === 'yes' ? 'Yes' : 'No'}</span>
+              </label>
+            ))}
+          </div>
+          {triageFlags.hasBeneficiaryFinancialChallenges && <TriageFlag />}
+        </div>
       </section>
     </div>
   )

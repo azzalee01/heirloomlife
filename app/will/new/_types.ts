@@ -158,6 +158,15 @@ export interface SpecificGift {
   substituteBeneficiary: string
 }
 
+export interface TriageFlags {
+  hasBusinessInterest: boolean
+  hasBlendedFamily: boolean
+  hasExclusionIntent: boolean
+  hasVulnerableBeneficiary: boolean
+  hasBeneficiaryFinancialChallenges: boolean
+  hasComplexTrusts: boolean
+}
+
 export interface PetCareData {
   hasPets: 'yes' | 'no' | ''
   description: string
@@ -185,6 +194,8 @@ export interface WillFormData {
   assets: Asset[]
   beneficiariesData: BeneficiariesData
   specificGifts: SpecificGift[]
+  // ── Triage flags ─────────────────────────────────────────────────────────
+  triageFlags: TriageFlags
   // ── Wishes & Trusts ──────────────────────────────────────────────────────
   funeralWishes: string
   hasFuneralPlan: boolean

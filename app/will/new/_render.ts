@@ -203,5 +203,10 @@ export function renderWillText(formData: WillFormData): string {
     'IN WITNESS WHEREOF I have set my hand to this my Will, signed in the presence of two witnesses present at the same time, who attested and subscribed this Will in my presence.'
   )
 
+  sections.push(
+    'IMPORTANT NOTICE\n\n' +
+      'Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. Our platform is built using established estate planning drafting standards, but we do not review your individual Will or take responsibility for its legal validity or its suitability for your personal circumstances. If your situation involves factors like overseas assets, business ownership, or a blended family, we strongly recommend a bespoke Will prepared by a solicitor.'
+  )
+
   return sections.join('\n\n')
 }

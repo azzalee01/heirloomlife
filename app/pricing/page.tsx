@@ -1,224 +1,201 @@
 import Link from 'next/link'
-import { supabaseAdmin } from '@/src/lib/supabase-server'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-type Plan = {
-  slug: string
-  name: string
-  tagline: string
-  price_label: string
-  billing_type: string
-  description: string
-  features: string[]
-  highlight: boolean
-  sort_order: number
-  is_placeholder: boolean
+const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
+const SECTION_LABEL: React.CSSProperties = {
+  fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
+  fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block',
 }
 
-// ─── Static fallback (all marked placeholder until pricing is confirmed) ───────
-const STATIC_PLANS: Plan[] = [
-  {
-    slug: 'will-single',
-    name: 'The Will — Single',
-    tagline: 'One-off, solicitor reviewed',
-    price_label: 'TBC',
-    billing_type: 'one_time',
-    description: 'A legally valid Will drafted with guidance, reviewed by a solicitor, and ready to sign.',
-    features: [
-      'Seven-step guided drafting',
-      'State-specific legal compliance',
-      'Solicitor review included',
-      'Downloadable, solicitor-reviewed Will document',
-    ],
-    highlight: false,
-    sort_order: 1,
-    is_placeholder: true,
-  },
-  {
-    slug: 'will-couple',
-    name: 'The Will — Couple',
-    tagline: 'One-off, both partners',
-    price_label: 'TBC',
-    billing_type: 'one_time',
-    description: 'Two mirrored Wills for partners, cross-referenced and sharing one asset register.',
-    features: [
-      'Two mirrored Wills, cross-referenced',
-      'Shared asset register',
-      'Both solicitor reviews included',
-      'Two linked Wills, one shared Vault',
-    ],
-    highlight: false,
-    sort_order: 2,
-    is_placeholder: true,
-  },
-  {
-    slug: 'vault',
-    name: 'Living Vault',
-    tagline: 'Ongoing membership',
-    price_label: 'TBC',
-    billing_type: 'annual',
-    description: 'Life-event tracking, annual solicitor review, and executor access — keeping your estate current as your life changes.',
-    features: [
-      'Life-event tracking and alerts',
-      'Included annual solicitor review',
-      'Executor access instructions',
-      'Will version history',
-      'Cancel anytime',
-    ],
-    highlight: true,
-    sort_order: 3,
-    is_placeholder: true,
-  },
-]
+function Check() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: '.15rem', color: 'var(--teal-deep)' }} aria-hidden="true">
+      <path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-export default async function PricingPage() {
-  // Fetch from DB; fall back to static if table doesn't exist or has no rows
-  let plans: Plan[] = STATIC_PLANS
-  try {
-    const { data } = await supabaseAdmin
-      .from('pricing_plans')
-      .select('slug, name, tagline, price_label, billing_type, description, features, highlight, sort_order, is_placeholder')
-      .eq('active', true)
-      .order('sort_order')
-    if (data && data.length > 0) {
-      plans = data as Plan[]
-    }
-  } catch {
-    // table not yet migrated — use static fallback
-  }
-
-  const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
-  const SECTION_LABEL: React.CSSProperties = {
-    fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
-    fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block',
-  }
-
+export default function PricingPage() {
   return (
     <>
       <MarketingNav />
 
-      {/* Hero */}
+      {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <section style={{ paddingTop: '8rem', paddingBottom: '4rem', background: 'var(--mkt-surface)' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
-          <span style={SECTION_LABEL}>Membership</span>
+          <span style={SECTION_LABEL}>Pricing</span>
           <h1 style={{
             fontFamily: "'DM Sans', sans-serif",
             fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: 0,
           }}>
-            Priced like something worth{' '}
-            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.
+            Start for free.{' '}
+            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>Stay current</em>{' '}
+            with the Vault.
           </h1>
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
-            A one-off Will to get your estate in order, and a Vault membership to keep it that way. No per-clause upsells, no surprise renewals. All prices include GST.
+            A legally-structured Will at no cost, with a membership option to keep it current as your life changes.
           </p>
-          {plans.some(p => p.is_placeholder) && (
-            <div style={{ marginTop: '1.5rem', padding: '1rem 1.25rem', borderRadius: 4, border: '1px solid var(--mkt-line)', background: '#fff', fontSize: '.85rem', color: 'var(--mkt-stone)', lineHeight: 1.5 }}>
-              <strong style={{ color: 'var(--mkt-ink-text)' }}>Pricing is being finalised.</strong>{' '}
-              The figures shown below are indicative. We&#8217;ll publish confirmed prices, inclusive of GST, before launch.
-            </div>
-          )}
         </div>
       </section>
 
-      {/* Plan cards */}
-      <section style={{ paddingBlock: '4rem 6rem', background: 'var(--mkt-surface-2)' }}>
-        <div className="md:px-10" style={W}>
-          <div
-            className="md:grid-cols-3"
-            style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}
-          >
-            {plans.map(plan => (
-              <div
-                key={plan.slug}
-                style={{
-                  borderRadius: 14, border: `1px solid ${plan.highlight ? 'var(--teal)' : 'var(--mkt-line)'}`,
-                  background: '#fff', padding: '2.2rem',
-                  display: 'flex', flexDirection: 'column',
-                  boxShadow: plan.highlight ? '0 20px 50px rgba(0,0,0,.08)' : 'none',
-                }}
-              >
-                {plan.is_placeholder && (
-                  <span style={{
-                    alignSelf: 'flex-start', marginBottom: '1rem',
-                    fontSize: '.65rem', fontWeight: 600,
-                    padding: '.28rem .65rem', borderRadius: 99,
-                    border: '1px solid var(--mkt-line)', color: 'var(--mkt-stone)',
-                  }}>
-                    Indicative pricing
-                  </span>
-                )}
-                {plan.highlight && !plan.is_placeholder && (
-                  <span style={{
-                    alignSelf: 'flex-start', marginBottom: '1rem',
-                    fontSize: '.65rem', fontWeight: 600,
-                    padding: '.28rem .65rem', borderRadius: 99,
-                    border: '1px solid var(--teal)', color: 'var(--mkt-ink-text)',
-                  }}>
-                    Recommended
-                  </span>
-                )}
+      {/* ── The Will ─────────────────────────────────────────────────────────── */}
+      <section style={{ paddingBlock: '4rem 5rem', background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
+          <div>
+            <span style={SECTION_LABEL}>The Will</span>
+            <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .5rem' }}>
+              $0
+            </p>
+            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>Free, always.</p>
 
-                <p style={{ fontSize: '.78rem', letterSpacing: '.08em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--mkt-stone)', margin: 0 }}>
-                  {plan.name}
-                </p>
-                <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '2.6rem', color: 'var(--mkt-ink-text)', marginTop: '.75rem', lineHeight: 1 }}>
-                  {plan.price_label}
-                </p>
-                <p style={{ fontSize: '.85rem', color: 'var(--mkt-stone)', marginTop: '.3rem' }}>{plan.tagline}</p>
+            <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '28rem' }}>
+              Answer a short questionnaire — or upload your existing will and tell us what&apos;s changed — and get a legally-structured Will, ready to print and sign.
+            </p>
 
-                <ul style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '.65rem', fontSize: '.9rem', color: 'var(--mkt-stone)', listStyle: 'none', padding: 0, flex: 1 }}>
-                  {plan.features.map(f => (
-                    <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start' }}>
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: '.15rem', color: 'var(--teal-deep)' }} aria-hidden="true">
-                        <path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
+            <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
+              <Link href="/will/new" className="mkt-btn-ink-m">
+                Start your Will
+              </Link>
+              <Link href="/will/new?mode=upload" className="mkt-btn-ink-m">
+                Upload your existing Will
+              </Link>
+            </div>
 
-                <Link
-                  href="/will/new"
-                  className={plan.highlight ? 'mkt-btn-ink-m' : 'mkt-btn-ghost-m'}
-                  style={{ marginTop: '2rem' }}
-                >
-                  {plan.billing_type === 'annual' ? 'Join the Vault' : 'Start your Will'}
-                </Link>
-              </div>
-            ))}
+            <p style={{ marginTop: '1.1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
+              NSW and VIC only at launch. Other states can <Link href="/waitlist" style={{ color: 'var(--teal-deep)', textDecoration: 'underline' }}>join the waitlist</Link>.
+            </p>
+          </div>
+
+          <div style={{ borderRadius: 14, border: '1px solid var(--mkt-line)', background: '#fff', padding: '2rem' }}>
+            <p style={{ fontSize: '.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--mkt-stone)', margin: '0 0 1.25rem' }}>
+              What&apos;s included
+            </p>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
+              {[
+                'Seven-step guided questionnaire',
+                'State-specific legal compliance for NSW and VIC',
+                'Ingest-and-redraft from your existing Will',
+                'Downloadable, print-and-sign Will document',
+                'Witnessing guidance and remote witness scheduling',
+              ].map((f) => (
+                <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>
+                  <Check />
+                  {f}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
 
-      {/* FAQ */}
-      <section style={{ paddingBlock: '5.5rem', background: '#fff' }}>
+      {/* ── Living Vault ─────────────────────────────────────────────────────── */}
+      <section style={{ paddingBlock: '4rem 5rem', background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
+          <div>
+            <span style={SECTION_LABEL}>Living Vault</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '.5rem' }}>
+              <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-stone)', lineHeight: 1, margin: 0 }}>
+                —
+              </p>
+              <span style={{
+                fontSize: '.68rem', fontWeight: 700, padding: '.35rem .8rem', borderRadius: 99,
+                border: '1px solid var(--mkt-line)', color: 'var(--mkt-stone)', background: 'var(--mkt-surface)',
+                textTransform: 'uppercase', letterSpacing: '.1em',
+              }}>
+                Coming soon
+              </span>
+            </div>
+            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>Subscription — price to be announced.</p>
+
+            <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', maxWidth: '28rem' }}>
+              Keep your Will current as your life changes — marriage, a new child, a property purchase, a business sold. The Vault tracks the life events that matter and prompts an update before a gap becomes a problem.
+            </p>
+          </div>
+
+          <div style={{ borderRadius: 14, border: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)', padding: '2rem', opacity: 0.7 }}>
+            <p style={{ fontSize: '.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--mkt-stone)', margin: '0 0 1.25rem' }}>
+              Planned features
+            </p>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
+              {[
+                'Life-event tracking and alerts',
+                'Annual solicitor review for high-severity flags',
+                'Executor access — verified path from death certificate to access',
+                'Will version history',
+                'Cancel anytime',
+              ].map((f) => (
+                <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>
+                  <Check />
+                  {f}
+                </li>
+              ))}
+            </ul>
+            <p style={{ marginTop: '1.5rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
+              Vault pricing and scope are being finalised. We&apos;ll publish confirmed details before launch.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Complex situation ─────────────────────────────────────────────────── */}
+      <section
+        id="complex-situation"
+        style={{ paddingBlock: '4rem 5rem', background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)' }}
+      >
+        <div className="md:px-10" style={{ ...W, maxWidth: 800 }}>
+          <span style={SECTION_LABEL}>Complex situation?</span>
+          <h2 style={{
+            fontFamily: "'DM Sans', sans-serif",
+            fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', lineHeight: 1.1,
+            letterSpacing: '-.02em', fontWeight: 500,
+            color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem',
+          }}>
+            A template Will isn&apos;t always enough.
+          </h2>
+          <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', maxWidth: '36rem', marginBottom: '2rem' }}>
+            If your situation involves things like overseas assets, a business, a blended family, or a beneficiary with special needs, a template Will may not be enough. We can refer you to a solicitor for a bespoke Will.
+          </p>
+          <a
+            href="mailto:hello@heirloomlife.com.au?subject=Referral%20enquiry"
+            className="mkt-btn-ghost-m"
+            style={{ display: 'inline-block' }}
+          >
+            Get a referral
+          </a>
+        </div>
+      </section>
+
+      {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
+      <section style={{ paddingBlock: '5.5rem', background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <h2 style={{ fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 2.5rem' }}>
-            Common questions about pricing
+            Common questions
           </h2>
           {[
             {
-              q: 'Is the Will one-off, or do I pay to update it?',
-              a: 'The Will document itself is a one-off purchase. If your life changes and you want ongoing updates with annual solicitor review and life-event tracking, the Living Vault membership covers that.',
+              q: 'Is the Will really free?',
+              a: 'Yes. The questionnaire, the Will document, and the download are free. There are no hidden charges, no per-clause upsells, and no GST on free.',
             },
             {
-              q: 'Are prices inclusive of GST?',
-              a: 'Yes. All prices shown will be GST-inclusive. The final confirmed price will be the figure you pay — no GST surprises at checkout.',
+              q: 'Which states are supported at launch?',
+              a: 'NSW and VIC. The Will you prepare through Heirloom Life is drafted to the legal requirements of those two states. If you\'re in another state, you can join the waitlist and we\'ll notify you when your state is added.',
             },
             {
-              q: 'Can I cancel the Vault membership?',
-              a: 'Yes, at any time. You retain access until the end of your current billing period, and your Will document remains yours.',
+              q: 'Can I upload my existing Will?',
+              a: 'Yes. The upload flow reads your existing Will, extracts what it can, and presents it for you to confirm and update. The output is always a fresh Heirloom-template document — we never edit an uploaded file directly.',
             },
             {
-              q: 'What if I started a Will and decide I want the Vault?',
-              a: 'You can upgrade at any time. Contact us and we\'ll make sure you\'re not paying twice for overlapping periods.',
+              q: 'What is the Living Vault?',
+              a: 'A subscription we\'re building to keep your Will current over time — tracking life events, prompting updates, and providing executor access when it\'s needed. Pricing and full feature scope are still being finalised. Start your Will now and we\'ll let you know when the Vault is ready.',
             },
-          ].map(item => (
+            {
+              q: 'What if my situation is complex?',
+              a: 'If your estate involves overseas assets, a business, a blended family, or a beneficiary with special needs, a template Will may not be sufficient. We\'ll flag this as you go through the questionnaire, and we can refer you to a solicitor who can prepare a bespoke Will.',
+            },
+          ].map((item) => (
             <details
               key={item.q}
               style={{ borderTop: '1px solid var(--mkt-line)', paddingBlock: '1.25rem' }}
@@ -233,6 +210,15 @@ export default async function PricingPage() {
             </details>
           ))}
           <div style={{ borderTop: '1px solid var(--mkt-line)', paddingTop: '1.25rem' }}/>
+        </div>
+      </section>
+
+      {/* ── Disclaimer ───────────────────────────────────────────────────────── */}
+      <section style={{ paddingBlock: '3rem', background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
+          <p style={{ fontSize: '.78rem', lineHeight: 1.7, color: 'var(--mkt-stone-soft)' }}>
+            Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. Our platform is built using established estate planning drafting standards, but we do not review your individual Will or take responsibility for its legal validity or its suitability for your personal circumstances. If your situation involves factors like overseas assets, business ownership, or a blended family, we strongly recommend a bespoke Will prepared by a solicitor.
+          </p>
         </div>
       </section>
 

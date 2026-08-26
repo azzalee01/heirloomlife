@@ -17,6 +17,7 @@ import type {
   MaritalStatus,
   PetCareData,
   LifeInterestData,
+  TriageFlags,
 } from './_types'
 
 type SupabaseClient = Awaited<ReturnType<typeof createSupabaseServerClient>>
@@ -50,6 +51,7 @@ type WillRow = {
   survivorship_days: number | null
   pet_care: Record<string, unknown> | null
   life_interest: Record<string, unknown> | null
+  triage_flags: Record<string, unknown> | null
 }
 
 type ChildRow = { id: string; first_name: string | null; date_of_birth: string | null; is_dependent: boolean; distribution_age: number | null }
@@ -101,6 +103,15 @@ type GiftRow = {
 
 const EMPTY_EXECUTOR: ExecutorPerson = { firstName: '', lastName: '', relationship: '', phone: '', email: '', address: '' }
 
+const EMPTY_TRIAGE_FLAGS: TriageFlags = {
+  hasBusinessInterest: false,
+  hasBlendedFamily: false,
+  hasExclusionIntent: false,
+  hasVulnerableBeneficiary: false,
+  hasBeneficiaryFinancialChallenges: false,
+  hasComplexTrusts: false,
+}
+
 export const EMPTY_WILL_FORM_DATA: WillFormData = {
   willId: null,
   personalDetails: {
@@ -128,6 +139,7 @@ export const EMPTY_WILL_FORM_DATA: WillFormData = {
   assets: [],
   beneficiariesData: { people: [], charities: [] },
   specificGifts: [],
+  triageFlags: { ...EMPTY_TRIAGE_FLAGS },
   funeralWishes: '',
   hasFuneralPlan: false,
   funeralPlanDetails: '',
@@ -232,6 +244,18 @@ function mapPetCare(v: WillRow['pet_care']): PetCareData {
   }
 }
 
+function mapTriageFlags(v: WillRow['triage_flags']): TriageFlags {
+  if (!v) return { ...EMPTY_TRIAGE_FLAGS }
+  return {
+    hasBusinessInterest: !!v.hasBusinessInterest,
+    hasBlendedFamily: !!v.hasBlendedFamily,
+    hasExclusionIntent: !!v.hasExclusionIntent,
+    hasVulnerableBeneficiary: !!v.hasVulnerableBeneficiary,
+    hasBeneficiaryFinancialChallenges: !!v.hasBeneficiaryFinancialChallenges,
+    hasComplexTrusts: !!v.hasComplexTrusts,
+  }
+}
+
 function mapLifeInterest(v: WillRow['life_interest']): LifeInterestData {
   if (!v) return { ...EMPTY_WILL_FORM_DATA.lifeInterest }
   return {
@@ -252,7 +276,7 @@ export async function loadWillFormData(
   userId: string,
   willIdParam?: string
 ): Promise<{ willId: string | null; formData: WillFormData }> {
-  const baseQuery = supabase.from('wills').select('id, survivorship_days, pet_care, life_interest').eq('user_id', userId)
+  const baseQuery = supabase.from('wills').select('id, survivorship_days, pet_care, life_interest, triage_flags').eq('user_id', userId)
   const { data: willRows } = willIdParam
     ? await baseQuery.eq('id', willIdParam).limit(1)
     : await baseQuery.order('created_at', { ascending: false }).limit(1)
@@ -356,6 +380,7 @@ export async function loadWillFormData(
       assetsOutsideAustralia: !!primaryTestatorFull?.assets_outside_australia,
       otherJurisdictions: (primaryTestatorFull?.other_jurisdictions ?? []).join(', '),
       importantDocumentsLocation: str(primaryTestatorFull?.important_documents_location),
+      triageFlags: mapTriageFlags(willRow?.triage_flags ?? null),
       survivorshipDays: willRow?.survivorship_days != null ? String(willRow.survivorship_days) : EMPTY_WILL_FORM_DATA.survivorshipDays,
       petCare: mapPetCare(willRow?.pet_care ?? null),
       lifeInterest: mapLifeInterest(willRow?.life_interest ?? null),

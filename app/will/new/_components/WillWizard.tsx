@@ -14,6 +14,7 @@ import {
   type Asset,
   type BeneficiariesData,
   type SpecificGift,
+  type TriageFlags,
   STEP_IDS,
   STEP_LABELS,
 } from '../_types'
@@ -176,6 +177,8 @@ export default function WillWizard({ initialData, initialStep }: Props) {
                 onChange={(beneficiariesData: BeneficiariesData) =>
                   update('beneficiariesData', beneficiariesData)
                 }
+                triageFlags={form.triageFlags}
+                onTriageFlagsChange={(triageFlags: TriageFlags) => update('triageFlags', triageFlags)}
               />
             )}
             {currentStep === 'gifts' && (
