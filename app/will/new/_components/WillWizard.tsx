@@ -502,6 +502,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
                   <PersonalWishes
                     willId={form.willId}
                     initialData={form.personalWishes}
+                    formData={form}
                   />
                 </div>
               )}

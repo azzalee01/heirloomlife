@@ -25,7 +25,21 @@ export default async function WillNewPage({
 
   // ── Authenticated path ────────────────────────────────────────────────────
   if (user) {
+    const cookieStore = await cookies()
+    const anonSessionId = cookieStore.get('hl_anon_session')?.value
+
     const { formData } = await loadWillFormData(supabase, user.id, willIdParam)
+
+    // Pre-populate wizard from an anonymous session when the user has no existing will.
+    // The anon data becomes the initial state; real DB records are created on first step save.
+    if (!formData.willId && !willIdParam && anonSessionId) {
+      try {
+        const anonData = await loadAnonSessionFormData(supabase, anonSessionId)
+        return <WillWizard initialData={{ ...anonData, willId: null }} initialStep={initialStep} isAuthenticated={true} />
+      } catch {
+        // Stale session — fall through to empty form
+      }
+    }
 
     // Gate: if this Will has been downloaded and the user has no active membership,
     // block re-entry into the questionnaire for amendments.

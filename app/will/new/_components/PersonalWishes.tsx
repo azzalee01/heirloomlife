@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { savePersonalWishes } from '../_actions'
-import type { PersonalWishesData } from '../_types'
+import { savePersonalWishes, saveStep } from '../_actions'
+import type { PersonalWishesData, WillFormData } from '../_types'
 
 const FUNERAL_TYPES = [
   { value: 'burial', label: 'Burial' },
@@ -14,13 +14,22 @@ const FUNERAL_TYPES = [
 interface Props {
   willId: string | null
   initialData: PersonalWishesData
+  // Full form data needed to save charity gift as a SpecificGift
+  formData: WillFormData
 }
 
-export default function PersonalWishes({ willId, initialData }: Props) {
+export default function PersonalWishes({ willId, initialData, formData }: Props) {
   const [open, setOpen] = useState(false)
   const [data, setData] = useState<PersonalWishesData>(initialData)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  // Charity gift state
+  const [showCharityGift, setShowCharityGift] = useState(false)
+  const [charityName, setCharityName] = useState('')
+  const [charityAbn, setCharityAbn] = useState('')
+  const [charityAmount, setCharityAmount] = useState('')
+  const [giftSaving, setGiftSaving] = useState(false)
+  const [giftSaved, setGiftSaved] = useState(false)
 
   const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
   const lbl = 'block text-sm font-medium mb-1.5' as const
@@ -37,6 +46,28 @@ export default function PersonalWishes({ willId, initialData }: Props) {
       setSaved(true)
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function handleGiftSave() {
+    if (!charityName || !charityAmount) return
+    setGiftSaving(true)
+    try {
+      const existingGifts = formData.specificGifts ?? []
+      const newGift = {
+        id: crypto.randomUUID(),
+        type: 'cash' as const,
+        description: charityAbn ? `ABN: ${charityAbn}` : '',
+        amount: charityAmount,
+        recipientName: charityName,
+        recipientRelationship: 'charity',
+        substituteBeneficiary: '',
+      }
+      await saveStep(willId, 'gifts', { ...formData, specificGifts: [...existingGifts, newGift] })
+      setGiftSaved(true)
+      setShowCharityGift(false)
+    } finally {
+      setGiftSaving(false)
     }
   }
 
@@ -172,8 +203,94 @@ export default function PersonalWishes({ willId, initialData }: Props) {
             )}
           </section>
 
+          {/* Charity gifting */}
+          <section className="space-y-3 border-t pt-5" style={{ borderColor: 'var(--line)' }}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
+                  Charity gift
+                </p>
+                <p className="text-sm mt-0.5" style={{ color: 'var(--ink)' }}>
+                  Would you like to leave a gift to a cause you care about?
+                </p>
+              </div>
+              {!showCharityGift && !giftSaved && (
+                <button
+                  type="button"
+                  onClick={() => setShowCharityGift(true)}
+                  className="text-sm font-semibold shrink-0"
+                  style={{ color: 'var(--teal)' }}
+                >
+                  Add gift
+                </button>
+              )}
+              {giftSaved && (
+                <span className="text-sm font-medium" style={{ color: 'var(--teal)' }}>✓ Added to Will</span>
+              )}
+            </div>
+
+            {showCharityGift && (
+              <div className="space-y-3 pt-1">
+                <div>
+                  <label className={`${lbl}`} style={{ color: 'var(--ink)' }}>Charity name</label>
+                  <input
+                    type="text"
+                    className={inp}
+                    placeholder="e.g. Beyond Blue, Cancer Council Australia"
+                    value={charityName}
+                    onChange={(e) => setCharityName(e.target.value)}
+                    autoFocus
+                  />
+                </div>
+                <div>
+                  <label className={lbl} style={{ color: 'var(--ink)' }}>ABN (optional)</label>
+                  <input
+                    type="text"
+                    className={inp}
+                    placeholder="e.g. 12 345 678 901"
+                    value={charityAbn}
+                    onChange={(e) => setCharityAbn(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className={lbl} style={{ color: 'var(--ink)' }}>Gift amount ($)</label>
+                  <input
+                    type="number"
+                    className={inp}
+                    placeholder="e.g. 5000"
+                    min="1"
+                    value={charityAmount}
+                    onChange={(e) => setCharityAmount(e.target.value)}
+                  />
+                  <p className="text-xs mt-1" style={{ color: 'var(--neutral)' }}>
+                    This is a specific cash gift, paid from your estate before the residue is divided.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={handleGiftSave}
+                    disabled={giftSaving || !charityName || !charityAmount}
+                    className="px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                    style={{ backgroundColor: 'var(--teal)' }}
+                  >
+                    {giftSaving ? 'Saving…' : 'Add to Will'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowCharityGift(false)}
+                    className="text-sm"
+                    style={{ color: 'var(--neutral)' }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </section>
+
           {/* Save */}
-          <div className="flex items-center gap-3 pt-1">
+          <div className="flex items-center gap-3 pt-1 border-t" style={{ borderColor: 'var(--line)' }}>
             <button
               type="button"
               onClick={handleSave}

@@ -139,15 +139,34 @@ export default async function DashboardPage({
   let beneficiaries: BeneficiaryRow[] = [];
   let executors: ExecutorRow[] = [];
 
+  let personalDone = false
+  let spouseDone = false
+  let childrenDone = false
+  let giftsDone = false
+  let wishesDone = false
+  let maritalStatus: string | null = null
+
   if (will) {
-    const [aRes, bRes, eRes] = await Promise.all([
+    const [aRes, bRes, eRes, tRes, cRes, gRes, wRes] = await Promise.all([
       supabase.from('assets').select('id, asset_type, description, estimated_value, property_address_line_1, institution_name, vehicle_make, vehicle_model, vehicle_year').eq('will_id', will.id),
       supabase.from('beneficiaries').select('id, beneficiary_type, first_name, organisation_name, relationship, share_percentage').eq('will_id', will.id).order('order_index'),
       supabase.from('executors').select('id, first_name, last_name, relationship, is_primary').eq('will_id', will.id).order('order_index'),
+      supabase.from('testators').select('first_name, marital_status').eq('will_id', will.id),
+      supabase.from('children').select('id', { count: 'exact', head: true }).eq('will_id', will.id),
+      supabase.from('specific_gifts').select('id', { count: 'exact', head: true }).eq('will_id', will.id),
+      supabase.from('wills').select('survivorship_days, pet_care').eq('id', will.id).single(),
     ]);
-    assets       = (aRes.data ?? []) as AssetRow[];
+    assets        = (aRes.data ?? []) as AssetRow[];
     beneficiaries = (bRes.data ?? []) as BeneficiaryRow[];
-    executors    = (eRes.data ?? []) as ExecutorRow[];
+    executors     = (eRes.data ?? []) as ExecutorRow[];
+
+    const primaryTestator = (tRes.data ?? []).find((t: { first_name: string | null; marital_status: string | null }) => t.marital_status !== null) ?? (tRes.data ?? [])[0]
+    personalDone  = !!(primaryTestator as { first_name: string | null } | undefined)?.first_name
+    maritalStatus = (primaryTestator as { marital_status: string | null } | undefined)?.marital_status ?? null
+    spouseDone    = !!(tRes.data ?? []).find((t: { marital_status: string | null }) => t.marital_status === null && (t as { first_name?: string | null }).first_name)
+    childrenDone  = (cRes.count ?? 0) > 0
+    giftsDone     = (gRes.count ?? 0) > 0
+    wishesDone    = !!(wRes.data?.survivorship_days)
   }
 
   const sc = STATUS_CFG[(will?.status as keyof typeof STATUS_CFG) ?? 'draft'] ?? STATUS_CFG.draft;
@@ -261,6 +280,61 @@ export default async function DashboardPage({
                 {sc.cta}
                 <Icon d="M5 12h14M12 5l7 7-7 7" color="var(--teal-deep)" size={13} />
               </Link>
+            </div>
+          </div>
+        )}
+
+        {/* ── Step progress ─────────────────────────────────────────────────── */}
+        {will && (
+          <div
+            className="rounded-lg border overflow-hidden"
+            style={{ borderColor: 'var(--line)', background: 'white' }}
+          >
+            <div className="px-5 py-3 border-b" style={{ borderColor: 'var(--line)', background: 'var(--paper-warm)' }}>
+              <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
+                Will progress
+              </p>
+            </div>
+            <div className="divide-y" style={{ borderColor: 'var(--line)' }}>
+              {[
+                { label: 'About You',       step: 'personal',      done: personalDone,              ready: true },
+                { label: 'Your Partner',    step: 'spouse',        done: spouseDone,                ready: personalDone, show: maritalStatus === 'married' || maritalStatus === 'domestic_partner' },
+                { label: 'Your Children',   step: 'children',      done: childrenDone,              ready: personalDone },
+                { label: 'Your Executors',  step: 'executors',     done: executors.length > 0,      ready: personalDone },
+                { label: 'Your Assets',     step: 'assets',        done: assets.length > 0,         ready: personalDone },
+                { label: 'Beneficiaries',   step: 'beneficiaries', done: beneficiaries.length > 0,  ready: personalDone },
+                { label: 'Specific Gifts',  step: 'gifts',         done: giftsDone,                 ready: personalDone },
+                { label: 'Wishes & Trusts', step: 'wishes',        done: wishesDone,                ready: personalDone },
+              ]
+                .filter((s) => s.show !== false)
+                .map(({ label, step, done, ready }) => {
+                  const status = done ? 'Completed' : ready ? 'Ready' : 'Not Started'
+                  const badgeStyle = done
+                    ? { background: 'rgba(42,180,174,0.1)', color: 'var(--teal-deep)' }
+                    : ready
+                    ? { background: '#fffbeb', color: '#92400e' }
+                    : { background: 'var(--paper-warm)', color: 'var(--neutral)' }
+                  return (
+                    <div key={step} className="flex items-center justify-between px-5 py-3">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span
+                          className="inline-flex items-center px-2 py-0.5 text-xs font-semibold shrink-0"
+                          style={badgeStyle}
+                        >
+                          {status}
+                        </span>
+                        <span className="text-sm" style={{ color: 'var(--ink)' }}>{label}</span>
+                      </div>
+                      <Link
+                        href={`/will/new?step=${step}`}
+                        className="text-xs font-medium shrink-0"
+                        style={{ color: 'var(--teal)' }}
+                      >
+                        {done ? 'Edit' : 'Start'} →
+                      </Link>
+                    </div>
+                  )
+                })}
             </div>
           </div>
         )}
