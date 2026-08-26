@@ -10,19 +10,24 @@ export default async function StartPage() {
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Authenticated users go straight to the platform wizard
-  if (user) redirect('/will/new')
-
-  // Anonymous: load from session cookie if present
-  const cookieStore = await cookies()
-  const anonSessionId = cookieStore.get('hl_anon_session')?.value ?? null
-
+  // Load existing data — from DB for authenticated users, from anon session cookie otherwise
   let formData = { ...EMPTY_WILL_FORM_DATA }
-  if (anonSessionId) {
+  if (user) {
     try {
-      formData = await loadAnonSessionFormData(supabase, anonSessionId)
+      const { formData: loaded } = await loadWillFormData(supabase, user.id)
+      formData = loaded
     } catch {
-      // Stale session — start fresh
+      // No will yet — start fresh
+    }
+  } else {
+    const cookieStore = await cookies()
+    const anonSessionId = cookieStore.get('hl_anon_session')?.value ?? null
+    if (anonSessionId) {
+      try {
+        formData = await loadAnonSessionFormData(supabase, anonSessionId)
+      } catch {
+        // Stale session — start fresh
+      }
     }
   }
 
@@ -75,7 +80,7 @@ export default async function StartPage() {
               overflow: 'hidden',
             }}
           >
-            <WillWizard initialData={formData} isAuthenticated={false} />
+            <WillWizard initialData={formData} isAuthenticated={!!user} />
           </div>
 
           {/* Trust footnote */}
