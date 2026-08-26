@@ -61,7 +61,7 @@ export default function MarketingNav() {
           <Link href="/auth/login" className="hidden lg:block mkt-nav-link">
             Log in
           </Link>
-          <Link href="/will/new" className="mkt-nav-cta">
+          <Link href="/start" className="mkt-nav-cta">
             Start your Will
           </Link>
         </div>

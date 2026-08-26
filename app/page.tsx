@@ -65,7 +65,7 @@ export default function HomePage() {
               Heirloom Life is the estate command centre for Australians who&#8217;ve built something worth protecting — a living Will and a private Vault that keeps your estate current as your life changes.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', flexWrap: 'wrap', gap: '.9rem', justifyContent: 'center' }}>
-              <Link href="/will/new" className="mkt-btn-ink-l">
+              <Link href="/start" className="mkt-btn-ink-l">
                 Start your Will
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
