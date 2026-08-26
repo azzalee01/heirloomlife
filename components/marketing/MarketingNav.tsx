@@ -6,8 +6,8 @@ const NAV_LINKS = [
   { label: 'The Will', href: '/the-will' },
   { label: 'Living Vault', href: '/living-vault' },
   { label: 'How it works', href: '/how-it-works' },
+  { label: 'Learn', href: '/learn' },
   { label: 'Pricing', href: '/pricing' },
-  { label: 'For Advisers', href: '/for-advisers' },
 ]
 
 export default function MarketingNav() {
