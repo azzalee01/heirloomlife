@@ -6,6 +6,7 @@ import { loadWillFormData } from './_data'
 import { generateWillDocumentText } from './_drafting'
 import { recordVersion } from './_versioning'
 import { STEP_LABELS, type WillFormData, type StepId, type PersonalWishesData } from './_types'
+import { sendResumeEmail } from '@/src/lib/email'
 
 const ANON_COOKIE = 'hl_anon_session'
 
@@ -436,12 +437,13 @@ export async function savePersonalWishes(
   }
 }
 
-// Store email on anonymous session for later account pre-fill at download gate.
+// Store email on anonymous session and send a resume link.
 export async function storeAnonEmail(email: string): Promise<void> {
   const supabase = await createSupabaseServerClient()
   const sessionId = await getAnonSessionId()
   if (!sessionId) return
   await supabase.from('anonymous_will_sessions').update({ email }).eq('id', sessionId)
+  await sendResumeEmail({ to: email, sessionId })
 }
 
 export async function completeWill(willId: string): Promise<void> {
