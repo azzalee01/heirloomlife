@@ -82,7 +82,7 @@ export default function TheWillPage() {
 
               {/* Tab strip */}
               <div role="tablist" style={{ display: 'flex', gap: '1.6rem', paddingInline: '1.5rem', borderBottom: '1px solid var(--mkt-line)', overflowX: 'auto' }}>
-                {['Clauses', 'Executor Access', 'Version History', 'Suggested Edits'].map((tab, i) => (
+                {['Clauses', 'Beneficiaries', 'Version History', 'Suggested Edits'].map((tab, i) => (
                   <div key={tab} style={{ paddingBlock: '1rem', fontSize: '.78rem', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0, color: i === 0 ? 'var(--mkt-ink-text)' : 'var(--mkt-stone-soft)', borderBottom: i === 0 ? '2px solid var(--teal)' : '2px solid transparent' }}>
                     {tab}
                   </div>
@@ -130,7 +130,7 @@ export default function TheWillPage() {
               { n: '02', title: 'Review your draft', body: 'Your answers become a structured Will draft. Review clause by clause. Change your answers and the draft updates immediately.' },
               { n: '03', title: 'Download and sign', body: 'Download your completed Will and sign it with two witnesses. Any complex flags — business interests, blended families, overseas assets — are highlighted in your Vault.' },
               { n: '04', title: 'Sign and witness', body: 'Your Will is valid only once signed in front of two independent witnesses. We walk you through the exact requirements for your state.' },
-              { n: '05', title: 'Store and update', body: 'Your signed Will lives in your Vault alongside your asset register and executor access instructions.' },
+              { n: '05', title: 'Store and update', body: 'Your signed Will lives in your Vault alongside your asset register. Every time your life changes, update your Will from the same place.' },
               { n: '+', title: 'Versioned as your life changes', body: 'Every amendment creates a new version. A change to your family, your assets, or your executors prompts an update — not a whole new Will.' },
             ].map(step => (
               <div key={step.n} style={{ background: '#fff', borderRadius: 10, border: '1px solid var(--mkt-line)', padding: '1.75rem' }}>

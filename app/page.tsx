@@ -139,7 +139,7 @@ export default function HomePage() {
             </div>
             {/* Tab strip */}
             <div style={{ display: 'flex', gap: '1.6rem', paddingInline: '1.5rem', borderBottom: '1px solid var(--mkt-line)', overflowX: 'auto' }}>
-              {['Clauses', 'Executor Access', 'Version History', 'Suggested Edits'].map((tab, i) => (
+              {['Clauses', 'Beneficiaries', 'Version History', 'Suggested Edits'].map((tab, i) => (
                 <div key={tab} style={{ paddingBlock: '1rem', fontSize: '.78rem', fontWeight: 600, color: i === 0 ? 'var(--mkt-ink-text)' : 'var(--mkt-stone-soft)', whiteSpace: 'nowrap', flexShrink: 0, borderBottom: i === 0 ? '2px solid var(--teal)' : '2px solid transparent' }}>
                   {tab}
                 </div>
@@ -199,7 +199,7 @@ export default function HomePage() {
             </div>
             {[
               { tag: 'Lawyer Review', h: "Available when it matters, at a flat rate.", p: 'Complex flags — business succession, trusts, blended families — are surfaced in your Vault. A solicitor review add-on is available for around $150, with direct access to our partner lawyers through the platform.' },
-              { tag: 'Executor Access', h: "Built for the day it's actually needed.", p: "A verified path from death certificate to executor access — identity-verified and cross-referenced, so the people you trust aren't left guessing at the worst possible time." },
+              { tag: 'Document Storage', h: "Everything in one place, always up to date.", p: "Your Will, asset register, and instructions stored securely in your Vault — so nothing is left to find at the worst possible time." },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: '#fff', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--teal) 30%, var(--teal) 70%, transparent)', pointerEvents: 'none' }}/>

@@ -29,7 +29,7 @@ const STEPS = [
   {
     num: '05',
     title: 'Store and update',
-    body: 'Your signed Will lives in your Vault alongside your asset register and executor access instructions. Every time your life changes, you can update your Will from the same place.',
+    body: 'Your signed Will lives in your Vault alongside your asset register. Every time your life changes, update your Will from the same place.',
   },
 ]
 

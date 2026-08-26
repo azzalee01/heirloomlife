@@ -94,9 +94,9 @@ export default function LivingVaultPage() {
                 body: 'High-severity flags — guardianship, trusts, business succession — are surfaced in your Vault with a clear recommendation. A solicitor review add-on is available for around $150, and you can communicate directly with our partner lawyers through the platform.',
               },
               {
-                tag: 'Executor Access',
-                title: 'Built for the day it\'s actually needed.',
-                body: 'A verified path from death certificate to executor access — identity-verified and cross-referenced, so the people you trust aren\'t left guessing at the worst possible time.',
+                tag: 'Document Storage',
+                title: 'Everything your family needs, in one place.',
+                body: 'Your Will, asset register, and instructions are stored securely in your Vault. When it matters, there is no searching through filing cabinets — it\'s all there.',
               },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: 'var(--mkt-surface)', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
@@ -137,32 +137,6 @@ export default function LivingVaultPage() {
           <p style={{ marginTop: '1.25rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
             Rules vary by state. Heirloom Life is available across Australia — your Will is drafted to the specific requirements of your state.
           </p>
-        </div>
-      </section>
-
-      {/* ── Executor Access ───────────────────────────────────────────────── */}
-      <section style={{ ...SECTION_PAD, background: 'var(--mkt-paper)', borderTop: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10" style={{ ...W, maxWidth: '44rem' }}>
-          <span style={SECTION_LABEL}>Executor Access</span>
-          <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 'clamp(1.9rem, 3vw, 2.6rem)', lineHeight: 1.1, letterSpacing: '-.02em', fontWeight: 500, color: 'var(--mkt-ink-text)', margin: 0 }}>
-            A verified path from death certificate to{' '}
-            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>access</em>.
-          </h2>
-          <p style={{ marginTop: '1rem', fontSize: '.95rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-            Your executor is granted access after lodging the death certificate and verifying their identity. When it&#8217;s needed, the process is clear and nothing is left to guess.
-          </p>
-          <div style={{ marginTop: '1.5rem', border: '1px solid var(--mkt-line)', borderRadius: 10, overflow: 'hidden' }}>
-            {[
-              { label: 'Executor', value: 'Named by you in your Will' },
-              { label: 'Access trigger', value: 'Death certificate lodgement + identity verification' },
-              { label: 'Instructions', value: 'Provided digitally to your named executor' },
-            ].map((row, i, arr) => (
-              <div key={row.label} style={{ display: 'grid', gridTemplateColumns: '9rem 1fr', borderBottom: i < arr.length - 1 ? '1px solid var(--mkt-line)' : 'none' }}>
-                <div style={{ background: 'var(--mkt-surface-2)', padding: '.85rem 1rem', fontSize: '.7rem', fontWeight: 600, color: 'var(--mkt-stone)', textTransform: 'uppercase', letterSpacing: '.06em' }}>{row.label}</div>
-                <div style={{ padding: '.85rem 1rem', fontSize: '.85rem', color: 'var(--mkt-ink-text)' }}>{row.value}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
