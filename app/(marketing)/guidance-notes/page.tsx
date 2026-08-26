@@ -11,10 +11,10 @@ export default function GuidanceNotesPage() {
           letterSpacing: '-.02em', fontWeight: 500,
           color: 'var(--mkt-ink-text)', margin: 0,
         }}>
-          Plain-language legal reference — pending finalisation.
+          Plain-language legal reference  -  pending finalisation.
         </h1>
         <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-          Guidance Notes explain in plain English how Heirloom Life&#8217;s service works from a legal perspective — what we are, what we are not, and what that means for you as a customer.
+          Guidance Notes explain in plain English how Heirloom Life&#8217;s service works from a legal perspective  -  what we are, what we are not, and what that means for you as a customer.
         </p>
 
         <div style={{ marginTop: '2rem', padding: '1.5rem', border: '1px solid var(--mkt-line)', borderRadius: 4, background: '#fff' }}>
@@ -22,7 +22,7 @@ export default function GuidanceNotesPage() {
             Pending legal review
           </p>
           <p style={{ fontSize: '.88rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: 0 }}>
-            These notes are being drafted with counsel to ensure they accurately describe the legal relationship between Heirloom Life and its customers. We will publish them when they have been reviewed and approved. Publishing inaccurate legal information is worse than publishing nothing — so we are waiting until we can publish it correctly.
+            These notes are being drafted with counsel to ensure they accurately describe the legal relationship between Heirloom Life and its customers. We will publish them when they have been reviewed and approved. Publishing inaccurate legal information is worse than publishing nothing  -  so we are waiting until we can publish it correctly.
           </p>
         </div>
 

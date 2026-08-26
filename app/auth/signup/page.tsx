@@ -59,7 +59,7 @@ export default function SignUpPage() {
           ) : (
             <>
               <h1 className="mt-5 text-2xl font-semibold text-[var(--ink)]">Start your Will</h1>
-              <p className="mt-2 text-sm text-[var(--neutral)]">Create your account — no password needed</p>
+              <p className="mt-2 text-sm text-[var(--neutral)]">Create your account  -  no password needed</p>
             </>
           )}
         </div>

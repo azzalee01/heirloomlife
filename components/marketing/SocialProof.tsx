@@ -80,7 +80,7 @@ function StatCard({
       transition={{ duration: 0.55, delay, ease: EASE_REVEAL }}
       className="text-center"
     >
-      {/* Teal stat number — Instrument Serif */}
+      {/* Teal stat number  -  Instrument Serif */}
       <p
         className="stat-display text-4xl md:text-5xl lg:text-6xl mb-2"
         style={{ color: 'var(--color-teal)' }}

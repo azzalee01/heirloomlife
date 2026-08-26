@@ -87,7 +87,7 @@ export default function StepPersonalDetails({ data, onChange }: Props) {
             <div>
               <label className={lbl}>State <span className="text-red-400">*</span></label>
               <select required className={inp} value={data.state} onChange={(e) => set('state', e.target.value)}>
-                <option value="">—</option>
+                <option value=""> - </option>
                 {AU_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>

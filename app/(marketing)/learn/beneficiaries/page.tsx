@@ -38,7 +38,7 @@ export default function BeneficiariesPage() {
             </em>
           </h1>
           <p style={{ fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', marginBottom: 0 }}>
-            Your beneficiaries are the people — and organisations — who receive your estate. Choosing them carefully, and expressing your intentions clearly, prevents ambiguity and disputes.
+            Your beneficiaries are the people  -  and organisations  -  who receive your estate. Choosing them carefully, and expressing your intentions clearly, prevents ambiguity and disputes.
           </p>
           <p style={{ marginTop: '.75rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)' }}>
             Australian law · 6 min read
@@ -51,10 +51,10 @@ export default function BeneficiariesPage() {
 
           <h2 style={H2}>Who can be a beneficiary?</h2>
           <p style={BODY}>
-            Almost anyone. A beneficiary can be a family member, a friend, a de facto partner, a charity, an organisation, or a business. There is no legal requirement that beneficiaries be related to you. Your estate is yours to distribute as you see fit — subject to the Family Provision claims rules, discussed below.
+            Almost anyone. A beneficiary can be a family member, a friend, a de facto partner, a charity, an organisation, or a business. There is no legal requirement that beneficiaries be related to you. Your estate is yours to distribute as you see fit  -  subject to the Family Provision claims rules, discussed below.
           </p>
           <p style={BODY}>
-            Minor children can be named as beneficiaries, but assets cannot be distributed directly to them until they reach adulthood (18 in most states). In the meantime, the assets are held and managed by a trustee — usually your executor — until the child reaches the specified age.
+            Minor children can be named as beneficiaries, but assets cannot be distributed directly to them until they reach adulthood (18 in most states). In the meantime, the assets are held and managed by a trustee  -  usually your executor  -  until the child reaches the specified age.
           </p>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -68,7 +68,7 @@ export default function BeneficiariesPage() {
             {[
               {
                 title: 'Residual gifts',
-                body: 'A residual beneficiary receives a share — often a percentage — of whatever is left in your estate after debts and specific gifts are paid. "I leave 60% of my estate to my partner and 40% to my two children in equal shares" is a residual distribution. It adjusts automatically as the value of your estate changes.',
+                body: 'A residual beneficiary receives a share  -  often a percentage  -  of whatever is left in your estate after debts and specific gifts are paid. "I leave 60% of my estate to my partner and 40% to my two children in equal shares" is a residual distribution. It adjusts automatically as the value of your estate changes.',
               },
               {
                 title: 'Specific gifts',
@@ -107,10 +107,10 @@ export default function BeneficiariesPage() {
             Australian law gives certain people the right to challenge a Will if they believe they were inadequately provided for. These are called Family Provision claims, and eligible claimants include spouses, de facto partners, children (including adult children), and in some states, other dependants.
           </p>
           <p style={BODY}>
-            This does not mean you must leave something to every family member. But if you intentionally exclude a close family member — particularly a spouse, partner, or financially dependent child — there is a real risk of a claim against your estate after your death.
+            This does not mean you must leave something to every family member. But if you intentionally exclude a close family member  -  particularly a spouse, partner, or financially dependent child  -  there is a real risk of a claim against your estate after your death.
           </p>
           <blockquote style={CALLOUT}>
-            If you have complex family circumstances — a prior relationship, step-children, an estrangement, a dependent adult child — a solicitor can advise on how to structure your Will to minimise the risk of a successful Family Provision claim. This is flagged in your Vault if relevant.
+            If you have complex family circumstances  -  a prior relationship, step-children, an estrangement, a dependent adult child  -  a solicitor can advise on how to structure your Will to minimise the risk of a successful Family Provision claim. This is flagged in your Vault if relevant.
           </blockquote>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -120,7 +120,7 @@ export default function BeneficiariesPage() {
             Charitable bequests are common and straightforward to include. You can leave a fixed dollar amount, a percentage of your estate, or a specific asset to a registered charity. Use the charity&#8217;s full legal name and ABN where possible to avoid ambiguity.
           </p>
           <p style={BODY}>
-            Charitable gifts are exempt from capital gains tax and do not attract income tax for the receiving organisation. They also reduce the taxable value of your estate in some circumstances — worth clarifying with an accountant if you are considering a significant bequest.
+            Charitable gifts are exempt from capital gains tax and do not attract income tax for the receiving organisation. They also reduce the taxable value of your estate in some circumstances  -  worth clarifying with an accountant if you are considering a significant bequest.
           </p>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />

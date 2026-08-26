@@ -49,12 +49,12 @@ async function saveToAnonSession(formData: WillFormData): Promise<string> {
 type SupabaseClient = Awaited<ReturnType<typeof createSupabaseServerClient>>
 
 // testators rows are fully replaced on every save (personal, spouse, and
-// wishes steps all touch this table) — build the complete row set from
+// wishes steps all touch this table)  -  build the complete row set from
 // current form state every time so no step ever clobbers another's fields.
 function buildTestatorRows(formData: WillFormData): Record<string, unknown>[] {
   const pd = formData.personalDetails
   const sd = formData.spouseDetails
-  // Funeral fields are no longer written from the core flow — they live in
+  // Funeral fields are no longer written from the core flow  -  they live in
   // personal_wishes (non-testamentary) and are saved via savePersonalWishes.
   const wishesFields = {
     assets_outside_australia: formData.assetsOutsideAustralia,
@@ -170,7 +170,7 @@ export async function saveStep(
     const { data } = await supabase.from('wills').select('status').eq('id', id).single()
     willStatus = (data?.status as string | undefined) ?? 'draft'
   }
-  // Only a will that's already been completed once is a "live" document —
+  // Only a will that's already been completed once is a "live" document  - 
   // edits to it (via the wizard or the AI chat) warrant a fresh legal review.
   // Steps during the original intake wizard are skipped since the data is
   // incomplete until all steps are done (see completeWill).
@@ -278,9 +278,9 @@ export async function saveStep(
         // Capture fields with no dedicated column in the description
         let description = a.description || null
         if (a.assetType === 'bank_account' && a.bsb) {
-          description = `BSB: ${a.bsb}${description ? ` — ${description}` : ''}`
+          description = `BSB: ${a.bsb}${description ? `  -  ${description}` : ''}`
         } else if (a.assetType === 'shares' && a.numberOfShares) {
-          description = `${a.numberOfShares} shares${description ? ` — ${description}` : ''}`
+          description = `${a.numberOfShares} shares${description ? `  -  ${description}` : ''}`
         }
 
         const nominationApplies = a.assetType === 'superannuation' || a.assetType === 'life_insurance'
@@ -358,7 +358,7 @@ export async function saveStep(
 
     // ─── Wishes & Trusts ────────────────────────────────────────────────────
     case 'wishes': {
-      // funeral/jurisdiction fields live on testators — rebuild via the
+      // funeral/jurisdiction fields live on testators  -  rebuild via the
       // shared builder so personal/spouse data already saved isn't clobbered.
       await replaceRows(supabase, 'testators', id, buildTestatorRows(formData).map((r) => ({ ...r, will_id: id })))
 
@@ -461,14 +461,14 @@ export async function completeWill(willId: string): Promise<void> {
   if (error) throw new Error(error.message)
 
   // Draft the will document from the completed intake data. A drafting
-  // failure shouldn't block submission — the solicitor review still covers it.
+  // failure shouldn't block submission  -  the solicitor review still covers it.
   try {
     const { formData } = await loadWillFormData(supabase, user.id, willId)
     const documentText = await generateWillDocumentText(formData)
     await supabase.from('wills').update({ document_text: documentText }).eq('id', willId)
 
     // Run the AI legal review exactly once here, now that all 7 steps are
-    // in and the full picture is available — not on every step along the way.
+    // in and the full picture is available  -  not on every step along the way.
     await recordVersion(supabase, willId, null, 'Completed will intake', formData, true)
   } catch (draftError) {
     console.error('Will drafting failed for', willId, draftError)

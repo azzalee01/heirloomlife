@@ -13,10 +13,10 @@ export default function TryItPage() {
           letterSpacing: '-.02em', fontWeight: 500,
           color: 'var(--mkt-ink-text)', margin: 0,
         }}>
-          Start your Will — it takes about 30 minutes.
+          Start your Will  -  it takes about 30 minutes.
         </h1>
         <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-          Answer seven guided questions about your estate. You&#8217;ll need an account to save your progress — creating one is free and takes less than a minute.
+          Answer seven guided questions about your estate. You&#8217;ll need an account to save your progress  -  creating one is free and takes less than a minute.
         </p>
 
         <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>

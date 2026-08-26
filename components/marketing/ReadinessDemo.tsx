@@ -8,7 +8,7 @@ const TICKS = [
   { text: 'New asset added: Investment property, Bondi', badge: 'Synced', type: 'teal' },
   { text: 'Guardianship clause flagged for review after second child', badge: 'Review', type: 'amber' },
   { text: 'Executor access configured for nominated executor', badge: 'Active', type: 'teal' },
-  { text: 'Will Version 4 — Solicitor reviewed 12 Jun 2026', badge: 'Current', type: 'teal' },
+  { text: 'Will Version 4  -  Solicitor reviewed 12 Jun 2026', badge: 'Current', type: 'teal' },
 ]
 
 export default function ReadinessDemo() {

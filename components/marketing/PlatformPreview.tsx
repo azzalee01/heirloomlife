@@ -46,9 +46,9 @@ const UPDATED_BENEFICIARIES: Beneficiary[] = [
   { name: 'Oliver Lee', rel: 'Son',      pct: 10, initials: 'OL', isNew: true    },
 ]
 
-const DEMO_PROMPT   = "I just had a baby — Oliver Lee born last week"
+const DEMO_PROMPT   = "I just had a baby  -  Oliver Lee born last week"
 const DEMO_RESPONSE = "Congratulations! A new child affects your guardianship and distribution clauses. I've drafted 2 amendments for your review."
-const DEMO_APPLIED  = "✓ 2 amendments applied — Will v5 drafted and sent for solicitor review."
+const DEMO_APPLIED  = "✓ 2 amendments applied  -  Will v5 drafted and sent for solicitor review."
 
 const DEMO_AMENDMENTS = [
   { title: 'Add Oliver Lee as beneficiary', detail: 'Redistribute: Sarah 55% · James 20% · Emma 15% · Oliver 10%' },
@@ -61,7 +61,7 @@ type Phase   = 'idle' | 'typing' | 'thinking' | 'responded' | 'approving' | 'app
 const DEMO_REPLIES: Record<string, string> = {
   default:  "Great question. In the real platform I'd read your will, flag affected clauses, and draft a specific amendment. Create a free account to try it with your own details.",
   property: "A new property changes your asset register immediately. I'd add it then check your residuary estate clause. Create an account to do this for real.",
-  child:    "A new child is a high-severity event — guardianship and distribution provisions both need reviewing. Create an account to walk through it.",
+  child:    "A new child is a high-severity event  -  guardianship and distribution provisions both need reviewing. Create an account to walk through it.",
   executor: "Changing an executor is high-stakes. I'd update the appointment clause and queue solicitor sign-off. Create an account to make the change.",
   married:  "Marriage automatically revokes a prior Will in most Australian states. This is urgent. Create an account to get started.",
 }
@@ -185,7 +185,7 @@ export default function PlatformPreview() {
     return () => { clearTimeout(t); clearTimers() }
   }, [runDemo])
 
-  // ── "Watch demo" — reset user mode and replay ────────────────────────────
+  // ── "Watch demo"  -  reset user mode and replay ────────────────────────────
   function watchDemo() {
     userTookOver.current = false
     setUserMode(false)
@@ -235,7 +235,7 @@ export default function PlatformPreview() {
   // ── render ───────────────────────────────────────────────────────────────
   return (
     <div>
-      {/* Control bar — sits above the preview frame */}
+      {/* Control bar  -  sits above the preview frame */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', paddingInline: '2px' }}>
         <span style={{ fontSize: '.72rem', letterSpacing: '.14em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--mkt-stone)' }}>
           {userMode ? 'Click the assistant below to send a message' : demoRunning ? 'Watching demo…' : 'Live platform preview'}
@@ -257,7 +257,7 @@ export default function PlatformPreview() {
         )}
       </div>
 
-      {/* Preview frame — locked to 1700×880 ratio */}
+      {/* Preview frame  -  locked to 1700×880 ratio */}
       <div
         onClick={handlePreviewClick}
         style={{
@@ -379,7 +379,7 @@ export default function PlatformPreview() {
                       </div>
                     </div>
 
-                    {/* People — animated */}
+                    {/* People  -  animated */}
                     <div>
                       <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.1em', color: 'var(--neutral)', display: 'block', marginBottom: 7 }}>Your People</span>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -408,7 +408,7 @@ export default function PlatformPreview() {
                     </div>
                   </div>
 
-                  {/* Amendment cards — slide in during demo */}
+                  {/* Amendment cards  -  slide in during demo */}
                   {showAmendments && !userMode && (
                     <div style={{ borderRadius: 8, border: '1px solid var(--teal)', background: '#fff', overflow: 'hidden', flexShrink: 0, animation: 'slideUpCard .4s ease' }}>
                       <div style={{ padding: '8px 14px', borderBottom: '1px solid var(--line)', background: 'rgba(42,180,174,.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -446,7 +446,7 @@ export default function PlatformPreview() {
                       </div>
                       <div>
                         <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink)' }}>Estate Assistant</div>
-                        <div style={{ fontSize: 9, color: 'var(--neutral)' }}>Tell me about a life change — I'll flag what needs updating</div>
+                        <div style={{ fontSize: 9, color: 'var(--neutral)' }}>Tell me about a life change  -  I'll flag what needs updating</div>
                       </div>
                     </div>
 
@@ -523,7 +523,7 @@ export default function PlatformPreview() {
                       <Icon d="M2 2h8l4 4v8H2V2zM10 2v4h4" color="var(--teal)" size={11}/>
                     </div>
                     <div>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>Aaron Lee — Last Will &amp; Testament</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>Aaron Lee  -  Last Will &amp; Testament</div>
                       <div style={{ fontSize: 10, color: 'var(--neutral)', marginTop: 1 }}>
                         Version {willVersion} · {willStatus === 'pending' ? 'Pending solicitor review' : 'Solicitor reviewed 12 Jun 2026'}
                       </div>

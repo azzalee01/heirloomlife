@@ -3,7 +3,7 @@ import type { WillFormData } from './_types'
 
 const client = new Anthropic()
 
-const SYSTEM_PROMPT = `You are drafting a formal Australian Will document from structured intake data for Heirloom, an online will-writing platform. Produce the complete will text, customised to this testator's specific circumstances (their state's conventions, whether they have a spouse, children, specific gifts, etc — omit any section that doesn't apply rather than leaving placeholders).
+const SYSTEM_PROMPT = `You are drafting a formal Australian Will document from structured intake data for Heirloom, an online will-writing platform. Produce the complete will text, customised to this testator's specific circumstances (their state's conventions, whether they have a spouse, children, specific gifts, etc  -  omit any section that doesn't apply rather than leaving placeholders).
 
 Structure to follow, adapting section numbers and headings as appropriate, and omitting any that don't apply:
 1. Heading identifying the testator (full name, address) and a revocation-of-prior-wills clause.
@@ -12,14 +12,14 @@ Structure to follow, adapting section numbers and headings as appropriate, and o
 4. If there are dependent beneficiaries, a testamentary trust clause: their share is held on trust until the stated age of vesting rather than paid out immediately.
 5. Specific gifts of named items or cash amounts to named recipients, including a substitute recipient clause where one was given (if the named recipient does not survive the testator by the stated survivorship period, the gift passes to the substitute instead).
 6. Distribution of the residuary estate to the named beneficiaries by percentage (individuals and/or charities), including the survivorship period and substitute beneficiaries where given.
-7. A life interest / right-to-reside clause, if one was specified — who may live in the property, until what triggering event, and who it passes to afterwards.
-8. A pet care clause, if pets were specified — who cares for them and any funds set aside.
+7. A life interest / right-to-reside clause, if one was specified  -  who may live in the property, until what triggering event, and who it passes to afterwards.
+8. A pet care clause, if pets were specified  -  who cares for them and any funds set aside.
 9. A funeral wishes section, clearly stated as guidance that is not legally binding on the executor.
 10. A note on assets held overseas, if any, flagging that a separate will may be needed in that jurisdiction.
 11. A note on assets with an existing binding death benefit nomination (superannuation/life insurance), flagging that those may pass outside the will.
 12. A closing attestation clause for signing and witnessing (do not fabricate witness names).
 
-Write in formal legal-document prose appropriate for a will, using the testator's real details throughout. Do not include commentary, explanations, or a preamble — output only the will document text itself. Include a note in an Important: line at the end of the document stating that this document was prepared using Heirloom Life's template platform, has not been reviewed by a solicitor unless a review add-on has been purchased, and must be signed and witnessed to be legally valid.`
+Write in formal legal-document prose appropriate for a will, using the testator's real details throughout. Do not include commentary, explanations, or a preamble  -  output only the will document text itself. Include a note in an Important: line at the end of the document stating that this document was prepared using Heirloom Life's template platform, has not been reviewed by a solicitor unless a review add-on has been purchased, and must be signed and witnessed to be legally valid.`
 
 function buildIntakeSummary(formData: WillFormData): string {
   const pd = formData.personalDetails
@@ -96,10 +96,10 @@ function buildIntakeSummary(formData: WillFormData): string {
   }
 
   const people = formData.beneficiariesData.people.map(
-    (p) => `${p.name} (${p.relationship}) — ${p.percentage}%${p.substituteBeneficiary ? `, substitute: ${p.substituteBeneficiary}` : ''}`
+    (p) => `${p.name} (${p.relationship})  -  ${p.percentage}%${p.substituteBeneficiary ? `, substitute: ${p.substituteBeneficiary}` : ''}`
   )
   const charities = formData.beneficiariesData.charities.map(
-    (c) => `${c.name}${c.abn ? ` (ABN ${c.abn})` : ''} — ${c.percentage}%${c.substituteBeneficiary ? `, substitute: ${c.substituteBeneficiary}` : ''}`
+    (c) => `${c.name}${c.abn ? ` (ABN ${c.abn})` : ''}  -  ${c.percentage}%${c.substituteBeneficiary ? `, substitute: ${c.substituteBeneficiary}` : ''}`
   )
   lines.push('Residuary beneficiaries: ' + [...people, ...charities].join('; '))
 
@@ -115,7 +115,7 @@ function buildIntakeSummary(formData: WillFormData): string {
     lines.push(`Pet care: ${pc.description} to be cared for by ${pc.caregiverName} (${pc.caregiverRelationship})${pc.careFundAmount ? `, with $${pc.careFundAmount} set aside for care` : ''}.`)
   }
 
-  // Funeral wishes excluded — non-testamentary, stored in personal_wishes separately.
+  // Funeral wishes excluded  -  non-testamentary, stored in personal_wishes separately.
 
   if (formData.importantDocumentsLocation) {
     lines.push(`Important documents location: ${formData.importantDocumentsLocation}.`)

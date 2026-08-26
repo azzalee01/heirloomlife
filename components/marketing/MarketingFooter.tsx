@@ -45,7 +45,7 @@ export default function MarketingFooter() {
               Heirloom Life
             </span>
             <p style={{ marginTop: '1rem', fontSize: '.85rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              An estate command centre for Australians — the Will, the Vault, and the folder, kept in one place.
+              An estate command centre for Australians  -  the Will, the Vault, and the folder, kept in one place.
             </p>
           </div>
 

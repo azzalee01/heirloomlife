@@ -14,7 +14,7 @@ export interface DailyRoom {
   url: string
 }
 
-// Rooms expire 2 hours after the scheduled time — long enough for a signing
+// Rooms expire 2 hours after the scheduled time  -  long enough for a signing
 // session plus buffer, short enough that stale rooms don't linger.
 export async function createWitnessingRoom(scheduledAt: string, recordingEnabled: boolean): Promise<DailyRoom> {
   const exp = Math.floor(new Date(scheduledAt).getTime() / 1000) + 2 * 60 * 60

@@ -54,7 +54,7 @@ export default function HomePage() {
 
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
       <section style={{ position: 'relative', background: 'var(--mkt-surface)', color: 'var(--mkt-ink-text)', overflow: 'hidden' }}>
-        {/* Hero text — constrained */}
+        {/* Hero text  -  constrained */}
         <div style={{ ...W, paddingTop: '8rem', paddingBottom: '3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ maxWidth: '52rem' }}>
             <h1 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(2.7rem, 6.2vw, 5.4rem)', lineHeight: .98, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0 }}>
@@ -62,7 +62,7 @@ export default function HomePage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>current</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Heirloom Life is the estate command centre for Australians who&#8217;ve built something worth protecting — a living Will and a private Vault that keeps your estate current as your life changes.
+              Heirloom Life is the estate command centre for Australians who&#8217;ve built something worth protecting  -  a living Will and a private Vault that keeps your estate current as your life changes.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', flexWrap: 'wrap', gap: '.9rem', justifyContent: 'center' }}>
               <Link href="/start" className="mkt-btn-ink-l">
@@ -94,7 +94,7 @@ export default function HomePage() {
             {[
               {
                 d: <><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z" stroke="currentColor" strokeWidth="1.4"/><path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
-                t: 'Available across Australia — drafted to your state\'s legal requirements',
+                t: 'Available across Australia  -  drafted to your state\'s legal requirements',
               },
               {
                 d: <><path d="M4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z" stroke="currentColor" strokeWidth="1.4"/><path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
@@ -120,7 +120,7 @@ export default function HomePage() {
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>The Will</span>
             <H2>Not a document you sign once<br/>and hope you never think about <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>again</em>.</H2>
-            <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault — readable in plain English, versioned every time your life moves forward, with a solicitor review add-on available when your situation calls for it.</Sub>
+            <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault  -  readable in plain English, versioned every time your life moves forward, with a solicitor review add-on available when your situation calls for it.</Sub>
           </div>
 
           <div style={{ marginTop: '3.5rem', borderRadius: 12, background: '#fff', border: '1px solid var(--mkt-line)', boxShadow: '0 30px 80px rgba(15,30,28,0.10)', overflow: 'hidden' }}>
@@ -149,7 +149,7 @@ export default function HomePage() {
             <div style={{ padding: '1.75rem 1.5rem', minHeight: '14rem' }}>
               {[
                 { n: '1', title: 'Appointment of Executor', body: "Names who carries out your wishes. Your executor gathers your assets, pays any debts, and distributes what remains as you've set out below.", badge: null },
-                { n: '2', title: 'Guardianship of Minor Children', body: 'Flagged for review — a change to your family situation since your last amendment may affect this clause.', badge: 'Included review recommended' },
+                { n: '2', title: 'Guardianship of Minor Children', body: 'Flagged for review  -  a change to your family situation since your last amendment may affect this clause.', badge: 'Included review recommended' },
                 { n: '3', title: 'Distribution of Residuary Estate', body: 'Sets out how everything not otherwise gifted is divided. Last confirmed against your asset register two months ago.', badge: null },
               ].map(clause => (
                 <div key={clause.n} style={{ display: 'flex', gap: '1rem', padding: '1rem 0', borderBottom: '1px solid var(--mkt-line)' }}>
@@ -176,7 +176,7 @@ export default function HomePage() {
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>The Command Centre</span>
             <H2>A single home for everything<br/>your estate needs to <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>keep working</em>.</H2>
-            <Sub>Your Will is the start, not the finish. The Living Vault keeps your estate current as your life does — your assets, your people, your instructions, always in step.</Sub>
+            <Sub>Your Will is the start, not the finish. The Living Vault keeps your estate current as your life does  -  your assets, your people, your instructions, always in step.</Sub>
           </div>
           <div className="lg:grid-cols-[1.15fr_1fr] lg:grid-rows-2" style={{ marginTop: '3.5rem', display: 'grid', gap: '1.1rem', gridTemplateColumns: '1fr' }}>
             <div className="lg:row-span-2" style={{ borderRadius: 14, background: '#fff', padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '20rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
@@ -184,7 +184,7 @@ export default function HomePage() {
               <div>
                 <Pill variant="quiet">Living Vault</Pill>
                 <h3 style={{ marginTop: '1rem', fontSize: '1.4rem', fontWeight: 500, letterSpacing: '-.015em', maxWidth: '20rem', color: 'var(--mkt-ink-text)', margin: '1rem 0 0' }}>Your estate, kept current.</h3>
-                <p style={{ marginTop: '.75rem', fontSize: '.92rem', lineHeight: 1.6, color: 'var(--mkt-stone)', maxWidth: '26rem' }}>Marriage, a new child, a property purchase, a business sold — each one can quietly invalidate parts of a Will. The Vault tracks the life events that matter and prompts an update before a gap becomes a problem for the people you&#8217;ve named.</p>
+                <p style={{ marginTop: '.75rem', fontSize: '.92rem', lineHeight: 1.6, color: 'var(--mkt-stone)', maxWidth: '26rem' }}>Marriage, a new child, a property purchase, a business sold  -  each one can quietly invalidate parts of a Will. The Vault tracks the life events that matter and prompts an update before a gap becomes a problem for the people you&#8217;ve named.</p>
               </div>
               <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '.6rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '.85rem 1rem', borderRadius: 8, background: 'var(--mkt-surface-2)', border: '1px solid var(--mkt-line)', fontSize: '.82rem' }}>
@@ -198,8 +198,8 @@ export default function HomePage() {
               </div>
             </div>
             {[
-              { tag: 'Lawyer Review', h: "Available when it matters, at a flat rate.", p: 'Complex flags — business succession, trusts, blended families — are surfaced in your Vault. A solicitor review add-on is available for around $150, with direct access to our partner lawyers through the platform.' },
-              { tag: 'Document Storage', h: "Everything in one place, always up to date.", p: "Your Will, asset register, and instructions stored securely in your Vault — so nothing is left to find at the worst possible time." },
+              { tag: 'Lawyer Review', h: "Available when it matters, at a flat rate.", p: 'Complex flags  -  business succession, trusts, blended families  -  are surfaced in your Vault. A solicitor review add-on is available for around $150, with direct access to our partner lawyers through the platform.' },
+              { tag: 'Document Storage', h: "Everything in one place, always up to date.", p: "Your Will, asset register, and instructions stored securely in your Vault  -  so nothing is left to find at the worst possible time." },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: '#fff', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--teal) 30%, var(--teal) 70%, transparent)', pointerEvents: 'none' }}/>
@@ -222,7 +222,7 @@ export default function HomePage() {
           <div className="md:grid-cols-3" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', borderTop: '1px solid var(--mkt-line)', borderLeft: '1px solid var(--mkt-line)' }}>
             {[
               { num: '7', label: 'Guided steps from first login to a complete, structured Will' },
-              { num: '8', label: 'States and territories covered — your Will is drafted to the legal requirements of wherever you live' },
+              { num: '8', label: 'States and territories covered  -  your Will is drafted to the legal requirements of wherever you live' },
               { num: '1', label: "Place your Will, your Vault, and your executor's instructions all live" },
             ].map(stat => (
               <div key={stat.num} style={{ borderRight: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)', padding: '2.4rem 2rem' }}>
@@ -239,7 +239,7 @@ export default function HomePage() {
         <Reveal className="md:px-10" style={W}>
           <p style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal)', marginBottom: '2rem' }}>From the founder</p>
           <blockquote style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: 'clamp(1.7rem, 2.9vw, 2.6rem)', lineHeight: 1.25, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', maxWidth: '46rem', margin: 0 }}>
-            &#8220;We built Heirloom Life because a Will isn&#8217;t paperwork — it&#8217;s the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet.&#8221;
+            &#8220;We built Heirloom Life because a Will isn&#8217;t paperwork  -  it&#8217;s the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet.&#8221;
           </blockquote>
           <p style={{ marginTop: '2rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>Aaron Lee</p>
           <p style={{ marginTop: '.2rem', color: 'var(--mkt-stone)', fontSize: '.9rem' }}>Founder, Heirloom Life</p>

@@ -104,7 +104,7 @@ export default function StepEligibility({ state, dateOfBirth, onStateChange, onD
           <p className="text-sm" style={{ color: 'var(--neutral)' }}>
             {isAVState
               ? `Your Will will be drafted for ${state}. Remote AV witnessing is available for your state.`
-              : `Your Will will be drafted for ${state}. Once complete, you'll print and sign it with two witnesses — a straightforward process we'll guide you through.`}
+              : `Your Will will be drafted for ${state}. Once complete, you'll print and sign it with two witnesses  -  a straightforward process we'll guide you through.`}
           </p>
         </div>
       )}

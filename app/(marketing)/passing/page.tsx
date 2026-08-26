@@ -10,7 +10,7 @@ const ARTICLES = [
     href: '/passing/estate-administration',
     eyebrow: 'After a death',
     title: 'What happens to an estate after someone dies',
-    summary: 'The eight stages of estate administration — from registering the death to distributing assets to beneficiaries. What the executor does, what probate involves, and how long it takes.',
+    summary: 'The eight stages of estate administration  -  from registering the death to distributing assets to beneficiaries. What the executor does, what probate involves, and how long it takes.',
   },
 ]
 
@@ -71,7 +71,7 @@ export default function PassingIndexPage() {
               More guides
             </p>
             <p style={{ fontSize: '.88rem', color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>
-              Planning ahead is covered in the Learn section — Will fundamentals, choosing an executor, superannuation, and life-stage readiness.
+              Planning ahead is covered in the Learn section  -  Will fundamentals, choosing an executor, superannuation, and life-stage readiness.
             </p>
             <Link href="/learn" style={{ fontSize: '.9rem', color: 'var(--teal-deep)', textDecoration: 'none', fontWeight: 500 }}>
               Browse the Learn guides →

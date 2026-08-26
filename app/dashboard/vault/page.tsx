@@ -32,7 +32,7 @@ export default function VaultPage() {
             Living Vault coming soon
           </h2>
           <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>
-            Store important documents, passwords, and messages for your loved ones — all in one secure place.
+            Store important documents, passwords, and messages for your loved ones  -  all in one secure place.
           </p>
         </div>
       </main>

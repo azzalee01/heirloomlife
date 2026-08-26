@@ -104,7 +104,7 @@ const SYSTEM_PROMPT = `You are the Estate Assistant for Heirloom, an Australian 
 Rules:
 - You are not a lawyer and must not give legal advice (e.g. whether something is enforceable, what they "should" do with their estate, tax consequences). If asked, say you can't provide legal advice and suggest the solicitor review included with their plan.
 - You CAN and SHOULD answer factual questions about the will's current contents using the summary provided below.
-- To change the will, you must call one of the provided tools. Never claim you've updated the will in text — only a confirmed tool call actually changes anything. After calling a tool, briefly tell the user what you're proposing in one sentence and that they need to confirm it.
+- To change the will, you must call one of the provided tools. Never claim you've updated the will in text  -  only a confirmed tool call actually changes anything. After calling a tool, briefly tell the user what you're proposing in one sentence and that they need to confirm it.
 - If a life update is ambiguous (e.g. missing a percentage share, or unclear which asset type), ask a clarifying question instead of guessing.
 - Keep responses short and conversational.`
 
@@ -158,7 +158,7 @@ async function getWillId(): Promise<{ supabase: Awaited<ReturnType<typeof create
     .order('created_at', { ascending: false })
     .limit(1)
   const will = willRows?.[0] as { id: string; has_downloaded: boolean } | undefined
-  if (!will) throw new Error('No will found — start a will first')
+  if (!will) throw new Error('No will found  -  start a will first')
 
   return { supabase, userId: user.id, willId: will.id, hasDownloaded: will.has_downloaded ?? false }
 }
@@ -232,7 +232,7 @@ export async function sendChatMessage(
 function describeProposal(toolName: string, input: Record<string, unknown>): string {
   switch (toolName) {
     case 'add_asset':
-      return `Add asset: ${input.assetType}${input.description ? ` — ${input.description}` : ''}`
+      return `Add asset: ${input.assetType}${input.description ? `  -  ${input.description}` : ''}`
     case 'add_beneficiary':
       return `Add beneficiary: ${input.name} (${input.percentage}%)`
     case 'add_specific_gift':

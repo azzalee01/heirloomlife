@@ -53,7 +53,7 @@ export default function PricingPage() {
             <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>Free, always.</p>
 
             <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '28rem' }}>
-              Answer a short questionnaire — or upload your existing will and tell us what&apos;s changed — and get a legally-structured Will, ready to print and sign.
+              Answer a short questionnaire  -  or upload your existing will and tell us what&apos;s changed  -  and get a legally-structured Will, ready to print and sign.
             </p>
 
             <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
@@ -119,7 +119,7 @@ export default function PricingPage() {
             </p>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
               {[
-                'Unlimited will reviews and quick amendments — chat-based update, immediate redrafted document',
+                'Unlimited will reviews and quick amendments  -  chat-based update, immediate redrafted document',
                 'Unlimited quick add/remove of beneficiaries, gifts, and executors',
                 'NSW members only: access to Heirloom\'s team AV witness pool for remote execution',
                 'Solicitor review add-on available (~$150) with direct access to partner lawyers through the platform',
@@ -147,10 +147,10 @@ export default function PricingPage() {
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem',
           }}>
-            Complete your Will — we&apos;ll flag what needs a closer look.
+            Complete your Will  -  we&apos;ll flag what needs a closer look.
           </h2>
           <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', maxWidth: '36rem', marginBottom: '2rem' }}>
-            If your estate involves overseas assets, a business, a blended family, or a beneficiary with special needs, complete the questionnaire and your Vault will flag the specific areas of concern. From there you can request a solicitor review for around $150 and communicate directly with our partner lawyers — without starting over.
+            If your estate involves overseas assets, a business, a blended family, or a beneficiary with special needs, complete the questionnaire and your Vault will flag the specific areas of concern. From there you can request a solicitor review for around $150 and communicate directly with our partner lawyers  -  without starting over.
           </p>
           <a href="/start" className="mkt-btn-ghost-m">Start your Will</a>
         </div>
@@ -169,11 +169,11 @@ export default function PricingPage() {
             },
             {
               q: 'Which states are supported?',
-              a: 'All Australian states and territories. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing — all other states complete with a print-and-sign process, which we walk you through.',
+              a: 'All Australian states and territories. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing  -  all other states complete with a print-and-sign process, which we walk you through.',
             },
             {
               q: 'Can I upload my existing Will?',
-              a: 'Yes. The upload flow reads your existing Will, extracts what it can, and presents it for you to confirm and update. The output is always a fresh Heirloom-template document — we never edit an uploaded file directly.',
+              a: 'Yes. The upload flow reads your existing Will, extracts what it can, and presents it for you to confirm and update. The output is always a fresh Heirloom-template document  -  we never edit an uploaded file directly.',
             },
             {
               q: 'What is the Living Vault?',

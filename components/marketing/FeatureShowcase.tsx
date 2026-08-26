@@ -14,13 +14,13 @@ const FEATURES = [
     iconName: 'file-text',
     title: 'A legally valid Will, in minutes',
     description:
-      'Answer simple questions about your wishes. We generate a correctly structured Will that meets Australian legal requirements — no legalese, no forms, no confusion.',
+      'Answer simple questions about your wishes. We generate a correctly structured Will that meets Australian legal requirements  -  no legalese, no forms, no confusion.',
   },
   {
     iconName: 'user-check',
     title: 'Optional solicitor review',
     description:
-      'Every Will can be reviewed by one of our partner solicitors. You get written confirmation your document is legally sound — included in your plan.',
+      'Every Will can be reviewed by one of our partner solicitors. You get written confirmation your document is legally sound  -  included in your plan.',
   },
   {
     iconName: 'archive',
@@ -32,7 +32,7 @@ const FEATURES = [
     iconName: 'refresh-cw',
     title: 'Update as life changes',
     description:
-      'Marriage, children, property, business — major life events change what your Will should say. Heirloom makes amendments straightforward, not expensive.',
+      'Marriage, children, property, business  -  major life events change what your Will should say. Heirloom makes amendments straightforward, not expensive.',
   },
 ];
 
@@ -90,7 +90,7 @@ function FeatureRow({
         </p>
       </div>
 
-      {/* Visual side — placeholder until illustrations are ready */}
+      {/* Visual side  -  placeholder until illustrations are ready */}
       <div className="flex-1 min-w-0 w-full">
         <div
           className="rounded-2xl aspect-[4/3] flex items-center justify-center transition-all duration-300"
@@ -135,7 +135,7 @@ export function FeatureShowcase() {
               Nothing it doesn't.
             </h2>
             <p className="text-lg text-secondary leading-relaxed max-w-2xl text-pretty">
-              Heirloom covers the full picture — from a legally valid Will to a living
+              Heirloom covers the full picture  -  from a legally valid Will to a living
               record your executor can actually use.
             </p>
           </div>

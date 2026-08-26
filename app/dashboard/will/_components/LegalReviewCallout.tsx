@@ -37,7 +37,7 @@ export default function LegalReviewCallout({ reasons, subscriptionStatus }: Prop
 
       {status === 'submitted' ? (
         <p className="mt-3 text-sm font-medium" style={{ color: '#92400e' }}>
-          ✓ Review requested — we&apos;ll be in touch.
+          ✓ Review requested  -  we&apos;ll be in touch.
         </p>
       ) : (
         <button
@@ -50,12 +50,12 @@ export default function LegalReviewCallout({ reasons, subscriptionStatus }: Prop
           {status === 'submitting'
             ? 'Requesting…'
             : isSubscriber
-            ? 'Request Lawyer Review — Free with your plan'
-            : 'Request Lawyer Review — $49'}
+            ? 'Request Lawyer Review  -  Free with your plan'
+            : 'Request Lawyer Review  -  $49'}
         </button>
       )}
       {status === 'error' && (
-        <p className="mt-2 text-xs text-red-700">Something went wrong — please try again.</p>
+        <p className="mt-2 text-xs text-red-700">Something went wrong  -  please try again.</p>
       )}
     </div>
   )

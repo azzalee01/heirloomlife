@@ -24,7 +24,7 @@ export default function AiChat() {
         setMessages(msgs)
       })
       .catch(() => {
-        // No will yet, or not authenticated — chat starts empty; the input
+        // No will yet, or not authenticated  -  chat starts empty; the input
         // will surface the real error on first send attempt.
       })
   }, [])
@@ -183,7 +183,7 @@ export default function AiChat() {
             href="/pricing#living-vault"
             className="text-xs font-semibold text-amber-900 underline hover:no-underline shrink-0"
           >
-            See membership — $8/mo
+            See membership  -  $8/mo
           </a>
         </div>
       )}

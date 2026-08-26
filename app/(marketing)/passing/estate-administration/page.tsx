@@ -24,7 +24,7 @@ const STEPS = [
   {
     n: '01',
     title: 'Register the death and obtain a death certificate',
-    body: 'A death must be registered with the Births, Deaths and Marriages registry of the relevant state or territory. In most cases, the funeral director handles this as part of their service. The death certificate is an official document required for almost every subsequent step — obtain multiple certified copies.',
+    body: 'A death must be registered with the Births, Deaths and Marriages registry of the relevant state or territory. In most cases, the funeral director handles this as part of their service. The death certificate is an official document required for almost every subsequent step  -  obtain multiple certified copies.',
   },
   {
     n: '02',
@@ -39,7 +39,7 @@ const STEPS = [
   {
     n: '04',
     title: 'Apply for a Grant of Probate (or Letters of Administration)',
-    body: 'Probate is the formal court process by which the Will is validated and the executor is authorised to administer the estate. The application is made to the Supreme Court of the relevant state. It requires the original Will, the death certificate, and an inventory of assets and liabilities. If there is no Will, Letters of Administration are required instead — a more complex process. After lodgment, there is typically a 14-day period for objections before the court processes the application.',
+    body: 'Probate is the formal court process by which the Will is validated and the executor is authorised to administer the estate. The application is made to the Supreme Court of the relevant state. It requires the original Will, the death certificate, and an inventory of assets and liabilities. If there is no Will, Letters of Administration are required instead  -  a more complex process. After lodgment, there is typically a 14-day period for objections before the court processes the application.',
   },
   {
     n: '05',
@@ -94,13 +94,13 @@ export default function EstateAdministrationPage() {
 
           <h2 style={H2}>How long does it take?</h2>
           <p style={BODY}>
-            A straightforward estate — modest assets, no disputes, clear Will — can be fully administered in three to six months. More complex estates, particularly those involving property, business interests, overseas assets, or contested claims, routinely take twelve months or longer.
+            A straightforward estate  -  modest assets, no disputes, clear Will  -  can be fully administered in three to six months. More complex estates, particularly those involving property, business interests, overseas assets, or contested claims, routinely take twelve months or longer.
           </p>
           <p style={BODY}>
-            The probate process itself typically adds six to eight weeks from application to grant. Everything else — settling debts, transferring assets, resolving tax — happens before and after.
+            The probate process itself typically adds six to eight weeks from application to grant. Everything else  -  settling debts, transferring assets, resolving tax  -  happens before and after.
           </p>
           <blockquote style={CALLOUT}>
-            An estate cannot be distributed to beneficiaries until debts are settled and probate is granted. During this period, beneficiaries often have no access to estate funds — even for urgent expenses.
+            An estate cannot be distributed to beneficiaries until debts are settled and probate is granted. During this period, beneficiaries often have no access to estate funds  -  even for urgent expenses.
           </blockquote>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -133,7 +133,7 @@ export default function EstateAdministrationPage() {
 
           <h2 style={H2}>When is probate not required?</h2>
           <p style={BODY}>
-            Not every estate needs a grant of probate. For small estates, or estates that consist primarily of jointly held assets (which pass automatically to the surviving owner), probate may be unnecessary. Many banks will release accounts up to a certain threshold without a formal grant — typically between $10,000 and $100,000 depending on the institution.
+            Not every estate needs a grant of probate. For small estates, or estates that consist primarily of jointly held assets (which pass automatically to the surviving owner), probate may be unnecessary. Many banks will release accounts up to a certain threshold without a formal grant  -  typically between $10,000 and $100,000 depending on the institution.
           </p>
           <p style={BODY}>
             Check with each institution directly. Where significant assets are involved, a grant of probate is almost always required and protects the executor from personal liability.
@@ -143,7 +143,7 @@ export default function EstateAdministrationPage() {
 
           <h2 style={H2}>What happens if there is no Will?</h2>
           <p style={BODY}>
-            Without a valid Will, no executor has been appointed, and the estate must be administered under intestacy law. The next of kin — typically a spouse or adult child — must apply to the court for Letters of Administration, a more involved process than standard probate.
+            Without a valid Will, no executor has been appointed, and the estate must be administered under intestacy law. The next of kin  -  typically a spouse or adult child  -  must apply to the court for Letters of Administration, a more involved process than standard probate.
           </p>
           <p style={BODY}>
             The administrator has the same responsibilities as an executor but is bound by the intestacy formula rather than the deceased&#8217;s instructions. Who inherits, and in what proportions, is determined by law rather than by the person&#8217;s actual intentions.

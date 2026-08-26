@@ -39,7 +39,7 @@ export default function StepWishes({ formData, hasDependentChildren, onChange }:
       <section className="space-y-3">
         <p className={eyebrow}>Survivorship Period</p>
         <p className="text-sm text-[var(--neutral)]">
-          A beneficiary must survive you by this many days to inherit — this avoids double-administration
+          A beneficiary must survive you by this many days to inherit  -  this avoids double-administration
           if you and a beneficiary die close together. 30 days is standard.
         </p>
         <div className="sm:max-w-xs">
@@ -131,7 +131,7 @@ export default function StepWishes({ formData, hasDependentChildren, onChange }:
           </span>
         </label>
         <p className="text-xs text-[var(--neutral)]">
-          Common for blended families — e.g. a partner can live in the house until they die or remarry, after
+          Common for blended families  -  e.g. a partner can live in the house until they die or remarry, after
           which it passes to your children.
         </p>
         {li.enabled && (

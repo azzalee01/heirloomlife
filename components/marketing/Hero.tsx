@@ -13,15 +13,15 @@ export function Hero() {
     <section
       data-header-theme="dark"
       className="hero-stage section-lg !pt-36 pb-0 md:!pt-32 lg:!pt-40 md:pb-0 overflow-hidden"
-      // Deep ink background — teal spotlight cone reads clearly against near-black
+      // Deep ink background  -  teal spotlight cone reads clearly against near-black
       style={{ background: '#0A1211' }}
     >
-      {/* Headline + CTAs — z-index 2 so it sits above the cone ::after */}
+      {/* Headline + CTAs  -  z-index 2 so it sits above the cone ::after */}
       <div className="relative" style={{ zIndex: 2 }}>
         <Container>
           <div className="max-w-4xl mx-auto text-center mb-24">
 
-            {/* Eyebrow — hairline teal label, Heirloom brand voice */}
+            {/* Eyebrow  -  hairline teal label, Heirloom brand voice */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -53,7 +53,7 @@ export function Hero() {
               className="text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10 text-balance"
               style={{ color: '#8AADAA' }}
             >
-              A legally valid Australian Will in under 20 minutes — with optional solicitor review,
+              A legally valid Australian Will in under 20 minutes  -  with optional solicitor review,
               living document storage, and everything your family needs.
             </motion.p>
 
@@ -88,7 +88,7 @@ export function Hero() {
         </Container>
       </div>
 
-      {/* Platform mock — z-index 2 */}
+      {/* Platform mock  -  z-index 2 */}
       <div className="relative" style={{ zIndex: 2 }}>
         <motion.div
           initial={{ opacity: 0, y: 48, scale: 0.97 }}

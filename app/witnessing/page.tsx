@@ -51,7 +51,7 @@ export default async function WitnessingPage() {
 
   if (!isActiveMember || !isNSW) {
     const reason = !isActiveMember
-      ? { heading: 'Living Vault membership required', body: 'AV witness scheduling is available to Living Vault members. Your first Will is free — upgrade to unlock remote witnessing and unlimited amendments.' }
+      ? { heading: 'Living Vault membership required', body: 'AV witness scheduling is available to Living Vault members. Your first Will is free  -  upgrade to unlock remote witnessing and unlimited amendments.' }
       : { heading: 'NSW only', body: 'Remote AV witnessing is currently available for NSW addresses only, consistent with NSW\'s statutory AV witnessing scheme. Your address on file is ' + (userState ?? 'not set') + '.' }
     return (
       <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
@@ -70,7 +70,7 @@ export default async function WitnessingPage() {
             <p className="text-sm leading-relaxed max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>{reason.body}</p>
             {!isActiveMember && (
               <Link href="/pricing" className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
-                See Living Vault — $8/mo
+                See Living Vault  -  $8/mo
               </Link>
             )}
           </div>

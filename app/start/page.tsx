@@ -10,14 +10,14 @@ export default async function StartPage() {
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Load existing data — from DB for authenticated users, from anon session cookie otherwise
+  // Load existing data  -  from DB for authenticated users, from anon session cookie otherwise
   let formData = { ...EMPTY_WILL_FORM_DATA }
   if (user) {
     try {
       const { formData: loaded } = await loadWillFormData(supabase, user.id)
       formData = loaded
     } catch {
-      // No will yet — start fresh
+      // No will yet  -  start fresh
     }
   } else {
     const cookieStore = await cookies()
@@ -26,7 +26,7 @@ export default async function StartPage() {
       try {
         formData = await loadAnonSessionFormData(supabase, anonSessionId)
       } catch {
-        // Stale session — start fresh
+        // Stale session  -  start fresh
       }
     }
   }
@@ -67,11 +67,11 @@ export default async function StartPage() {
                 marginInline: 'auto',
               }}
             >
-              Answer a few questions — no account needed until you&apos;re ready to download.
+              Answer a few questions  -  no account needed until you&apos;re ready to download.
             </p>
           </div>
 
-          {/* Wizard — rendered inside a white card */}
+          {/* Wizard  -  rendered inside a white card */}
           <div
             style={{
               background: '#fff',

@@ -8,19 +8,19 @@ const SECTION_LABEL: React.CSSProperties = {
 const FAQS = [
   {
     q: 'Is a Heirloom Life Will legally valid in Australia?',
-    a: "A Will produced through Heirloom Life is only legally valid once it is correctly signed and witnessed according to the requirements of your state. We walk you through those requirements step by step — but signing and witnessing is something you must do correctly. An unsigned or incorrectly witnessed Will has no legal effect.",
+    a: "A Will produced through Heirloom Life is only legally valid once it is correctly signed and witnessed according to the requirements of your state. We walk you through those requirements step by step  -  but signing and witnessing is something you must do correctly. An unsigned or incorrectly witnessed Will has no legal effect.",
   },
   {
     q: 'How is this different from downloading a Will kit from a newsagent?',
-    a: "A Will kit gives you a blank form and a set of instructions. Heirloom Life gives you a guided drafting process, a Vault to keep your estate current, and access to a solicitor review add-on when your situation calls for it. The difference is not mainly the document — it's the process around it and the ongoing maintenance.",
+    a: "A Will kit gives you a blank form and a set of instructions. Heirloom Life gives you a guided drafting process, a Vault to keep your estate current, and access to a solicitor review add-on when your situation calls for it. The difference is not mainly the document  -  it's the process around it and the ongoing maintenance.",
   },
   {
-    q: 'What if my estate is complicated — business interests, trusts, overseas assets?',
-    a: "Complete your Will through the questionnaire — we'll flag the specific areas of concern in your Vault. You can then request a solicitor review add-on for around $150 and communicate directly with our partner lawyers through the platform. For very complex estates, a bespoke Will prepared entirely by a solicitor may be more appropriate, and we can refer you.",
+    q: 'What if my estate is complicated  -  business interests, trusts, overseas assets?',
+    a: "Complete your Will through the questionnaire  -  we'll flag the specific areas of concern in your Vault. You can then request a solicitor review add-on for around $150 and communicate directly with our partner lawyers through the platform. For very complex estates, a bespoke Will prepared entirely by a solicitor may be more appropriate, and we can refer you.",
   },
   {
     q: 'How long does it take to complete a Will?',
-    a: "Most people complete the guided questionnaire in 30–60 minutes.",
+    a: "Most people complete the guided questionnaire in 30-60 minutes.",
   },
   {
     q: 'Can I update my Will after signing it?',
@@ -28,15 +28,15 @@ const FAQS = [
   },
   {
     q: 'What happens to my Will if I die?',
-    a: "Your Will is stored in your Vault. Your executor — the person you name to carry out your wishes — is granted access after death certificate lodgement and identity verification. We do not release access automatically.",
+    a: "Your Will is stored in your Vault. Your executor  -  the person you name to carry out your wishes  -  is granted access after death certificate lodgement and identity verification. We do not release access automatically.",
   },
   {
     q: 'Is Heirloom Life providing legal advice?',
-    a: "No. Heirloom Life is not a law firm and does not provide legal advice. Your Will is prepared using established estate planning drafting standards. It is not reviewed by a solicitor unless you purchase the review add-on. Using Heirloom Life does not create a solicitor–client relationship.",
+    a: "No. Heirloom Life is not a law firm and does not provide legal advice. Your Will is prepared using established estate planning drafting standards. It is not reviewed by a solicitor unless you purchase the review add-on. Using Heirloom Life does not create a solicitor-client relationship.",
   },
   {
     q: 'What states do you support?',
-    a: "Heirloom Life is available across all Australian states and territories. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing — members in all other states complete the signing process in person with two witnesses, which we walk you through step by step.",
+    a: "Heirloom Life is available across all Australian states and territories. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing  -  members in all other states complete the signing process in person with two witnesses, which we walk you through step by step.",
   },
 ]
 

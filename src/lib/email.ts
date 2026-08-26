@@ -17,7 +17,7 @@ export async function sendResumeEmail(params: { to: string; sessionId: string })
         Resume your Will
       </h1>
       <p style="margin:0 0 20px;color:#0E1310;font-size:14px;line-height:1.6;">
-        Your progress has been saved. Click the button below to pick up where you left off — no account needed yet.
+        Your progress has been saved. Click the button below to pick up where you left off  -  no account needed yet.
       </p>
       <a href="${resumeUrl}" style="display:inline-block;padding:12px 24px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:14px;font-weight:600;text-decoration:none;">
         Continue your Will
@@ -26,7 +26,7 @@ export async function sendResumeEmail(params: { to: string; sessionId: string })
         If the button doesn't work, copy this link: ${resumeUrl}
       </p>
       <p style="margin:16px 0 0;color:#8A8D87;font-size:11px;line-height:1.5;">
-        This link is tied to your session and will work for 30 days. Heirloom Life is not a law firm — your Will is a template document and should be signed and witnessed to be legally valid.
+        This link is tied to your session and will work for 30 days. Heirloom Life is not a law firm  -  your Will is a template document and should be signed and witnessed to be legally valid.
       </p>
     </div>
   `
@@ -35,7 +35,7 @@ export async function sendResumeEmail(params: { to: string; sessionId: string })
     await resend.emails.send({
       from: FROM_ADDRESS,
       to,
-      subject: 'Resume your Will — Heirloom Life',
+      subject: 'Resume your Will  -  Heirloom Life',
       html,
     })
   } catch (err) {
@@ -64,7 +64,7 @@ export async function sendWitnessInviteEmail(params: {
          })}</strong>.
        </p>`
     : `<p style="margin:0 0 16px;color:#0E1310;font-size:14px;">
-         No time has been set yet — please use the link below to pick a time that works for you.
+         No time has been set yet  -  please use the link below to pick a time that works for you.
        </p>`
 
   const html = `
@@ -95,7 +95,7 @@ export async function sendWitnessInviteEmail(params: {
       html,
     })
   } catch (err) {
-    // Scheduling should still succeed even if the email fails to send —
+    // Scheduling should still succeed even if the email fails to send  - 
     // the testator can always copy the invite link manually as a fallback.
     console.error(`Failed to send witness invite email to ${to}:`, err)
   }

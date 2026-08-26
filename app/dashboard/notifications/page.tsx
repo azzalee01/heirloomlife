@@ -20,7 +20,7 @@ const FLAG_DETAILS: {
   {
     key: 'hasBusinessInterest',
     title: 'Business ownership or commercial interest',
-    body: 'Wills involving business interests require careful handling of shareholder agreements, buy-sell clauses, and succession planning. A template Will may not adequately address these — a solicitor review is strongly recommended.',
+    body: 'Wills involving business interests require careful handling of shareholder agreements, buy-sell clauses, and succession planning. A template Will may not adequately address these  -  a solicitor review is strongly recommended.',
     severity: 'high',
   },
   {
@@ -38,19 +38,19 @@ const FLAG_DETAILS: {
   {
     key: 'hasVulnerableBeneficiary',
     title: 'Beneficiary with a disability or reduced mental capacity',
-    body: 'Leaving assets directly to a person with a disability may affect their eligibility for government support. A Special Disability Trust or testamentary trust is often more appropriate — a solicitor review is recommended.',
+    body: 'Leaving assets directly to a person with a disability may affect their eligibility for government support. A Special Disability Trust or testamentary trust is often more appropriate  -  a solicitor review is recommended.',
     severity: 'high',
   },
   {
     key: 'hasBeneficiaryFinancialChallenges',
     title: 'Beneficiary with difficulty managing money',
-    body: 'A direct inheritance may not be in the best interests of a beneficiary with financial challenges. A testamentary trust with conditions may better protect that person — worth discussing with a solicitor.',
+    body: 'A direct inheritance may not be in the best interests of a beneficiary with financial challenges. A testamentary trust with conditions may better protect that person  -  worth discussing with a solicitor.',
     severity: 'medium',
   },
   {
     key: 'hasComplexTrusts',
     title: 'Complex trust structures',
-    body: 'Existing trust structures — family trusts, SMSFs, unit trusts — interact with your Will in ways a template may not fully address. A solicitor review is recommended to ensure your Will works with your existing structures.',
+    body: 'Existing trust structures  -  family trusts, SMSFs, unit trusts  -  interact with your Will in ways a template may not fully address. A solicitor review is recommended to ensure your Will works with your existing structures.',
     severity: 'medium',
   },
 ]
@@ -116,7 +116,7 @@ export default async function NotificationsPage() {
             href="mailto:hello@heirloomlife.com.au?subject=Solicitor%20review%20request"
             className="btn btn-primary text-sm px-4 py-2"
           >
-            Request solicitor review — ~$150
+            Request solicitor review  -  ~$150
           </a>
         )}
       </header>
@@ -151,7 +151,7 @@ export default async function NotificationsPage() {
               style={{ borderColor: 'var(--line)', background: 'white' }}
             >
               <p className="text-sm leading-relaxed" style={{ color: 'var(--neutral)' }}>
-                Based on what you told us during your Will questionnaire, we&apos;ve identified {allRecommendations.length} area{allRecommendations.length !== 1 ? 's' : ''} that may benefit from a professional review. Your Will is complete and valid once signed — these are recommendations, not blockers. A solicitor review add-on is available for around $150.
+                Based on what you told us during your Will questionnaire, we&apos;ve identified {allRecommendations.length} area{allRecommendations.length !== 1 ? 's' : ''} that may benefit from a professional review. Your Will is complete and valid once signed  -  these are recommendations, not blockers. A solicitor review add-on is available for around $150.
               </p>
             </div>
 
@@ -205,7 +205,7 @@ export default async function NotificationsPage() {
             >
               <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Request a solicitor review</p>
               <p className="text-sm" style={{ color: 'var(--neutral)' }}>
-                Our partner lawyers can review your Will against the flagged areas and communicate with you directly through the platform. Around $150 — the same price point as other online legal review services.
+                Our partner lawyers can review your Will against the flagged areas and communicate with you directly through the platform. Around $150  -  the same price point as other online legal review services.
               </p>
               <div className="flex flex-wrap gap-3 pt-1">
                 <a

@@ -51,16 +51,16 @@ export default function ExecutorPage() {
 
           <h2 style={H2}>What an executor actually does</h2>
           <p style={BODY}>
-            An executor&#8217;s job begins at death and ends when the estate is fully distributed — a process that typically takes six to twelve months for straightforward estates, and longer for complex ones.
+            An executor&#8217;s job begins at death and ends when the estate is fully distributed  -  a process that typically takes six to twelve months for straightforward estates, and longer for complex ones.
           </p>
           <p style={BODY}>
             The core tasks include: registering the death, locating the original Will, applying for a grant of probate, notifying banks and institutions, identifying all assets and liabilities, paying outstanding debts and taxes, and distributing what remains to beneficiaries according to your instructions.
           </p>
           <p style={BODY}>
-            Along the way, an executor may need to manage property, deal with a business interest, handle family disagreements, and make judgment calls where your Will is ambiguous. They act in a fiduciary capacity — legally bound to prioritise the interests of the estate and its beneficiaries, not their own.
+            Along the way, an executor may need to manage property, deal with a business interest, handle family disagreements, and make judgment calls where your Will is ambiguous. They act in a fiduciary capacity  -  legally bound to prioritise the interests of the estate and its beneficiaries, not their own.
           </p>
           <blockquote style={CALLOUT}>
-            An executor who mismanages an estate — delays distribution without good reason, favours some beneficiaries over others, or fails to pay outstanding debts before distributing assets — can be held personally liable.
+            An executor who mismanages an estate  -  delays distribution without good reason, favours some beneficiaries over others, or fails to pay outstanding debts before distributing assets  -  can be held personally liable.
           </blockquote>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -73,7 +73,7 @@ export default function ExecutorPage() {
           {[
             {
               title: 'Trustworthiness',
-              body: 'Your executor will have full access to your estate and financial information. The most important quality is someone your beneficiaries also trust — not just you.',
+              body: 'Your executor will have full access to your estate and financial information. The most important quality is someone your beneficiaries also trust  -  not just you.',
             },
             {
               title: 'Organisational ability',
@@ -85,7 +85,7 @@ export default function ExecutorPage() {
             },
             {
               title: 'Impartiality',
-              body: 'If your executor is also a beneficiary — common when a spouse or sibling is appointed — they must still act in the interests of all beneficiaries equally. This can be difficult in practice when family relationships are strained.',
+              body: 'If your executor is also a beneficiary  -  common when a spouse or sibling is appointed  -  they must still act in the interests of all beneficiaries equally. This can be difficult in practice when family relationships are strained.',
             },
             {
               title: 'Willingness',
@@ -120,23 +120,23 @@ export default function ExecutorPage() {
 
           <h2 style={H2}>Personal executor vs professional executor</h2>
           <p style={BODY}>
-            Some people appoint a professional — a solicitor or trustee company — as their executor, either as the primary appointee or alongside a family member.
+            Some people appoint a professional  -  a solicitor or trustee company  -  as their executor, either as the primary appointee or alongside a family member.
           </p>
           <p style={BODY}>
-            A professional executor brings experience, impartiality, and no emotional involvement. They are useful when family relationships are complicated, when the estate is large or complex, or when there is no obvious personal candidate. The cost is typically charged against the estate — often between 1% and 3% of the estate&#8217;s value plus hourly rates.
+            A professional executor brings experience, impartiality, and no emotional involvement. They are useful when family relationships are complicated, when the estate is large or complex, or when there is no obvious personal candidate. The cost is typically charged against the estate  -  often between 1% and 3% of the estate&#8217;s value plus hourly rates.
           </p>
           <p style={BODY}>
             A personal executor pays no fee (though they are entitled to claim reasonable out-of-pocket expenses) and often has better practical knowledge of your family and intentions. The tradeoff is that they may lack experience in probate procedures and be more affected emotionally by the process.
           </p>
           <p style={BODY}>
-            Many estates are best served by a personal executor supported by a solicitor engaged to handle the probate application — combining trust with expertise without committing to full professional executor fees.
+            Many estates are best served by a personal executor supported by a solicitor engaged to handle the probate application  -  combining trust with expertise without committing to full professional executor fees.
           </p>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
 
           <h2 style={H2}>The conversation you need to have</h2>
           <p style={BODY}>
-            Naming someone as your executor without telling them is a poor plan. Beyond common courtesy, an unprepared executor may not know where your Will is, what your assets are, or who your beneficiaries are — information that becomes urgently needed at an already difficult time.
+            Naming someone as your executor without telling them is a poor plan. Beyond common courtesy, an unprepared executor may not know where your Will is, what your assets are, or who your beneficiaries are  -  information that becomes urgently needed at an already difficult time.
           </p>
           <p style={BODY}>
             A straightforward conversation is all it takes: tell them you&#8217;ve named them, where your Will is kept, and broadly what your estate looks like. You don&#8217;t need to share every detail. A brief conversation now prevents months of confusion later.

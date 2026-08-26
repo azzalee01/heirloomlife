@@ -16,28 +16,28 @@ const buttonVariants = cva(
         // White surface, subtle border
         default:
           'bg-white border-[var(--color-border)] text-[var(--color-ink)] hover:bg-[var(--color-stone)]',
-        // Stone fill — secondary actions
+        // Stone fill  -  secondary actions
         outline:
           'bg-[var(--color-stone)] border-[var(--color-border)] text-[var(--color-ink)] hover:bg-[var(--color-stone-hover)]',
-        // Ghost on dark hero backgrounds — hovers to teal fill
+        // Ghost on dark hero backgrounds  -  hovers to teal fill
         darkOutline:
           'bg-transparent border-white/30 text-white hover:bg-[var(--color-teal)] hover:border-transparent hover:shadow-[0_4px_14px_rgba(42,180,174,0.3)] hover:text-white active:bg-[var(--color-teal-dark)] active:shadow-none',
         // Ghost on light backgrounds
         ghost:
           'bg-transparent border-transparent text-[var(--color-ink)] hover:bg-[var(--color-stone)]',
-        // Primary CTA — teal fill
+        // Primary CTA  -  teal fill
         primary:
           'bg-[var(--color-teal)] hover:bg-[var(--color-teal-hover)] hover:shadow-[0_4px_14px_rgba(42,180,174,0.3)] text-white border-transparent active:bg-[var(--color-teal-dark)] active:shadow-none',
-        // High contrast — ink fill
+        // High contrast  -  ink fill
         black:
           'bg-[var(--color-ink)] text-white hover:bg-[#1C2827] border-[var(--color-ink)]',
         // Neutral stone
         gray:
           'bg-[var(--color-stone)] text-[var(--color-ink)] hover:bg-[var(--color-stone-hover)] border-[var(--color-border)]',
-        // Frosted white glass — light surfaces
+        // Frosted white glass  -  light surfaces
         glass:
           'btn-glass',
-        // Frosted teal glass — primary CTA
+        // Frosted teal glass  -  primary CTA
         glassPrimary:
           'btn-glass-primary',
       },

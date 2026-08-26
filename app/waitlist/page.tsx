@@ -3,7 +3,7 @@ import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 
 export const metadata = {
-  title: 'Join the waitlist — Heirloom Life',
+  title: 'Join the waitlist  -  Heirloom Life',
   description: 'Heirloom Life is currently available in NSW and VIC. Join the waitlist and we\'ll let you know when your state is added.',
 }
 
@@ -30,14 +30,14 @@ export default function WaitlistPage() {
             We&apos;re expanding state by state.
           </h1>
           <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '30rem' }}>
-            Heirloom Life is currently available in <strong style={{ color: 'var(--mkt-ink-text)', fontWeight: 500 }}>NSW and VIC</strong>. Each state has its own requirements for Wills — we build to the standard of each state before opening it up, so we get it right rather than fast.
+            Heirloom Life is currently available in <strong style={{ color: 'var(--mkt-ink-text)', fontWeight: 500 }}>NSW and VIC</strong>. Each state has its own requirements for Wills  -  we build to the standard of each state before opening it up, so we get it right rather than fast.
           </p>
           <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', marginBottom: '2.5rem', maxWidth: '30rem' }}>
             Email us with your state and we&apos;ll add you to the list. You&apos;ll hear from us as soon as your state is ready.
           </p>
 
           <a
-            href="mailto:hello@heirloomlife.com.au?subject=Waitlist%20—%20please%20add%20me&body=Hi%2C%0A%0APlease%20add%20me%20to%20the%20waitlist.%0A%0AMy%20state%3A%20"
+            href="mailto:hello@heirloomlife.com.au?subject=Waitlist%20 - %20please%20add%20me&body=Hi%2C%0A%0APlease%20add%20me%20to%20the%20waitlist.%0A%0AMy%20state%3A%20"
             className="mkt-btn-ink-m"
           >
             Email to join the waitlist

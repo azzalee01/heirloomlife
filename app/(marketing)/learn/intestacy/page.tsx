@@ -38,7 +38,7 @@ export default function IntestacyPage() {
             </em>
           </h1>
           <p style={{ fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', marginBottom: 0 }}>
-            Dying without a valid Will is called dying intestate. Your estate does not go to the state — but it does get distributed according to a formula set by law, not by you.
+            Dying without a valid Will is called dying intestate. Your estate does not go to the state  -  but it does get distributed according to a formula set by law, not by you.
           </p>
           <p style={{ marginTop: '.75rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)' }}>
             Australian law · 6 min read
@@ -51,7 +51,7 @@ export default function IntestacyPage() {
 
           <h2 style={H2}>Intestacy: the default you didn&#8217;t choose</h2>
           <p style={BODY}>
-            Every Australian state and territory has intestacy laws — a statutory formula that determines who inherits from an estate when there is no valid Will. The formula is fixed and predictable. It has no knowledge of your relationships, your intentions, or your preferences.
+            Every Australian state and territory has intestacy laws  -  a statutory formula that determines who inherits from an estate when there is no valid Will. The formula is fixed and predictable. It has no knowledge of your relationships, your intentions, or your preferences.
           </p>
           <p style={BODY}>
             The practical effect is that assets are distributed according to family proximity, not affection. The people you would have chosen may receive nothing; people you barely know may receive everything.
@@ -83,7 +83,7 @@ export default function IntestacyPage() {
             },
             {
               scenario: 'No surviving family at all',
-              outcome: 'In the rare case of no surviving relatives within the legal definition, the estate passes to the state government — a concept known as bona vacantia.',
+              outcome: 'In the rare case of no surviving relatives within the legal definition, the estate passes to the state government  -  a concept known as bona vacantia.',
             },
           ].map((row, i, arr) => (
             <div
@@ -103,7 +103,7 @@ export default function IntestacyPage() {
           ))}
 
           <blockquote style={{ ...CALLOUT, marginTop: '2rem' }}>
-            De facto partners — including same-sex partners — are generally recognised under Australian intestacy law, but proving the relationship exists can require evidence and legal proceedings. A Will removes that uncertainty entirely.
+            De facto partners  -  including same-sex partners  -  are generally recognised under Australian intestacy law, but proving the relationship exists can require evidence and legal proceedings. A Will removes that uncertainty entirely.
           </blockquote>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -116,7 +116,7 @@ export default function IntestacyPage() {
           {[
             {
               group: 'Long-term partners who are not married or de facto',
-              detail: 'A partner who does not meet the legal definition of a de facto relationship — perhaps because you have not lived together continuously, or the relationship is recent — may receive nothing under intestacy, regardless of how significant the relationship is.',
+              detail: 'A partner who does not meet the legal definition of a de facto relationship  -  perhaps because you have not lived together continuously, or the relationship is recent  -  may receive nothing under intestacy, regardless of how significant the relationship is.',
             },
             {
               group: 'Step-children',
@@ -156,13 +156,13 @@ export default function IntestacyPage() {
             Beyond the question of who inherits, dying without a Will makes estate administration significantly harder and more expensive.
           </p>
           <p style={BODY}>
-            Without a named executor, the court must appoint an administrator — typically the closest next of kin. That person must apply for Letters of Administration rather than a standard grant of probate. The process is more complex, typically takes longer, and can involve greater legal costs.
+            Without a named executor, the court must appoint an administrator  -  typically the closest next of kin. That person must apply for Letters of Administration rather than a standard grant of probate. The process is more complex, typically takes longer, and can involve greater legal costs.
           </p>
           <p style={BODY}>
             Banks and financial institutions may be unwilling to release funds without a formal grant. Property cannot be transferred. The estate is frozen while the legal process works through.
           </p>
           <p style={BODY}>
-            For a family already managing grief, this administrative burden arrives at the worst possible time — and it is entirely avoidable.
+            For a family already managing grief, this administrative burden arrives at the worst possible time  -  and it is entirely avoidable.
           </p>
 
           <div style={{ marginTop: '3rem', padding: '1.75rem', border: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)' }}>

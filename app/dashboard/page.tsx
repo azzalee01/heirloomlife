@@ -1,5 +1,5 @@
 // app/dashboard/page.tsx
-// Full dashboard restyle — Donna platform UX, Heirloom brand tokens.
+// Full dashboard restyle  -  Donna platform UX, Heirloom brand tokens.
 // Replaces the existing page.tsx entirely.
 
 import { redirect } from 'next/navigation';
@@ -55,7 +55,7 @@ const ASSET_CFG: Record<string, { typeLabel: string; color: string; bg: string; 
 }
 
 const STATUS_CFG = {
-  draft:          { label: 'In Progress', badge: { background: 'var(--paper-warm)', color: 'var(--ink)' },   description: 'Your will is in progress — keep going to protect your estate.', cta: 'Continue', href: '/will/new' },
+  draft:          { label: 'In Progress', badge: { background: 'var(--paper-warm)', color: 'var(--ink)' },   description: 'Your will is in progress  -  keep going to protect your estate.', cta: 'Continue', href: '/will/new' },
   pending_review: { label: 'Under Review', badge: { background: '#fffbeb', color: '#92400e' },               description: 'Submitted and being reviewed by our legal team.', cta: 'View Summary', href: '/will/summary' },
   approved:       { label: 'Approved', badge: { background: '#ecfdf5', color: '#065f46' },                   description: 'Your will has been approved and is ready to sign.', cta: 'View Will', href: '/will/summary' },
 } as const
@@ -175,7 +175,7 @@ export default async function DashboardPage({
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
       <IntroAnimationLoader />
 
-      {/* Page header — glass material: content scrolls under the translucent chrome */}
+      {/* Page header  -  glass material: content scrolls under the translucent chrome */}
       <header
         className="sticky top-0 z-20 border-b px-6 h-14 flex items-center justify-between"
         style={{
@@ -210,14 +210,14 @@ export default async function DashboardPage({
               <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
             </svg>
             <p className="text-sm font-medium" style={{ color: '#166534' }}>
-              Payment received — your plan will be activated shortly.
+              Payment received  -  your plan will be activated shortly.
             </p>
           </div>
         )}
 
         {/* ── Will status card ──────────────────────────────────────────────── */}
         {!will ? (
-          // Empty state — Donna-style dashed card
+          // Empty state  -  Donna-style dashed card
           <div
             className="rounded-lg border-2 border-dashed p-12 text-center"
             style={{ borderColor: 'var(--line)' }}

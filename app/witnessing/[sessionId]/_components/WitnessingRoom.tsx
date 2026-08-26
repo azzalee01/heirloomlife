@@ -26,7 +26,7 @@ export default function WitnessingRoom({ sessionId, status, displayName, recordi
   const [localRecordingStatus, setLocalRecordingStatus] = useState(recordingStatus)
   const [localRecordingUrl, setLocalRecordingUrl] = useState(recordingUrl)
   // Only a call with more than one real participant present proves a witness
-  // actually observed the signing — this is what gates completion.
+  // actually observed the signing  -  this is what gates completion.
   const [participantCount, setParticipantCount] = useState(1)
 
   useEffect(() => {
@@ -130,7 +130,7 @@ export default function WitnessingRoom({ sessionId, status, displayName, recordi
       {!inCall && (
         <div className="px-6 py-12 text-center">
           <p className="text-sm mb-4" style={{ color: 'var(--neutral)' }}>
-            Ready when you are — your witness should join from the link sent to their email.
+            Ready when you are  -  your witness should join from the link sent to their email.
           </p>
           <button
             type="button"

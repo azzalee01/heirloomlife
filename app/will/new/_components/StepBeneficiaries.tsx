@@ -54,13 +54,13 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
         <h2 className="text-xl font-semibold text-[var(--ink)]">Beneficiaries</h2>
         <p className="text-sm text-[var(--neutral)] mt-1">
           Specify who inherits your estate and the percentage each receives. This forms your{' '}
-          <strong>residuary clause</strong> — it covers everything not given away as a specific gift, so it&apos;s
+          <strong>residuary clause</strong>  -  it covers everything not given away as a specific gift, so it&apos;s
           the most important section of your will. Missing it means part of your estate could be distributed
           under intestacy rules instead of your wishes.
         </p>
       </div>
 
-      {/* Live allocation counter — must reach 100% to continue */}
+      {/* Live allocation counter  -  must reach 100% to continue */}
       <div
         className="border px-4 py-3.5"
         style={{
@@ -92,10 +92,10 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
         </div>
         <p className="text-xs mt-2" style={{ color: total > 100 ? '#ef4444' : 'var(--neutral)' }}>
           {total === 100
-            ? '✓ Estate fully allocated — ready to continue'
+            ? '✓ Estate fully allocated  -  ready to continue'
             : total > 100
-            ? `Over by ${(total - 100).toFixed(1)}% — reduce allocations to exactly 100%`
-            : `${remaining % 1 === 0 ? remaining : remaining.toFixed(1)}% still to allocate — must reach 100% to continue`}
+            ? `Over by ${(total - 100).toFixed(1)}%  -  reduce allocations to exactly 100%`
+            : `${remaining % 1 === 0 ? remaining : remaining.toFixed(1)}% still to allocate  -  must reach 100% to continue`}
         </p>
       </div>
 

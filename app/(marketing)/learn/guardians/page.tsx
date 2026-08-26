@@ -52,23 +52,23 @@ export default function GuardiansPage() {
 
           <h2 style={H2}>What a guardian appointment means</h2>
           <p style={BODY}>
-            A testamentary guardian — one named in a Will — is appointed to take on parental responsibility for minor children if both legal parents die. That means day-to-day care, decisions about education, healthcare, living arrangements, and the child&#8217;s general welfare.
+            A testamentary guardian  -  one named in a Will  -  is appointed to take on parental responsibility for minor children if both legal parents die. That means day-to-day care, decisions about education, healthcare, living arrangements, and the child&#8217;s general welfare.
           </p>
           <p style={BODY}>
             The appointment only applies to children who are under 18 at the time of both parents&#8217; deaths. Once a child turns 18, the appointment has no further effect.
           </p>
           <p style={BODY}>
-            It is also worth knowing that a testamentary guardian is separate from the executor of your estate. The executor manages your financial affairs; the guardian manages your children. You can appoint the same person to both roles, or different people — what matters is who is best suited to each task.
+            It is also worth knowing that a testamentary guardian is separate from the executor of your estate. The executor manages your financial affairs; the guardian manages your children. You can appoint the same person to both roles, or different people  -  what matters is who is best suited to each task.
           </p>
           <blockquote style={CALLOUT}>
-            A guardian does not automatically control your children&#8217;s inheritance. Assets left for minor children are typically held by a trustee — often the executor — until the children reach a specified age.
+            A guardian does not automatically control your children&#8217;s inheritance. Assets left for minor children are typically held by a trustee  -  often the executor  -  until the children reach a specified age.
           </blockquote>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
 
           <h2 style={H2}>What happens without a guardian named</h2>
           <p style={BODY}>
-            If neither parent named a guardian, or if there is no valid Will at all, any person — a grandparent, an aunt, a family friend — can apply to the Family Court for guardianship. The court will decide based on the child&#8217;s best interests, which may or may not align with what you would have chosen.
+            If neither parent named a guardian, or if there is no valid Will at all, any person  -  a grandparent, an aunt, a family friend  -  can apply to the Family Court for guardianship. The court will decide based on the child&#8217;s best interests, which may or may not align with what you would have chosen.
           </p>
           <p style={BODY}>
             In the worst case, if no suitable family member comes forward, a child may be placed in state care temporarily while the court process resolves. This is rare, but the risk alone is worth avoiding with a clearly named guardian.
@@ -78,7 +78,7 @@ export default function GuardiansPage() {
 
           <h2 style={H2}>How to choose the right person</h2>
           <p style={BODY}>
-            This is one of the hardest decisions in a Will — and the one most people delay because of it. There is no perfect candidate. Focus on what your child needs, not what feels fair between competing family members.
+            This is one of the hardest decisions in a Will  -  and the one most people delay because of it. There is no perfect candidate. Focus on what your child needs, not what feels fair between competing family members.
           </p>
 
           {[
@@ -92,7 +92,7 @@ export default function GuardiansPage() {
             },
             {
               title: 'Geographic stability',
-              body: 'Uprooting a child to a different city or country adds difficulty to an already traumatic situation. A guardian who lives nearby — or who is willing to stay — reduces disruption.',
+              body: 'Uprooting a child to a different city or country adds difficulty to an already traumatic situation. A guardian who lives nearby  -  or who is willing to stay  -  reduces disruption.',
             },
             {
               title: 'Relationship with your children',
@@ -121,10 +121,10 @@ export default function GuardiansPage() {
 
           <h2 style={H2}>Can you name more than one guardian?</h2>
           <p style={BODY}>
-            Yes — you can name joint guardians (a couple, for instance) or a primary guardian with an alternate in case the first is unable to act. Joint guardians must make decisions together, which works well for couples but can create conflict between two individuals.
+            Yes  -  you can name joint guardians (a couple, for instance) or a primary guardian with an alternate in case the first is unable to act. Joint guardians must make decisions together, which works well for couples but can create conflict between two individuals.
           </p>
           <p style={BODY}>
-            You can also include a letter of wishes alongside your Will — a separate, non-binding document that shares your hopes for how your child is raised, what values you want them to hold, and any specific preferences around schooling or faith. This letter has no legal weight, but a good guardian will want it.
+            You can also include a letter of wishes alongside your Will  -  a separate, non-binding document that shares your hopes for how your child is raised, what values you want them to hold, and any specific preferences around schooling or faith. This letter has no legal weight, but a good guardian will want it.
           </p>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />

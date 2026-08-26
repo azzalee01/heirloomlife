@@ -8,11 +8,11 @@ interface HelpItem {
 
 const HELP: Partial<Record<string, HelpItem[]>> = {
   eligibility: [
-    { type: 'guide', title: 'Why state matters', body: 'Will law is state-based in Australia. Each state has its own requirements for valid execution — we localise your document to the rules that apply to you.' },
-    { type: 'tip', title: 'Available Australia-wide', body: 'Heirloom Wills are available in all Australian states and territories. NSW members can use remote AV witnessing — other states complete with a simple print-and-sign process.' },
+    { type: 'guide', title: 'Why state matters', body: 'Will law is state-based in Australia. Each state has its own requirements for valid execution  -  we localise your document to the rules that apply to you.' },
+    { type: 'tip', title: 'Available Australia-wide', body: 'Heirloom Wills are available in all Australian states and territories. NSW members can use remote AV witnessing  -  other states complete with a simple print-and-sign process.' },
   ],
   personal: [
-    { type: 'definition', title: 'Testator', body: "That's you — the person making the Will. The Will speaks from your perspective and is legally yours alone." },
+    { type: 'definition', title: 'Testator', body: "That's you  -  the person making the Will. The Will speaks from your perspective and is legally yours alone." },
     { type: 'tip', title: 'Use your legal name', body: 'Enter the name on your official ID (passport or driver\'s licence). Any alias or maiden name can be noted in the document, but the primary name must match your legal identity.' },
     { type: 'guide', title: 'Previous wills', body: 'Your new Will automatically revokes any earlier ones once properly executed. Still, if you know where an old Will is kept, noting its location helps your executor confirm it has been superseded.' },
   ],
@@ -21,19 +21,19 @@ const HELP: Partial<Record<string, HelpItem[]>> = {
     { type: 'definition', title: 'De facto partner', body: 'Australian law recognises de facto relationships (including same-sex partnerships) in inheritance. Select "domestic partner" if you\'ve been living together in a genuine domestic relationship, regardless of whether you\'ve formalised it.' },
   ],
   children: [
-    { type: 'definition', title: 'Dependent child', body: 'A child who relies on you financially — typically anyone under 18, or an adult child still in full-time education or with a disability. A dependent child\'s inheritance is usually held in trust until they reach a specified age.' },
-    { type: 'guide', title: 'Testamentary trust for minors', body: 'Rather than an outright gift (which can\'t be paid to a minor), you set an age at which the funds vest — 18, 21, or 25. A trustee (usually your executor) manages the funds in the meantime.' },
-    { type: 'tip', title: 'Naming a guardian', body: 'The guardian you name is a statement of your wishes — the court still makes the final decision, but a clearly expressed preference carries significant weight. Choose someone who shares your values and has the practical means to care for your children.' },
+    { type: 'definition', title: 'Dependent child', body: 'A child who relies on you financially  -  typically anyone under 18, or an adult child still in full-time education or with a disability. A dependent child\'s inheritance is usually held in trust until they reach a specified age.' },
+    { type: 'guide', title: 'Testamentary trust for minors', body: 'Rather than an outright gift (which can\'t be paid to a minor), you set an age at which the funds vest  -  18, 21, or 25. A trustee (usually your executor) manages the funds in the meantime.' },
+    { type: 'tip', title: 'Naming a guardian', body: 'The guardian you name is a statement of your wishes  -  the court still makes the final decision, but a clearly expressed preference carries significant weight. Choose someone who shares your values and has the practical means to care for your children.' },
   ],
   executors: [
-    { type: 'definition', title: 'Executor', body: 'The person responsible for carrying out your Will — collecting assets, paying debts, distributing the estate, and dealing with probate. It\'s an administrative role, not a legal or financial qualification.' },
-    { type: 'tip', title: 'Who to choose', body: 'Pick someone organised, trustworthy, and younger than you. They don\'t need legal knowledge — they\'ll hire professionals as needed. Your spouse or an adult child is common; a professional trustee company is an alternative if your family dynamics are complex.' },
-    { type: 'guide', title: 'Why you need a backup', body: 'If your primary executor is unwilling or unable to act, the court appoints a substitute — which takes time and costs money. Naming an alternate yourself means your estate can be administered immediately.' },
+    { type: 'definition', title: 'Executor', body: 'The person responsible for carrying out your Will  -  collecting assets, paying debts, distributing the estate, and dealing with probate. It\'s an administrative role, not a legal or financial qualification.' },
+    { type: 'tip', title: 'Who to choose', body: 'Pick someone organised, trustworthy, and younger than you. They don\'t need legal knowledge  -  they\'ll hire professionals as needed. Your spouse or an adult child is common; a professional trustee company is an alternative if your family dynamics are complex.' },
+    { type: 'guide', title: 'Why you need a backup', body: 'If your primary executor is unwilling or unable to act, the court appoints a substitute  -  which takes time and costs money. Naming an alternate yourself means your estate can be administered immediately.' },
   ],
   assets: [
     { type: 'definition', title: 'Residual estate', body: 'Everything you own that isn\'t dealt with by a specific gift or by a binding nomination elsewhere. This is what gets divided between your beneficiaries according to the percentages you set.' },
-    { type: 'guide', title: 'Super & life insurance pass outside your Will', body: 'Superannuation and life insurance go to whoever you\'ve nominated with the fund or insurer — your Will doesn\'t control them. If you haven\'t made a binding death benefit nomination, the trustee has discretion. Check your nominations separately.' },
-    { type: 'definition', title: 'Joint tenancy', body: 'If you own property as joint tenants, your share passes automatically to the surviving owner(s) — it doesn\'t form part of your estate and can\'t be directed by your Will. Tenants in common is different: each owner\'s share forms part of their estate.' },
+    { type: 'guide', title: 'Super & life insurance pass outside your Will', body: 'Superannuation and life insurance go to whoever you\'ve nominated with the fund or insurer  -  your Will doesn\'t control them. If you haven\'t made a binding death benefit nomination, the trustee has discretion. Check your nominations separately.' },
+    { type: 'definition', title: 'Joint tenancy', body: 'If you own property as joint tenants, your share passes automatically to the surviving owner(s)  -  it doesn\'t form part of your estate and can\'t be directed by your Will. Tenants in common is different: each owner\'s share forms part of their estate.' },
   ],
   beneficiaries: [
     { type: 'definition', title: 'Residual estate', body: 'The balance of your estate after debts, funeral expenses, taxes, and specific gifts have been paid. Your beneficiary percentages divide this remainder.' },
@@ -42,7 +42,7 @@ const HELP: Partial<Record<string, HelpItem[]>> = {
   ],
   gifts: [
     { type: 'definition', title: 'Specific gift', body: 'A particular item or cash sum left to a named person, separate from the main estate division. Common examples: a piece of jewellery to a sibling, $5,000 to a friend, a car to an adult child.' },
-    { type: 'guide', title: 'What if the asset no longer exists?', body: 'If you leave a specific item that you\'ve sold or given away before you die, the gift simply fails — the recipient gets nothing extra from the residue. This is called ademption. If you want to protect against it, a cash gift is safer than leaving a specific object.' },
+    { type: 'guide', title: 'What if the asset no longer exists?', body: 'If you leave a specific item that you\'ve sold or given away before you die, the gift simply fails  -  the recipient gets nothing extra from the residue. This is called ademption. If you want to protect against it, a cash gift is safer than leaving a specific object.' },
     { type: 'tip', title: 'Keep the residue intact', body: 'Specific gifts are paid first, before the residue is divided. Very large specific gifts can significantly reduce what\'s left for your main beneficiaries. Consider whether a percentage share might serve your intentions better.' },
   ],
   wishes: [
@@ -51,18 +51,18 @@ const HELP: Partial<Record<string, HelpItem[]>> = {
     { type: 'tip', title: 'Overseas assets', body: 'An Australian Will can reference overseas assets, but it may not be recognised or sufficient for probate in another jurisdiction. Flag overseas holdings here so your executor knows to take local legal advice for each country.' },
   ],
   review: [
-    { type: 'guide', title: 'What happens next', body: 'Download your Will — then sign it in the presence of two witnesses (both present at the same time, neither a beneficiary). NSW members can use Heirloom\'s remote AV witness pool. Once signed, store the original somewhere safe and tell your executor where it is.' },
+    { type: 'guide', title: 'What happens next', body: 'Download your Will  -  then sign it in the presence of two witnesses (both present at the same time, neither a beneficiary). NSW members can use Heirloom\'s remote AV witness pool. Once signed, store the original somewhere safe and tell your executor where it is.' },
     { type: 'tip', title: 'Review every few years', body: 'Your Will should reflect your current life. Key trigger events: marriage (revokes a previous Will in most states), divorce, new children, significant change in assets, or the death of a named person.' },
-    { type: 'definition', title: 'Pending review', body: 'Your Will\'s status shows "under review" until our legal team confirms the document is coherent and complete. This is a drafting check, not legal advice — your solicitor review (if you\'ve added it) is a separate step.' },
+    { type: 'definition', title: 'Pending review', body: 'Your Will\'s status shows "under review" until our legal team confirms the document is coherent and complete. This is a drafting check, not legal advice  -  your solicitor review (if you\'ve added it) is a separate step.' },
   ],
 }
 
 function getHelpForStep(stepId: WizardStepId): HelpItem[] {
   if (typeof stepId === 'string' && stepId.startsWith('backup_')) {
     return [
-      { type: 'definition', title: 'Lapse fallback', body: 'If a beneficiary dies before you (or within the survivorship period), their share "lapses". You need to say who should receive it instead — otherwise a court will decide.' },
-      { type: 'guide', title: 'Options', body: '"Their children equally" is the most common choice. "My other beneficiaries, pro-rata" keeps your existing split intact. Or you can name a specific person — useful if the beneficiary is your only child and you want the share to go elsewhere.' },
-      { type: 'tip', title: 'Testamentary trust for minors', body: 'If a backup beneficiary is or might be under 18, their share will be held in trust until the vesting age you set. No further action required — the Will handles it automatically.' },
+      { type: 'definition', title: 'Lapse fallback', body: 'If a beneficiary dies before you (or within the survivorship period), their share "lapses". You need to say who should receive it instead  -  otherwise a court will decide.' },
+      { type: 'guide', title: 'Options', body: '"Their children equally" is the most common choice. "My other beneficiaries, pro-rata" keeps your existing split intact. Or you can name a specific person  -  useful if the beneficiary is your only child and you want the share to go elsewhere.' },
+      { type: 'tip', title: 'Testamentary trust for minors', body: 'If a backup beneficiary is or might be under 18, their share will be held in trust until the vesting age you set. No further action required  -  the Will handles it automatically.' },
     ]
   }
   return HELP[stepId] ?? []

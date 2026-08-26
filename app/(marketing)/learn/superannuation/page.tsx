@@ -51,20 +51,20 @@ export default function SuperannuationPage() {
 
           <h2 style={H2}>Why super sits outside your Will</h2>
           <p style={BODY}>
-            Superannuation is held in trust by your fund trustee — not by you directly. Legally, it is not part of your estate. When you die, the fund trustee has the power to decide who receives your superannuation death benefit, unless you have made a binding nomination that removes that discretion.
+            Superannuation is held in trust by your fund trustee  -  not by you directly. Legally, it is not part of your estate. When you die, the fund trustee has the power to decide who receives your superannuation death benefit, unless you have made a binding nomination that removes that discretion.
           </p>
           <p style={BODY}>
-            This surprises many people. A Will is a comprehensive document that covers your financial affairs — but it cannot reach assets you don&#8217;t legally own. Your super fund has its own separate beneficiary nomination process, entirely independent of anything in your Will.
+            This surprises many people. A Will is a comprehensive document that covers your financial affairs  -  but it cannot reach assets you don&#8217;t legally own. Your super fund has its own separate beneficiary nomination process, entirely independent of anything in your Will.
           </p>
           <blockquote style={CALLOUT}>
-            Writing a Will without a current Binding Death Nomination means a potentially significant asset will be distributed entirely at the fund trustee&#8217;s discretion — not yours.
+            Writing a Will without a current Binding Death Nomination means a potentially significant asset will be distributed entirely at the fund trustee&#8217;s discretion  -  not yours.
           </blockquote>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
 
           <h2 style={H2}>What is a Binding Death Nomination?</h2>
           <p style={BODY}>
-            A Binding Death Nomination (BDN) is a formal instruction to your super fund directing where your death benefit should go. Unlike a non-binding nomination — which is merely a suggestion the trustee can override — a valid BDN legally compels the trustee to distribute the benefit as you instructed.
+            A Binding Death Nomination (BDN) is a formal instruction to your super fund directing where your death benefit should go. Unlike a non-binding nomination  -  which is merely a suggestion the trustee can override  -  a valid BDN legally compels the trustee to distribute the benefit as you instructed.
           </p>
           <p style={BODY}>
             To make a BDN valid:
@@ -72,7 +72,7 @@ export default function SuperannuationPage() {
           <ul style={{ paddingLeft: '1.4rem', margin: '0 0 1rem' }}>
             <li style={{ ...BODY, margin: '0 0 .5rem' }}>You must nominate only eligible dependants or your legal personal representative (your estate)</li>
             <li style={{ ...BODY, margin: '0 0 .5rem' }}>The nomination must be in writing and signed by you in front of two witnesses</li>
-            <li style={{ ...BODY, margin: 0 }}>Most BDNs expire after three years and must be renewed — even if nothing in your life has changed</li>
+            <li style={{ ...BODY, margin: 0 }}>Most BDNs expire after three years and must be renewed  -  even if nothing in your life has changed</li>
           </ul>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -84,7 +84,7 @@ export default function SuperannuationPage() {
           {[
             'Your spouse or de facto partner (including same-sex partners)',
             'Your children (biological, adopted, or step)',
-            'Any person in an interdependency relationship with you — meaning you lived together, one or both provided financial and domestic support, and there was a close personal relationship',
+            'Any person in an interdependency relationship with you  -  meaning you lived together, one or both provided financial and domestic support, and there was a close personal relationship',
             'Any person who was financially dependent on you at the time of your death',
           ].map((item, i) => (
             <div
@@ -95,12 +95,12 @@ export default function SuperannuationPage() {
                 borderBottom: '1px solid var(--mkt-line)',
               }}
             >
-              <span style={{ color: 'var(--teal)', fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontSize: '1.1rem', paddingTop: '.05rem', flexShrink: 0 }}>—</span>
+              <span style={{ color: 'var(--teal)', fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontSize: '1.1rem', paddingTop: '.05rem', flexShrink: 0 }}> - </span>
               <p style={{ ...BODY, margin: 0 }}>{item}</p>
             </div>
           ))}
           <p style={{ ...BODY, marginTop: '1.25rem' }}>
-            If you nominate your estate (your legal personal representative), the super proceeds will flow into your estate and be distributed under your Will — giving you more control but potentially triggering different tax treatment depending on who the ultimate beneficiaries are.
+            If you nominate your estate (your legal personal representative), the super proceeds will flow into your estate and be distributed under your Will  -  giving you more control but potentially triggering different tax treatment depending on who the ultimate beneficiaries are.
           </p>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -110,7 +110,7 @@ export default function SuperannuationPage() {
             Most Binding Death Nominations lapse after three years. If yours has expired, the nomination becomes non-binding and the trustee regains discretion over where your super goes.
           </p>
           <p style={BODY}>
-            This catches people out. You may have made a BDN years ago, assumed it was taken care of, and never thought about it again — while three years quietly passed. Some funds offer non-lapsing BDNs; check with your fund.
+            This catches people out. You may have made a BDN years ago, assumed it was taken care of, and never thought about it again  -  while three years quietly passed. Some funds offer non-lapsing BDNs; check with your fund.
           </p>
           <p style={BODY}>
             A practical habit: treat your BDN review the same way you treat your annual tax return. Check it each year alongside any changes to your personal circumstances.
@@ -120,10 +120,10 @@ export default function SuperannuationPage() {
 
           <h2 style={H2}>What about life insurance?</h2>
           <p style={BODY}>
-            Many superannuation accounts include default life insurance. The same rules apply — the insurance payout is paid to your fund and then distributed according to your BDN or at the trustee&#8217;s discretion. It does not automatically flow to the beneficiaries named in your Will.
+            Many superannuation accounts include default life insurance. The same rules apply  -  the insurance payout is paid to your fund and then distributed according to your BDN or at the trustee&#8217;s discretion. It does not automatically flow to the beneficiaries named in your Will.
           </p>
           <p style={BODY}>
-            If you hold life insurance outside of super (a standalone policy), the insurer will pay the benefit according to the beneficiary you nominated directly with them — again, completely separate from your Will.
+            If you hold life insurance outside of super (a standalone policy), the insurer will pay the benefit according to the beneficiary you nominated directly with them  -  again, completely separate from your Will.
           </p>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -161,7 +161,7 @@ export default function SuperannuationPage() {
             A Will is part of the picture
           </h2>
           <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', margin: '0 0 2rem' }}>
-            Start with a complete, state-specific Will — then check your BDN with your super fund.
+            Start with a complete, state-specific Will  -  then check your BDN with your super fund.
           </p>
           <Link href="/start" className="mkt-btn-ink-l">
             Start your Will

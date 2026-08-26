@@ -10,7 +10,7 @@ const ITEMS = [
   },
   {
     title: 'Authentication',
-    body: 'Access to your account is managed via Supabase Auth, which issues short-lived JWT tokens. We support secure email and password login. All sessions are scoped and signed — no shared secrets, no persistent tokens stored in local storage.',
+    body: 'Access to your account is managed via Supabase Auth, which issues short-lived JWT tokens. We support secure email and password login. All sessions are scoped and signed  -  no shared secrets, no persistent tokens stored in local storage.',
   },
   {
     title: 'Executor access controls',
@@ -18,7 +18,7 @@ const ITEMS = [
   },
   {
     title: 'Solicitor review independence',
-    body: 'Solicitor review is conducted by qualified Australian legal practitioners who are independent of Heirloom Life. Review is triggered by you or by high-severity flags in your Will — not automatically shared on document creation.',
+    body: 'Solicitor review is conducted by qualified Australian legal practitioners who are independent of Heirloom Life. Review is triggered by you or by high-severity flags in your Will  -  not automatically shared on document creation.',
   },
   {
     title: 'What we are not claiming',
@@ -43,7 +43,7 @@ export default function SecurityTrustPage() {
             <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>accurately</em>.
           </h1>
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-            Estate documents are among the most sensitive records you can hold. We have written this page to describe what is actually in place today — not to match the length of a competitor&#8217;s security marketing page.
+            Estate documents are among the most sensitive records you can hold. We have written this page to describe what is actually in place today  -  not to match the length of a competitor&#8217;s security marketing page.
           </p>
           <div style={{ marginTop: '1.5rem', padding: '1rem 1.25rem', borderRadius: 4, border: '1px solid var(--mkt-line)', background: '#fff', fontSize: '.85rem', color: 'var(--mkt-stone)', lineHeight: 1.5 }}>
             This page is subject to engineering confirmation. Items pending confirmation are clearly noted. We will update this page as each item is verified rather than publish claims in advance.

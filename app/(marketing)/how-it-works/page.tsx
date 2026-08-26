@@ -9,7 +9,7 @@ const STEPS = [
   {
     num: '01',
     title: 'Answer guided questions',
-    body: 'A seven-step questionnaire covers the essentials: your assets, your beneficiaries, your executor, and any guardianship arrangements. No legal training required — every question comes with a plain-English explanation.',
+    body: 'A seven-step questionnaire covers the essentials: your assets, your beneficiaries, your executor, and any guardianship arrangements. No legal training required  -  every question comes with a plain-English explanation.',
   },
   {
     num: '02',
@@ -19,12 +19,12 @@ const STEPS = [
   {
     num: '03',
     title: 'Download and sign your Will',
-    body: 'Download your completed Will and sign it in the presence of two independent witnesses. Complex situations — business succession, blended families, overseas assets — are flagged in your Vault with the option to add a solicitor review for around $150.',
+    body: 'Download your completed Will and sign it in the presence of two independent witnesses. Complex situations  -  business succession, blended families, overseas assets  -  are flagged in your Vault with the option to add a solicitor review for around $150.',
   },
   {
     num: '04',
     title: 'Sign and witness',
-    body: 'Your Will is only valid once signed in the presence of two independent witnesses. We walk you through exactly what this requires in your state — remote AV witnessing is available for NSW members, all other states complete with a straightforward print-and-sign process.',
+    body: 'Your Will is only valid once signed in the presence of two independent witnesses. We walk you through exactly what this requires in your state  -  remote AV witnessing is available for NSW members, all other states complete with a straightforward print-and-sign process.',
   },
   {
     num: '05',
@@ -49,7 +49,7 @@ export default function HowItWorksPage() {
             }}>
               From first login to a{' '}
               <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>complete estate plan</em>{' '}
-              — what happens and when.
+               -  what happens and when.
             </h1>
             <p style={{ marginTop: '1.1rem', maxWidth: '34rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
               We&#8217;ve broken the process into five stages. Most people complete the first three in a single session.
@@ -100,7 +100,7 @@ export default function HowItWorksPage() {
             Australian succession law is largely state-based. Heirloom Life is available across all states and territories, accounting for each state&#8217;s specific requirements throughout the drafting and review process.
           </p>
           <p style={{ marginTop: '1rem', fontSize: '.85rem', color: 'var(--mkt-stone-soft)' }}>
-            Complex situations are flagged in your Vault after you complete your Will. A solicitor review add-on is available from your Vault for around $150 — the same price point as Safewill and similar services.
+            Complex situations are flagged in your Vault after you complete your Will. A solicitor review add-on is available from your Vault for around $150  -  the same price point as Safewill and similar services.
           </p>
         </div>
       </section>

@@ -64,7 +64,7 @@ export default async function WitnessingSessionPage({ params }: { params: Promis
         <div className="border p-4" style={{ borderColor: 'var(--line)', background: 'var(--paper-warm)' }}>
           <p className="text-xs" style={{ color: 'var(--ink)' }}>
             Your witness must see you sign the physical, wet-ink copy of your will in real time over this call.
-            A recording (if enabled) does not replace live witnessing — it is kept only as supporting evidence.
+            A recording (if enabled) does not replace live witnessing  -  it is kept only as supporting evidence.
           </p>
         </div>
 

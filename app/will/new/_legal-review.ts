@@ -11,12 +11,12 @@ Flag needsReview=true for things like:
 - Business assets, trusts, overseas assets, or other structures beyond simple personal assets
 - Residuary beneficiary percentages that don't sum to 100%, or gifts that conflict with each other
 - No executor named, or an executor who is also a major beneficiary in a way that could raise concerns
-- Beneficiaries or specific gifts with no substitute/fallback named — a real risk if that person predeceases the testator
+- Beneficiaries or specific gifts with no substitute/fallback named  -  a real risk if that person predeceases the testator
 - A life interest (right to reside) provision, which needs careful drafting to avoid ambiguity
 - Assets with a binding death benefit nomination noted, since those may conflict with the will's residuary intentions
 - Any other circumstance a solicitor would specifically want to look at before this will is signed
 
-Do not flag routine, simple estates with no red flags — most straightforward wills should return needsReview=false.`
+Do not flag routine, simple estates with no red flags  -  most straightforward wills should return needsReview=false.`
 
 const SCHEMA = {
   type: 'object',

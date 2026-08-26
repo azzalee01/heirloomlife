@@ -9,7 +9,7 @@ interface BadgeProps {
 }
 
 // ── Heirloom Life Badge ───────────────────────────────────────────────────────
-// brand variant: teal soft bg + teal text — used for eyebrow labels,
+// brand variant: teal soft bg + teal text  -  used for eyebrow labels,
 // status chips, and estate category tags.
 
 const variantClasses: Record<BadgeVariant, string> = {

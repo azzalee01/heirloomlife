@@ -178,7 +178,7 @@ export interface LifeInterestData {
   remainderBeneficiaryRelationship: string
 }
 
-// Stored in the personal_wishes table — not part of the signed/witnessed Will document.
+// Stored in the personal_wishes table  -  not part of the signed/witnessed Will document.
 export interface PersonalWishesData {
   funeralType: 'burial' | 'cremation' | 'donation' | 'other' | ''
   funeralRestingPlace: string
@@ -197,14 +197,14 @@ export interface WillFormData {
   beneficiariesData: BeneficiariesData
   specificGifts: SpecificGift[]
   triageFlags: TriageFlags
-  // Wishes & Trusts (legal — included in the signed Will document)
+  // Wishes & Trusts (legal  -  included in the signed Will document)
   assetsOutsideAustralia: boolean
   otherJurisdictions: string
   importantDocumentsLocation: string
   survivorshipDays: string
   petCare: PetCareData
   lifeInterest: LifeInterestData
-  // Personal Wishes (non-testamentary — stored separately, NOT in the signed Will)
+  // Personal Wishes (non-testamentary  -  stored separately, NOT in the signed Will)
   personalWishes: PersonalWishesData
 }
 

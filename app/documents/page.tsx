@@ -31,7 +31,7 @@ export default function DocumentsPage() {
             Documents coming soon
           </h2>
           <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>
-            All your signed estate documents in one place — ready to download, share, or store securely.
+            All your signed estate documents in one place  -  ready to download, share, or store securely.
           </p>
         </div>
       </main>

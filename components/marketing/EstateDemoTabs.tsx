@@ -10,7 +10,7 @@ type Scenario = {
   timeframe: string
 }
 
-// Scenario copy written to match product behaviour — no copy existed in reference files.
+// Scenario copy written to match product behaviour  -  no copy existed in reference files.
 // Review and edit these three objects before launch.
 const SCENARIOS: Scenario[] = [
   {
@@ -18,7 +18,7 @@ const SCENARIOS: Scenario[] = [
     steps: [
       { label: 'Open the asset register in your Vault and add the property address, type, and estimated value.' },
       { label: 'The register syncs to your Will draft. Any specific-gift clauses that reference property are flagged for your review.' },
-      { label: 'Confirm the update. No solicitor review required — asset register changes are self-serve unless they trigger a high-severity flag.' },
+      { label: 'Confirm the update. No solicitor review required  -  asset register changes are self-serve unless they trigger a high-severity flag.' },
     ],
     lane: 'instant',
     laneLabel: 'Self-serve',
@@ -29,7 +29,7 @@ const SCENARIOS: Scenario[] = [
     steps: [
       { label: 'The Vault flags the life event. Guardianship clauses and equal-distribution provisions are reviewed against the new family structure.' },
       { label: 'If existing clauses cover additional children automatically, you\'ll see a confirmation. If not, the affected clauses are highlighted for amendment.' },
-      { label: 'High-severity changes — like naming a guardian for the first time — are queued for included solicitor review.', note: 'Solicitor review included' },
+      { label: 'High-severity changes  -  like naming a guardian for the first time  -  are queued for included solicitor review.', note: 'Solicitor review included' },
     ],
     lane: 'reviewed',
     laneLabel: 'Solicitor reviewed',
@@ -39,7 +39,7 @@ const SCENARIOS: Scenario[] = [
     title: '"I want to change who my executor is."',
     steps: [
       { label: 'Open the executor section in your Will and search for your new executor by name. You\'ll need their full legal name and contact details.' },
-      { label: 'The existing executor is removed. Any related clauses — including backup executor provisions — are flagged for your review.' },
+      { label: 'The existing executor is removed. Any related clauses  -  including backup executor provisions  -  are flagged for your review.' },
       { label: 'Executor changes are high-severity. A solicitor reviews the amendment before a new Will version is issued.', note: 'Solicitor review included' },
     ],
     lane: 'reviewed',

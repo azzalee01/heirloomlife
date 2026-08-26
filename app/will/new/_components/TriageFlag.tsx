@@ -7,7 +7,7 @@ export default function TriageFlag() {
         <circle cx="8" cy="11.5" r="0.6" fill="currentColor"/>
       </svg>
       <span>
-        This is worth a professional look. Keep going — we&apos;ll flag this in your Vault and you can request a solicitor review from there for around $150.
+        This is worth a professional look. Keep going  -  we&apos;ll flag this in your Vault and you can request a solicitor review from there for around $150.
       </span>
     </div>
   )

@@ -105,7 +105,7 @@ export default function StepBeneficiaryBackup({ beneficiary, otherBeneficiaries:
         className="text-xs"
         style={{ color: 'var(--neutral)' }}
       >
-        Skip — I&apos;ll decide later
+        Skip  -  I&apos;ll decide later
       </button>
     </div>
   )

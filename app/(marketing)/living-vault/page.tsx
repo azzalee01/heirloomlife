@@ -21,7 +21,7 @@ function Pill({ children, variant = 'teal' }: { children: React.ReactNode; varia
   )
 }
 
-export const metadata = { title: 'Living Vault — Heirloom Life', description: 'The estate command centre that keeps your Will current as your life changes.' }
+export const metadata = { title: 'Living Vault  -  Heirloom Life', description: 'The estate command centre that keeps your Will current as your life changes.' }
 
 export default function LivingVaultPage() {
   return (
@@ -41,7 +41,7 @@ export default function LivingVaultPage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>keep working</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '34rem', fontSize: '1.1rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Your Will is the start, not the finish. The Living Vault keeps your estate current as your life does — your assets, your people, your instructions, always in step.
+              Your Will is the start, not the finish. The Living Vault keeps your estate current as your life does  -  your assets, your people, your instructions, always in step.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <Link href="/dashboard" className="mkt-btn-ink-l">
@@ -71,7 +71,7 @@ export default function LivingVaultPage() {
                   Your estate, kept current.
                 </h2>
                 <p style={{ marginTop: '.75rem', fontSize: '.95rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-                  Marriage, a new child, a property purchase, a business sold — each one can quietly invalidate parts of a Will. The Vault tracks the life events that matter and prompts an update before a gap becomes a problem for the people you&#8217;ve named.
+                  Marriage, a new child, a property purchase, a business sold  -  each one can quietly invalidate parts of a Will. The Vault tracks the life events that matter and prompts an update before a gap becomes a problem for the people you&#8217;ve named.
                 </p>
               </div>
               <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '.6rem' }}>
@@ -91,12 +91,12 @@ export default function LivingVaultPage() {
               {
                 tag: 'Lawyer Review',
                 title: 'Included where it matters, priced where it doesn\'t.',
-                body: 'High-severity flags — guardianship, trusts, business succession — are surfaced in your Vault with a clear recommendation. A solicitor review add-on is available for around $150, and you can communicate directly with our partner lawyers through the platform.',
+                body: 'High-severity flags  -  guardianship, trusts, business succession  -  are surfaced in your Vault with a clear recommendation. A solicitor review add-on is available for around $150, and you can communicate directly with our partner lawyers through the platform.',
               },
               {
                 tag: 'Document Storage',
                 title: 'Everything your family needs, in one place.',
-                body: 'Your Will, asset register, and instructions are stored securely in your Vault. When it matters, there is no searching through filing cabinets — it\'s all there.',
+                body: 'Your Will, asset register, and instructions are stored securely in your Vault. When it matters, there is no searching through filing cabinets  -  it\'s all there.',
               },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: 'var(--mkt-surface)', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
@@ -116,7 +116,7 @@ export default function LivingVaultPage() {
           <div style={{ maxWidth: '38rem', marginBottom: '3rem' }}>
             <span style={SECTION_LABEL}>Life events</span>
             <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 'clamp(1.9rem, 3vw, 2.6rem)', lineHeight: 1.1, letterSpacing: '-.02em', fontWeight: 500, color: 'var(--mkt-ink-text)', margin: 0 }}>
-              The events that change your estate — and that most Wills miss.
+              The events that change your estate  -  and that most Wills miss.
             </h2>
           </div>
           <div className="md:grid-cols-2 lg:grid-cols-3" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1px', background: 'var(--mkt-line)', borderRadius: 10, overflow: 'hidden' }}>
@@ -135,7 +135,7 @@ export default function LivingVaultPage() {
             ))}
           </div>
           <p style={{ marginTop: '1.25rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-            Rules vary by state. Heirloom Life is available across Australia — your Will is drafted to the specific requirements of your state.
+            Rules vary by state. Heirloom Life is available across Australia  -  your Will is drafted to the specific requirements of your state.
           </p>
         </div>
       </section>

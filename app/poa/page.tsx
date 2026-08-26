@@ -30,7 +30,7 @@ export default function PoaPage() {
             Power of Attorney coming soon
           </h2>
           <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>
-            Appoint someone you trust to make decisions on your behalf — financial, medical, or both.
+            Appoint someone you trust to make decisions on your behalf  -  financial, medical, or both.
           </p>
         </div>
       </main>

@@ -6,7 +6,7 @@ import { FileText, Archive } from 'lucide-react';
 
 // ── Heirloom Life ProductToggle ───────────────────────────────────────────────
 // Donna had client/lawyer. Heirloom repurposes this pattern for
-// Will (acquisition) vs Vault (retention) — the two core products.
+// Will (acquisition) vs Vault (retention)  -  the two core products.
 // Same sticky scroll behaviour preserved exactly.
 
 type Product = 'will' | 'vault';

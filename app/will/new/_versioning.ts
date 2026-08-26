@@ -6,7 +6,7 @@ type SupabaseClient = Awaited<ReturnType<typeof createSupabaseServerClient>>
 
 /**
  * Snapshots the current will state into version history. The AI legal-review
- * check only runs when `runReview` is true — during the initial 7-step
+ * check only runs when `runReview` is true  -  during the initial 7-step
  * intake wizard the data is incomplete at every step, so review is deferred
  * until the will is first completed (see completeWill). Post-completion
  * amendments (wizard edits or applied chat proposals) always run it, since

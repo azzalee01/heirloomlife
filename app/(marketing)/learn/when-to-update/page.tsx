@@ -23,7 +23,7 @@ const CALLOUT: React.CSSProperties = {
 const EVENTS = [
   {
     title: 'Getting married',
-    body: 'In most Australian states, marriage automatically revokes a Will made before the marriage — unless the Will was explicitly made in contemplation of that marriage. If you wrote a Will before your wedding and have not updated it since, there is a real chance it no longer exists as a valid document. This applies even if the Will was made recently.',
+    body: 'In most Australian states, marriage automatically revokes a Will made before the marriage  -  unless the Will was explicitly made in contemplation of that marriage. If you wrote a Will before your wedding and have not updated it since, there is a real chance it no longer exists as a valid document. This applies even if the Will was made recently.',
     urgent: true,
   },
   {
@@ -33,17 +33,17 @@ const EVENTS = [
   },
   {
     title: 'Having or adopting a child',
-    body: 'Every new child in your family needs to be accounted for — both as a potential beneficiary and as a consideration for guardian appointments. A Will that names no guardian leaves the decision to a court. A Will that predates a child may unintentionally exclude them, depending on how the gifts are worded.',
+    body: 'Every new child in your family needs to be accounted for  -  both as a potential beneficiary and as a consideration for guardian appointments. A Will that names no guardian leaves the decision to a court. A Will that predates a child may unintentionally exclude them, depending on how the gifts are worded.',
     urgent: true,
   },
   {
     title: 'Buying property',
-    body: 'Real estate is typically a significant portion of any estate. How you hold the property matters: property held as joint tenants passes automatically to the surviving owner and does not flow through your Will at all. Property held as tenants in common does form part of your estate. Check how your property is titled — and whether your Will reflects what you actually intend.',
+    body: 'Real estate is typically a significant portion of any estate. How you hold the property matters: property held as joint tenants passes automatically to the surviving owner and does not flow through your Will at all. Property held as tenants in common does form part of your estate. Check how your property is titled  -  and whether your Will reflects what you actually intend.',
     urgent: false,
   },
   {
     title: 'Starting or selling a business',
-    body: 'A business interest creates complexity that most template Wills do not fully address. Who inherits the business? Do they have the skills or interest to run it? Is there a buy-sell agreement with co-owners that overrides your intentions? Business succession planning deserves specific attention — this is an area where a solicitor review adds real value.',
+    body: 'A business interest creates complexity that most template Wills do not fully address. Who inherits the business? Do they have the skills or interest to run it? Is there a buy-sell agreement with co-owners that overrides your intentions? Business succession planning deserves specific attention  -  this is an area where a solicitor review adds real value.',
     urgent: false,
   },
   {
@@ -98,10 +98,10 @@ export default function WhenToUpdatePage() {
             As a general rule, review your Will every three to five years even if nothing major has changed. Beneficiaries grow up, relationships evolve, and the value of your estate shifts. A periodic review catches issues before they become problems.
           </p>
           <p style={BODY}>
-            Beyond that baseline, certain life events require a prompt update. Some of them — marriage in particular — can invalidate your entire existing Will without you realising.
+            Beyond that baseline, certain life events require a prompt update. Some of them  -  marriage in particular  -  can invalidate your entire existing Will without you realising.
           </p>
           <blockquote style={CALLOUT}>
-            Three of the events below — marriage, separation, and having a child — should be treated as urgent. The others are important but allow more time.
+            Three of the events below  -  marriage, separation, and having a child  -  should be treated as urgent. The others are important but allow more time.
           </blockquote>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -139,10 +139,10 @@ export default function WhenToUpdatePage() {
 
           <h2 style={H2}>How to update your Will</h2>
           <p style={BODY}>
-            Minor changes — correcting a name, adding a specific gift — can sometimes be made through a codicil: a short addendum that amends the existing Will without replacing it. A codicil must be executed with the same formality as the original Will (written, signed, and witnessed by two independent people).
+            Minor changes  -  correcting a name, adding a specific gift  -  can sometimes be made through a codicil: a short addendum that amends the existing Will without replacing it. A codicil must be executed with the same formality as the original Will (written, signed, and witnessed by two independent people).
           </p>
           <p style={BODY}>
-            For any significant change — new beneficiaries, a change of executor, a change in how your estate is divided — it is cleaner to write a new Will entirely. A new Will should explicitly revoke all previous Wills to avoid ambiguity. Heirloom lets you do this at any time and produces a new document from your updated answers.
+            For any significant change  -  new beneficiaries, a change of executor, a change in how your estate is divided  -  it is cleaner to write a new Will entirely. A new Will should explicitly revoke all previous Wills to avoid ambiguity. Heirloom lets you do this at any time and produces a new document from your updated answers.
           </p>
           <p style={BODY}>
             Destroy old copies of any Will you have replaced. Keep only the current, signed original. Outdated versions stored alongside a new Will create unnecessary confusion for your executor.
@@ -173,7 +173,7 @@ export default function WhenToUpdatePage() {
             Your Will, updated whenever you need
           </h2>
           <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', margin: '0 0 2rem' }}>
-            Heirloom stores your answers in your Vault. When life changes, update your Will in minutes — no re-entering everything from scratch.
+            Heirloom stores your answers in your Vault. When life changes, update your Will in minutes  -  no re-entering everything from scratch.
           </p>
           <Link href="/start" className="mkt-btn-ink-l">
             Start your Will

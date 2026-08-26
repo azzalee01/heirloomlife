@@ -348,7 +348,7 @@ export default async function WillSummaryPage() {
                   <Field label="Email" value={primary.email} />
                   <Field label="Address" value={[primary.address_line_1, primary.suburb, primary.state, primary.postcode].filter(Boolean).join(', ')} />
                   <Field label="Marital status" value={MARITAL_LABELS[primary.marital_status ?? ''] ?? null} />
-                  <Field label="Previous will" value={primary.has_previous_will === true ? `Yes${primary.previous_will_location ? ` — ${primary.previous_will_location}` : ''}` : primary.has_previous_will === false ? 'No' : null} />
+                  <Field label="Previous will" value={primary.has_previous_will === true ? `Yes${primary.previous_will_location ? `  -  ${primary.previous_will_location}` : ''}` : primary.has_previous_will === false ? 'No' : null} />
                 </div>
               </Section>
             </div>
@@ -365,7 +365,7 @@ export default async function WillSummaryPage() {
                   <Field label="Mobile" value={spouse.phone_mobile} />
                   <Field label="Email" value={spouse.email} />
                   <Field label="Address" value={[spouse.address_line_1, spouse.suburb, spouse.state, spouse.postcode].filter(Boolean).join(', ')} />
-                  <Field label="Previous will" value={spouse.has_previous_will === true ? `Yes${spouse.previous_will_location ? ` — ${spouse.previous_will_location}` : ''}` : spouse.has_previous_will === false ? 'No' : null} />
+                  <Field label="Previous will" value={spouse.has_previous_will === true ? `Yes${spouse.previous_will_location ? `  -  ${spouse.previous_will_location}` : ''}` : spouse.has_previous_will === false ? 'No' : null} />
                 </div>
               </Section>
             </div>
@@ -542,7 +542,7 @@ export default async function WillSummaryPage() {
                       style={{ color: Math.abs(totalPct - 100) < 0.01 ? 'var(--teal)' : '#d97706' }}
                     >
                       {totalPct.toFixed(totalPct % 1 === 0 ? 0 : 2)}%
-                      {Math.abs(totalPct - 100) < 0.01 ? '' : ' — should total 100%'}
+                      {Math.abs(totalPct - 100) < 0.01 ? '' : '  -  should total 100%'}
                     </p>
                   </div>
                 </div>

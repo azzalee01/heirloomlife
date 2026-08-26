@@ -30,7 +30,7 @@ export interface WitnessInput {
 }
 
 // NSW requires a minimum of two witnesses for a will signing (Succession Act
-// 2006 (NSW) s 6) — enforced here regardless of what the client sends.
+// 2006 (NSW) s 6)  -  enforced here regardless of what the client sends.
 const MIN_WITNESSES = 2
 
 export async function scheduleWitnessingSession(input: {
@@ -126,7 +126,7 @@ export async function bookWitnessSlot(slotId: string, recordSession: boolean) {
   const { supabase, willId } = await getOwnedWill()
   const recordingEnabled = recordSession
 
-  // Claim the slot first — the unbooked-only WHERE clause makes this atomic,
+  // Claim the slot first  -  the unbooked-only WHERE clause makes this atomic,
   // so two testators racing for the same slot can't both win it.
   const { data: slot, error: slotError } = await supabase
     .from('heirloom_witness_slots')
@@ -135,7 +135,7 @@ export async function bookWitnessSlot(slotId: string, recordSession: boolean) {
     .eq('is_booked', false)
     .select('id, scheduled_at, witness_1_name, witness_1_email, witness_2_name, witness_2_email')
     .single()
-  if (slotError || !slot) throw new Error('That slot is no longer available — please pick another.')
+  if (slotError || !slot) throw new Error('That slot is no longer available  -  please pick another.')
 
   const room = await createWitnessingRoom(slot.scheduled_at as string, recordingEnabled)
 
@@ -212,7 +212,7 @@ export async function completeSession(sessionId: string) {
     .eq('session_id', sessionId)
 }
 
-// ─── Witness invite (no auth — accessed via a shareable link) ──────────────
+// ─── Witness invite (no auth  -  accessed via a shareable link) ──────────────
 
 export async function getInviteDetails(accessToken: string) {
   const { data: attestation, error } = await supabaseAdmin

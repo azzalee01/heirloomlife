@@ -120,7 +120,7 @@ function EmailCapture({ onSubmit, onSkip }: { onSubmit: (email: string) => void;
           className="text-xs"
           style={{ color: 'var(--neutral)' }}
         >
-          Skip for now — I&apos;ll continue without a link
+          Skip for now  -  I&apos;ll continue without a link
         </button>
       </div>
     </div>
@@ -145,7 +145,7 @@ function AnonDownloadGate() {
           Create a free account to download your Will
         </p>
         <p className="text-sm mt-1 max-w-xs mx-auto" style={{ color: 'var(--neutral)' }}>
-          Your progress is saved. Creating an account takes under a minute — then you can download, store, and manage your Will.
+          Your progress is saved. Creating an account takes under a minute  -  then you can download, store, and manage your Will.
         </p>
       </div>
       <Link
@@ -203,7 +203,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
   const isEligibilityStep = currentStaticStep === 'eligibility'
   const isComplete = isLast && showDownloadGate
 
-  // Eligibility check — must have selected a state and be 18+
+  // Eligibility check  -  must have selected a state and be 18+
   const eligibilityState = form.personalDetails.state
   const eligibilityDob = form.personalDetails.dateOfBirth
   const ageOk = (() => {
@@ -327,7 +327,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
     try {
       await storeAnonEmail(email)
     } catch {
-      // Non-critical — don't surface this error
+      // Non-critical  -  don't surface this error
     }
   }
 
@@ -498,7 +498,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
                 )}
                 {showDownloadGate && <AnonDownloadGate />}
 
-                {/* Completion screen — shown after authenticated user completes */}
+                {/* Completion screen  -  shown after authenticated user completes */}
                 {showCompletion && (
                   <div className="py-6 space-y-8">
                     <div className="text-center space-y-3">
@@ -586,7 +586,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
                 )}
               </div>
 
-              {/* Personal Wishes add-on — shown after review */}
+              {/* Personal Wishes add-on  -  shown after review */}
               {currentStaticStep === 'review' && (
                 <div className="mt-4">
                   <PersonalWishes
@@ -598,7 +598,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
               )}
             </div>
 
-            {/* Right-rail help panel — desktop only */}
+            {/* Right-rail help panel  -  desktop only */}
             <div className="hidden lg:block w-64 shrink-0 pt-0">
               <HelpPanel stepId={isBackupStep ? currentStepId : currentStaticStep} />
             </div>

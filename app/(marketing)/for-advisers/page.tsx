@@ -19,7 +19,7 @@ export default function ForAdvisersPage() {
             Refer your clients into an estate plan they&#8217;ll actually finish.
           </h1>
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-            We&#8217;re building a referral programme for financial advisers, accountants, and estate planning professionals. Details are being finalised — this page will be updated when the programme is ready to launch.
+            We&#8217;re building a referral programme for financial advisers, accountants, and estate planning professionals. Details are being finalised  -  this page will be updated when the programme is ready to launch.
           </p>
         </div>
       </section>

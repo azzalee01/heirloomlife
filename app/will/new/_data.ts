@@ -196,9 +196,9 @@ function mapExecutor(e: ExecutorRow | null): ExecutorPerson {
   }
 }
 
-// bank_account / shares descriptions are packed as "BSB: xxx" / "N shares" — see _actions.ts
+// bank_account / shares descriptions are packed as "BSB: xxx" / "N shares"  -  see _actions.ts
 function parseBsb(description: string | null): string {
-  return (description ?? '').match(/^BSB:\s*([^—]*)/)?.[1]?.trim() ?? ''
+  return (description ?? '').match(/^BSB:\s*([^ - ]*)/)?.[1]?.trim() ?? ''
 }
 function parseShareCount(description: string | null): string {
   return (description ?? '').match(/^(\d+)\s+shares/)?.[1] ?? ''

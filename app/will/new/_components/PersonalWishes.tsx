@@ -93,7 +93,7 @@ export default function PersonalWishes({ willId, initialData, formData }: Props)
             <p className="text-xs" style={{ color: 'var(--neutral)' }}>
               {hasContent
                 ? 'Your personal wishes are recorded'
-                : 'Funeral wishes and other guidance for your family — optional'}
+                : 'Funeral wishes and other guidance for your family  -  optional'}
             </p>
           </div>
         </div>
@@ -115,10 +115,10 @@ export default function PersonalWishes({ willId, initialData, formData }: Props)
 
       {open && (
         <div className="border-t border-[var(--line)] px-5 py-5 space-y-6">
-          {/* Intro — non-testamentary note */}
+          {/* Intro  -  non-testamentary note */}
           <div className="px-4 py-3 border-l-2" style={{ borderColor: 'var(--neutral)', background: 'var(--paper-warm)' }}>
             <p className="text-xs" style={{ color: 'var(--neutral)' }}>
-              <span className="font-semibold" style={{ color: 'var(--ink)' }}>Personal Wishes</span> — These aren&apos;t part of your signed Will, but they give your family clear guidance when it matters most. They are not legally binding and are stored separately from your Will document.
+              <span className="font-semibold" style={{ color: 'var(--ink)' }}>Personal Wishes</span>  -  These aren&apos;t part of your signed Will, but they give your family clear guidance when it matters most. They are not legally binding and are stored separately from your Will document.
             </p>
           </div>
 

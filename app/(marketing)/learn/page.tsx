@@ -11,7 +11,7 @@ const ARTICLES = [
     items: [
       {
         href: '/learn/your-will',
-        title: 'What is a Will — and what makes it legally valid?',
+        title: 'What is a Will  -  and what makes it legally valid?',
         summary: 'The five requirements every Australian Will must meet, what a Will can and cannot cover, and when it becomes invalid.',
       },
       {
@@ -22,7 +22,7 @@ const ARTICLES = [
       {
         href: '/learn/when-to-update',
         title: 'When to update your Will',
-        summary: 'The life events that require a Will update — some urgently — and how to make changes without starting from scratch.',
+        summary: 'The life events that require a Will update  -  some urgently  -  and how to make changes without starting from scratch.',
       },
     ],
   },
@@ -77,7 +77,7 @@ export default function LearnPage() {
               </em>
             </h1>
             <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Guides covering Will fundamentals, life-stage planning, and the people and roles in your estate plan. No jargon, no generic advice — Australian law specific.
+              Guides covering Will fundamentals, life-stage planning, and the people and roles in your estate plan. No jargon, no generic advice  -  Australian law specific.
             </p>
           </div>
         </div>
@@ -124,7 +124,7 @@ export default function LearnPage() {
               Guides for after a death
             </h2>
             <p style={{ fontSize: '.92rem', lineHeight: 1.6, color: 'var(--mkt-stone)', margin: '0 0 1.25rem', maxWidth: '36rem' }}>
-              Estate administration, probate, and what families and executors need to know when navigating what comes after — kept in a separate section.
+              Estate administration, probate, and what families and executors need to know when navigating what comes after  -  kept in a separate section.
             </p>
             <Link href="/passing" style={{ fontSize: '.93rem', color: 'var(--teal-deep)', textDecoration: 'none', fontWeight: 500 }}>
               Browse Passing guides →

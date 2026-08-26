@@ -33,19 +33,19 @@ export default function AboutPage() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
             <p>
-              Heirloom Life started with a simple observation: most estate planning tools are built for professionals who use them every day — not for the person whose name is on the Will. The result is a product that&#8217;s technically correct but practically unusable. Documents that sit in a drawer. Executors who don&#8217;t know they&#8217;re named. Estates that take years to settle because no one knew where to start.
+              Heirloom Life started with a simple observation: most estate planning tools are built for professionals who use them every day  -  not for the person whose name is on the Will. The result is a product that&#8217;s technically correct but practically unusable. Documents that sit in a drawer. Executors who don&#8217;t know they&#8217;re named. Estates that take years to settle because no one knew where to start.
             </p>
             <p>
-              We&#8217;re building the estate command centre we wish had existed — where a Will isn&#8217;t a one-time filing event but a living document that stays in step with your life. Where your executor has a verified path from death certificate to access, not a guess. Where a solicitor is included when the stakes are high, not added as an upsell when you&#8217;ve already signed.
+              We&#8217;re building the estate command centre we wish had existed  -  where a Will isn&#8217;t a one-time filing event but a living document that stays in step with your life. Where your executor has a verified path from death certificate to access, not a guess. Where a solicitor is included when the stakes are high, not added as an upsell when you&#8217;ve already signed.
             </p>
             <p>
-              Heirloom Life is based in Sydney, NSW. We&#8217;re building for Australians — available across all states and territories, with each Will drafted to the specific legal requirements of where you live.
+              Heirloom Life is based in Sydney, NSW. We&#8217;re building for Australians  -  available across all states and territories, with each Will drafted to the specific legal requirements of where you live.
             </p>
           </div>
 
           <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--mkt-line)' }}>
             <p style={{ fontWeight: 600, fontSize: '.95rem', color: 'var(--mkt-ink-text)', margin: 0 }}>Aaron Lee</p>
-            <p style={{ marginTop: '.25rem', fontSize: '.85rem', color: 'var(--mkt-stone)' }}>Founder, Heirloom Life — Sydney, NSW</p>
+            <p style={{ marginTop: '.25rem', fontSize: '.85rem', color: 'var(--mkt-stone)' }}>Founder, Heirloom Life  -  Sydney, NSW</p>
           </div>
         </div>
       </section>

@@ -51,7 +51,7 @@ function assetLabel(a: WillFormData['assets'][number]): string {
 /**
  * Deterministic, non-AI rendering of the will as readable document text.
  * Used for the always-available "live" preview and for replaying past
- * versions — no API call, so it's free and instant.
+ * versions  -  no API call, so it's free and instant.
  */
 export function renderWillText(formData: WillFormData): string {
   const pd = formData.personalDetails
@@ -99,7 +99,7 @@ export function renderWillText(formData: WillFormData): string {
     sections.push(text)
   }
 
-  // Testamentary trust — only relevant when there are dependent beneficiaries.
+  // Testamentary trust  -  only relevant when there are dependent beneficiaries.
   if (dependents.length > 0) {
     const age = formData.childrenData.ageOfVesting || '18'
     sections.push(
@@ -165,13 +165,13 @@ export function renderWillText(formData: WillFormData): string {
     sections.push(text)
   }
 
-  // Funeral wishes are non-testamentary and stored in personal_wishes — not included in the signed Will document.
+  // Funeral wishes are non-testamentary and stored in personal_wishes  -  not included in the signed Will document.
 
   if (formData.assetsOutsideAustralia) {
     sections.push(
       `${next()}. ASSETS OUTSIDE AUSTRALIA\n\n` +
         `I own assets in the following jurisdiction(s): ${formData.otherJurisdictions || '[not specified]'}. ` +
-        `A separate will valid in that jurisdiction may be required — this has been noted for solicitor review.`
+        `A separate will valid in that jurisdiction may be required  -  this has been noted for solicitor review.`
     )
   }
 
@@ -183,9 +183,9 @@ export function renderWillText(formData: WillFormData): string {
     const assets = formData.assets
       .map((a) => {
         let line = `- ${ASSET_TYPE_LABELS[a.assetType] || 'Asset'}: ${assetLabel(a)}`
-        if (a.isOverseas) line += ` (overseas — ${a.overseasCountry || 'country not specified'})`
+        if (a.isOverseas) line += ` (overseas  -  ${a.overseasCountry || 'country not specified'})`
         if ((a.assetType === 'superannuation' || a.assetType === 'life_insurance') && a.hasDeathBenefitNomination) {
-          line += ` — NOTE: has a binding death benefit nomination on file (${a.deathBenefitNominees || 'nominee not specified'}); this asset may pass outside this will`
+          line += `  -  NOTE: has a binding death benefit nomination on file (${a.deathBenefitNominees || 'nominee not specified'}); this asset may pass outside this will`
         }
         return line
       })
@@ -199,7 +199,7 @@ export function renderWillText(formData: WillFormData): string {
 
   sections.push(
     'IMPORTANT NOTICE\n\n' +
-      'Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. Our platform is built using established estate planning drafting standards. This document has not been reviewed by a solicitor unless you have purchased the review add-on. If your situation involves overseas assets, business ownership, or a blended family, a solicitor review is strongly recommended — this is available as an add-on from your Vault.'
+      'Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. Our platform is built using established estate planning drafting standards. This document has not been reviewed by a solicitor unless you have purchased the review add-on. If your situation involves overseas assets, business ownership, or a blended family, a solicitor review is strongly recommended  -  this is available as an add-on from your Vault.'
   )
 
   return sections.join('\n\n')

@@ -74,12 +74,12 @@ export default function PlanCTA() {
           className="w-full py-2.5 text-sm font-semibold transition-opacity disabled:opacity-60 cursor-pointer text-white"
           style={{ backgroundColor: 'var(--teal)', border: 'none' }}
         >
-          {loading ? 'Loading…' : 'Get Living Vault — $8/mo'}
+          {loading ? 'Loading…' : 'Get Living Vault  -  $8/mo'}
         </button>
       </div>
 
       <p className="pb-3 text-xs text-center" style={{ color: 'var(--neutral)' }}>
-        Test mode — use card <span className="font-mono font-semibold">4242 4242 4242 4242</span>, any future date, any CVC.
+        Test mode  -  use card <span className="font-mono font-semibold">4242 4242 4242 4242</span>, any future date, any CVC.
       </p>
     </div>
   )

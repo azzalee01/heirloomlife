@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-// Apple spring easing: cubic-bezier(0.16, 1, 0.3, 1) — matches the WWDC "ease-out-spring" curve.
+// Apple spring easing: cubic-bezier(0.16, 1, 0.3, 1)  -  matches the WWDC "ease-out-spring" curve.
 // Elements that are already in the viewport when the observer fires become visible immediately.
 
 export default function Reveal({

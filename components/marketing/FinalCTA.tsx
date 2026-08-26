@@ -18,7 +18,7 @@ export function FinalCTA() {
       <Container>
         <div className="max-w-3xl mx-auto text-center">
 
-          {/* Hairline teal eyebrow — consistent with Hero eyebrow treatment */}
+          {/* Hairline teal eyebrow  -  consistent with Hero eyebrow treatment */}
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -34,7 +34,7 @@ export function FinalCTA() {
             </span>
           </motion.div>
 
-          {/* Headline — Instrument Serif, editorial scale */}
+          {/* Headline  -  Instrument Serif, editorial scale */}
           <motion.h2
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -45,7 +45,7 @@ export function FinalCTA() {
             Your family deserves to know.
           </motion.h2>
 
-          {/* Subtitle — quiet, purposeful */}
+          {/* Subtitle  -  quiet, purposeful */}
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -199,10 +199,10 @@ export default function ScheduleSessionForm() {
         ) : (
           <div>
             <p className="text-xs mb-2" style={{ color: 'var(--neutral)' }}>
-              Pick an available slot — two Heirloom witnesses will already be on the call.
+              Pick an available slot  -  two Heirloom witnesses will already be on the call.
             </p>
             {slots === null && <p className="text-sm" style={{ color: 'var(--neutral)' }}>Loading availability…</p>}
-            {slots?.length === 0 && <p className="text-sm" style={{ color: 'var(--neutral)' }}>No slots available right now — please check back soon.</p>}
+            {slots?.length === 0 && <p className="text-sm" style={{ color: 'var(--neutral)' }}>No slots available right now  -  please check back soon.</p>}
             <div className="space-y-2">
               {slots?.map((slot) => {
                 const dt = new Date(slot.scheduledAt)

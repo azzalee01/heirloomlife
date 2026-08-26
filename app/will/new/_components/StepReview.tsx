@@ -118,7 +118,7 @@ export default function StepReview({ formData, activeSteps, onJumpToStep }: Prop
         <Row label="Email" value={pd.email} />
         <Row label="Address" value={[pd.addressLine1, pd.suburb, pd.state, pd.postcode].filter(Boolean).join(', ')} />
         <Row label="Marital status" value={maritalLabel[pd.maritalStatus] ?? ''} />
-        <Row label="Previous will" value={pd.previousWill === 'yes' ? `Yes — ${pd.previousWillLocation || 'location not specified'}` : pd.previousWill === 'no' ? 'No' : ''} />
+        <Row label="Previous will" value={pd.previousWill === 'yes' ? `Yes  -  ${pd.previousWillLocation || 'location not specified'}` : pd.previousWill === 'no' ? 'No' : ''} />
       </Section>
 
       {/* Spouse */}
@@ -129,7 +129,7 @@ export default function StepReview({ formData, activeSteps, onJumpToStep }: Prop
         <Row label="Mobile" value={sd.phoneMobile} />
         <Row label="Email" value={sd.email} />
         <Row label="Address" value={[sd.addressLine1, sd.suburb, sd.state, sd.postcode].filter(Boolean).join(', ')} />
-        <Row label="Previous will" value={sd.previousWill === 'yes' ? `Yes — ${sd.previousWillLocation || 'location not specified'}` : sd.previousWill === 'no' ? 'No' : ''} />
+        <Row label="Previous will" value={sd.previousWill === 'yes' ? `Yes  -  ${sd.previousWillLocation || 'location not specified'}` : sd.previousWill === 'no' ? 'No' : ''} />
       </Section>
 
       {/* Children */}
@@ -261,10 +261,10 @@ export default function StepReview({ formData, activeSteps, onJumpToStep }: Prop
         {cd.hasChildren === 'yes' && cd.children.some((c) => c.isDependent) && (
           <Row label="Age of vesting" value={cd.ageOfVesting} />
         )}
-        {/* Funeral wishes now live in Personal Wishes (non-testamentary) — not shown here */}
+        {/* Funeral wishes now live in Personal Wishes (non-testamentary)  -  not shown here */}
         <Row label="Pets" value={pc.hasPets === 'yes' ? pc.description || 'Yes' : ''} />
-        {pc.hasPets === 'yes' && <Row label="Pet caregiver" value={[pc.caregiverName, pc.caregiverRelationship].filter(Boolean).join(' — ')} />}
-        <Row label="Life interest" value={li.enabled ? `${li.propertyDescription || 'Property'} — ${li.lifeTenantName || 'unnamed'}` : ''} />
+        {pc.hasPets === 'yes' && <Row label="Pet caregiver" value={[pc.caregiverName, pc.caregiverRelationship].filter(Boolean).join('  -  ')} />}
+        <Row label="Life interest" value={li.enabled ? `${li.propertyDescription || 'Property'}  -  ${li.lifeTenantName || 'unnamed'}` : ''} />
         <Row label="Overseas assets" value={formData.assetsOutsideAustralia ? formData.otherJurisdictions || 'Yes' : ''} />
         <Row label="Document location" value={formData.importantDocumentsLocation} />
       </Section>
@@ -273,7 +273,7 @@ export default function StepReview({ formData, activeSteps, onJumpToStep }: Prop
         <div className="border border-amber-200 bg-amber-50 px-4 py-4 space-y-2">
           <p className="text-sm font-semibold text-amber-900">Some aspects of your estate may benefit from professional review</p>
           <p className="text-sm text-amber-800 leading-relaxed">
-            You told us you have {formatFlagList(triggeredFlagLabels(formData))}. Complete your Will below — we&apos;ll flag these in your Vault with a recommendation to add a solicitor review. A review add-on is available from your Vault for around $150.
+            You told us you have {formatFlagList(triggeredFlagLabels(formData))}. Complete your Will below  -  we&apos;ll flag these in your Vault with a recommendation to add a solicitor review. A review add-on is available from your Vault for around $150.
           </p>
         </div>
       )}

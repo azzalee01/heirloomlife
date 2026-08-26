@@ -21,7 +21,7 @@ function Pill({ children, variant = 'teal' }: { children: React.ReactNode; varia
   )
 }
 
-export const metadata = { title: 'The Will — Heirloom Life', description: 'A living Will in plain English, drafted to your state\'s requirements, and versioned every time your life moves forward.' }
+export const metadata = { title: 'The Will  -  Heirloom Life', description: 'A living Will in plain English, drafted to your state\'s requirements, and versioned every time your life moves forward.' }
 
 export default function TheWillPage() {
   return (
@@ -41,7 +41,7 @@ export default function TheWillPage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>again</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '34rem', fontSize: '1.1rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault — readable in plain English, reviewed by solicitors when it counts, and versioned every time your life moves forward.
+              Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault  -  readable in plain English, reviewed by solicitors when it counts, and versioned every time your life moves forward.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <Link href="/start" className="mkt-btn-ink-l">
@@ -73,7 +73,7 @@ export default function TheWillPage() {
                     </svg>
                   </div>
                   <div>
-                    <p style={{ fontWeight: 600, fontSize: '.95rem', margin: 0 }}>Aaron Lee — Last Will &amp; Testament</p>
+                    <p style={{ fontWeight: 600, fontSize: '.95rem', margin: 0 }}>Aaron Lee  -  Last Will &amp; Testament</p>
                     <p style={{ fontSize: '.75rem', color: 'var(--mkt-stone-soft)', marginTop: '.15rem' }}>Version 4 · Last amended 12 Jun 2026</p>
                   </div>
                 </div>
@@ -93,7 +93,7 @@ export default function TheWillPage() {
               <div style={{ padding: '1.75rem 1.5rem' }}>
                 {[
                   { n: '1', title: 'Appointment of Executor', body: "Names who carries out your wishes. Your executor gathers your assets, pays any debts, and distributes what remains as you've set out below.", badge: null },
-                  { n: '2', title: 'Guardianship of Minor Children', body: 'Flagged for review — a change to your family situation since your last amendment may affect this clause.', badge: 'Included review recommended' },
+                  { n: '2', title: 'Guardianship of Minor Children', body: 'Flagged for review  -  a change to your family situation since your last amendment may affect this clause.', badge: 'Included review recommended' },
                   { n: '3', title: 'Distribution of Residuary Estate', body: 'Sets out how everything not otherwise gifted is divided. Last confirmed against your asset register two months ago.', badge: null },
                 ].map(clause => (
                   <div key={clause.n} style={{ display: 'flex', gap: '1rem', padding: '1rem 0', borderBottom: '1px solid var(--mkt-line)' }}>
@@ -128,10 +128,10 @@ export default function TheWillPage() {
             {[
               { n: '01', title: 'Answer guided questions', body: 'Seven steps covering your assets, beneficiaries, executor, and any guardianship arrangements. Every question has a plain-English explanation.' },
               { n: '02', title: 'Review your draft', body: 'Your answers become a structured Will draft. Review clause by clause. Change your answers and the draft updates immediately.' },
-              { n: '03', title: 'Download and sign', body: 'Download your completed Will and sign it with two witnesses. Any complex flags — business interests, blended families, overseas assets — are highlighted in your Vault.' },
+              { n: '03', title: 'Download and sign', body: 'Download your completed Will and sign it with two witnesses. Any complex flags  -  business interests, blended families, overseas assets  -  are highlighted in your Vault.' },
               { n: '04', title: 'Sign and witness', body: 'Your Will is valid only once signed in front of two independent witnesses. We walk you through the exact requirements for your state.' },
               { n: '05', title: 'Store and update', body: 'Your signed Will lives in your Vault alongside your asset register. Every time your life changes, update your Will from the same place.' },
-              { n: '+', title: 'Versioned as your life changes', body: 'Every amendment creates a new version. A change to your family, your assets, or your executors prompts an update — not a whole new Will.' },
+              { n: '+', title: 'Versioned as your life changes', body: 'Every amendment creates a new version. A change to your family, your assets, or your executors prompts an update  -  not a whole new Will.' },
             ].map(step => (
               <div key={step.n} style={{ background: '#fff', borderRadius: 10, border: '1px solid var(--mkt-line)', padding: '1.75rem' }}>
                 <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: '1.3rem', color: 'var(--teal)', display: 'block', marginBottom: '.75rem' }}>{step.n}</span>
@@ -150,7 +150,7 @@ export default function TheWillPage() {
             Solicitor review, when you need it.
           </h2>
           <p style={{ fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>
-            Template Wills are not automatically reviewed by a solicitor — they don&#8217;t need to be for straightforward estates. For situations that are more complex — business succession, blended families, overseas assets, testamentary trusts — your Vault will flag the specific areas of concern. You can then request a solicitor review as an add-on for around $150, and communicate directly with our partner lawyers through the platform.
+            Template Wills are not automatically reviewed by a solicitor  -  they don&#8217;t need to be for straightforward estates. For situations that are more complex  -  business succession, blended families, overseas assets, testamentary trusts  -  your Vault will flag the specific areas of concern. You can then request a solicitor review as an add-on for around $150, and communicate directly with our partner lawyers through the platform.
           </p>
         </div>
       </section>
