@@ -67,8 +67,6 @@ export interface ChildrenData {
   hasChildren: 'yes' | 'no' | ''
   children: Child[]
   guardian: Guardian
-  // Age at which a minor/dependent beneficiary's share vests outright,
-  // held on trust until then — the standard testamentary trust provision.
   ageOfVesting: string
 }
 
@@ -116,11 +114,8 @@ export interface Asset {
   // other
   description: string
   otherValue: string
-  // superannuation / life insurance — these commonly pass outside the will
-  // via a binding nomination with the provider, not via this document.
   hasDeathBenefitNomination: boolean
   deathBenefitNominees: string
-  // overseas assets
   isOverseas: boolean
   overseasCountry: string
 }
@@ -130,8 +125,6 @@ export interface PersonBeneficiary {
   name: string
   relationship: string
   percentage: string
-  // Who takes this share if this beneficiary doesn't survive the testator
-  // by the survivorship period (see WillFormData.survivorshipDays).
   substituteBeneficiary: string
 }
 
@@ -185,6 +178,15 @@ export interface LifeInterestData {
   remainderBeneficiaryRelationship: string
 }
 
+// Stored in the personal_wishes table — not part of the signed/witnessed Will document.
+export interface PersonalWishesData {
+  funeralType: 'burial' | 'cremation' | 'donation' | 'other' | ''
+  funeralRestingPlace: string
+  funeralAdditionalWishes: string
+  hasFuneralPlan: boolean
+  funeralPlanDetails: string
+}
+
 export interface WillFormData {
   willId: string | null
   personalDetails: PersonalDetails
@@ -194,21 +196,20 @@ export interface WillFormData {
   assets: Asset[]
   beneficiariesData: BeneficiariesData
   specificGifts: SpecificGift[]
-  // ── Triage flags ─────────────────────────────────────────────────────────
   triageFlags: TriageFlags
-  // ── Wishes & Trusts ──────────────────────────────────────────────────────
-  funeralWishes: string
-  hasFuneralPlan: boolean
-  funeralPlanDetails: string
+  // Wishes & Trusts (legal — included in the signed Will document)
   assetsOutsideAustralia: boolean
-  otherJurisdictions: string // comma-separated countries
+  otherJurisdictions: string
   importantDocumentsLocation: string
   survivorshipDays: string
   petCare: PetCareData
   lifeInterest: LifeInterestData
+  // Personal Wishes (non-testamentary — stored separately, NOT in the signed Will)
+  personalWishes: PersonalWishesData
 }
 
 export const STEP_IDS = [
+  'eligibility',
   'personal',
   'spouse',
   'children',
@@ -222,12 +223,17 @@ export const STEP_IDS = [
 
 export type StepId = (typeof STEP_IDS)[number]
 
+// Backup steps are dynamically injected per-beneficiary between 'beneficiaries' and 'gifts'.
+// They are not in STEP_IDS; the wizard renders them as `backup_${n}`.
+export type WizardStepId = StepId | `backup_${number}`
+
 export const STEP_LABELS: Record<StepId, string> = {
-  personal: 'Personal Details',
-  spouse: 'Spouse / Partner',
+  eligibility: 'Eligibility',
+  personal: 'About You',
+  spouse: 'Your Partner',
   children: 'Children',
   executors: 'Executors',
-  assets: 'Assets',
+  assets: 'Your Assets',
   beneficiaries: 'Beneficiaries',
   gifts: 'Specific Gifts',
   wishes: 'Wishes & Trusts',

@@ -1,10 +1,49 @@
 'use server'
 
+import { cookies } from 'next/headers'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { loadWillFormData } from './_data'
 import { generateWillDocumentText } from './_drafting'
 import { recordVersion } from './_versioning'
-import { STEP_LABELS, type WillFormData, type StepId } from './_types'
+import { STEP_LABELS, type WillFormData, type StepId, type PersonalWishesData } from './_types'
+
+const ANON_COOKIE = 'hl_anon_session'
+
+async function getAnonSessionId(): Promise<string | null> {
+  const store = await cookies()
+  return store.get(ANON_COOKIE)?.value ?? null
+}
+
+async function isAuthenticatedUser(): Promise<boolean> {
+  const supabase = await createSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  return !!user
+}
+
+// Save entire WillFormData as JSONB to an anonymous session.
+// Creates a new session (with cookie) if none exists; returns the session UUID.
+async function saveToAnonSession(formData: WillFormData): Promise<string> {
+  const supabase = await createSupabaseServerClient()
+  const store = await cookies()
+  const existing = store.get(ANON_COOKIE)?.value
+
+  const payload = formData as unknown as Record<string, unknown>
+
+  if (existing) {
+    await supabase.from('anonymous_will_sessions').update({ form_data: payload }).eq('id', existing)
+    return existing
+  }
+
+  const { data, error } = await supabase
+    .from('anonymous_will_sessions')
+    .insert({ form_data: payload })
+    .select('id')
+    .single()
+  if (error) throw new Error(error.message)
+  const id = data.id as string
+  store.set(ANON_COOKIE, id, { maxAge: 30 * 24 * 60 * 60, path: '/', sameSite: 'lax', secure: true })
+  return id
+}
 
 type SupabaseClient = Awaited<ReturnType<typeof createSupabaseServerClient>>
 
@@ -14,10 +53,9 @@ type SupabaseClient = Awaited<ReturnType<typeof createSupabaseServerClient>>
 function buildTestatorRows(formData: WillFormData): Record<string, unknown>[] {
   const pd = formData.personalDetails
   const sd = formData.spouseDetails
+  // Funeral fields are no longer written from the core flow — they live in
+  // personal_wishes (non-testamentary) and are saved via savePersonalWishes.
   const wishesFields = {
-    has_funeral_plan: formData.hasFuneralPlan,
-    funeral_plan_details: formData.hasFuneralPlan ? formData.funeralPlanDetails || null : null,
-    funeral_wishes: formData.funeralWishes || null,
     assets_outside_australia: formData.assetsOutsideAustralia,
     other_jurisdictions: formData.assetsOutsideAustralia
       ? formData.otherJurisdictions.split(',').map((s) => s.trim()).filter(Boolean)
@@ -96,10 +134,17 @@ export async function saveStep(
   changeSummary?: string
 ): Promise<string> {
   const supabase = await createSupabaseServerClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (!user) throw new Error('Not authenticated')
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Anonymous path: save entire form state as JSONB, skip normalized tables.
+  if (!user) {
+    // Eligibility and review steps don't persist data themselves.
+    if (step === 'eligibility' || step === 'review') {
+      const sessionId = await getAnonSessionId()
+      return sessionId ?? await saveToAnonSession(formData)
+    }
+    return await saveToAnonSession(formData)
+  }
 
   // Ensure a profiles row exists (fallback for users predating the trigger)
   await supabase
@@ -349,6 +394,54 @@ export async function saveStep(
   }
 
   return id!
+}
+
+// Save Personal Wishes (non-testamentary, not part of the signed Will).
+export async function savePersonalWishes(
+  willId: string | null,
+  wishes: PersonalWishesData
+): Promise<void> {
+  const supabase = await createSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    // For anon sessions, personal wishes are stored inside the session form_data.
+    const sessionId = await getAnonSessionId()
+    if (!sessionId) return
+    await supabase.from('anonymous_will_sessions').update({
+      form_data: { personalWishes: wishes } as unknown as Record<string, unknown>
+    }).eq('id', sessionId)
+    return
+  }
+
+  if (!willId) return
+  const payload = {
+    funeral_type: wishes.funeralType || null,
+    funeral_resting_place: wishes.funeralRestingPlace || null,
+    funeral_additional_wishes: wishes.funeralAdditionalWishes || null,
+    has_funeral_plan: wishes.hasFuneralPlan,
+    funeral_plan_details: wishes.hasFuneralPlan ? wishes.funeralPlanDetails || null : null,
+  }
+
+  const { data: existing } = await supabase
+    .from('personal_wishes')
+    .select('id')
+    .eq('will_id', willId)
+    .maybeSingle()
+
+  if (existing) {
+    await supabase.from('personal_wishes').update(payload).eq('will_id', willId)
+  } else {
+    await supabase.from('personal_wishes').insert({ ...payload, will_id: willId })
+  }
+}
+
+// Store email on anonymous session for later account pre-fill at download gate.
+export async function storeAnonEmail(email: string): Promise<void> {
+  const supabase = await createSupabaseServerClient()
+  const sessionId = await getAnonSessionId()
+  if (!sessionId) return
+  await supabase.from('anonymous_will_sessions').update({ email }).eq('id', sessionId)
 }
 
 export async function completeWill(willId: string): Promise<void> {

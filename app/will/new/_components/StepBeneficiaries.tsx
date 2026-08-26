@@ -60,35 +60,43 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
         </p>
       </div>
 
-      {/* Allocation indicator */}
-      <div className="border border-[var(--line)] bg-[var(--paper-warm)] px-4 py-3">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold uppercase tracking-widest text-[var(--neutral)]">
-            Total Allocated
+      {/* Live allocation counter — must reach 100% to continue */}
+      <div
+        className="border px-4 py-3.5"
+        style={{
+          borderColor: total > 100 ? '#ef4444' : total === 100 ? 'var(--teal)' : 'var(--line)',
+          background: total === 100 ? 'rgba(42,180,174,0.04)' : 'var(--paper-warm)',
+        }}
+      >
+        <div className="flex items-center justify-between mb-2.5">
+          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
+            Estate allocated
           </span>
           <span
-            className="text-sm font-semibold tabular-nums"
+            className="text-lg font-bold tabular-nums leading-none"
             style={{ color: total > 100 ? '#ef4444' : total === 100 ? 'var(--teal)' : 'var(--ink)' }}
           >
-            {total.toFixed(1)}%
+            {total % 1 === 0 ? total : total.toFixed(1)}%
           </span>
         </div>
-        <div className="h-px bg-[var(--line)] relative">
+        {/* Segmented track */}
+        <div className="h-2 bg-[var(--line)] overflow-hidden">
           <div
-            className="h-px absolute top-0 left-0 transition-all"
+            className="h-full transition-all duration-300"
             style={{
               width: `${Math.min(total, 100)}%`,
-              backgroundColor: total > 100 ? '#ef4444' : 'var(--teal)',
+              backgroundColor: total > 100 ? '#ef4444' : total === 100 ? 'var(--teal)' : 'var(--teal)',
+              opacity: total === 100 ? 1 : 0.5,
             }}
           />
         </div>
-        {total !== 100 && (
-          <p className="text-xs text-[var(--neutral)] mt-2">
-            {total > 100
-              ? `Over-allocated by ${(total - 100).toFixed(1)}% — reduce to exactly 100%`
-              : `${remaining.toFixed(1)}% remaining to allocate`}
-          </p>
-        )}
+        <p className="text-xs mt-2" style={{ color: total > 100 ? '#ef4444' : 'var(--neutral)' }}>
+          {total === 100
+            ? '✓ Estate fully allocated — ready to continue'
+            : total > 100
+            ? `Over by ${(total - 100).toFixed(1)}% — reduce allocations to exactly 100%`
+            : `${remaining % 1 === 0 ? remaining : remaining.toFixed(1)}% still to allocate — must reach 100% to continue`}
+        </p>
       </div>
 
       {/* People */}

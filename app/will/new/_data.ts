@@ -18,6 +18,7 @@ import type {
   PetCareData,
   LifeInterestData,
   TriageFlags,
+  PersonalWishesData,
 } from './_types'
 
 type SupabaseClient = Awaited<ReturnType<typeof createSupabaseServerClient>>
@@ -112,6 +113,14 @@ const EMPTY_TRIAGE_FLAGS: TriageFlags = {
   hasComplexTrusts: false,
 }
 
+const EMPTY_PERSONAL_WISHES: PersonalWishesData = {
+  funeralType: '',
+  funeralRestingPlace: '',
+  funeralAdditionalWishes: '',
+  hasFuneralPlan: false,
+  funeralPlanDetails: '',
+}
+
 export const EMPTY_WILL_FORM_DATA: WillFormData = {
   willId: null,
   personalDetails: {
@@ -140,9 +149,6 @@ export const EMPTY_WILL_FORM_DATA: WillFormData = {
   beneficiariesData: { people: [], charities: [] },
   specificGifts: [],
   triageFlags: { ...EMPTY_TRIAGE_FLAGS },
-  funeralWishes: '',
-  hasFuneralPlan: false,
-  funeralPlanDetails: '',
   assetsOutsideAustralia: false,
   otherJurisdictions: '',
   importantDocumentsLocation: '',
@@ -152,6 +158,7 @@ export const EMPTY_WILL_FORM_DATA: WillFormData = {
     enabled: false, propertyDescription: '', lifeTenantName: '', lifeTenantRelationship: '',
     condition: '', remainderBeneficiaryName: '', remainderBeneficiaryRelationship: '',
   },
+  personalWishes: { ...EMPTY_PERSONAL_WISHES },
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────────────────
@@ -363,6 +370,31 @@ export async function loadWillFormData(
 
   const primaryTestatorFull = testators.find((t) => t.marital_status !== null) ?? testators[0] ?? null
 
+  // Load personal wishes from the personal_wishes table (non-testamentary, stored separately).
+  // Fall back to legacy funeral fields on testators for records predating the migration.
+  const { data: pwRow } = await supabase
+    .from('personal_wishes')
+    .select('funeral_type, funeral_resting_place, funeral_additional_wishes, has_funeral_plan, funeral_plan_details')
+    .eq('will_id', willId)
+    .maybeSingle()
+
+  const personalWishes: PersonalWishesData = pwRow
+    ? {
+        funeralType: (pwRow.funeral_type ?? '') as PersonalWishesData['funeralType'],
+        funeralRestingPlace: str(pwRow.funeral_resting_place as string | null),
+        funeralAdditionalWishes: str(pwRow.funeral_additional_wishes as string | null),
+        hasFuneralPlan: !!(pwRow.has_funeral_plan),
+        funeralPlanDetails: str(pwRow.funeral_plan_details as string | null),
+      }
+    : {
+        funeralType: '',
+        funeralRestingPlace: '',
+        // Migrate legacy free-text field for existing records
+        funeralAdditionalWishes: str(primaryTestatorFull?.funeral_wishes),
+        hasFuneralPlan: !!primaryTestatorFull?.has_funeral_plan,
+        funeralPlanDetails: str(primaryTestatorFull?.funeral_plan_details),
+      }
+
   return {
     willId,
     formData: {
@@ -374,9 +406,6 @@ export async function loadWillFormData(
       assets,
       beneficiariesData,
       specificGifts,
-      funeralWishes: str(primaryTestatorFull?.funeral_wishes),
-      hasFuneralPlan: !!primaryTestatorFull?.has_funeral_plan,
-      funeralPlanDetails: str(primaryTestatorFull?.funeral_plan_details),
       assetsOutsideAustralia: !!primaryTestatorFull?.assets_outside_australia,
       otherJurisdictions: (primaryTestatorFull?.other_jurisdictions ?? []).join(', '),
       importantDocumentsLocation: str(primaryTestatorFull?.important_documents_location),
@@ -384,6 +413,22 @@ export async function loadWillFormData(
       survivorshipDays: willRow?.survivorship_days != null ? String(willRow.survivorship_days) : EMPTY_WILL_FORM_DATA.survivorshipDays,
       petCare: mapPetCare(willRow?.pet_care ?? null),
       lifeInterest: mapLifeInterest(willRow?.life_interest ?? null),
+      personalWishes,
     },
   }
+}
+
+// Load form data for an anonymous session (returns raw JSONB, merged with empty defaults).
+export async function loadAnonSessionFormData(
+  supabase: SupabaseClient,
+  sessionId: string
+): Promise<WillFormData> {
+  const { data } = await supabase
+    .from('anonymous_will_sessions')
+    .select('form_data')
+    .eq('id', sessionId)
+    .single()
+  if (!data?.form_data) return { ...EMPTY_WILL_FORM_DATA }
+  // Merge with empty defaults so new fields added after session creation are present.
+  return { ...EMPTY_WILL_FORM_DATA, ...(data.form_data as Partial<WillFormData>), willId: sessionId }
 }

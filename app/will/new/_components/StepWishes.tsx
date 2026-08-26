@@ -76,41 +76,6 @@ export default function StepWishes({ formData, hasDependentChildren, onChange }:
         </section>
       )}
 
-      {/* Funeral wishes */}
-      <section className="space-y-3">
-        <p className={eyebrow}>Funeral Wishes</p>
-        <div>
-          <label className={lbl}>Burial, cremation, or other instructions (optional)</label>
-          <textarea
-            className={inp}
-            rows={3}
-            placeholder="e.g. I wish to be cremated, with my ashes scattered at..."
-            value={formData.funeralWishes}
-            onChange={(e) => onChange({ funeralWishes: e.target.value })}
-          />
-          <p className="text-xs text-[var(--neutral)] mt-1">
-            Not legally binding, but a clear record of your wishes for your family.
-          </p>
-        </div>
-        <label className="flex items-center gap-2.5 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={formData.hasFuneralPlan}
-            onChange={(e) => onChange({ hasFuneralPlan: e.target.checked })}
-            className="w-4 h-4 accent-[var(--teal)]"
-          />
-          <span className="text-sm text-[var(--ink)]">I have a pre-paid funeral plan</span>
-        </label>
-        {formData.hasFuneralPlan && (
-          <input
-            className={inp}
-            placeholder="Provider and plan/reference number"
-            value={formData.funeralPlanDetails}
-            onChange={(e) => onChange({ funeralPlanDetails: e.target.value })}
-          />
-        )}
-      </section>
-
       {/* Pet care */}
       <section className="space-y-3">
         <p className={eyebrow}>Pet Care</p>

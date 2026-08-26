@@ -262,8 +262,7 @@ export default function StepReview({ formData, activeSteps, onJumpToStep }: Prop
         {cd.hasChildren === 'yes' && cd.children.some((c) => c.isDependent) && (
           <Row label="Age of vesting" value={cd.ageOfVesting} />
         )}
-        <Row label="Funeral wishes" value={formData.funeralWishes} />
-        <Row label="Pre-paid funeral plan" value={formData.hasFuneralPlan ? formData.funeralPlanDetails || 'Yes' : ''} />
+        {/* Funeral wishes now live in Personal Wishes (non-testamentary) — not shown here */}
         <Row label="Pets" value={pc.hasPets === 'yes' ? pc.description || 'Yes' : ''} />
         {pc.hasPets === 'yes' && <Row label="Pet caregiver" value={[pc.caregiverName, pc.caregiverRelationship].filter(Boolean).join(' — ')} />}
         <Row label="Life interest" value={li.enabled ? `${li.propertyDescription || 'Property'} — ${li.lifeTenantName || 'unnamed'}` : ''} />

@@ -115,11 +115,7 @@ function buildIntakeSummary(formData: WillFormData): string {
     lines.push(`Pet care: ${pc.description} to be cared for by ${pc.caregiverName} (${pc.caregiverRelationship})${pc.careFundAmount ? `, with $${pc.careFundAmount} set aside for care` : ''}.`)
   }
 
-  if (formData.funeralWishes || formData.hasFuneralPlan) {
-    lines.push(
-      `Funeral wishes: ${formData.funeralWishes || 'none specified beyond executor discretion'}.${formData.hasFuneralPlan ? ` Pre-paid funeral plan: ${formData.funeralPlanDetails}.` : ''}`
-    )
-  }
+  // Funeral wishes excluded — non-testamentary, stored in personal_wishes separately.
 
   if (formData.importantDocumentsLocation) {
     lines.push(`Important documents location: ${formData.importantDocumentsLocation}.`)

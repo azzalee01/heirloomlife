@@ -165,13 +165,7 @@ export function renderWillText(formData: WillFormData): string {
     sections.push(text)
   }
 
-  if (formData.funeralWishes || formData.hasFuneralPlan) {
-    let text = `${next()}. FUNERAL WISHES\n\n`
-    text += formData.funeralWishes ? formData.funeralWishes : 'I leave my funeral arrangements to the discretion of my Executor.'
-    if (formData.hasFuneralPlan) text += ` I have a pre-paid funeral plan: ${formData.funeralPlanDetails || '[details not provided]'}.`
-    text += ' These wishes are not legally binding on my Executor but are provided as guidance.'
-    sections.push(text)
-  }
+  // Funeral wishes are non-testamentary and stored in personal_wishes — not included in the signed Will document.
 
   if (formData.assetsOutsideAustralia) {
     sections.push(

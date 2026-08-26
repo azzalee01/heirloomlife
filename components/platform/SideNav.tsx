@@ -11,8 +11,8 @@ type NavKey = 'dashboard' | 'will' | 'live-will' | 'witnessing' | 'vault' | 'poa
 
 const NAV_ITEMS: { key: NavKey; label: string; href: string; shortcut: string }[] = [
   { key: 'dashboard', label: 'Overview',   href: '/dashboard',  shortcut: '⌘H' },
-  { key: 'will',      label: 'Your Will',  href: '/will/new',   shortcut: '⌘W' },
-  { key: 'live-will', label: 'The Will',   href: '/dashboard/will',   shortcut: '⌘L' },
+  { key: 'will',      label: 'Edit Will',      href: '/will/new',       shortcut: '⌘W' },
+  { key: 'live-will', label: 'Will Document', href: '/dashboard/will', shortcut: '⌘L' },
   { key: 'witnessing', label: 'Witnessing', href: '/witnessing', shortcut: '⌘E' },
   { key: 'vault',     label: 'Living Vault', href: '/dashboard/vault',    shortcut: '⌘V' },
   { key: 'poa',       label: 'Power of Attorney', href: '/poa', shortcut: '⌘P' },

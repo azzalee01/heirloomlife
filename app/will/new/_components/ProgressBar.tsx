@@ -5,27 +5,38 @@ interface Props {
 }
 
 export default function ProgressBar({ steps, currentIndex, onStepClick }: Props) {
-  const pct = steps.length > 1 ? (currentIndex / (steps.length - 1)) * 100 : 100
-
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
-        <p className="text-sm font-semibold text-[var(--ink)]">{steps[currentIndex]}</p>
-        <p className="text-xs text-[var(--neutral)]">
-          Step {currentIndex + 1} of {steps.length}
+      {/* Segmented track */}
+      <div className="flex items-center gap-0.5 mb-3">
+        {steps.map((_, i) => {
+          const done = i < currentIndex
+          const active = i === currentIndex
+          return (
+            <div
+              key={i}
+              className="h-1 flex-1 transition-all duration-300"
+              style={{
+                backgroundColor: done || active ? 'var(--teal)' : 'var(--line)',
+                opacity: active ? 0.7 : done ? 1 : 1,
+              }}
+            />
+          )
+        })}
+      </div>
+
+      {/* Step label + chips */}
+      <div className="flex items-start justify-between gap-4">
+        <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>
+          {steps[currentIndex]}
+        </p>
+        <p className="text-xs shrink-0" style={{ color: 'var(--neutral)' }}>
+          {currentIndex + 1} / {steps.length}
         </p>
       </div>
 
-      {/* Track */}
-      <div className="h-px bg-[var(--line)] overflow-hidden">
-        <div
-          className="h-full transition-all duration-500 ease-out"
-          style={{ width: `${Math.max(2, pct)}%`, backgroundColor: 'var(--teal)' }}
-        />
-      </div>
-
-      {/* Step chips */}
-      <div className="mt-3 flex flex-wrap gap-1.5">
+      {/* Clickable step chips */}
+      <div className="mt-2 flex flex-wrap gap-1">
         {steps.map((label, i) => {
           const done = i < currentIndex
           const active = i === currentIndex
@@ -36,7 +47,7 @@ export default function ProgressBar({ steps, currentIndex, onStepClick }: Props)
               key={i}
               disabled={!clickable}
               onClick={() => clickable && onStepClick!(i)}
-              className={`text-xs px-2.5 py-0.5 border font-medium transition-colors ${
+              className={`text-xs px-2 py-0.5 border font-medium transition-colors ${
                 clickable ? 'cursor-pointer hover:opacity-80' : 'cursor-default'
               }`}
               style={
