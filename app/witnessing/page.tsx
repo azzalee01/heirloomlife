@@ -1,5 +1,7 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
+import { supabaseAdmin } from '@/src/lib/supabase-server'
 import ScheduleSessionForm from './_components/ScheduleSessionForm'
 import SessionList, { type WitnessingSessionSummary } from './_components/SessionList'
 
@@ -32,6 +34,45 @@ export default async function WitnessingPage() {
             <p className="text-sm" style={{ color: 'var(--neutral)' }}>
               Start your will before scheduling a witnessing session.
             </p>
+          </div>
+        </main>
+      </div>
+    )
+  }
+
+  // AV witnessing requires active Living Vault membership AND a NSW address on file.
+  const [profileRes, testatorRes] = await Promise.all([
+    supabaseAdmin.from('profiles').select('plan, plan_status').eq('id', user.id).single(),
+    supabase.from('testators').select('state').eq('will_id', will.id).not('marital_status', 'is', null).limit(1).single(),
+  ])
+  const isActiveMember = profileRes.data?.plan === 'vault' && profileRes.data?.plan_status === 'active'
+  const userState = (testatorRes.data as { state: string | null } | null)?.state ?? null
+  const isNSW = userState === 'NSW'
+
+  if (!isActiveMember || !isNSW) {
+    const reason = !isActiveMember
+      ? { heading: 'Living Vault membership required', body: 'AV witness scheduling is available to Living Vault members. Your first Will is free — upgrade to unlock remote witnessing and unlimited amendments.' }
+      : { heading: 'NSW only', body: 'Remote AV witnessing is currently available for NSW addresses only, consistent with NSW\'s statutory AV witnessing scheme. Your address on file is ' + (userState ?? 'not set') + '.' }
+    return (
+      <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
+        <header className="sticky top-0 z-20 border-b px-6 h-14 flex items-center" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
+          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>Witnessing</h1>
+        </header>
+        <main className="max-w-3xl mx-auto px-6 py-8">
+          <div className="border border-[var(--line)] bg-white p-8 text-center space-y-4">
+            <div className="w-10 h-10 mx-auto rounded-full flex items-center justify-center" style={{ background: 'var(--teal-light)' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0110 0v4" />
+              </svg>
+            </div>
+            <h2 className="text-lg font-semibold" style={{ color: 'var(--ink)' }}>{reason.heading}</h2>
+            <p className="text-sm leading-relaxed max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>{reason.body}</p>
+            {!isActiveMember && (
+              <Link href="/pricing" className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
+                See Living Vault — $8/mo
+              </Link>
+            )}
           </div>
         </main>
       </div>

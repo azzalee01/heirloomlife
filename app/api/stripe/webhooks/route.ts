@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
-import { getStripe } from '@/src/lib/stripe'
+import { getStripe, planName, isSubscriptionProduct, type Product } from '@/src/lib/stripe'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 
 export const dynamic = 'force-dynamic'
@@ -35,10 +35,10 @@ export async function POST(request: NextRequest) {
 
       const updates: Record<string, unknown> = {
         stripe_customer_id: session.customer as string,
-        plan: product,
+        plan: planName(product as Product),
         plan_status: 'active',
       }
-      if (product === 'vault' && session.subscription) {
+      if (isSubscriptionProduct(product as Product) && session.subscription) {
         updates.stripe_subscription_id = session.subscription as string
       }
       await supabaseAdmin.from('profiles').update(updates).eq('id', userId)

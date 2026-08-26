@@ -3,6 +3,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { randomUUID } from 'node:crypto'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
+import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from '@/app/will/new/_data'
 import { saveStep } from '@/app/will/new/_actions'
 import type { WillFormData } from '@/app/will/new/_types'
@@ -143,7 +144,7 @@ function summarizeWill(formData: WillFormData): string {
   return parts.join('\n')
 }
 
-async function getWillId(): Promise<{ supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>; userId: string; willId: string }> {
+async function getWillId(): Promise<{ supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>; userId: string; willId: string; hasDownloaded: boolean }> {
   const supabase = await createSupabaseServerClient()
   const {
     data: { user },
@@ -152,14 +153,27 @@ async function getWillId(): Promise<{ supabase: Awaited<ReturnType<typeof create
 
   const { data: willRows } = await supabase
     .from('wills')
-    .select('id')
+    .select('id, has_downloaded')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
-  const willId = willRows?.[0]?.id as string | undefined
-  if (!willId) throw new Error('No will found — start a will first')
+  const will = willRows?.[0] as { id: string; has_downloaded: boolean } | undefined
+  if (!will) throw new Error('No will found — start a will first')
 
-  return { supabase, userId: user.id, willId }
+  return { supabase, userId: user.id, willId: will.id, hasDownloaded: will.has_downloaded ?? false }
+}
+
+async function requireAmendmentAccess(userId: string, hasDownloaded: boolean): Promise<void> {
+  if (!hasDownloaded) return
+  const { data: profile } = await supabaseAdmin
+    .from('profiles')
+    .select('plan, plan_status')
+    .eq('id', userId)
+    .single()
+  const isActive = profile?.plan === 'vault' && profile?.plan_status === 'active'
+  if (!isActive) {
+    throw new Error('MEMBERSHIP_REQUIRED')
+  }
 }
 
 export async function loadChatHistory(): Promise<ChatMessage[]> {
@@ -176,7 +190,8 @@ export async function sendChatMessage(
   history: ChatMessage[],
   userText: string
 ): Promise<{ reply: string; proposals: AmendmentProposal[] }> {
-  const { supabase, userId, willId } = await getWillId()
+  const { supabase, userId, willId, hasDownloaded } = await getWillId()
+  await requireAmendmentAccess(userId, hasDownloaded)
   const { formData } = await loadWillFormData(supabase, userId, willId)
 
   await supabase.from('chat_messages').insert({ will_id: willId, role: 'user', content: userText })
@@ -232,7 +247,8 @@ function describeProposal(toolName: string, input: Record<string, unknown>): str
 const str = (v: unknown): string => (typeof v === 'string' ? v : '')
 
 export async function applyAmendment(proposal: AmendmentProposal): Promise<void> {
-  const { supabase, userId, willId } = await getWillId()
+  const { supabase, userId, willId, hasDownloaded } = await getWillId()
+  await requireAmendmentAccess(userId, hasDownloaded)
   const { formData } = await loadWillFormData(supabase, userId, willId)
   const input = proposal.toolInput
 

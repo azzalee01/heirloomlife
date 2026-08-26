@@ -51,7 +51,8 @@ export default function AiChat() {
         },
       ])
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Something went wrong. Please try again.')
+      const msg = e instanceof Error ? e.message : 'Something went wrong. Please try again.'
+      setError(msg === 'MEMBERSHIP_REQUIRED' ? '__MEMBERSHIP_REQUIRED__' : msg)
     } finally {
       setLoading(false)
       inputRef.current?.focus()
@@ -169,8 +170,22 @@ export default function AiChat() {
         </div>
       )}
 
-      {error && (
+      {error && error !== '__MEMBERSHIP_REQUIRED__' && (
         <div className="px-6 py-2 text-xs text-red-600 bg-red-50 border-b border-red-100">{error}</div>
+      )}
+      {error === '__MEMBERSHIP_REQUIRED__' && (
+        <div className="px-6 py-3 border-b border-amber-100 bg-amber-50 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs text-amber-800">
+            <span className="font-semibold">Living Vault membership required.</span>{' '}
+            Your Will has been downloaded. To make amendments, upgrade to Living Vault.
+          </p>
+          <a
+            href="/pricing#living-vault"
+            className="text-xs font-semibold text-amber-900 underline hover:no-underline shrink-0"
+          >
+            See membership — $8/mo
+          </a>
+        </div>
       )}
 
       {/* Input */}

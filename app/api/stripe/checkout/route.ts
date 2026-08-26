@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getStripe, priceId, type Product } from '@/src/lib/stripe'
+import { getStripe, priceId, isSubscriptionProduct, type Product } from '@/src/lib/stripe'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 
@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     line_items: [{ price, quantity: 1 }],
-    mode: product === 'vault' ? 'subscription' : 'payment',
+    mode: isSubscriptionProduct(product) ? 'subscription' : 'payment',
     success_url: `${baseUrl}/dashboard?payment=success`,
     cancel_url: `${baseUrl}/dashboard`,
     metadata: { userId: user.id, product },

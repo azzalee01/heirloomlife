@@ -6,6 +6,7 @@ import { renderWillText } from '@/app/will/new/_render'
 import AiChat from '@/app/dashboard/_components/AiChat'
 import LegalReviewCallout from './_components/LegalReviewCallout'
 import VersionHistory, { type VersionSummary } from './_components/VersionHistory'
+import DownloadWillButton from './_components/DownloadWillButton'
 
 export default async function TheWillPage() {
   const supabase = await createSupabaseServerClient()
@@ -16,13 +17,13 @@ export default async function TheWillPage() {
 
   const { data: willRows } = await supabase
     .from('wills')
-    .select('id, subscription_status, needs_review, needs_review_reasons, updated_at')
+    .select('id, subscription_status, needs_review, needs_review_reasons, updated_at, has_downloaded')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
 
   const will = willRows?.[0] as
-    | { id: string; subscription_status: string; needs_review: boolean; needs_review_reasons: string[] | null; updated_at: string }
+    | { id: string; subscription_status: string; needs_review: boolean; needs_review_reasons: string[] | null; updated_at: string; has_downloaded: boolean }
     | undefined
 
   if (!will) {
@@ -90,7 +91,12 @@ export default async function TheWillPage() {
         {/* Live document */}
         <div className="bg-white border border-[var(--line)] overflow-hidden">
           <div className="h-[3px] w-full" style={{ backgroundColor: 'var(--teal)' }} />
-          <div className="px-6 py-6">
+          <div className="px-6 py-6 space-y-5">
+            <DownloadWillButton
+              willId={will.id}
+              documentText={documentText}
+              hasDownloaded={will.has_downloaded ?? false}
+            />
             <pre className="whitespace-pre-wrap font-sans text-sm text-[var(--ink)] leading-relaxed">{documentText}</pre>
           </div>
         </div>

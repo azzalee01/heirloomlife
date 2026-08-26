@@ -23,6 +23,17 @@ async function getOwnedWill() {
   return { supabase, willId: will.id, subscriptionStatus: will.subscription_status }
 }
 
+export async function markWillDownloaded(willId: string): Promise<void> {
+  const supabase = await createSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+  await supabase
+    .from('wills')
+    .update({ has_downloaded: true })
+    .eq('id', willId)
+    .eq('user_id', user.id)
+}
+
 export async function requestLawyerReview(): Promise<{ paymentStatus: 'free' | 'unpaid' }> {
   const { supabase, willId, subscriptionStatus } = await getOwnedWill()
   const paymentStatus = subscriptionStatus === 'active' ? ('free' as const) : ('unpaid' as const)

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
+import PricingVaultCTA from './_components/PricingVaultCTA'
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_LABEL: React.CSSProperties = {
@@ -96,36 +97,32 @@ export default function PricingPage() {
         <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
           <div>
             <span style={SECTION_LABEL}>Living Vault</span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '.5rem' }}>
-              <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-stone)', lineHeight: 1, margin: 0 }}>
-                —
-              </p>
-              <span style={{
-                fontSize: '.68rem', fontWeight: 700, padding: '.35rem .8rem', borderRadius: 99,
-                border: '1px solid var(--mkt-line)', color: 'var(--mkt-stone)', background: 'var(--mkt-surface)',
-                textTransform: 'uppercase', letterSpacing: '.1em',
-              }}>
-                Coming soon
-              </span>
-            </div>
-            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>Subscription — price to be announced.</p>
+            <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
+              $8
+            </p>
+            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>per month. Cancel anytime.</p>
 
-            <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', maxWidth: '28rem' }}>
-              Keep your Will current as your life changes — marriage, a new child, a property purchase, a business sold. The Vault tracks the life events that matter and prompts an update before a gap becomes a problem.
+            <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '28rem' }}>
+              Keep your Will current as your life changes. Unlimited amendments, immediate redrafted documents, and access to Heirloom&apos;s witness pool if you&apos;re in NSW.
+            </p>
+
+            <PricingVaultCTA />
+
+            <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
+              Your first Will is always free. Membership unlocks repeat amendments.
             </p>
           </div>
 
-          <div style={{ borderRadius: 14, border: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)', padding: '2rem', opacity: 0.7 }}>
+          <div style={{ borderRadius: 14, border: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)', padding: '2rem' }}>
             <p style={{ fontSize: '.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--mkt-stone)', margin: '0 0 1.25rem' }}>
-              Planned features
+              What&apos;s included
             </p>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
               {[
-                'Life-event tracking and alerts',
-                'Annual solicitor review for high-severity flags',
-                'Executor access — verified path from death certificate to access',
-                'Will version history',
-                'Cancel anytime',
+                'Unlimited will reviews and quick amendments — chat-based update, immediate redrafted document',
+                'Unlimited quick add/remove of beneficiaries, gifts, and executors',
+                'NSW members only: access to Heirloom\'s team AV witness pool for remote execution',
+                'Solicitor referral for complex or bespoke cases',
               ].map((f) => (
                 <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>
                   <Check />
@@ -133,9 +130,6 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            <p style={{ marginTop: '1.5rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-              Vault pricing and scope are being finalised. We&apos;ll publish confirmed details before launch.
-            </p>
           </div>
         </div>
       </section>
@@ -188,7 +182,7 @@ export default function PricingPage() {
             },
             {
               q: 'What is the Living Vault?',
-              a: 'A subscription we\'re building to keep your Will current over time — tracking life events, prompting updates, and providing executor access when it\'s needed. Pricing and full feature scope are still being finalised. Start your Will now and we\'ll let you know when the Vault is ready.',
+              a: 'An $8/month membership that keeps your Will current as your life changes. It unlocks unlimited chat-based amendments with an immediate redrafted document, unlimited add/remove of beneficiaries and executors, and access to Heirloom\'s AV witness pool for NSW members. Cancel anytime.',
             },
             {
               q: 'What if my situation is complex?',
