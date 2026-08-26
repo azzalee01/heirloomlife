@@ -123,18 +123,14 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
       )}
 
       {asset.assetType === 'bank_account' && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label className={lbl}>Bank name</label>
-            <input className={inp} placeholder="e.g. Commonwealth Bank" value={asset.bankName} onChange={(e) => set('bankName', e.target.value)} />
+            <label className={lbl}>Estimated value (optional)</label>
+            <input className={inp} placeholder="$0" value={asset.estimatedValue} onChange={(e) => set('estimatedValue', e.target.value)} />
           </div>
           <div>
-            <label className={lbl}>BSB</label>
-            <input className={inp} placeholder="000-000" value={asset.bsb} onChange={(e) => set('bsb', e.target.value)} />
-          </div>
-          <div>
-            <label className={lbl}>Account number</label>
-            <input className={inp} value={asset.accountNumber} onChange={(e) => set('accountNumber', e.target.value)} />
+            <label className={lbl}>Description (optional)</label>
+            <input className={inp} placeholder="e.g. everyday account, savings account" value={asset.description} onChange={(e) => set('description', e.target.value)} />
           </div>
         </div>
       )}

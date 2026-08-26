@@ -189,8 +189,7 @@ export default function StepReview({ formData, activeSteps, onJumpToStep }: Prop
             <Row label="Ownership" value={a.ownershipType === 'sole' ? 'Sole ownership' : a.ownershipType === 'joint_tenants' ? 'Joint ownership (joint tenants)' : a.ownershipType === 'tenants_in_common' ? 'Joint ownership (tenants in common)' : ''} />
             {a.assetType === 'real_estate' && <Row label="Address" value={a.propertyAddress} />}
             {a.assetType === 'real_estate' && <Row label="Est. value" value={a.estimatedValue} />}
-            {a.assetType === 'bank_account' && <Row label="Bank" value={a.bankName} />}
-            {a.assetType === 'bank_account' && <Row label="Account" value={[a.bsb, a.accountNumber].filter(Boolean).join(' / ')} />}
+            {a.assetType === 'bank_account' && <Row label="Description" value={a.description} />}
             {a.assetType === 'superannuation' && <Row label="Fund" value={a.fundName} />}
             {a.assetType === 'superannuation' && <Row label="Member no." value={a.memberNumber} />}
             {a.assetType === 'shares' && <Row label="Company" value={a.companyName} />}

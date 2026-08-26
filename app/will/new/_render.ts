@@ -34,7 +34,7 @@ function assetLabel(a: WillFormData['assets'][number]): string {
     case 'real_estate':
       return a.propertyAddress || 'Property'
     case 'bank_account':
-      return a.bankName || 'Bank account'
+      return a.description || 'Bank account'
     case 'superannuation':
       return a.fundName || 'Superannuation fund'
     case 'shares':

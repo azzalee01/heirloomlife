@@ -68,7 +68,7 @@ function formatDate(iso: string) {
 function assetLabel(a: AssetRow): string {
   switch (a.asset_type) {
     case 'real_estate':    return a.property_address_line_1 || 'Property';
-    case 'bank_account':   return a.institution_name || 'Bank account';
+    case 'bank_account':   return a.description || 'Bank account';
     case 'superannuation': return a.institution_name || 'Super fund';
     case 'shares':         return a.institution_name || 'Shares';
     case 'life_insurance': return a.institution_name || 'Life insurance';
