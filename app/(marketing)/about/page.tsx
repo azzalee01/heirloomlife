@@ -39,7 +39,7 @@ export default function AboutPage() {
               We&#8217;re building the estate command centre we wish had existed — where a Will isn&#8217;t a one-time filing event but a living document that stays in step with your life. Where your executor has a verified path from death certificate to access, not a guess. Where a solicitor is included when the stakes are high, not added as an upsell when you&#8217;ve already signed.
             </p>
             <p>
-              Heirloom Life is based in Sydney, NSW. We&#8217;re building for Australians first, starting with NSW and VIC where succession law complexity is highest and the existing alternatives are least adequate.
+              Heirloom Life is based in Sydney, NSW. We&#8217;re building for Australians — available across all states and territories, with each Will drafted to the specific legal requirements of where you live.
             </p>
           </div>
 

@@ -36,7 +36,7 @@ const FAQS = [
   },
   {
     q: 'What states do you support?',
-    a: "Heirloom Life currently accepts members in NSW and VIC. If you're in another state or territory, you can join the waitlist — we'll notify you when your state is available. NSW and VIC have been prioritised first due to the volume and complexity of succession law activity in each.",
+    a: "Heirloom Life is available across all Australian states and territories. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing — members in all other states complete the signing process in person with two witnesses, which we walk you through step by step.",
   },
 ]
 

@@ -24,7 +24,7 @@ const STEPS = [
   {
     num: '04',
     title: 'Sign and witness',
-    body: 'Your Will is only valid once signed in the presence of two independent witnesses. We walk you through exactly what this requires in your state — remote witnessed signing is currently available for NSW and VIC members.',
+    body: 'Your Will is only valid once signed in the presence of two independent witnesses. We walk you through exactly what this requires in your state — remote AV witnessing is available for NSW members, all other states complete with a straightforward print-and-sign process.',
   },
   {
     num: '05',
@@ -97,7 +97,7 @@ export default function HowItWorksPage() {
             A note on state-specific requirements
           </h2>
           <p style={{ fontSize: '.95rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: 0 }}>
-            Australian succession law is largely state-based. Heirloom Life currently serves NSW and VIC, accounting for each state&#8217;s specific requirements throughout the drafting and review process. Members in other states and territories can join the waitlist.
+            Australian succession law is largely state-based. Heirloom Life is available across all states and territories, accounting for each state&#8217;s specific requirements throughout the drafting and review process.
           </p>
           <p style={{ marginTop: '1rem', fontSize: '.85rem', color: 'var(--mkt-stone-soft)' }}>
             Specific turnaround times for solicitor review are being confirmed before launch — we&#8217;re building to operational commitments, not estimates.

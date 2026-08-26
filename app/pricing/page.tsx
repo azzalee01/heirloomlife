@@ -66,7 +66,7 @@ export default function PricingPage() {
             </div>
 
             <p style={{ marginTop: '1.1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-              NSW and VIC only at launch. Other states can <Link href="/waitlist" style={{ color: 'var(--teal-deep)', textDecoration: 'underline' }}>join the waitlist</Link>.
+              Available across all Australian states and territories.
             </p>
           </div>
 
@@ -77,7 +77,7 @@ export default function PricingPage() {
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
               {[
                 'Seven-step guided questionnaire',
-                'State-specific legal compliance for NSW and VIC',
+                'State-specific legal compliance for all Australian states and territories',
                 'Ingest-and-redraft from your existing Will',
                 'Downloadable, print-and-sign Will document',
                 'Witnessing guidance and remote witness scheduling',
@@ -173,8 +173,8 @@ export default function PricingPage() {
               a: 'Yes. The questionnaire, the Will document, and the download are free. There are no hidden charges, no per-clause upsells, and no GST on free.',
             },
             {
-              q: 'Which states are supported at launch?',
-              a: 'NSW and VIC. The Will you prepare through Heirloom Life is drafted to the legal requirements of those two states. If you\'re in another state, you can join the waitlist and we\'ll notify you when your state is added.',
+              q: 'Which states are supported?',
+              a: 'All Australian states and territories. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing — all other states complete with a print-and-sign process, which we walk you through.',
             },
             {
               q: 'Can I upload my existing Will?',

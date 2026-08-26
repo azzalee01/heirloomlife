@@ -199,8 +199,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
   const isEligibilityStep = currentStaticStep === 'eligibility'
   const isComplete = isLast && showDownloadGate
 
-  // Eligibility check — user must be in an eligible state and 18+
-  const eligibleStates = ['NSW', 'VIC']
+  // Eligibility check — must have selected a state and be 18+
   const eligibilityState = form.personalDetails.state
   const eligibilityDob = form.personalDetails.dateOfBirth
   const ageOk = (() => {
@@ -212,8 +211,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
     if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--
     return age >= 18
   })()
-  const canPassEligibility =
-    eligibilityState && eligibleStates.includes(eligibilityState) && ageOk
+  const canPassEligibility = !!eligibilityState && ageOk
 
   // Beneficiary total for validation
   const benefTotal = totalAllocated(form.beneficiariesData)

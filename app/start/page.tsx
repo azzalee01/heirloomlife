@@ -83,7 +83,7 @@ export default async function StartPage() {
             className="text-center mt-6 text-xs"
             style={{ color: 'var(--mkt-stone-soft)' }}
           >
-            Your answers are saved automatically. NSW &amp; VIC only — other states coming soon.
+            Your answers are saved automatically. Available across Australia.
           </p>
         </div>
       </main>
