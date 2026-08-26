@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
+import { markWillDownloaded } from '@/app/dashboard/will/_actions'
+import { renderWillText } from '../_render'
 import {
   type WillFormData,
   type StepId,
@@ -188,6 +190,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
   const [showEmailCapture, setShowEmailCapture] = useState(false)
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [showDownloadGate, setShowDownloadGate] = useState(false)
+  const [showCompletion, setShowCompletion] = useState(false)
+  const [downloading, setDownloading] = useState(false)
 
   const currentStepId = wizardSteps[stepIndex]
   const isBackupStep = typeof currentStepId === 'string' && currentStepId.startsWith('backup_')
@@ -276,10 +280,32 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
     setError(null)
     try {
       await completeWill(form.willId)
-      router.push('/dashboard')
+      setShowCompletion(true)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to complete will. Please try again.')
+    } finally {
       setSaving(false)
+    }
+  }
+
+  async function handleDownload() {
+    if (!form.willId) return
+    setDownloading(true)
+    try {
+      const text = renderWillText(form)
+      await markWillDownloaded(form.willId)
+      const blob = new Blob([text], { type: 'text/plain; charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'my-will.txt'
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } finally {
+      setDownloading(false)
     }
   }
 
@@ -463,7 +489,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
                     onChange={(updates) => setForm((prev) => ({ ...prev, ...updates }))}
                   />
                 )}
-                {currentStaticStep === 'review' && !showDownloadGate && (
+                {currentStaticStep === 'review' && !showDownloadGate && !showCompletion && (
                   <StepReview
                     formData={form}
                     activeSteps={baseStepsFor(form.personalDetails.maritalStatus).filter(s => s !== 'eligibility')}
@@ -472,7 +498,73 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
                 )}
                 {showDownloadGate && <AnonDownloadGate />}
 
-                {!showDownloadGate && (
+                {/* Completion screen — shown after authenticated user completes */}
+                {showCompletion && (
+                  <div className="py-6 space-y-8">
+                    <div className="text-center space-y-3">
+                      <div
+                        className="w-14 h-14 mx-auto flex items-center justify-center"
+                        style={{ background: 'rgba(42,180,174,0.1)' }}
+                      >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                          <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
+                        </svg>
+                      </div>
+                      <h2 className="text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+                        Your Will is complete
+                      </h2>
+                      <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>
+                        It&apos;s saved to your Vault. Download it now to print and sign, or explore your Vault to see how your estate plan is organised.
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
+                      {/* Download */}
+                      <button
+                        type="button"
+                        onClick={handleDownload}
+                        disabled={downloading}
+                        className="flex flex-col items-center gap-3 border p-6 text-left hover:border-[var(--teal)] transition-colors disabled:opacity-60"
+                        style={{ borderColor: 'var(--line)' }}
+                      >
+                        <div className="w-10 h-10 flex items-center justify-center" style={{ background: 'var(--paper-warm)' }}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>
+                            {downloading ? 'Downloading…' : 'Download Will'}
+                          </p>
+                          <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
+                            Print and sign with two witnesses to make it legally valid
+                          </p>
+                        </div>
+                      </button>
+
+                      {/* View in Vault */}
+                      <Link
+                        href="/dashboard"
+                        className="flex flex-col items-center gap-3 border p-6 text-left hover:border-[var(--teal)] transition-colors"
+                        style={{ borderColor: 'var(--line)' }}
+                      >
+                        <div className="w-10 h-10 flex items-center justify-center" style={{ background: 'var(--paper-warm)' }}>
+                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>View in Vault</p>
+                          <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
+                            See your estate plan, assets, and people all in one place
+                          </p>
+                        </div>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+
+                {!showDownloadGate && !showCompletion && (
                   <div className="flex items-center justify-between pt-6 mt-8 border-t border-[var(--line)]">
                     <button
                       type="button"
