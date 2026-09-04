@@ -117,7 +117,8 @@ export function renderWillText(formData: WillFormData): string {
       .map((g) => {
         let line = `- ${g.type === 'cash' ? `The sum of $${g.amount || '0'}` : g.description || 'An item'} to ${g.recipientName}${g.recipientRelationship ? ` (${g.recipientRelationship})` : ''}.`
         if (g.substituteBeneficiary) {
-          line += ` If ${g.recipientName} does not survive me by ${survivorshipDays} days, this gift is instead given to ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary)}.`        }
+          line += ` If ${g.recipientName} does not survive me by ${survivorshipDays} days, this gift is instead given to ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary)}.`        
+}
         return line
       })
       .join('\n')
@@ -130,11 +131,13 @@ export function renderWillText(formData: WillFormData): string {
     const lines = [
       ...people.map((p) => {
         let line = `- ${p.percentage}% to ${p.name}${p.relationship ? ` (${p.relationship})` : ''}.`
-        if (p.substituteBeneficiary) line += ` If ${p.name} does not survive me by ${survivorshipDays} days, this share is instead given to ${resolveSubstituteBeneficiaryText(p.substituteBeneficiary)}.`        return line
+        if (p.substituteBeneficiary) line += ` If ${p.name} does not survive me by ${survivorshipDays} days, this share is instead given to ${resolveSubstituteBeneficiaryText(p.substituteBeneficiary)}.`        
+return line
       }),
       ...charities.map((c) => {
         let line = `- ${c.percentage}% to ${c.name}${c.abn ? ` (ABN ${c.abn})` : ''}.`
-        if (c.substituteBeneficiary) line += ` If ${c.name} no longer exists at the time of my death, this share is instead given to ${resolveSubstituteBeneficiaryText(c.substituteBeneficiary)}.`        return line
+        if (c.substituteBeneficiary) line += ` If ${c.name} no longer exists at the time of my death, this share is instead given to ${resolveSubstituteBeneficiaryText(c.substituteBeneficiary)}.`        
+return line
       }),
     ].join('\n')
     sections.push(
