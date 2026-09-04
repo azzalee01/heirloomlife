@@ -1,6 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { WillFormData } from './_types'
-
+import { resolveSubstituteBeneficiaryText } from './_types'
 const client = new Anthropic()
 
 const SYSTEM_PROMPT = `You are drafting a formal Australian Will document from structured intake data for Heirloom, an online will-writing platform. Produce the complete will text, customised to this testator's specific circumstances (their state's conventions, whether they have a spouse, children, specific gifts, etc  -  omit any section that doesn't apply rather than leaving placeholders).
@@ -88,19 +88,16 @@ function buildIntakeSummary(formData: WillFormData): string {
         formData.specificGifts
           .map((g) => {
             let s = `${g.type === 'cash' ? `$${g.amount} cash` : g.description} to ${g.recipientName} (${g.recipientRelationship})`
-            if (g.substituteBeneficiary) s += `, substitute if not surviving: ${g.substituteBeneficiary}`
-            return s
+              if (g.substituteBeneficiary) s += `, substitute if not surviving: ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary)}`            return s
           })
           .join('; ')
     )
   }
 
   const people = formData.beneficiariesData.people.map(
-    (p) => `${p.name} (${p.relationship})  -  ${p.percentage}%${p.substituteBeneficiary ? `, substitute: ${p.substituteBeneficiary}` : ''}`
-  )
+    (p) => `${p.name} (${p.relationship}) - ${p.percentage}%${p.substituteBeneficiary ? `, substitute: ${resolveSubstituteBeneficiaryText(p.substituteBeneficiary)}` : ''}`  )
   const charities = formData.beneficiariesData.charities.map(
-    (c) => `${c.name}${c.abn ? ` (ABN ${c.abn})` : ''}  -  ${c.percentage}%${c.substituteBeneficiary ? `, substitute: ${c.substituteBeneficiary}` : ''}`
-  )
+    (c) => `${c.name}${c.abn ? ` (ABN ${c.abn})` : ''} - ${c.percentage}%${c.substituteBeneficiary ? `, substitute: ${resolveSubstituteBeneficiaryText(c.substituteBeneficiary)}` : ''}`  )
   lines.push('Residuary beneficiaries: ' + [...people, ...charities].join('; '))
 
   if (formData.lifeInterest.enabled) {
