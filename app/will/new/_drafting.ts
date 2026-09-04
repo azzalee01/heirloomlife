@@ -88,16 +88,19 @@ function buildIntakeSummary(formData: WillFormData): string {
         formData.specificGifts
           .map((g) => {
             let s = `${g.type === 'cash' ? `$${g.amount} cash` : g.description} to ${g.recipientName} (${g.recipientRelationship})`
-              if (g.substituteBeneficiary) s += `, substitute if not surviving: ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary)}`            return s
+              if (g.substituteBeneficiary) s += `, substitute if not surviving: ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary)}`            
+return s
           })
           .join('; ')
     )
   }
 
   const people = formData.beneficiariesData.people.map(
-    (p) => `${p.name} (${p.relationship}) - ${p.percentage}%${p.substituteBeneficiary ? `, substitute: ${resolveSubstituteBeneficiaryText(p.substituteBeneficiary)}` : ''}`  )
+    (p) => `${p.name} (${p.relationship}) - ${p.percentage}%${p.substituteBeneficiary ? `, substitute: ${resolveSubstituteBeneficiaryText(p.substituteBeneficiary)}` : ''}`
+  )
   const charities = formData.beneficiariesData.charities.map(
-    (c) => `${c.name}${c.abn ? ` (ABN ${c.abn})` : ''} - ${c.percentage}%${c.substituteBeneficiary ? `, substitute: ${resolveSubstituteBeneficiaryText(c.substituteBeneficiary)}` : ''}`  )
+    (c) => `${c.name}${c.abn ? ` (ABN ${c.abn})` : ''} - ${c.percentage}%${c.substituteBeneficiary ? `, substitute: ${resolveSubstituteBeneficiaryText(c.substituteBeneficiary)}` : ''}`
+  )
   lines.push('Residuary beneficiaries: ' + [...people, ...charities].join('; '))
 
   if (formData.lifeInterest.enabled) {
