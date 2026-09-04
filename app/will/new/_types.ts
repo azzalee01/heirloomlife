@@ -239,3 +239,18 @@ export const STEP_LABELS: Record<StepId, string> = {
   wishes: 'Wishes & Trusts',
   review: 'Review',
 }
+
+// Sentinel values used by StepBeneficiaryBackup.tsx for the two preset backup options.
+// Any other non-empty value is a literal custom name typed by the user.
+export const SUBSTITUTE_BENEFICIARY_LABELS: Record<string, string> = {
+    '__their_children__': 'their children, equally',
+    '__other_beneficiaries__': 'the remaining beneficiaries, in proportion to their existing shares',
+}
+
+// Resolves a stored substituteBeneficiary value into human-readable text for
+// display in the live preview, the AI drafting prompt, and the final document.
+// Custom names pass through unchanged.
+export function resolveSubstituteBeneficiaryText(value: string | null | undefined): string {
+    if (!value) return ''
+    return SUBSTITUTE_BENEFICIARY_LABELS[value] ?? value
+}
