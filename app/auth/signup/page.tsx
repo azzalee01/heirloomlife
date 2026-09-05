@@ -43,8 +43,12 @@ export default function SignUpPage() {
         <div className="text-center mb-10">
           <Link
             href="/"
+            className="inline-flex items-center gap-1.5"
             style={{ color: 'var(--teal)', fontFamily: "var(--font-display)", fontStyle: 'italic', fontSize: '1.5rem', textDecoration: 'none' }}
           >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden style={{ marginBottom: 2, flexShrink: 0 }}>
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
             Heirloom Life
           </Link>
 
