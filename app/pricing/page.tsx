@@ -98,7 +98,7 @@ export default function PricingPage() {
           <div>
             <span style={SECTION_LABEL}>Living Vault</span>
             <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
-              $8
+              $12
             </p>
             <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>per month. Cancel anytime.</p>
 
@@ -177,7 +177,7 @@ export default function PricingPage() {
             },
             {
               q: 'What is the Living Vault?',
-              a: 'An $8/month membership that keeps your Will current as your life changes. It unlocks unlimited chat-based amendments with an immediate redrafted document, unlimited add/remove of beneficiaries and executors, and access to Heirloom\'s AV witness pool for NSW members. Cancel anytime.',
+              a: 'An $12/month membership that keeps your Will current as your life changes. It unlocks unlimited chat-based amendments with an immediate redrafted document, unlimited add/remove of beneficiaries and executors, and access to Heirloom\'s AV witness pool for NSW members. Cancel anytime.',
             },
             {
               q: 'What if my situation is complex?',
