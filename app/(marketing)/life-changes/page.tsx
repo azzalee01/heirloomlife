@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { LIFE_CHANGES } from './_data'
 
@@ -22,16 +23,19 @@ export default function LifeChangesPage() {
 
       <section style={{ paddingBlock: '5rem', background: '#fff' }}>
         <div className="md:px-10" style={W}>
-          <div className="sm:grid-cols-2 lg:grid-cols-4" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '.85rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '.85rem' }}>
             {LIFE_CHANGES.map((event) => (
-              <Link key={event.slug} href={`/life-changes/${event.slug}`} style={{ position: 'relative', overflow: 'hidden', display: 'flex', minHeight: 210, flexDirection: 'column', justifyContent: 'space-between', padding: '1.4rem', border: '1px solid var(--mkt-line)', borderRadius: 12, background: 'var(--mkt-surface)', color: 'inherit', textDecoration: 'none' }}>
+              <Link key={event.slug} href={`/life-changes/${event.slug}`} style={{ position: 'relative', overflow: 'hidden', display: 'flex', minHeight: 230, flexDirection: 'column', justifyContent: 'space-between', padding: '1.75rem 2rem', border: '1px solid var(--mkt-line)', borderRadius: 12, background: 'var(--mkt-surface)', color: 'inherit', textDecoration: 'none' }}>
                 <span aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--teal) 30%, var(--teal) 70%, transparent)', pointerEvents: 'none' }} />
-                <div>
+                <div className="hidden sm:block" aria-hidden="true" style={{ position: 'absolute', inset: '2px 0 0 auto', width: '52%', pointerEvents: 'none', WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,.18) 18%, #000 52%)', maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,.18) 18%, #000 52%)' }}>
+                  <Image src={`/images/life-changes/${event.slug}.jpg`} alt="" fill sizes="(min-width: 1120px) 580px, 52vw" quality={82} style={{ objectFit: 'cover', objectPosition: 'center right', filter: 'saturate(.68) contrast(.94)', opacity: .82 }} />
+                </div>
+                <div style={{ position: 'relative', zIndex: 1, maxWidth: '52%' }} className="max-sm:!max-w-full">
                   <p style={{ margin: 0, fontSize: '.68rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--teal-deep)' }}>{event.eyebrow}</p>
                   <h2 style={{ margin: '.8rem 0 0', fontSize: '1.08rem', lineHeight: 1.25, fontWeight: 600, color: 'var(--mkt-ink-text)' }}>{event.shortTitle}</h2>
                   <p style={{ margin: '.65rem 0 0', fontSize: '.8rem', lineHeight: 1.55, color: 'var(--mkt-stone)' }}>{event.summary}</p>
                 </div>
-                <span style={{ marginTop: '1rem', fontSize: '.8rem', fontWeight: 600, color: 'var(--teal-deep)' }}>What to review →</span>
+                <span style={{ position: 'relative', zIndex: 1, marginTop: '1rem', fontSize: '.8rem', fontWeight: 600, color: 'var(--teal-deep)' }}>What to review →</span>
               </Link>
             ))}
           </div>
