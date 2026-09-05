@@ -61,7 +61,7 @@ export default function HomePage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Start for free — draft your whole Will at your own pace. You only pay $129 when you&apos;re ready to download it, signed and ready to go.
+              Start for free. Draft your whole Will at your own pace and download it when you&apos;re ready.
             </p>
             <div style={{ marginTop: '2.5rem' }}>
               <Link href="/start?path=retail" className="mkt-btn-ink-l">
