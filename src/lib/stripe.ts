@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 
-export type Product = 'will' | 'vault' | 'vault_monthly'
+export type Product = 'will' | 'vault'
 
 let _stripe: Stripe | undefined
 
@@ -15,18 +15,19 @@ export function getStripe(): Stripe {
 
 export function priceId(product: Product): string {
   const id =
-    product === 'will' ? process.env.STRIPE_PRICE_WILL :
-    product === 'vault' ? process.env.STRIPE_PRICE_VAULT_ANNUAL :
-    process.env.STRIPE_PRICE_VAULT_MONTHLY
+    product === 'will' ? process.env.STRIPE_PRICE_WILL : process.env.STRIPE_PRICE_VAULT_ANNUAL
   if (!id) throw new Error(`Price env var not set for product: ${product}`)
   return id
 }
 
 export function isSubscriptionProduct(product: Product): boolean {
-  return product === 'vault' || product === 'vault_monthly'
+  return product === 'vault'
 }
 
-/** Normalise vault_monthly → vault for the profiles.plan field */
 export function planName(product: Product): string {
-  return product === 'vault_monthly' ? 'vault' : product
+  return product
+}
+
+export function isProduct(value: unknown): value is Product {
+  return value === 'will' || value === 'vault'
 }

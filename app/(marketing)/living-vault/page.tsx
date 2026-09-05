@@ -43,6 +43,9 @@ export default function LivingVaultPage() {
             <p style={{ marginTop: '1.75rem', maxWidth: '34rem', fontSize: '1.1rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
               Tell us when life changes. Living Vault helps you review what may be affected, maintain your Will and estate record, and keep everything organised for the people who may one day need it.
             </p>
+            <p style={{ marginTop: '1rem', fontSize: '.9rem', lineHeight: 1.6, color: 'var(--mkt-stone)' }}>
+              Included for three months with a $129 one-off Will, or continuously with the $99 annual Heirloom Membership—which includes your Will.
+            </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <Link href="/dashboard" className="mkt-btn-ink-l">
                 Open your Vault
@@ -61,7 +64,7 @@ export default function LivingVaultPage() {
       <section style={{ paddingBlock: '3rem', background: '#fff', borderBottom: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10 md:grid-cols-3" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '1px', background: 'var(--mkt-line)', border: '1px solid var(--mkt-line)', borderRadius: 12, overflow: 'hidden' }}>
           {[
-            ['Keep it current', 'Guided life-change check-ins and unlimited supported amendments when your details or wishes change.'],
+            ['Keep it current', 'Guided life-change check-ins and supported amendments when your details or wishes change.'],
             ['Keep it together', 'Your Will, assets, beneficiaries, executors and important estate information in one organised place.'],
             ['Keep it ready', 'Will status, witnessing guidance, estate recommendations and a pathway to professional support when needed.'],
           ].map(([title, body]) => (
@@ -159,11 +162,11 @@ export default function LivingVaultPage() {
       <section style={{ borderTop: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)' }}>
         <div className="md:px-10 md:flex-row md:items-center md:justify-between" style={{ ...W, display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingBlock: '3rem' }}>
           <h2 style={{ fontSize: 'clamp(1.4rem, 2vw, 1.9rem)', fontWeight: 500, letterSpacing: '-.02em', maxWidth: '28rem', margin: 0, color: 'var(--mkt-ink-text)' }}>
-            Start with the Will. Stay with the Vault.
+            One Will. One Vault. Choose the access that suits you.
           </h2>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <Link href="/dashboard" className="mkt-btn-ink-m">Open your Vault</Link>
-            <Link href="/start" className="mkt-btn-ghost-m">Start your Will</Link>
+            <Link href="/pricing" className="mkt-btn-ghost-m">Compare $129 once and $99/year</Link>
           </div>
         </div>
       </section>

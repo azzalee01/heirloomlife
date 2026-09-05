@@ -24,7 +24,11 @@ const FAQS = [
   },
   {
     q: 'Can I update my Will after signing it?',
-    a: "Yes. You can update your Will at any time through your Vault. Changes require new signing and witnessing. The Living Vault membership tracks life events that might trigger a review and prompts you before an oversight becomes a problem.",
+    a: "Yes. The $129 one-off Will includes three months of full Vault benefits. The $99 annual membership keeps those benefits active, including supported updates and life-event prompts. Every changed Will must be signed and witnessed again.",
+  },
+  {
+    q: 'Do I pay for both the Will and membership?',
+    a: "No. Choose either $129 once for the Will plus three months of full Vault benefits, or $99 a year with your Will and continuing membership included. If you cancel membership later, you can still download and retain your completed Will.",
   },
   {
     q: 'What happens to my Will if I die?',

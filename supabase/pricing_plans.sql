@@ -36,20 +36,20 @@ values
   (
     'will-single',
     'The Will — Single',
-    'One-off, solicitor reviewed',
-    null,
-    'TBC',
+    'Pay once, with three months of full Vault benefits',
+    12900,
+    '$129',
     'one_time',
-    'A legally valid Will drafted with guidance, reviewed by a solicitor, and ready to sign.',
+    'A signing-ready Will with three months of full Living Vault benefits and permanent document access.',
     ARRAY[
       'Seven-step guided drafting',
       'State-specific legal compliance',
-      'Solicitor review included',
-      'Printed Will, cloth-bound folder'
+      'Three months of Living Vault benefits',
+      'Permanent access to download the completed Will'
     ],
     false,
     1,
-    true
+    false
   ),
   (
     'will-couple',
@@ -72,26 +72,27 @@ values
   (
     'vault',
     'Living Vault',
-    'Ongoing membership',
-    null,
-    'TBC',
+    'Your Will and continuing Vault benefits',
+    9900,
+    '$99/year',
     'annual',
-    'Life-event tracking, annual solicitor review, and executor access — keeping your estate current as your life changes.',
+    'Your Will, life-event reviews, supported updates and continuing Vault access in one annual membership.',
     ARRAY[
       'Life-event tracking and alerts',
-      'Included annual solicitor review',
-      'Executor access and Legacy Key',
-      'Will version history',
+      'Will included in the first year',
+      'Supported updates and version history',
+      'Eligible NSW members can access AV witness scheduling',
       'Cancel anytime'
     ],
     true,
     3,
-    true
+    false
   )
 on conflict (slug) do update
   set
     name           = excluded.name,
     tagline        = excluded.tagline,
+    price_amount   = excluded.price_amount,
     price_label    = excluded.price_label,
     billing_type   = excluded.billing_type,
     description    = excluded.description,

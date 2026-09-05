@@ -11,7 +11,7 @@ export default function PricingVaultCTA() {
       const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product: 'vault_monthly' }),
+        body: JSON.stringify({ product: 'vault' }),
       })
       if (res.status === 401) {
         window.location.href = '/auth/signup?next=/pricing'
@@ -30,7 +30,7 @@ export default function PricingVaultCTA() {
       disabled={loading}
       className="mkt-btn-ink-m"
     >
-      {loading ? 'Loading…' : 'Get unlimited amendments  -  $12/mo'}
+      {loading ? 'Loading…' : 'Join Heirloom  -  $99/year'}
     </button>
   )
 }

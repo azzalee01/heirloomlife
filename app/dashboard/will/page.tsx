@@ -17,13 +17,13 @@ export default async function TheWillPage() {
 
   const { data: willRows } = await supabase
     .from('wills')
-    .select('id, subscription_status, needs_review, needs_review_reasons, updated_at, has_downloaded')
+    .select('id, needs_review, needs_review_reasons, updated_at, has_downloaded')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
 
   const will = willRows?.[0] as
-    | { id: string; subscription_status: string; needs_review: boolean; needs_review_reasons: string[] | null; updated_at: string; has_downloaded: boolean }
+    | { id: string; needs_review: boolean; needs_review_reasons: string[] | null; updated_at: string; has_downloaded: boolean }
     | undefined
 
   if (!will) {
@@ -85,7 +85,7 @@ export default async function TheWillPage() {
       <main className="max-w-3xl mx-auto px-6 py-8 space-y-6">
 
         {will.needs_review && (
-          <LegalReviewCallout reasons={will.needs_review_reasons ?? []} subscriptionStatus={will.subscription_status} />
+          <LegalReviewCallout reasons={will.needs_review_reasons ?? []} />
         )}
 
         {/* Live document */}

@@ -13,14 +13,14 @@ async function getOwnedWill() {
 
   const { data: willRows } = await supabase
     .from('wills')
-    .select('id, subscription_status')
+    .select('id')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
-  const will = willRows?.[0] as { id: string; subscription_status: string } | undefined
+  const will = willRows?.[0] as { id: string } | undefined
   if (!will) throw new Error('No will found')
 
-  return { supabase, willId: will.id, subscriptionStatus: will.subscription_status }
+  return { supabase, willId: will.id }
 }
 
 export async function markWillDownloaded(willId: string): Promise<void> {
@@ -34,9 +34,9 @@ export async function markWillDownloaded(willId: string): Promise<void> {
     .eq('user_id', user.id)
 }
 
-export async function requestLawyerReview(): Promise<{ paymentStatus: 'free' | 'unpaid' }> {
-  const { supabase, willId, subscriptionStatus } = await getOwnedWill()
-  const paymentStatus = subscriptionStatus === 'active' ? ('free' as const) : ('unpaid' as const)
+export async function requestLawyerReview(): Promise<{ paymentStatus: 'unpaid' }> {
+  const { supabase, willId } = await getOwnedWill()
+  const paymentStatus = 'unpaid' as const
 
   const { error } = await supabase.from('lawyer_review_requests').insert({
     will_id: willId,

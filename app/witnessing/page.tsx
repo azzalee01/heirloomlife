@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import ScheduleSessionForm from './_components/ScheduleSessionForm'
 import SessionList, { type WitnessingSessionSummary } from './_components/SessionList'
+import { hasVaultBenefits } from '@/src/lib/entitlements'
 
 export default async function WitnessingPage() {
   const supabase = await createSupabaseServerClient()
@@ -40,18 +41,18 @@ export default async function WitnessingPage() {
     )
   }
 
-  // AV witnessing requires active Living Vault membership AND a NSW address on file.
+  // AV witnessing requires active Vault benefits AND a NSW address on file.
   const [profileRes, testatorRes] = await Promise.all([
-    supabaseAdmin.from('profiles').select('plan, plan_status').eq('id', user.id).single(),
+    supabaseAdmin.from('profiles').select('plan, plan_status, vault_access_until').eq('id', user.id).single(),
     supabase.from('testators').select('state').eq('will_id', will.id).not('marital_status', 'is', null).limit(1).single(),
   ])
-  const isActiveMember = profileRes.data?.plan === 'vault' && profileRes.data?.plan_status === 'active'
+  const isActiveMember = hasVaultBenefits(profileRes.data)
   const userState = (testatorRes.data as { state: string | null } | null)?.state ?? null
   const isNSW = userState === 'NSW'
 
   if (!isActiveMember || !isNSW) {
     const reason = !isActiveMember
-      ? { heading: 'Living Vault membership required', body: 'AV witness scheduling is available to active Living Vault members, alongside supported amendments and ongoing estate-plan access.' }
+      ? { heading: 'Active Vault benefits required', body: 'AV witness scheduling is available during the included three-month benefits period and with annual membership, alongside supported amendments and ongoing estate-plan access.' }
       : { heading: 'NSW only', body: 'Remote AV witnessing is currently available for NSW addresses only, consistent with NSW\'s statutory AV witnessing scheme. Your address on file is ' + (userState ?? 'not set') + '.' }
     return (
       <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
@@ -70,7 +71,7 @@ export default async function WitnessingPage() {
             <p className="text-sm leading-relaxed max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>{reason.body}</p>
             {!isActiveMember && (
               <Link href="/pricing" className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
-                See Living Vault  -  $12/mo
+                See Heirloom Membership  -  $99/year
               </Link>
             )}
           </div>

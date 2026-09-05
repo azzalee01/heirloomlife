@@ -9,6 +9,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server';
 import LogoutButton from '@/src/components/LogoutButton';
 import IntroAnimationLoader from './_components/IntroAnimationLoader';
 import PlanCTA from './_components/PlanCTA';
+import { hasVaultBenefits } from '@/src/lib/entitlements';
 
 // ─── DB row types ─────────────────────────────────────────────────────────────
 type Will = { id: string; status: string; updated_at: string }
@@ -94,8 +95,8 @@ function Icon({ d, color, size = 18 }: { d: string; color: string; size?: number
 
 // ─── Plan status config ───────────────────────────────────────────────────────
 const PLAN_LABELS: Record<string, string> = {
-  will: 'Will Document',
-  vault: 'Living Vault',
+  will: 'One-off Will',
+  vault: 'Heirloom Membership',
 }
 
 const PLAN_STATUS_LABELS: Record<string, { label: string; bg: string; color: string }> = {
@@ -127,12 +128,16 @@ export default async function DashboardPage({
 
   const { data: profileRow } = await supabaseAdmin
     .from('profiles')
-    .select('plan, plan_status')
+    .select('plan, plan_status, vault_access_until')
     .eq('id', user.id)
     .single();
 
   const plan = (profileRow?.plan as string) ?? 'free';
   const planStatus = (profileRow?.plan_status as string | null) ?? null;
+  const vaultBenefitsActive = hasVaultBenefits(profileRow);
+  const vaultAccessUntil = profileRow?.vault_access_until
+    ? new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(profileRow.vault_access_until as string))
+    : null;
 
   let assets: AssetRow[] = [];
   let beneficiaries: BeneficiaryRow[] = [];
@@ -505,12 +510,15 @@ export default async function DashboardPage({
                   {PLAN_STATUS_LABELS[planStatus].label}
                 </span>
               )}
+              {plan === 'will' && vaultBenefitsActive && vaultAccessUntil && (
+                <span className="ml-2 text-xs" style={{ color: 'var(--neutral)' }}>Full Vault benefits until {vaultAccessUntil}</span>
+              )}
             </div>
-            {plan === 'will' && <Link href="#upgrade" className="shrink-0 text-xs font-semibold" style={{ color: 'var(--teal)' }}>Upgrade →</Link>}
+            {plan === 'will' && <Link href="/pricing#living-vault" className="shrink-0 text-xs font-semibold" style={{ color: 'var(--teal)' }}>{vaultBenefitsActive ? 'Keep benefits →' : 'Join annually →'}</Link>}
           </div>
         )}
 
-        {will && plan === 'free' && (
+        {will && (plan === 'free' || (plan === 'will' && !vaultBenefitsActive)) && (
           <div id="upgrade">
             <PlanCTA />
           </div>

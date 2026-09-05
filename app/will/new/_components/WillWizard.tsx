@@ -310,14 +310,14 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     }
   }
 
-  async function startWillCheckout() {
+  async function startCheckout(product: 'will' | 'vault') {
     setCheckoutLoading(true)
     setError(null)
     try {
       const response = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product: 'will' }),
+        body: JSON.stringify({ product, returnToWill: true }),
       })
       const data = await response.json() as { url?: string; error?: string }
       if (!response.ok || !data.url) throw new Error(data.error ?? 'Checkout could not be started.')
@@ -544,12 +544,18 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                       <h2 className="mt-2 text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>Your estate plan is ready.</h2>
                       <p className="mt-2 max-w-lg text-sm leading-6" style={{ color: 'var(--neutral)' }}>Your answers are saved. Purchase your signing-ready Heirloom Will, or include a gift to an eligible registered charity to receive a sponsored Will for $0.</p>
                     </div>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                      <button type="button" onClick={startWillCheckout} disabled={checkoutLoading} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)] disabled:opacity-60" style={{ borderColor: commercialPath === 'retail' ? 'var(--teal)' : 'var(--line)', background: 'white' }}>
-                        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>Standard Will</span>
+                    <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+                      <button type="button" onClick={() => startCheckout('will')} disabled={checkoutLoading} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)] disabled:opacity-60" style={{ borderColor: commercialPath === 'retail' ? 'var(--teal)' : 'var(--line)', background: 'white' }}>
+                        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>Will · pay once</span>
                         <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$129</span>
-                        <span className="mt-2 block text-xs leading-5" style={{ color: 'var(--neutral)' }}>Create and download your signing-ready Will without including a charitable gift.</span>
-                        <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>{checkoutLoading ? 'Opening secure checkout…' : 'Purchase Will →'}</span>
+                        <span className="mt-2 block text-xs leading-5" style={{ color: 'var(--neutral)' }}>Your signing-ready Will plus three months of full Living Vault benefits. Keep and download your Will permanently.</span>
+                        <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>{checkoutLoading ? 'Opening secure checkout…' : 'Pay once →'}</span>
+                      </button>
+                      <button type="button" onClick={() => startCheckout('vault')} disabled={checkoutLoading} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)] disabled:opacity-60" style={{ borderColor: 'var(--teal)', background: 'var(--paper-warm)' }}>
+                        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--teal-deep)' }}>Heirloom Membership</span>
+                        <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$99/year</span>
+                        <span className="mt-2 block text-xs leading-5" style={{ color: 'var(--neutral)' }}>Your Will included, with continuing Vault access, supported updates, version history and member benefits.</span>
+                        <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>{checkoutLoading ? 'Opening secure checkout…' : 'Join Heirloom →'}</span>
                       </button>
                       <button type="button" onClick={() => { setShowPaymentGate(false); jumpToStep('beneficiaries') }} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)]" style={{ borderColor: commercialPath === 'sponsored' ? 'var(--teal)' : 'var(--line)', background: 'var(--paper-warm)' }}>
                         <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>Charity-sponsored Will</span>
@@ -558,7 +564,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                         <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>Add a charity gift →</span>
                       </button>
                     </div>
-                    <p className="text-xs leading-5" style={{ color: 'var(--neutral)' }}>A charitable gift is required only for the $0 sponsored option. It is not required to purchase a standard Will, and you control the charity and share you choose.</p>
+                    <p className="text-xs leading-5" style={{ color: 'var(--neutral)' }}>The $99 membership renews annually until cancelled. A charitable gift is required only for the $0 sponsored option. You control the charity and share you choose.</p>
                   </div>
                 )}
 

@@ -4,6 +4,7 @@ import MarketingFooter from '@/components/marketing/MarketingFooter'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { loadWillFormData, loadAnonSessionFormData, EMPTY_WILL_FORM_DATA } from '@/app/will/new/_data'
 import WillWizard from '@/app/will/new/_components/WillWizard'
+import { hasWillAccess as profileHasWillAccess } from '@/src/lib/entitlements'
 
 export default async function StartPage({ searchParams }: { searchParams: Promise<{ path?: string }> }) {
   const supabase = await createSupabaseServerClient()
@@ -18,10 +19,10 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
     try {
       const [{ formData: loaded }, { data: profile }] = await Promise.all([
         loadWillFormData(supabase, user.id),
-        supabase.from('profiles').select('plan, plan_status').eq('id', user.id).single(),
+        supabase.from('profiles').select('plan, plan_status, vault_access_until').eq('id', user.id).single(),
       ])
       formData = loaded
-      hasWillAccess = (profile?.plan === 'will' || profile?.plan === 'vault') && profile?.plan_status === 'active'
+      hasWillAccess = profileHasWillAccess(profile)
     } catch {
       // No will yet  -  start fresh
     }
@@ -75,7 +76,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
             >
               {commercialPath === 'sponsored'
                 ? 'Your Will costs $0 when it includes a gift to an eligible registered charity. Your choices remain yours.'
-                : 'Plan for free, then create your signing-ready Will for $129. No account needed until you are ready to continue.'}
+                : 'Choose $129 once with three months of full Living Vault benefits, or $99 a year for your Will and continuing membership.'}
             </p>
           </div>
 

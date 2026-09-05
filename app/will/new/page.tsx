@@ -6,6 +6,7 @@ import { loadWillFormData, loadAnonSessionFormData, EMPTY_WILL_FORM_DATA } from 
 import type { StepId } from './_types'
 import { STEP_IDS } from './_types'
 import WillWizard from './_components/WillWizard'
+import { hasVaultBenefits, hasWillAccess as profileHasWillAccess } from '@/src/lib/entitlements'
 
 export default async function WillNewPage({
   searchParams,
@@ -29,10 +30,9 @@ export default async function WillNewPage({
 
     const [{ formData }, { data: profile }] = await Promise.all([
       loadWillFormData(supabase, user.id, willIdParam),
-      supabaseAdmin.from('profiles').select('plan, plan_status').eq('id', user.id).single(),
+      supabaseAdmin.from('profiles').select('plan, plan_status, vault_access_until').eq('id', user.id).single(),
     ])
-    const hasWillAccess =
-      (profile?.plan === 'will' || profile?.plan === 'vault') && profile?.plan_status === 'active'
+    const hasWillAccess = profileHasWillAccess(profile)
 
     // Pre-populate wizard from an anonymous session when the user has no existing will.
     // The anon data becomes the initial state; real DB records are created on first step save.
@@ -48,7 +48,7 @@ export default async function WillNewPage({
       }
     }
 
-    // Gate: if this Will has been downloaded and the user has no active membership,
+    // Gate: after download, amendments require included Vault benefits or annual membership.
     // block re-entry into the questionnaire for amendments.
     if (formData.willId) {
       const { data: willRow } = await supabase
@@ -60,13 +60,13 @@ export default async function WillNewPage({
       if (willRow?.has_downloaded) {
         const { data: profile } = await supabaseAdmin
           .from('profiles')
-          .select('plan, plan_status')
+          .select('plan, plan_status, vault_access_until')
           .eq('id', user.id)
           .single()
 
-        const isActiveMember = profile?.plan === 'vault' && profile?.plan_status === 'active'
+        const hasAmendmentAccess = hasVaultBenefits(profile)
 
-        if (!isActiveMember) {
+        if (!hasAmendmentAccess) {
           return (
             <div className="h-full flex flex-col items-center justify-center px-6 py-16 text-center">
               <div className="max-w-md space-y-5">
@@ -77,17 +77,17 @@ export default async function WillNewPage({
                   </svg>
                 </div>
                 <h2 className="text-xl font-semibold" style={{ color: 'var(--ink)' }}>
-                  Amendments require Living Vault
+                  Your Vault benefits have ended
                 </h2>
                 <p className="text-sm leading-relaxed" style={{ color: 'var(--neutral)' }}>
-                  Your Will has already been downloaded. To make further amendments, add beneficiaries, or redraft via AI chat, upgrade to Living Vault for $12/month.
+                  Your included three-month benefits period has ended. Join Heirloom annually to make further amendments, add beneficiaries or redraft through the Estate Assistant.
                 </p>
                 <div className="flex flex-col gap-3">
                   <Link
                     href="/pricing"
                     className="btn btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold"
                   >
-                    See Living Vault  -  $12/mo
+                    See Heirloom Membership  -  $99/year
                   </Link>
                   <Link
                     href="/dashboard"

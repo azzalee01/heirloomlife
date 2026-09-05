@@ -62,7 +62,7 @@ export default function HomePage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Create a signing-ready Australian Will online for $129. Living Vault keeps your Will, estate details and important information organised, accessible and ready when life changes.
+              Pay $129 once for your Will and three months of full Vault benefits, or join for $99 a year with your Will and continuing support included.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', flexWrap: 'wrap', gap: '.9rem', justifyContent: 'center' }}>
               <Link href="/start?path=retail" className="mkt-btn-ink-l">
@@ -295,7 +295,7 @@ export default function HomePage() {
           <div style={{ maxWidth: '34rem' }}>
             <span style={SECTION_LABEL}>Membership</span>
             <H2>Priced like something<br/>worth <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.</H2>
-            <Sub>A one-off Will to get your estate in order, and a Vault membership to keep it that way. No per-clause upsells, no surprise renewals.</Sub>
+            <Sub>Choose $129 once with three months of full Vault benefits, or $99 a year for your Will and continuing membership. One clear price—never a Will fee plus a subscription.</Sub>
           </div>
           <div style={{ marginTop: '2rem' }}>
             <Link href="/pricing" className="mkt-btn-ink-m">View pricing</Link>

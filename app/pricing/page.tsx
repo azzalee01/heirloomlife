@@ -32,11 +32,11 @@ export default function PricingPage() {
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: 0,
           }}>
-            Plan for free. Pay for the Will—or let a{' '}
-            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>charity sponsor it</em>.
+            Pay once, or keep your estate plan{' '}
+            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>ready for life</em>.
           </h1>
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
-            Build your estate plan before paying. A standard Will is $129, or $0 when it includes an eligible charitable gift. Living Vault keeps it current as life changes.
+            Choose a $129 one-off Will with three months of full Living Vault benefits, or join for $99 a year with your Will and continuing membership included.
           </p>
         </div>
       </section>
@@ -49,10 +49,10 @@ export default function PricingPage() {
             <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .5rem' }}>
               $129
             </p>
-            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>One-time payment. Plan before you pay.</p>
+            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>One-time payment. Three months of full platform benefits included.</p>
 
             <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '28rem' }}>
-              Complete the guided questionnaire and review your estate plan for free. Pay only when you are ready to create your signing-ready Will.
+              Create and keep your signing-ready Will, with three months to organise your Vault, make supported updates and use included member benefits.
             </p>
 
             <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
@@ -79,7 +79,8 @@ export default function PricingPage() {
                 'State-specific legal compliance for all Australian states and territories',
                 'Ingest-and-redraft from your existing Will',
                 'Downloadable, print-and-sign Will document',
-                'Witnessing guidance and remote witness scheduling',
+                'Three months of full Living Vault benefits',
+                'Permanent access to download your completed Will',
               ].map((f) => (
                 <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>
                   <Check />
@@ -113,23 +114,23 @@ export default function PricingPage() {
       </section>
 
       {/* ── Living Vault ─────────────────────────────────────────────────────── */}
-      <section style={{ paddingBlock: '4rem 5rem', background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
+      <section id="living-vault" style={{ paddingBlock: '4rem 5rem', background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
           <div>
             <span style={SECTION_LABEL}>Living Vault</span>
             <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
-              $12
+              $99
             </p>
-            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>per month. Cancel anytime.</p>
+            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>per year. Your Will is included.</p>
 
             <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '28rem' }}>
-              The ongoing home for your estate plan. Report life changes, maintain your estate record, make supported amendments and access Heirloom&apos;s witness pool if you&apos;re in NSW.
+              One annual membership for the Will and what comes after it. Report life changes, maintain your estate record, make supported amendments and access Heirloom&apos;s witness pool if you&apos;re in NSW.
             </p>
 
             <PricingVaultCTA />
 
             <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-              Living Vault is optional and separate from your initial Will purchase.
+              Renews annually until cancelled. You can download and retain your completed Will if you later leave.
             </p>
           </div>
 
@@ -140,10 +141,12 @@ export default function PricingPage() {
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
               {[
                 'Guided life-change check-ins through your Vault',
-                'Unlimited supported amendments and updated Will documents',
+                'Your signing-ready Will included in the first year',
+                'Supported amendments and updated Will documents',
                 'A maintained register of assets, beneficiaries, gifts, and executors',
                 'Will status and estate-review guidance',
                 'NSW members only: access to Heirloom\'s team AV witness pool for remote execution',
+                'Member pricing for optional solicitor advice and reviews',
                 'Solicitor review add-on available (~$150) with direct access to partner lawyers through the platform',
               ].map((f) => (
                 <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>
@@ -187,7 +190,7 @@ export default function PricingPage() {
           {[
             {
               q: 'Can I create a Will for $0?',
-              a: 'The guided questionnaire and estate-plan review are free. The standard Will is $129. A charity-sponsored Will is $0 when you include an eligible charitable gift, provide a valid-format ABN and meet any applicable campaign conditions.',
+              a: 'The standard Will is $129 once and includes three months of full Living Vault benefits. Annual membership is $99 and includes your Will. A charity-sponsored Will is $0 when you include an eligible charitable gift, provide a valid-format ABN and meet any applicable campaign conditions.',
             },
             {
               q: 'Which states are supported?',
@@ -199,7 +202,7 @@ export default function PricingPage() {
             },
             {
               q: 'What is the Living Vault?',
-              a: 'A $12/month membership that keeps your Will current as your life changes. It unlocks unlimited supported amendments and updated documents, an organised estate record, and access to Heirloom\'s AV witness pool for NSW members. Cancel anytime.',
+              a: 'Living Vault is included in the $99 annual Heirloom Membership. It keeps your Will and estate information organised, supports updates as life changes and gives NSW members access to Heirloom\'s AV witness pool. The $129 one-off Will includes the same platform benefits for three months.',
             },
             {
               q: 'What if my situation is complex?',

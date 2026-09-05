@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { getStripe, priceId, isSubscriptionProduct, type Product } from '@/src/lib/stripe'
+import { getStripe, priceId, isProduct, isSubscriptionProduct } from '@/src/lib/stripe'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 
@@ -10,8 +10,9 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const body = await request.json() as { product: Product }
+  const body = await request.json() as { product?: unknown; returnToWill?: boolean }
   const product = body.product
+  if (!isProduct(product)) return Response.json({ error: 'Unknown product' }, { status: 400 })
 
   let price: string
   try {
@@ -45,8 +46,9 @@ export async function POST(request: NextRequest) {
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
-  const successPath = product === 'will' ? '/will/new?payment=success&step=review' : '/dashboard?payment=success'
-  const cancelPath = product === 'will' ? '/will/new?step=review' : '/dashboard'
+  const returnToWill = product === 'will' || body.returnToWill === true
+  const successPath = returnToWill ? '/will/new?payment=success&step=review' : '/dashboard?payment=success'
+  const cancelPath = returnToWill ? '/will/new?step=review' : '/dashboard'
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,

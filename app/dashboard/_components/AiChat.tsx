@@ -197,14 +197,14 @@ export default function AiChat({
       {error === '__MEMBERSHIP_REQUIRED__' && (
         <div className="px-6 py-3 border-b border-amber-100 bg-amber-50 flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs text-amber-800">
-            <span className="font-semibold">Living Vault membership required.</span>{' '}
-            Your Will has been downloaded. To make amendments, upgrade to Living Vault.
+            <span className="font-semibold">Active Vault benefits required.</span>{' '}
+            Your included access has ended. Join annually to keep making supported amendments.
           </p>
           <a
             href="/pricing#living-vault"
             className="text-xs font-semibold text-amber-900 underline hover:no-underline shrink-0"
           >
-            See membership  -  $12/mo
+            See membership  -  $99/year
           </a>
         </div>
       )}

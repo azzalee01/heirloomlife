@@ -14,10 +14,10 @@ export default function CharityWillsPage() {
           <div className="md:px-10" style={W}>
             <p style={{ margin: 0, color: 'var(--teal-deep)', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase' }}>Charity-sponsored Wills</p>
             <h1 style={{ margin: '1.25rem 0 0', maxWidth: '48rem', fontFamily: "var(--font-display)", fontSize: 'clamp(2.7rem, 5.5vw, 5rem)', lineHeight: 1.02, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>Leave something meaningful behind—and receive your Will for <em style={{ color: 'var(--teal-deep)', fontWeight: 400 }}>$0</em>.</h1>
-            <p style={{ margin: '1.5rem 0 0', maxWidth: '36rem', fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>Include a gift to an eligible registered charity and the cost of your standard Will is sponsored. Prefer not to include a gift? Continue seamlessly with the $129 standard Will.</p>
+            <p style={{ margin: '1.5rem 0 0', maxWidth: '36rem', fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>Include a gift to an eligible registered charity and the cost of your standard Will is sponsored. Prefer not to include a gift? Choose $129 once with three months of Vault benefits, or $99 a year with your Will and continuing membership included.</p>
             <div style={{ marginTop: '2.25rem', display: 'flex', gap: '.85rem', flexWrap: 'wrap' }}>
               <Link href="/start?path=sponsored" className="mkt-btn-ink-l">Start a sponsored Will</Link>
-              <Link href="/start?path=retail" className="mkt-btn-ghost-l">Choose the standard Will</Link>
+              <Link href="/pricing" className="mkt-btn-ghost-l">Compare paid options</Link>
             </div>
           </div>
         </section>

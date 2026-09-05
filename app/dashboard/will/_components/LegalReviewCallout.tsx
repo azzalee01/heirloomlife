@@ -5,12 +5,10 @@ import { requestLawyerReview } from '../_actions'
 
 interface Props {
   reasons: string[]
-  subscriptionStatus: string
 }
 
-export default function LegalReviewCallout({ reasons, subscriptionStatus }: Props) {
+export default function LegalReviewCallout({ reasons }: Props) {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'submitted' | 'error'>('idle')
-  const isSubscriber = subscriptionStatus === 'active'
 
   async function handleRequest() {
     setStatus('submitting')
@@ -47,11 +45,7 @@ export default function LegalReviewCallout({ reasons, subscriptionStatus }: Prop
           className="mt-3 text-sm font-semibold px-4 py-2 text-white disabled:opacity-60"
           style={{ backgroundColor: '#92400e' }}
         >
-          {status === 'submitting'
-            ? 'Requesting…'
-            : isSubscriber
-            ? 'Request Lawyer Review  -  Free with your plan'
-            : 'Request Lawyer Review  -  $49'}
+          {status === 'submitting' ? 'Requesting…' : 'Request solicitor review'}
         </button>
       )}
       {status === 'error' && (

@@ -75,7 +75,7 @@ export default async function LifeChangePage({ params }: Props) {
       <section style={{ paddingBlock: '4rem', background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10" style={{ maxWidth: 1000, marginInline: 'auto', paddingInline: '1.5rem' }}>
           <h2 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '2.2rem', fontWeight: 400, color: 'var(--mkt-ink-text)' }}>Ready to take the next step?</h2>
-          <p style={{ margin: '.8rem 0 0', maxWidth: '38rem', fontSize: '.9rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>Create a new Will for $129, or use Living Vault to keep your existing Will and estate information organised as this chapter unfolds.</p>
+          <p style={{ margin: '.8rem 0 0', maxWidth: '38rem', fontSize: '.9rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>Pay $129 once for your Will and three months of Vault benefits, or join for $99 a year to keep your Will and estate information supported as this chapter unfolds.</p>
           <div style={{ marginTop: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '.75rem' }}>
             <Link href="/start?path=retail" className="mkt-btn-ink-m">Create my Will</Link>
             <Link href="/living-vault" className="mkt-btn-ghost-m">See Living Vault</Link>
