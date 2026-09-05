@@ -169,6 +169,22 @@ export default async function DashboardPage({
   }
 
   const sc = STATUS_CFG[(will?.status as keyof typeof STATUS_CFG) ?? 'draft'] ?? STATUS_CFG.draft;
+  const progressSteps = [
+    { label: 'About you', step: 'personal', done: personalDone, ready: true, show: true },
+    { label: 'Partner', step: 'spouse', done: spouseDone, ready: personalDone, show: maritalStatus === 'married' || maritalStatus === 'domestic_partner' },
+    { label: 'Children', step: 'children', done: childrenDone, ready: personalDone, show: true },
+    { label: 'Executors', step: 'executors', done: executors.length > 0, ready: personalDone, show: true },
+    { label: 'Assets', step: 'assets', done: assets.length > 0, ready: personalDone, show: true },
+    { label: 'Beneficiaries', step: 'beneficiaries', done: beneficiaries.length > 0, ready: personalDone, show: true },
+    { label: 'Specific gifts', step: 'gifts', done: giftsDone, ready: personalDone, show: true },
+    { label: 'Wishes & trusts', step: 'wishes', done: wishesDone, ready: personalDone, show: true },
+  ].filter((step) => step.show)
+  const completedSteps = progressSteps.filter((step) => step.done).length
+  const progressPercent = Math.round((completedSteps / progressSteps.length) * 100)
+  const nextStep = progressSteps.find((step) => !step.done && step.ready) ?? progressSteps.find((step) => !step.done)
+  const visibleAssets = assets.slice(0, 5)
+  const visibleBeneficiaries = beneficiaries.slice(0, 4)
+  const visibleExecutors = executors.slice(0, 2)
 
   return (
     <div className="min-h-screen min-w-0 max-w-full overflow-x-hidden" style={{ background: 'var(--paper)' }}>
@@ -184,19 +200,20 @@ export default async function DashboardPage({
           borderColor: 'var(--line)',
         }}
       >
-        <div>
-          <h1
-            className="text-base font-medium"
-            style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}
-          >
-            Your Vault
-          </h1>
-          <p className="text-xs" style={{ color: 'var(--neutral)' }}>Hi, {firstName}</p>
+        <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+          Hi, {firstName}
+        </h1>
+        <div className="flex items-center gap-3">
+          {will && (
+            <Link href={sc.href} className="btn btn-glass-primary hidden items-center gap-2 px-3 py-1.5 text-xs font-semibold sm:inline-flex">
+              {sc.cta} →
+            </Link>
+          )}
+          <LogoutButton />
         </div>
-        <LogoutButton />
       </header>
 
-      <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
+      <main className="mx-auto max-w-5xl space-y-5 px-4 py-6 sm:px-6 sm:py-8">
 
         {/* ── Payment success banner ────────────────────────────────────────── */}
         {paymentSuccess && (
@@ -273,187 +290,68 @@ export default async function DashboardPage({
                   </p>
                 </div>
               </div>
-              <Link
-                href={sc.href}
-                className="btn btn-glass-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold shrink-0 self-start sm:self-auto"
-              >
-                {sc.cta}
-                <Icon d="M5 12h14M12 5l7 7-7 7" color="var(--teal-deep)" size={13} />
+              <Link href={sc.href} className="inline-flex shrink-0 items-center gap-2 self-start rounded-md border px-3 py-1.5 text-xs font-semibold sm:self-auto" style={{ borderColor: 'var(--teal)', color: 'var(--teal-deep)', background: 'rgba(42,180,174,.08)' }}>
+                {sc.cta} →
               </Link>
             </div>
           </div>
         )}
 
-        {/* ── Step progress ─────────────────────────────────────────────────── */}
+        {/* ── Estate + people: mirrors the landing-page platform preview ───── */}
         {will && (
-          <div
-            className="rounded-lg border overflow-hidden"
-            style={{ borderColor: 'var(--line)', background: 'white' }}
-          >
-            <div className="px-5 py-3 border-b" style={{ borderColor: 'var(--line)', background: 'var(--paper-warm)' }}>
-              <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
-                Will progress
-              </p>
-            </div>
-            <div className="divide-y" style={{ borderColor: 'var(--line)' }}>
-              {[
-                { label: 'About You',       step: 'personal',      done: personalDone,              ready: true },
-                { label: 'Your Partner',    step: 'spouse',        done: spouseDone,                ready: personalDone, show: maritalStatus === 'married' || maritalStatus === 'domestic_partner' },
-                { label: 'Your Children',   step: 'children',      done: childrenDone,              ready: personalDone },
-                { label: 'Your Executors',  step: 'executors',     done: executors.length > 0,      ready: personalDone },
-                { label: 'Your Assets',     step: 'assets',        done: assets.length > 0,         ready: personalDone },
-                { label: 'Beneficiaries',   step: 'beneficiaries', done: beneficiaries.length > 0,  ready: personalDone },
-                { label: 'Specific Gifts',  step: 'gifts',         done: giftsDone,                 ready: personalDone },
-                { label: 'Wishes & Trusts', step: 'wishes',        done: wishesDone,                ready: personalDone },
-              ]
-                .filter((s) => s.show !== false)
-                .map(({ label, step, done, ready }) => {
-                  const status = done ? 'Completed' : ready ? 'Ready' : 'Not Started'
-                  const badgeStyle = done
-                    ? { background: 'rgba(42,180,174,0.1)', color: 'var(--teal-deep)' }
-                    : ready
-                    ? { background: '#fffbeb', color: '#92400e' }
-                    : { background: 'var(--paper-warm)', color: 'var(--neutral)' }
-                  return (
-                    <div key={step} className="flex items-center justify-between px-5 py-3">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <span
-                          className="inline-flex items-center px-2 py-0.5 text-xs font-semibold shrink-0"
-                          style={badgeStyle}
-                        >
-                          {status}
-                        </span>
-                        <span className="text-sm" style={{ color: 'var(--ink)' }}>{label}</span>
-                      </div>
-                      <Link
-                        href={`/will/new?step=${step}`}
-                        className="text-xs font-medium shrink-0"
-                        style={{ color: 'var(--teal)' }}
-                      >
-                        {done ? 'Edit' : 'Start'} →
-                      </Link>
-                    </div>
-                  )
-                })}
-            </div>
-          </div>
-        )}
-
-        {/* ── Plan status / upgrade CTA ─────────────────────────────────────── */}
-        {will && plan !== 'free' && planStatus && (
-          <div
-            className="rounded-lg border px-5 py-4 flex items-center justify-between gap-3"
-            style={{ borderColor: 'var(--line)', background: 'white' }}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                style={{ background: 'var(--paper-warm)' }}
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                  stroke="var(--teal)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-              </div>
-              <div>
-                <span className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>
-                  {PLAN_LABELS[plan] ?? plan}
-                </span>
-                {PLAN_STATUS_LABELS[planStatus] && (
-                  <span
-                    className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold"
-                    style={{ background: PLAN_STATUS_LABELS[planStatus].bg, color: PLAN_STATUS_LABELS[planStatus].color }}
-                  >
-                    {PLAN_STATUS_LABELS[planStatus].label}
-                  </span>
-                )}
-                {plan === 'will' && (
-                  <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
-                    Upgrade to Living Vault for ongoing updates and document storage.
-                  </p>
-                )}
-              </div>
-            </div>
-            {plan === 'will' && (
-              <Link
-                href="#upgrade"
-                className="text-xs font-semibold shrink-0"
-                style={{ color: 'var(--teal)' }}
-              >
-                Upgrade →
-              </Link>
-            )}
-          </div>
-        )}
-
-        {will && plan === 'free' && (
-          <PlanCTA />
-        )}
-
-        {/* ── Two-column grid ───────────────────────────────────────────────── */}
-        {will && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.15fr_.85fr]">
 
             {/* Estate */}
             <section>
-              <div className="flex items-center justify-between mb-3">
+              <div className="mb-2 flex items-center justify-between px-0.5">
                 <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
                   Your Estate
                 </p>
                 <Link href="/will/new?step=assets" className="text-xs font-medium" style={{ color: 'var(--teal)' }}>
-                  Edit
+                  Manage
                 </Link>
               </div>
 
               {assets.length === 0 ? (
-                <div className="rounded-lg border-2 border-dashed p-8 text-center" style={{ borderColor: 'var(--line)' }}>
+                <div className="m-4 rounded-lg border-2 border-dashed p-8 text-center" style={{ borderColor: 'var(--line)' }}>
                   <p className="text-sm mb-3" style={{ color: 'var(--neutral)' }}>No assets added yet</p>
                   <Link href="/will/new?step=assets" className="text-sm font-medium" style={{ color: 'var(--teal)' }}>
                     Add your assets →
                   </Link>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 gap-2.5">
-                  {assets.map((a) => {
+                <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+                  {visibleAssets.map((a) => {
                     const cfg = ASSET_CFG[a.asset_type ?? ''] ?? ASSET_CFG.other;
                     const value = formatValue(a.estimated_value);
                     return (
                       <div
                         key={a.id}
-                        className="rounded-lg border p-4 flex flex-col gap-3"
-                        style={{ borderColor: 'var(--line)', background: 'white' }}
+                        className="min-w-0 rounded-lg border bg-white p-3"
+                        style={{ borderColor: 'var(--line)' }}
                       >
                         <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                          className="mb-2 flex h-7 w-7 items-center justify-center rounded-md"
                           style={{ backgroundColor: cfg.bg }}
                         >
                           <Icon d={cfg.d} color={cfg.color} size={15} />
                         </div>
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: cfg.color }}>
-                            {cfg.typeLabel}
-                          </p>
-                          <p className="text-sm font-semibold leading-snug mt-0.5 truncate" style={{ color: 'var(--ink)' }}>
+                          <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: cfg.color }}>{cfg.typeLabel}</p>
+                          <p className="mt-0.5 truncate text-xs font-semibold" style={{ color: 'var(--ink)' }}>
                             {assetLabel(a)}
                           </p>
-                          {value && <p className="text-xs mt-0.5 font-medium" style={{ color: 'var(--ink)' }}>{value}</p>}
+                          {value && <p className="mt-0.5 text-xs font-semibold" style={{ color: 'var(--ink)' }}>{value}</p>}
                         </div>
                       </div>
                     );
                   })}
-                  {/* Add asset */}
                   <Link
                     href="/will/new?step=assets"
-                    className="rounded-lg border-2 border-dashed p-4 flex flex-col items-center justify-center gap-2 min-h-[100px] hover:border-[var(--teal)] transition-colors"
-                    style={{ borderColor: 'var(--line)' }}
+                    className="flex min-h-[94px] items-center justify-center rounded-lg border-2 border-dashed p-3 text-center text-xs font-semibold"
+                    style={{ borderColor: 'var(--line)', color: 'var(--teal)' }}
                   >
-                    <div
-                      className="w-7 h-7 rounded border-2 border-dashed flex items-center justify-center transition-colors"
-                      style={{ borderColor: 'var(--line)' }}
-                    >
-                      <Icon d="M12 5v14M5 12h14" color="var(--neutral)" size={12} />
-                    </div>
-                    <span className="text-xs font-medium" style={{ color: 'var(--neutral)' }}>Add asset</span>
+                    <span>{assets.length > visibleAssets.length ? `View all ${assets.length} assets →` : '+ Add asset'}</span>
                   </Link>
                 </div>
               )}
@@ -461,18 +359,18 @@ export default async function DashboardPage({
 
             {/* People */}
             <section>
-              <div className="flex items-center justify-between mb-3">
+              <div className="mb-2 flex items-center justify-between px-0.5">
                 <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
                   Your People
                 </p>
                 <Link href="/will/new?step=beneficiaries" className="text-xs font-medium" style={{ color: 'var(--teal)' }}>
-                  Edit
+                  Manage
                 </Link>
               </div>
 
               <div className="space-y-2">
                 {beneficiaries.length === 0 && executors.length === 0 ? (
-                  <div className="rounded-lg border-2 border-dashed p-8 text-center" style={{ borderColor: 'var(--line)' }}>
+                  <div className="m-4 rounded-lg border-2 border-dashed p-8 text-center" style={{ borderColor: 'var(--line)' }}>
                     <p className="text-sm mb-3" style={{ color: 'var(--neutral)' }}>No people added yet</p>
                     <Link href="/will/new?step=beneficiaries" className="text-sm font-medium" style={{ color: 'var(--teal)' }}>
                       Add beneficiaries →
@@ -480,16 +378,13 @@ export default async function DashboardPage({
                   </div>
                 ) : (
                   <>
+                    <div className="space-y-2">
                     {beneficiaries.length > 0 && (
                       <>
-                        <div className="flex items-center justify-between px-1 pb-1">
-                          <p className="text-xs font-semibold" style={{ color: 'var(--neutral)' }}>Beneficiaries</p>
-                          <Link href="/will/new?step=beneficiaries" className="text-xs font-medium" style={{ color: 'var(--teal)' }}>Edit</Link>
-                        </div>
-                        {beneficiaries.map((b) => {
+                        {visibleBeneficiaries.map((b) => {
                           const name = b.beneficiary_type === 'organisation' ? (b.organisation_name ?? 'Organisation') : (b.first_name ?? 'Unnamed');
                           return (
-                            <div key={b.id} className="rounded-lg border px-4 py-3 flex items-center justify-between gap-3" style={{ borderColor: 'var(--line)', background: 'white' }}>
+                            <div key={b.id} className="flex items-center justify-between gap-3 rounded-lg border bg-white px-3 py-2.5" style={{ borderColor: 'var(--line)' }}>
                               <div className="flex items-center gap-3 min-w-0">
                                 <div
                                   className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
@@ -499,7 +394,7 @@ export default async function DashboardPage({
                                 </div>
                                 <div className="min-w-0">
                                   <p className="text-sm font-semibold truncate" style={{ color: 'var(--ink)' }}>{name}</p>
-                                  {b.relationship && <p className="text-xs" style={{ color: 'var(--neutral)' }}>{b.relationship}</p>}
+                                  <p className="text-xs" style={{ color: 'var(--neutral)' }}>{b.relationship || 'Beneficiary'}</p>
                                 </div>
                               </div>
                               {b.share_percentage != null && (
@@ -515,14 +410,10 @@ export default async function DashboardPage({
 
                     {executors.length > 0 && (
                       <>
-                        <div className={`flex items-center justify-between px-1 pb-1 ${beneficiaries.length > 0 ? 'pt-3' : ''}`}>
-                          <p className="text-xs font-semibold" style={{ color: 'var(--neutral)' }}>Executors</p>
-                          <Link href="/will/new?step=executors" className="text-xs font-medium" style={{ color: 'var(--teal)' }}>Edit</Link>
-                        </div>
-                        {executors.map((e) => {
+                        {visibleExecutors.map((e) => {
                           const name = [e.first_name, e.last_name].filter(Boolean).join(' ') || 'Unnamed';
                           return (
-                            <div key={e.id} className="rounded-lg border px-4 py-3 flex items-center justify-between gap-3" style={{ borderColor: 'var(--line)', background: 'white' }}>
+                            <div key={e.id} className="flex items-center justify-between gap-3 rounded-lg border bg-white px-3 py-2.5" style={{ borderColor: 'var(--line)' }}>
                               <div className="flex items-center gap-3 min-w-0">
                                 <div
                                   className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
@@ -532,7 +423,7 @@ export default async function DashboardPage({
                                 </div>
                                 <div className="min-w-0">
                                   <p className="text-sm font-semibold truncate" style={{ color: 'var(--ink)' }}>{name}</p>
-                                  {e.relationship && <p className="text-xs" style={{ color: 'var(--neutral)' }}>{e.relationship}</p>}
+                                  <p className="text-xs" style={{ color: 'var(--neutral)' }}>{e.relationship || 'Executor'}</p>
                                 </div>
                               </div>
                               <span
@@ -549,25 +440,62 @@ export default async function DashboardPage({
                         })}
                       </>
                     )}
+                    </div>
                   </>
                 )}
 
-                {/* Add person */}
                 <Link
                   href="/will/new?step=beneficiaries"
-                  className="flex items-center gap-3 rounded-lg border-2 border-dashed px-4 py-3 hover:border-[var(--teal)] transition-colors"
-                  style={{ borderColor: 'var(--line)' }}
+                  className="flex items-center justify-center rounded-lg border-2 border-dashed px-4 py-3 text-xs font-semibold"
+                  style={{ borderColor: 'var(--line)', color: 'var(--teal)' }}
                 >
-                  <div
-                    className="w-7 h-7 rounded border-2 border-dashed flex items-center justify-center transition-colors shrink-0"
-                    style={{ borderColor: 'var(--line)' }}
-                  >
-                    <Icon d="M12 5v14M5 12h14" color="var(--neutral)" size={12} />
-                  </div>
-                  <span className="text-sm font-medium" style={{ color: 'var(--neutral)' }}>Add person</span>
+                  <span>{beneficiaries.length > visibleBeneficiaries.length || executors.length > visibleExecutors.length ? 'View all people →' : '+ Add person'}</span>
                 </Link>
               </div>
             </section>
+          </div>
+        )}
+
+        {/* ── Setup progress, intentionally secondary to the estate snapshot ─ */}
+        {will && completedSteps < progressSteps.length && (
+          <div className="rounded-lg border bg-white px-5 py-4" style={{ borderColor: 'var(--line)' }}>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Complete your Will</p>
+                  <span className="text-xs font-medium" style={{ color: 'var(--neutral)' }}>{completedSteps}/{progressSteps.length}</span>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full" style={{ background: 'var(--paper-warm)' }}>
+                  <div className="h-full rounded-full" style={{ width: `${progressPercent}%`, background: 'var(--teal)' }} />
+                </div>
+              </div>
+              {nextStep && (
+                <Link href={`/will/new?step=${nextStep.step}`} className="shrink-0 text-xs font-semibold" style={{ color: 'var(--teal)' }}>
+                  Continue with {nextStep.label.toLowerCase()} →
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ── Plan status / upgrade, below the core dashboard ─────────────── */}
+        {will && plan !== 'free' && planStatus && (
+          <div id="upgrade" className="flex items-center justify-between gap-3 rounded-lg border bg-white px-5 py-3" style={{ borderColor: 'var(--line)' }}>
+            <div className="min-w-0">
+              <span className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>{PLAN_LABELS[plan] ?? plan}</span>
+              {PLAN_STATUS_LABELS[planStatus] && (
+                <span className="ml-2 inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold" style={{ background: PLAN_STATUS_LABELS[planStatus].bg, color: PLAN_STATUS_LABELS[planStatus].color }}>
+                  {PLAN_STATUS_LABELS[planStatus].label}
+                </span>
+              )}
+            </div>
+            {plan === 'will' && <Link href="#upgrade" className="shrink-0 text-xs font-semibold" style={{ color: 'var(--teal)' }}>Upgrade →</Link>}
+          </div>
+        )}
+
+        {will && plan === 'free' && (
+          <div id="upgrade">
+            <PlanCTA />
           </div>
         )}
 
