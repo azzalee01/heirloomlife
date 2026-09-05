@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
 
@@ -12,16 +13,22 @@ const ARTICLES = [
     items: [
       {
         href: '/learn/your-will',
+        image: '/images/learn/your-will.jpg',
+        imageAlt: 'A Will document and fountain pen in a teal folder',
         title: 'What is a Will  -  and what makes it legally valid?',
         summary: 'The five requirements every Australian Will must meet, what a Will can and cannot cover, and when it becomes invalid.',
       },
       {
         href: '/learn/intestacy',
+        image: '/images/learn/intestacy.jpg',
+        imageAlt: 'A family table with an estate document folder',
         title: 'What happens to your estate without a Will',
         summary: 'How intestacy law distributes assets when there is no valid Will, who misses out entirely, and the practical cost for the people you leave behind.',
       },
       {
         href: '/learn/when-to-update',
+        image: '/images/learn/when-to-update.jpg',
+        imageAlt: 'Life-event keepsakes arranged beside an open planner',
         title: 'When to update your Will',
         summary: 'The life events that require a Will update  -  some urgently  -  and how to make changes without starting from scratch.',
       },
@@ -32,16 +39,22 @@ const ARTICLES = [
     items: [
       {
         href: '/learn/choosing-an-executor',
+        image: '/images/learn/choosing-an-executor.jpg',
+        imageAlt: 'Two trusted people reviewing estate documents together',
         title: 'Choosing an executor',
         summary: 'What an executor actually does, what qualities matter, and how to have the conversation before you name someone.',
       },
       {
         href: '/learn/guardians',
+        image: '/images/learn/guardians.jpg',
+        imageAlt: 'An adult and child walking hand in hand through a garden',
         title: 'Appointing a guardian for your children',
         summary: 'What a guardian appointment means legally, how courts decide without one, and how to choose the right person.',
       },
       {
         href: '/learn/beneficiaries',
+        image: '/images/learn/beneficiaries.jpg',
+        imageAlt: 'Three envelopes beside a teal estate document wallet',
         title: 'Choosing your beneficiaries',
         summary: 'Residual gifts vs specific bequests, naming substitutes, Family Provision claims, and leaving a gift to charity.',
       },
@@ -52,6 +65,8 @@ const ARTICLES = [
     items: [
       {
         href: '/learn/superannuation',
+        image: '/images/learn/superannuation.jpg',
+        imageAlt: 'Retirement documents, glasses and a calculator on a desk',
         title: 'Superannuation and your estate',
         summary: 'Why super sits outside your Will, what a Binding Death Nomination does, the three-year renewal trap, and who you can nominate.',
       },
@@ -91,27 +106,33 @@ export default function LearnPage() {
             {ARTICLES.map((group) => (
               <div key={group.category}>
                 <p style={{ ...LABEL, marginBottom: '1.5rem' }}>{group.category}</p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1px', background: 'var(--mkt-line)', border: '1px solid var(--mkt-line)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1px', background: 'var(--mkt-line)', border: '1px solid var(--mkt-line)' }}>
                   {group.items.map((article) => (
                     <Link
                       key={article.href}
                       href={article.href}
                       style={{
-                        display: 'block', textDecoration: 'none', padding: '1.75rem',
+                        display: 'flex', flexDirection: 'column', textDecoration: 'none',
                         background: '#fff',
                         transition: 'background 120ms',
                       }}
                       className="hover:bg-[var(--mkt-surface)]"
                     >
-                      <h2 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--mkt-ink-text)', margin: '0 0 .6rem', lineHeight: 1.35, letterSpacing: '-.01em' }}>
-                        {article.title}
-                      </h2>
-                      <p style={{ fontSize: '.88rem', lineHeight: 1.6, color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>
-                        {article.summary}
-                      </p>
-                      <span style={{ fontSize: '.85rem', color: 'var(--teal-deep)', fontWeight: 500 }}>
-                        Read →
-                      </span>
+                      <div style={{ position: 'relative', aspectRatio: '16 / 9', overflow: 'hidden', background: 'var(--mkt-surface-2)' }}>
+                        <Image src={article.image} alt={article.imageAlt} fill sizes="(min-width: 1024px) 390px, (min-width: 640px) 50vw, 100vw" style={{ objectFit: 'cover' }} />
+                        <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, transparent 58%, rgba(14, 44, 42, .12) 100%)' }} />
+                      </div>
+                      <div style={{ display: 'flex', flex: 1, flexDirection: 'column', padding: '1.5rem 1.75rem 1.75rem' }}>
+                        <h2 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--mkt-ink-text)', margin: '0 0 .6rem', lineHeight: 1.35, letterSpacing: '-.01em' }}>
+                          {article.title}
+                        </h2>
+                        <p style={{ fontSize: '.88rem', lineHeight: 1.6, color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>
+                          {article.summary}
+                        </p>
+                        <span style={{ marginTop: 'auto', fontSize: '.85rem', color: 'var(--teal-deep)', fontWeight: 500 }}>
+                          Read →
+                        </span>
+                      </div>
                     </Link>
                   ))}
                 </div>
