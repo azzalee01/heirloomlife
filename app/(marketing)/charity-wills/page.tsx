@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import EditorialBanner from '@/components/marketing/EditorialBanner'
 
 const W: React.CSSProperties = { maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }
 
@@ -19,6 +20,7 @@ export default function CharityWillsPage() {
               <Link href="/start?path=sponsored" className="mkt-btn-ink-l">Start a sponsored Will</Link>
               <Link href="/pricing" className="mkt-btn-ghost-l">Compare paid options</Link>
             </div>
+            <EditorialBanner src="/images/editorial/charity-wills.jpg" alt="Two generations planting a native seedling together" />
           </div>
         </section>
 

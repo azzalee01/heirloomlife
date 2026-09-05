@@ -73,7 +73,7 @@ export default function TheWillPage() {
                     </svg>
                   </div>
                   <div>
-                    <p style={{ fontWeight: 600, fontSize: '.95rem', margin: 0 }}>Aaron Lee  -  Last Will &amp; Testament</p>
+                    <p style={{ fontWeight: 600, fontSize: '.95rem', margin: 0 }}>Sample Last Will &amp; Testament</p>
                     <p style={{ fontSize: '.75rem', color: 'var(--mkt-stone-soft)', marginTop: '.15rem' }}>Version 4 · Last amended 12 Jun 2026</p>
                   </div>
                 </div>

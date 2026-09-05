@@ -43,10 +43,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--mkt-line)' }}>
-            <p style={{ fontWeight: 600, fontSize: '.95rem', color: 'var(--mkt-ink-text)', margin: 0 }}>Aaron Lee</p>
-            <p style={{ marginTop: '.25rem', fontSize: '.85rem', color: 'var(--mkt-stone)' }}>Founder, Heirloom Life  -  Sydney, NSW</p>
-          </div>
+          <p style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--mkt-line)', fontSize: '.85rem', color: 'var(--mkt-stone)' }}>Heirloom Life Pty Ltd · Sydney, NSW · Built for Australians in every state and territory.</p>
         </div>
       </section>
 

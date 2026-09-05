@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import EditorialBanner from '@/components/marketing/EditorialBanner'
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
@@ -80,6 +81,7 @@ export default function LearnPage() {
               Guides covering Will fundamentals, life-stage planning, and the people and roles in your estate plan. No jargon, no generic advice  -  Australian law specific.
             </p>
           </div>
+          <EditorialBanner src="/images/editorial/learn.jpg" alt="An approachable estate-planning reading and workspace" />
         </div>
       </section>
 

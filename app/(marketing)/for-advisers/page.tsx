@@ -8,7 +8,7 @@ export default function ForAdvisersPage() {
     <>
       {/* Hero */}
       <section style={{ paddingTop: '4rem', paddingBottom: '5.5rem', background: 'var(--mkt-surface)' }}>
-        <div className="md:px-10" style={{ maxWidth: 720, marginInline: 'auto', paddingInline: '1.5rem' }}>
+        <div className="md:px-10" style={{ maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }}>
           <span style={SECTION_LABEL}>For Advisers</span>
           <h1 style={{
             fontFamily: "var(--font-body)",
@@ -21,6 +21,7 @@ export default function ForAdvisersPage() {
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
             We&#8217;re building a referral programme for financial advisers, accountants, and estate planning professionals. Details are being finalised  -  this page will be updated when the programme is ready to launch.
           </p>
+          <EditorialBanner src="/images/editorial/advisers.jpg" alt="Professional advisers reviewing an estate plan together" />
         </div>
       </section>
 
@@ -50,3 +51,4 @@ export default function ForAdvisersPage() {
     </>
   )
 }
+import EditorialBanner from '@/components/marketing/EditorialBanner'

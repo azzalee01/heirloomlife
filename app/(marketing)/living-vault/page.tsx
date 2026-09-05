@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import EditorialBanner from '@/components/marketing/EditorialBanner'
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_PAD: React.CSSProperties = { paddingBlock: '5.5rem' }
@@ -58,6 +59,7 @@ export default function LivingVaultPage() {
               </Link>
             </div>
           </div>
+          <EditorialBanner src="/images/editorial/living-vault.jpg" alt="An organised estate archive and digital Vault" />
         </div>
       </section>
 

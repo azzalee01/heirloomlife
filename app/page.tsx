@@ -62,7 +62,7 @@ export default function HomePage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Pay $129 once for your Will and three months of full Vault benefits, or join for $99 a year with your Will and continuing support included.
+              Australia&#8217;s modern Will and life-management platform—bringing your Will, Living Vault and ongoing support together through every chapter.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', flexWrap: 'wrap', gap: '.9rem', justifyContent: 'center' }}>
               <Link href="/start?path=retail" className="mkt-btn-ink-l">
@@ -280,12 +280,10 @@ export default function HomePage() {
       {/* ─── MANIFESTO ────────────────────────────────────────────────────── */}
       <section style={{ ...SECTION_PAD, background: '#fff', borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)' }}>
         <Reveal className="md:px-10" style={W}>
-          <p style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal)', marginBottom: '2rem' }}>From the founder</p>
+          <p style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal)', marginBottom: '2rem' }}>Why Heirloom exists</p>
           <blockquote style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontSize: 'clamp(1.7rem, 2.9vw, 2.6rem)', lineHeight: 1.25, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', maxWidth: '46rem', margin: 0 }}>
-            &#8220;We built Heirloom Life because a Will isn&#8217;t paperwork  -  it&#8217;s the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet.&#8221;
+            A Will isn&#8217;t paperwork—it&#8217;s the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet.
           </blockquote>
-          <p style={{ marginTop: '2rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>Aaron Lee</p>
-          <p style={{ marginTop: '.2rem', color: 'var(--mkt-stone)', fontSize: '.9rem' }}>Founder, Heirloom Life</p>
         </Reveal>
       </section>
 
