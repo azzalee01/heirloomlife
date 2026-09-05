@@ -9,7 +9,6 @@ export type LifeChange = {
   considerations: { title: string; body: string }[]
   checklist: string[]
   advice: string
-  accent: string
   productStep: string
   sources: { label: string; href: string }[]
 }
@@ -49,7 +48,6 @@ export const LIFE_CHANGES: LifeChange[] = [
     ],
     checklist: ['Locate and review your current signed Will', 'Confirm how property is owned', 'Review superannuation and insurance nominations', 'Update beneficiaries, executors and guardians', 'Record the new relationship in your estate information'],
     advice: 'Get legal advice if you are part of a blended family, have children from an earlier relationship, own assets overseas, use trusts or companies, or are uncertain whether marriage affected an existing Will.',
-    accent: '#fdf2f8',
     productStep: 'personal',
     sources: [NSW_SUCCESSION, QLD_SUCCESSION, SA_SUCCESSION, TAS_WILLS, WA_WILLS, ACT_WILLS, VIC_WILLS, NT_WILLS, WILLS_SOURCE, SUPER_SOURCE],
   },
@@ -68,7 +66,6 @@ export const LIFE_CHANGES: LifeChange[] = [
     ],
     checklist: ['Get a copy of your current Will', 'Review executors and beneficiaries', 'Check joint ownership and account access', 'Review super and insurance nominations', 'Replace outdated emergency and trusted contacts'],
     advice: 'Prompt legal advice is strongly recommended during separation, especially where there are children, jointly owned property, family businesses, trusts, financial dependency or safety concerns.',
-    accent: '#fff7ed',
     productStep: 'personal',
     sources: [NSW_SUCCESSION, QLD_SUCCESSION, SA_SUCCESSION, TAS_WILLS, WA_WILLS, ACT_WILLS, VIC_WILLS, NT_WILLS, WILLS_SOURCE, SUPER_SOURCE],
   },
@@ -87,7 +84,6 @@ export const LIFE_CHANGES: LifeChange[] = [
     ],
     checklist: ['Add the child to your family record', 'Review guardians and backup guardians', 'Check how gifts for children are held and managed', 'Review insurance and superannuation', 'Update practical care and contact information'],
     advice: 'Seek advice for blended families, children with disability or additional needs, informal care arrangements, overseas guardians, trusts or significant concerns about future claims.',
-    accent: '#eff6ff',
     productStep: 'children',
     sources: [SUPER_SOURCE],
   },
@@ -106,7 +102,6 @@ export const LIFE_CHANGES: LifeChange[] = [
     ],
     checklist: ['Confirm the registered owners and ownership type', 'Add or remove the property in your Vault', 'Review property-specific gifts', 'Record the mortgage and relevant documents', 'Check insurance and nominated contacts'],
     advice: 'Obtain advice where ownership is unequal, a property is held through a trust or company, someone has a right to live there, the asset is overseas, or the intended gift may create tax or cash-flow issues.',
-    accent: '#ecfdf5',
     productStep: 'assets',
     sources: [],
   },
@@ -125,7 +120,6 @@ export const LIFE_CHANGES: LifeChange[] = [
     ],
     checklist: ['Review your signed Will and appointments', 'Consider powers of attorney and health documents', 'Confirm original-document storage', 'Update trusted and emergency contacts', 'Organise assets, liabilities and practical instructions'],
     advice: 'Use an independent solicitor where capacity may be questioned, a beneficiary is involved in arranging the Will, family conflict exists, or urgent execution is required. Medical urgency should never be used to pressure a person.',
-    accent: '#fef2f2',
     productStep: 'personal',
     sources: [WILLS_SOURCE],
   },
@@ -144,7 +138,6 @@ export const LIFE_CHANGES: LifeChange[] = [
     ],
     checklist: ['Map the entities and interests you own', 'Locate shareholder, trust and buy-sell documents', 'Record key advisers and business contacts', 'Review insurance used for succession funding', 'Coordinate the business plan with your Will'],
     advice: 'Business succession is usually outside a simple template Will. Coordinate advice from an estate-planning solicitor, accountant and financial adviser before relying on a document update alone.',
-    accent: '#f5f3ff',
     productStep: 'assets',
     sources: [],
   },
@@ -163,7 +156,6 @@ export const LIFE_CHANGES: LifeChange[] = [
     ],
     checklist: ['Record the inherited assets and liabilities', 'Review fixed gifts and percentages', 'Check ownership and supporting documents', 'Update adviser and institution details', 'Consider whether the estate now needs professional review'],
     advice: 'Seek legal, tax and financial advice before restructuring inherited assets or making significant new gifts, particularly where trusts, overseas assets, vulnerable beneficiaries or family disputes are involved.',
-    accent: '#f0fdfa',
     productStep: 'assets',
     sources: [],
   },
@@ -182,7 +174,6 @@ export const LIFE_CHANGES: LifeChange[] = [
     ],
     checklist: ['Update your address and asset locations', 'Review state-based appointment documents', 'Check signing and witnessing instructions', 'Record overseas property or accounts', 'Tell an appropriate person where originals are stored'],
     advice: 'Obtain specialist advice when you live, hold assets or have beneficiaries in more than one country. Multiple Wills must be coordinated so one does not unintentionally revoke another.',
-    accent: '#f8fafc',
     productStep: 'personal',
     sources: [WILLS_SOURCE],
   },

@@ -24,7 +24,8 @@ export default function LifeChangesPage() {
         <div className="md:px-10" style={W}>
           <div className="sm:grid-cols-2 lg:grid-cols-4" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '.85rem' }}>
             {LIFE_CHANGES.map((event) => (
-              <Link key={event.slug} href={`/life-changes/${event.slug}`} style={{ display: 'flex', minHeight: 210, flexDirection: 'column', justifyContent: 'space-between', padding: '1.4rem', border: '1px solid var(--mkt-line)', borderRadius: 12, background: event.accent, color: 'inherit', textDecoration: 'none' }}>
+              <Link key={event.slug} href={`/life-changes/${event.slug}`} style={{ position: 'relative', overflow: 'hidden', display: 'flex', minHeight: 210, flexDirection: 'column', justifyContent: 'space-between', padding: '1.4rem', border: '1px solid var(--mkt-line)', borderRadius: 12, background: 'var(--mkt-surface)', color: 'inherit', textDecoration: 'none' }}>
+                <span aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--teal) 30%, var(--teal) 70%, transparent)', pointerEvents: 'none' }} />
                 <div>
                   <p style={{ margin: 0, fontSize: '.68rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--teal-deep)' }}>{event.eyebrow}</p>
                   <h2 style={{ margin: '.8rem 0 0', fontSize: '1.08rem', lineHeight: 1.25, fontWeight: 600, color: 'var(--mkt-ink-text)' }}>{event.shortTitle}</h2>
@@ -35,14 +36,14 @@ export default function LifeChangesPage() {
             ))}
           </div>
 
-          <div style={{ marginTop: '4rem', padding: '2rem', borderRadius: 12, background: 'var(--mkt-ink)', color: '#fff', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem' }}>
+          <div style={{ marginTop: '4rem', padding: '2rem', border: '1px solid var(--mkt-line)', borderRadius: 12, background: 'var(--mkt-surface-2)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1.5rem' }}>
             <div style={{ maxWidth: '36rem' }}>
-              <h2 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 400 }}>Your life is personal. Your next step should be too.</h2>
-              <p style={{ margin: '.7rem 0 0', fontSize: '.88rem', lineHeight: 1.65, color: 'rgba(255,255,255,.68)' }}>Create a new Will, or use Living Vault to organise what changed and review your existing estate information.</p>
+              <h2 style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: '2rem', fontWeight: 400, color: 'var(--mkt-ink-text)' }}>Your life is personal. Your next step should be too.</h2>
+              <p style={{ margin: '.7rem 0 0', fontSize: '.88rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>Create a new Will, or use Living Vault to organise what changed and review your existing estate information.</p>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem' }}>
-              <Link href="/start?path=retail" className="mkt-btn-ghost-m" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.38)' }}>Create my Will</Link>
-              <Link href="/living-vault" className="mkt-btn-ghost-m" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.38)' }}>Explore Living Vault</Link>
+              <Link href="/start?path=retail" className="mkt-btn-ink-m">Create my Will</Link>
+              <Link href="/living-vault" className="mkt-btn-ghost-m">Explore Living Vault</Link>
             </div>
           </div>
 

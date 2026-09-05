@@ -24,7 +24,7 @@ export default async function LifeChangePage({ params }: Props) {
 
   return (
     <>
-      <section style={{ paddingBlock: '6.5rem 4.5rem', background: event.accent, borderBottom: '1px solid var(--mkt-line)' }}>
+      <section style={{ paddingBlock: '6.5rem 4.5rem', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10" style={{ maxWidth: 900, marginInline: 'auto', paddingInline: '1.5rem' }}>
           <Link href="/life-changes" style={{ fontSize: '.78rem', color: 'var(--teal-deep)', textDecoration: 'none', fontWeight: 600 }}>← All life changes</Link>
           <p style={{ margin: '2rem 0 0', color: 'var(--teal-deep)', fontSize: '.7rem', fontWeight: 700, letterSpacing: '.15em', textTransform: 'uppercase' }}>{event.eyebrow}</p>
@@ -36,7 +36,7 @@ export default async function LifeChangePage({ params }: Props) {
       <section style={{ paddingBlock: '4.5rem', background: '#fff' }}>
         <div className="md:px-10 lg:grid-cols-[1fr_18rem]" style={{ maxWidth: 1000, marginInline: 'auto', paddingInline: '1.5rem', display: 'grid', gridTemplateColumns: '1fr', gap: '4rem' }}>
           <div>
-            <div style={{ marginBottom: '2.5rem', padding: '1.5rem', borderRadius: 12, background: 'var(--teal-light)', border: '1px solid var(--teal-soft)' }}>
+            <div style={{ marginBottom: '2.5rem', padding: '1.5rem', border: '1px solid var(--mkt-line)', borderLeft: '2px solid var(--teal)', borderRadius: 12, background: 'var(--mkt-surface)' }}>
               <p style={{ margin: 0, color: 'var(--teal-deep)', fontSize: '.68rem', fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase' }}>The legal position</p>
               <p style={{ margin: '.7rem 0 0', fontSize: '.92rem', lineHeight: 1.72, color: 'var(--mkt-ink-text)' }}>{event.legalRule}</p>
             </div>
