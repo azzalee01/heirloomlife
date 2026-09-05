@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -72,9 +72,7 @@ const TABS: NavTab[] = [
   },
 ]
 
-// Max-width of panel content area per column count
-const PANEL_MAX: Record<1 | 2 | 3, number> = { 1: 200, 2: 440, 3: 640 }
-
+const NAV_H = 76
 const W: React.CSSProperties = {
   maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem',
 }
@@ -82,9 +80,20 @@ const W: React.CSSProperties = {
 export default function MarketingNav() {
   const [scrolled, setScrolled] = useState(false)
   const [activeTab, setActiveTab] = useState<string | null>(null)
+  const [panelLeft, setPanelLeft] = useState(0)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null)
   const pathname = usePathname()
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const scheduleClose = useCallback(() => {
+    closeTimer.current = setTimeout(() => setActiveTab(null), 120)
+  }, [])
+
+  const cancelClose = useCallback(() => {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+  }, [])
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 24)
@@ -93,18 +102,25 @@ export default function MarketingNav() {
     return () => window.removeEventListener('scroll', fn)
   }, [])
 
-  // Close menus on route change
   useEffect(() => {
     setActiveTab(null)
     setMobileOpen(false)
     setMobileExpanded(null)
   }, [pathname])
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
+
+  // Recompute panel left from the active tab's bounding rect
+  useEffect(() => {
+    if (activeTab && tabRefs.current[activeTab]) {
+      const rect = tabRefs.current[activeTab]!.getBoundingClientRect()
+      // Clamp so the panel never overflows the right edge of the viewport
+      setPanelLeft(rect.left)
+    }
+  }, [activeTab])
 
   const panelTab = TABS.find(t => t.id === activeTab && t.items) as Extract<NavTab, { items: NavItem[] }> | undefined
   const hasBg = scrolled || !!activeTab || mobileOpen
@@ -113,10 +129,10 @@ export default function MarketingNav() {
     <>
       {/* ── Header ───────────────────────────────────────────────────────── */}
       <header
-        onMouseLeave={() => setActiveTab(null)}
+        onMouseLeave={scheduleClose}
         style={{
           position: 'fixed', left: 0, right: 0, top: 0, zIndex: 50,
-          transition: 'background .35s ease, border-color .35s ease, box-shadow .25s ease',
+          transition: 'background .35s ease, border-color .35s ease',
           borderBottom: '1px solid',
           borderColor: hasBg ? 'var(--mkt-line)' : 'transparent',
           background: hasBg ? 'rgba(255,255,255,0.97)' : 'transparent',
@@ -124,14 +140,14 @@ export default function MarketingNav() {
           WebkitBackdropFilter: hasBg ? 'blur(14px)' : 'none',
         }}
       >
-        {/* ── Nav bar row ──────────────────────────────────────────────── */}
         <div
           className="md:px-10"
-          style={{ ...W, display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 76 }}
+          style={{ ...W, display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: NAV_H }}
         >
           {/* Brand */}
           <Link
             href="/"
+            onMouseEnter={() => { cancelClose(); setActiveTab(null) }}
             style={{
               color: 'var(--mkt-ink-text)', textDecoration: 'none', flexShrink: 0,
               fontFamily: 'var(--font-display)', fontSize: '1.35rem', letterSpacing: '.01em',
@@ -148,7 +164,8 @@ export default function MarketingNav() {
                 return (
                   <button
                     key={tab.id}
-                    onMouseEnter={() => setActiveTab(tab.id)}
+                    ref={el => { tabRefs.current[tab.id] = el }}
+                    onMouseEnter={() => { cancelClose(); setActiveTab(tab.id) }}
                     onClick={() => setActiveTab(isOpen ? null : tab.id)}
                     aria-expanded={isOpen}
                     style={{
@@ -178,7 +195,7 @@ export default function MarketingNav() {
                 <Link
                   key={tab.id}
                   href={tab.href!}
-                  onMouseEnter={() => setActiveTab(null)}
+                  onMouseEnter={() => { cancelClose(); setActiveTab(null) }}
                   className="mkt-nav-link"
                   style={{ padding: '.5rem .8rem', whiteSpace: 'nowrap' }}
                 >
@@ -188,8 +205,11 @@ export default function MarketingNav() {
             })}
           </nav>
 
-          {/* Right CTAs */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexShrink: 0 }}>
+          {/* Right CTAs — entering this area closes any open panel */}
+          <div
+            onMouseEnter={() => { cancelClose(); setActiveTab(null) }}
+            style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexShrink: 0 }}
+          >
             <Link href="/auth/login" className="hidden lg:block mkt-nav-link">
               Log in
             </Link>
@@ -220,50 +240,54 @@ export default function MarketingNav() {
             </button>
           </div>
         </div>
+      </header>
 
-        {/* ── Desktop mega-panel ────────────────────────────────────────── */}
-        {panelTab && (
+      {/* ── Desktop mega-panel — fixed, width fits content ────────────────── */}
+      {panelTab && (
+        <div
+          className="hidden lg:block"
+          onMouseEnter={cancelClose}
+          onMouseLeave={scheduleClose}
+          style={{
+            position: 'fixed',
+            top: NAV_H,
+            left: panelLeft,
+            zIndex: 49,
+            background: '#fff',
+            border: '1px solid var(--mkt-line)',
+            borderRadius: '0 0 10px 10px',
+            boxShadow: '0 8px 24px rgba(0,0,0,.07)',
+            padding: '1.1rem 1.4rem 1.25rem',
+            minWidth: 'max-content',
+          }}
+        >
           <div
             style={{
-              borderTop: '1px solid var(--mkt-line)',
-              background: '#fff',
-              boxShadow: '0 6px 20px rgba(0,0,0,.06)',
+              display: 'grid',
+              gridTemplateColumns: `repeat(${panelTab.cols}, minmax(0, 1fr))`,
+              gap: '.05rem 2.5rem',
             }}
           >
-            <div
-              className="md:px-10"
-              style={{ ...W, paddingBlock: '1.35rem 1.5rem' }}
-            >
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: `repeat(${panelTab.cols}, minmax(0, 1fr))`,
-                  maxWidth: PANEL_MAX[panelTab.cols],
-                  gap: '.1rem 3rem',
-                }}
+            {panelTab.items.map(item => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="mega-nav-item"
+                onClick={() => setActiveTab(null)}
               >
-                {panelTab.items.map(item => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="mega-nav-item"
-                    onClick={() => setActiveTab(null)}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
+                {item.label}
+              </Link>
+            ))}
           </div>
-        )}
-      </header>
+        </div>
+      )}
 
       {/* ── Mobile overlay ────────────────────────────────────────────────── */}
       {mobileOpen && (
         <div
           className="lg:hidden"
           style={{
-            position: 'fixed', inset: 0, top: 76, zIndex: 49,
+            position: 'fixed', inset: 0, top: NAV_H, zIndex: 49,
             background: '#fff', overflowY: 'auto',
           }}
         >
