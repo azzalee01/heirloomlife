@@ -171,7 +171,7 @@ export default async function DashboardPage({
   const sc = STATUS_CFG[(will?.status as keyof typeof STATUS_CFG) ?? 'draft'] ?? STATUS_CFG.draft;
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
+    <div className="min-h-screen min-w-0 max-w-full overflow-x-hidden" style={{ background: 'var(--paper)' }}>
       <IntroAnimationLoader />
 
       {/* Page header  -  glass material: content scrolls under the translucent chrome */}
@@ -196,7 +196,7 @@ export default async function DashboardPage({
         <LogoutButton />
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
+      <main className="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6">
 
         {/* ── Payment success banner ────────────────────────────────────────── */}
         {paymentSuccess && (

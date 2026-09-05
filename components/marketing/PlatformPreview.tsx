@@ -235,7 +235,7 @@ export default function PlatformPreview() {
   const assistantPanel = (
     <aside
       onClick={e => e.stopPropagation()}
-      style={{ width: 270, flexShrink: 0, borderLeft: '1px solid var(--line)', background: '#fff', display: 'flex', flexDirection: 'column', minHeight: 0 }}
+      style={{ width: 248, flexShrink: 0, borderLeft: '1px solid var(--line)', background: '#fff', display: 'flex', flexDirection: 'column', minHeight: 0, minWidth: 0 }}
       aria-label="Estate Assistant demo"
     >
       <div style={{ padding: '12px 14px', borderBottom: '1px solid var(--line-soft)', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
@@ -347,7 +347,7 @@ export default function PlatformPreview() {
       <div
         onClick={handlePreviewClick}
         style={{
-          width: '100%', aspectRatio: '85 / 44',
+          width: '100%', aspectRatio: '17 / 9',
           borderRadius: 12, overflow: 'hidden',
           border: '1px solid var(--line)',
           boxShadow: '0 40px 100px rgba(10,20,18,.16), 0 8px 24px rgba(10,20,18,.08)',
@@ -371,7 +371,7 @@ export default function PlatformPreview() {
         <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
 
           {/* Sidebar */}
-          <aside style={{ width: 200, flexShrink: 0, borderRight: '1px solid var(--line)', background: 'var(--paper)', display: 'flex', flexDirection: 'column', padding: '12px 8px' }}>
+          <aside style={{ width: 184, flexShrink: 0, borderRight: '1px solid var(--line)', background: 'var(--paper)', display: 'flex', flexDirection: 'column', padding: '12px 8px' }}>
             <div style={{ padding: '4px 10px 16px' }}>
               <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: '1rem', color: 'var(--teal)' }}>Heirloom</span>
             </div>
@@ -401,7 +401,7 @@ export default function PlatformPreview() {
           </aside>
 
           {/* Main */}
-          <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, minWidth: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
             <header style={{ borderBottom: '1px solid var(--line)', padding: '0 20px', height: 48, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--paper)', flexShrink: 0 }}>
               <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '1rem', color: 'var(--ink)' }}>Hi, Aaron</span>
               <Link href="/will/new"
@@ -411,7 +411,7 @@ export default function PlatformPreview() {
               </Link>
             </header>
 
-            <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ flex: 1, minWidth: 0, minHeight: 0, overflowX: 'hidden', overflowY: 'auto', padding: 12, display: 'flex', flexDirection: 'column', gap: 10 }}>
 
               {/* ── OVERVIEW ──────────────────────────────────────────────── */}
               {activeTab === 'Overview' && (

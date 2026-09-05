@@ -79,8 +79,8 @@ export default function HomePage() {
         </div>
 
         {/* Platform preview */}
-        <div style={{ paddingInline: '2rem', paddingBottom: '4rem' }}>
-          <div style={{ width: '86%', marginInline: 'auto' }}>
+        <div style={{ paddingInline: 'clamp(.75rem, 2vw, 2rem)', paddingBottom: '4rem' }}>
+          <div style={{ width: '90%', marginInline: 'auto' }}>
             <PlatformPreview />
           </div>
         </div>

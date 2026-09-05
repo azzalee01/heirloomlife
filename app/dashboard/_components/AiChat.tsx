@@ -130,7 +130,7 @@ export default function AiChat({
                   </svg>
                 </div>
               )}
-              <div className="max-w-[76%] space-y-2">
+              <div className="min-w-0 max-w-[82%] space-y-2">
                 <div
                   className={`px-4 py-2.5 text-sm leading-relaxed rounded-2xl ${
                     m.role === 'user'
@@ -219,7 +219,7 @@ export default function AiChat({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') send() }}
             placeholder={variant === 'rail' ? 'Ask about your estate plan…' : 'Tell me about a life update… e.g. I bought a new house'}
-            className="flex-1 px-4 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-[var(--paper-warm)]"
+            className="min-w-0 flex-1 px-4 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-[var(--paper-warm)]"
           />
           <button
             onClick={send}

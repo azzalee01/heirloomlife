@@ -18,8 +18,8 @@ export default function DashboardWorkspace({ children }: { children: React.React
   const panelVisible = desktopOpen || mobileOpen
 
   return (
-    <div className="flex h-full min-w-0 flex-1 overflow-hidden">
-      <div className="min-w-0 flex-1 overflow-y-auto">{children}</div>
+    <div className="flex h-full min-w-0 max-w-full flex-1 overflow-hidden">
+      <div className="min-w-0 max-w-full flex-1 overflow-x-hidden overflow-y-auto">{children}</div>
 
       {!desktopOpen && (
         <div className="hidden w-14 shrink-0 border-l border-[var(--line)] bg-white xl:flex xl:justify-center xl:pt-4">
@@ -39,7 +39,7 @@ export default function DashboardWorkspace({ children }: { children: React.React
         aria-label="Estate Assistant"
         className={`${mobileOpen ? 'fixed inset-0 z-50 flex items-end bg-black/20' : 'hidden'} ${desktopOpen ? 'xl:flex' : 'xl:hidden'} xl:static xl:z-auto xl:items-stretch xl:bg-transparent`}
       >
-        <div className="h-[78vh] w-full overflow-hidden rounded-t-xl border border-[var(--line)] bg-white shadow-2xl xl:h-full xl:w-[390px] xl:rounded-none xl:border-y-0 xl:border-r-0 xl:shadow-none">
+        <div className="h-[78vh] w-full max-w-full overflow-hidden rounded-t-xl border border-[var(--line)] bg-white shadow-2xl xl:h-full xl:w-[344px] xl:rounded-none xl:border-y-0 xl:border-r-0 xl:shadow-none">
           {panelVisible && <AiChat variant="rail" onClose={() => { setDesktopOpen(false); setMobileOpen(false) }} />}
         </div>
       </aside>
