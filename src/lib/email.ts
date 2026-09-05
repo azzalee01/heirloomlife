@@ -43,6 +43,39 @@ export async function sendResumeEmail(params: { to: string; sessionId: string })
   }
 }
 
+export async function sendCharityEnquiryEmail(params: {
+  orgName: string
+  contactName: string
+  email: string
+  role: string
+  orgType: string
+  message: string
+}) {
+  const { orgName, contactName, email, role, orgType, message } = params
+
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 20px;">New charity enquiry</h1>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#0E1310;">
+        <tr><td style="padding:8px 0;color:#8A8D87;width:140px;">Organisation</td><td style="padding:8px 0;font-weight:600;">${orgName}</td></tr>
+        <tr><td style="padding:8px 0;color:#8A8D87;">Type</td><td style="padding:8px 0;">${orgType || 'Not specified'}</td></tr>
+        <tr><td style="padding:8px 0;color:#8A8D87;">Contact</td><td style="padding:8px 0;">${contactName}${role ? ` &mdash; ${role}` : ''}</td></tr>
+        <tr><td style="padding:8px 0;color:#8A8D87;">Email</td><td style="padding:8px 0;"><a href="mailto:${email}" style="color:#2AB4AE;">${email}</a></td></tr>
+        ${message ? `<tr><td style="padding:8px 0;color:#8A8D87;vertical-align:top;">Message</td><td style="padding:8px 0;line-height:1.6;">${message}</td></tr>` : ''}
+      </table>
+    </div>
+  `
+
+  await resend.emails.send({
+    from: FROM_ADDRESS,
+    to: 'hello@heirloomlife.com.au',
+    replyTo: email,
+    subject: `Charity enquiry: ${orgName}`,
+    html,
+  })
+}
+
 export async function sendWitnessInviteEmail(params: {
   to: string
   witnessName: string

@@ -6,7 +6,7 @@ const NAV_LINKS = [
   { label: 'The Will', href: '/the-will' },
   { label: 'Living Vault', href: '/living-vault' },
   { label: 'Life Changes', href: '/life-changes' },
-  { label: 'Charity Wills', href: '/charity-wills' },
+  { label: 'Charity', href: '/charity-wills' },
   { label: 'Pricing', href: '/pricing' },
 ]
 

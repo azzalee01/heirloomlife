@@ -2,6 +2,7 @@ import Link from 'next/link'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import CharityIntakeForm from './_components/CharityIntakeForm'
 
 const W: React.CSSProperties = { maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }
 const LABEL: React.CSSProperties = {
@@ -106,6 +107,41 @@ export default function CharityWillsPage() {
           <p style={{ marginTop: '1.1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)' }}>
             Free to draft. Pay $129 to download your solicitor-reviewed Will.
           </p>
+        </div>
+      </section>
+
+      {/* ── For charities ──────────────────────────────────────────────────── */}
+      <section id="for-charities" style={{ paddingBlock: '5.5rem', background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10 lg:grid-cols-2 lg:gap-20" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3.5rem', alignItems: 'start' }}>
+          <div>
+            <p style={LABEL}>For charities</p>
+            <h2 style={{ margin: '1rem 0 0', fontFamily: "var(--font-display)", fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 400, color: 'var(--mkt-ink-text)' }}>
+              Partner with Heirloom to grow your bequest program.
+            </h2>
+            <p style={{ margin: '1.25rem 0 0', fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', maxWidth: '32rem' }}>
+              Gifts in Wills are one of the most valuable income streams available to Australian charities -- and one of the most underutilised. Heirloom reaches supporters at the exact moment they are thinking about their legacy.
+            </p>
+            <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {[
+                ['Present at the right moment', 'Your cause can appear to supporters while they are actively planning their estate -- not through a cold campaign months later.'],
+                ['No disruption to your existing program', 'We work alongside your bequest team, not instead of it. Supporters can still speak to your staff directly.'],
+                ['Designed for Australian charities', 'We understand the regulatory environment, the DGR requirements, and the sensitivities involved in bequest fundraising.'],
+              ].map(([title, body]) => (
+                <div key={title} style={{ borderLeft: '2px solid var(--teal)', paddingLeft: '1.25rem' }}>
+                  <p style={{ margin: 0, fontSize: '.9rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>{title}</p>
+                  <p style={{ margin: '.4rem 0 0', fontSize: '.85rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>{body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ background: '#fff', border: '1px solid var(--mkt-line)', borderRadius: 14, padding: '2.25rem' }}>
+            <h3 style={{ margin: '0 0 .5rem', fontSize: '1.15rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>Get in touch</h3>
+            <p style={{ margin: '0 0 1.75rem', fontSize: '.875rem', lineHeight: 1.6, color: 'var(--mkt-stone)' }}>
+              Tell us about your organisation and what you&apos;re looking for. We&apos;ll follow up within one business day.
+            </p>
+            <CharityIntakeForm />
+          </div>
         </div>
       </section>
 
