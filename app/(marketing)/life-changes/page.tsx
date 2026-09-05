@@ -15,8 +15,8 @@ export default function LifeChangesPage() {
       <section style={{ paddingBlock: '7rem 5rem', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10" style={W}>
           <p style={{ margin: 0, color: 'var(--teal-deep)', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase' }}>Life changes</p>
-          <h1 style={{ margin: '1.25rem 0 0', maxWidth: '48rem', fontSize: 'clamp(2.7rem, 5.5vw, 5rem)', lineHeight: 1.02, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>When life changes, know what to review.</h1>
-          <p style={{ margin: '1.5rem 0 0', maxWidth: '39rem', fontSize: '1.08rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>Choose what is happening in your life. Understand the parts of your estate plan that may need attention, work through a practical checklist, then take the next step when you are ready.</p>
+          <h1 style={{ margin: '1.25rem 0 0', maxWidth: '48rem', fontSize: 'clamp(2.7rem, 5.5vw, 5rem)', lineHeight: 1.02, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>Know exactly what life changes mean for your estate plan.</h1>
+          <p style={{ margin: '1.5rem 0 0', maxWidth: '39rem', fontSize: '1.08rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>Choose what is happening in your life. Learn the legal rule, understand what needs attention, work through a practical checklist, then take the next step.</p>
         </div>
       </section>
 

@@ -36,6 +36,10 @@ export default async function LifeChangePage({ params }: Props) {
       <section style={{ paddingBlock: '4.5rem', background: '#fff' }}>
         <div className="md:px-10 lg:grid-cols-[1fr_18rem]" style={{ maxWidth: 1000, marginInline: 'auto', paddingInline: '1.5rem', display: 'grid', gridTemplateColumns: '1fr', gap: '4rem' }}>
           <div>
+            <div style={{ marginBottom: '2.5rem', padding: '1.5rem', borderRadius: 12, background: 'var(--teal-light)', border: '1px solid var(--teal-soft)' }}>
+              <p style={{ margin: 0, color: 'var(--teal-deep)', fontSize: '.68rem', fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase' }}>The legal position</p>
+              <p style={{ margin: '.7rem 0 0', fontSize: '.92rem', lineHeight: 1.72, color: 'var(--mkt-ink-text)' }}>{event.legalRule}</p>
+            </div>
             <p style={{ margin: 0, color: 'var(--teal-deep)', fontSize: '.7rem', fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase' }}>What may need attention</p>
             <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column' }}>
               {event.considerations.map((item, index) => (
