@@ -273,14 +273,14 @@ export default function StepReview({ formData, activeSteps, onJumpToStep }: Prop
         <div className="border border-amber-200 bg-amber-50 px-4 py-4 space-y-2">
           <p className="text-sm font-semibold text-amber-900">Some aspects of your estate may benefit from professional review</p>
           <p className="text-sm text-amber-800 leading-relaxed">
-            You told us you have {formatFlagList(triggeredFlagLabels(formData))}. Complete your Will below  -  we&apos;ll flag these in your Vault with a recommendation to add a solicitor review. A review add-on is available from your Vault for around $150.
+            You told us you have {formatFlagList(triggeredFlagLabels(formData))}. Complete your Will below  -  we&apos;ll flag these in your Vault with a recommendation for a more detailed bespoke solicitor review. Contact us through your Vault and we&apos;ll connect you with a partner lawyer.
           </p>
         </div>
       )}
 
       <div className="border border-[var(--line)] bg-[var(--paper-warm)] px-4 py-3">
         <p className="text-xs" style={{ color: 'var(--neutral)' }}>
-          <span className="font-semibold" style={{ color: 'var(--ink)' }}>Note:</span> Heirloom Life is not a law firm and this is not legal advice. Your Will is prepared using established estate planning standards. It is not reviewed by a solicitor unless you purchase the review add-on from your Vault.
+          <span className="font-semibold" style={{ color: 'var(--ink)' }}>Note:</span> Heirloom Life is not a law firm and this is not legal advice. Your Will is prepared using established estate planning standards. Every Will issued through Heirloom Life is subject to a standard solicitor quality review before being finalised.
         </p>
       </div>
     </div>

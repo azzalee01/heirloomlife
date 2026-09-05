@@ -151,7 +151,7 @@ export default async function NotificationsPage() {
               style={{ borderColor: 'var(--line)', background: 'white' }}
             >
               <p className="text-sm leading-relaxed" style={{ color: 'var(--neutral)' }}>
-                Based on what you told us during your Will questionnaire, we&apos;ve identified {allRecommendations.length} area{allRecommendations.length !== 1 ? 's' : ''} that may benefit from a professional review. Your Will is complete and valid once signed  -  these are recommendations, not blockers. A solicitor review add-on is available for around $150.
+                Based on what you told us during your Will questionnaire, we&apos;ve identified {allRecommendations.length} area{allRecommendations.length !== 1 ? 's' : ''} that may benefit from a professional review. Your Will is complete and valid once signed  -  these are recommendations, not blockers. Every Heirloom Will is subject to a standard solicitor quality review before being finalised. If these flags warrant a more detailed bespoke review, contact us through your Vault.
               </p>
             </div>
 

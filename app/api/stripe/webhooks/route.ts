@@ -43,7 +43,33 @@ export async function POST(request: NextRequest) {
       if (isSubscriptionProduct(product) && session.subscription) {
         updates.stripe_subscription_id = session.subscription as string
       }
+      if (product === 'will') {
+        const vaultUntil = new Date()
+        vaultUntil.setDate(vaultUntil.getDate() + 90)
+        updates.vault_included_until = vaultUntil.toISOString()
+      }
       await supabaseAdmin.from('profiles').update(updates).eq('id', userId)
+
+      // Record partner referral if this Will was attributed to a charity partner
+      if (product === 'will') {
+        const partnerCode = session.metadata?.partner_code
+        const willId = session.metadata?.will_id
+        if (partnerCode && willId) {
+          const { data: partner } = await supabaseAdmin
+            .from('charity_partners')
+            .select('id')
+            .eq('referral_code', partnerCode)
+            .eq('active', true)
+            .single()
+          if (partner) {
+            await supabaseAdmin.from('partner_referrals').insert({
+              partner_id: partner.id,
+              will_id: willId,
+              user_id: userId,
+            })
+          }
+        }
+      }
       break
     }
 

@@ -1,7 +1,33 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+const PARTNER_REF_COOKIE = 'hl_partner_ref'
+const REF_PATTERN = /^[a-zA-Z0-9_-]{3,64}$/
+
 export async function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+  const isProtected = pathname.startsWith('/dashboard') || pathname.startsWith('/will')
+  const ref = request.nextUrl.searchParams.get('ref')
+  const validRef = ref && REF_PATTERN.test(ref) ? ref : null
+
+  // Non-auth-protected routes: only action needed is setting the referral cookie.
+  if (!isProtected) {
+    if (validRef) {
+      const response = NextResponse.next()
+      response.cookies.set({
+        name: PARTNER_REF_COOKIE,
+        value: validRef,
+        path: '/',
+        maxAge: 30 * 24 * 60 * 60,
+        sameSite: 'lax',
+        secure: true,
+      })
+      return response
+    }
+    return NextResponse.next()
+  }
+
+  // Auth-protected routes (/dashboard, /will): refresh Supabase session cookies.
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -27,6 +53,17 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  if (validRef) {
+    supabaseResponse.cookies.set({
+      name: PARTNER_REF_COOKIE,
+      value: validRef,
+      path: '/',
+      maxAge: 30 * 24 * 60 * 60,
+      sameSite: 'lax',
+      secure: true,
+    })
+  }
+
   if (!user) {
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
@@ -35,5 +72,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/will/:path*'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)'],
 }

@@ -3,8 +3,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
-import { markWillDownloaded } from '@/app/dashboard/will/_actions'
-import { renderWillText } from '../_render'
 import {
   type WillFormData,
   type StepId,
@@ -202,7 +200,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const [showCompletion, setShowCompletion] = useState(false)
   const [showPaymentGate, setShowPaymentGate] = useState(false)
   const [checkoutLoading, setCheckoutLoading] = useState(false)
-  const [downloading, setDownloading] = useState(false)
+  const [checkingOut, setCheckingOut] = useState(false)
+  const [checkoutError, setCheckoutError] = useState<string | null>(null)
 
   const currentStepId = wizardSteps[stepIndex]
   const isBackupStep = typeof currentStepId === 'string' && currentStepId.startsWith('backup_')
@@ -328,23 +327,29 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     }
   }
 
-  async function handleDownload() {
-    if (!form.willId) return
-    setDownloading(true)
+  async function handleWillCheckout() {
+    setCheckingOut(true)
+    setCheckoutError(null)
     try {
-      const text = renderWillText(form)
-      await markWillDownloaded(form.willId)
-      const blob = new Blob([text], { type: 'text/plain; charset=utf-8' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'my-will.txt'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product: 'will' }),
+      })
+      if (res.status === 401) {
+        window.location.href = '/auth/login?next=/will/new'
+        return
+      }
+      const data = await res.json() as { url?: string; error?: string }
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setCheckoutError(data.error ?? 'Checkout failed. Please try again.')
+      }
+    } catch {
+      setCheckoutError('Checkout failed. Please try again.')
     } finally {
-      setDownloading(false)
+      setCheckingOut(false)
     }
   }
 
@@ -581,52 +586,66 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                         </svg>
                       </div>
                       <h2 className="text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
-                        Your Will is complete
+                        Your Will is ready
                       </h2>
                       <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>
-                        It&apos;s saved to your Vault. Download it now to print and sign, or explore your Vault to see how your estate plan is organised.
+                        Saved to your account. Pay once to download and get three months of Living Vault included — no ongoing subscription required.
                       </p>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
-                      {/* Download */}
-                      <button
-                        type="button"
-                        onClick={handleDownload}
-                        disabled={downloading}
-                        className="flex flex-col items-center gap-3 border p-6 text-left hover:border-[var(--teal)] transition-colors disabled:opacity-60"
-                        style={{ borderColor: 'var(--line)' }}
-                      >
-                        <div className="w-10 h-10 flex items-center justify-center" style={{ background: 'var(--paper-warm)' }}>
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-                          </svg>
+                    <div className="max-w-md mx-auto space-y-3">
+                      {/* Primary: payment card */}
+                      <div className="border-2 p-6 space-y-4" style={{ borderColor: 'var(--teal)' }}>
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Download your Will</p>
+                            <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>One payment. No subscription required.</p>
+                          </div>
+                          <p className="text-xl font-bold shrink-0" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>$129</p>
                         </div>
-                        <div>
-                          <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>
-                            {downloading ? 'Downloading…' : 'Download Will'}
-                          </p>
-                          <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
-                            Print and sign with two witnesses to make it legally valid
-                          </p>
-                        </div>
-                      </button>
+                        <ul className="space-y-1.5">
+                          {[
+                            'Your Will, permanently downloadable',
+                            'Standard solicitor quality review included',
+                            '3 months Living Vault membership',
+                          ].map((f) => (
+                            <li key={f} className="flex items-center gap-2 text-xs" style={{ color: 'var(--ink)' }}>
+                              <svg className="shrink-0" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                                <path d="M20 6L9 17l-5-5" />
+                              </svg>
+                              {f}
+                            </li>
+                          ))}
+                        </ul>
+                        {checkoutError && (
+                          <p className="text-xs text-red-600">{checkoutError}</p>
+                        )}
+                        <button
+                          type="button"
+                          onClick={handleWillCheckout}
+                          disabled={checkingOut}
+                          className="w-full py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-60"
+                          style={{ backgroundColor: 'var(--teal)', border: 'none' }}
+                        >
+                          {checkingOut ? 'Loading…' : 'Pay $129 and get your Will'}
+                        </button>
+                      </div>
 
-                      {/* View in Vault */}
+                      {/* Secondary: view in Vault, no payment needed */}
                       <Link
                         href="/dashboard"
-                        className="flex flex-col items-center gap-3 border p-6 text-left hover:border-[var(--teal)] transition-colors"
+                        className="flex items-center gap-3 border px-5 py-4 hover:border-[var(--teal)] transition-colors"
                         style={{ borderColor: 'var(--line)' }}
                       >
-                        <div className="w-10 h-10 flex items-center justify-center" style={{ background: 'var(--paper-warm)' }}>
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                        <div className="w-8 h-8 flex items-center justify-center shrink-0" style={{ background: 'var(--paper-warm)' }}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                           </svg>
                         </div>
                         <div>
                           <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>View in Vault</p>
                           <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
-                            See your estate plan, assets, and people all in one place
+                            See your estate plan, assets, and people in one place
                           </p>
                         </div>
                       </Link>

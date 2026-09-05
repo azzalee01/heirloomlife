@@ -153,14 +153,28 @@ export default function HomePage() {
 
       {/* ─── THE WILL ─────────────────────────────────────────────────────── */}
       <section id="the-will" style={{ ...SECTION_PAD, background: '#fff' }}>
-        <Reveal className="md:px-10" style={W}>
-          <div style={{ maxWidth: '38rem' }}>
+        <Reveal
+          className="md:px-10 lg:grid lg:gap-16 lg:items-center"
+          style={{ ...W, gridTemplateColumns: '1fr 1.1fr' }}
+        >
+          {/* Left: text + CTAs */}
+          <div>
             <span style={SECTION_LABEL}>The Will</span>
             <H2>Not a document you sign once<br/>and hope you never think about <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>again</em>.</H2>
-            <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault  -  readable in plain English, versioned every time your life moves forward, with a solicitor review add-on available when your situation calls for it.</Sub>
+            <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault - readable in plain English, versioned every time your life moves forward, with a standard solicitor quality review included before your Will is issued.</Sub>
+            <div style={{ marginTop: '2rem', display: 'flex', gap: '.9rem', flexWrap: 'wrap' }}>
+              <Link href="/start" className="mkt-btn-ink-l">
+                Start your Will
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+              <Link href="/how-it-works" className="mkt-btn-ghost-l">How it works</Link>
+            </div>
           </div>
 
-          <div style={{ marginTop: '3.5rem', borderRadius: 12, background: '#fff', border: '1px solid var(--mkt-line)', boxShadow: '0 30px 80px rgba(15,30,28,0.10)', overflow: 'hidden' }}>
+          {/* Right: Will mockup */}
+          <div className="mt-12 lg:mt-0" style={{ borderRadius: 12, background: '#fff', border: '1px solid var(--mkt-line)', boxShadow: '0 30px 80px rgba(15,30,28,0.10)', overflow: 'hidden' }}>
             {/* Doc header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--mkt-line)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '.9rem' }}>
@@ -169,7 +183,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <p style={{ fontWeight: 600, fontSize: '.95rem', margin: 0 }}>Last Will &amp; Testament</p>
-                  <p style={{ fontSize: '.75rem', color: 'var(--mkt-stone-soft)', marginTop: '.15rem' }}>Version 4 · Solicitor reviewed 12 Jun 2026</p>
+                  <p style={{ fontSize: '.75rem', color: 'var(--mkt-stone-soft)', marginTop: '.15rem' }}>Version 4 · Last amended 12 Jun 2026</p>
                 </div>
               </div>
               <Pill>Solicitor reviewed</Pill>
@@ -183,10 +197,10 @@ export default function HomePage() {
               ))}
             </div>
             {/* Clauses */}
-            <div style={{ padding: '1.75rem 1.5rem', minHeight: '14rem' }}>
+            <div style={{ padding: '1.75rem 1.5rem' }}>
               {[
                 { n: '1', title: 'Appointment of Executor', body: "Names who carries out your wishes. Your executor gathers your assets, pays any debts, and distributes what remains as you've set out below.", badge: null },
-                { n: '2', title: 'Guardianship of Minor Children', body: 'Flagged for review  -  a change to your family situation since your last amendment may affect this clause.', badge: 'Included review recommended' },
+                { n: '2', title: 'Guardianship of Minor Children', body: 'Flagged for review - a change to your family situation since your last amendment may affect this clause.', badge: 'Review recommended' },
                 { n: '3', title: 'Distribution of Residuary Estate', body: 'Sets out how everything not otherwise gifted is divided. Last confirmed against your asset register two months ago.', badge: null },
               ].map(clause => (
                 <div key={clause.n} style={{ display: 'flex', gap: '1rem', padding: '1rem 0', borderBottom: '1px solid var(--mkt-line)' }}>
@@ -235,7 +249,7 @@ export default function HomePage() {
               </div>
             </div>
             {[
-              { tag: 'Lawyer Review', h: "Available when it matters, at a flat rate.", p: 'Complex flags  -  business succession, trusts, blended families  -  are surfaced in your Vault. A solicitor review add-on is available for around $150, with direct access to our partner lawyers through the platform.' },
+              { tag: 'Lawyer Review', h: "Included as standard, with escalation available.", p: 'Every Will is subject to a standard solicitor quality review before being issued. Complex flags  -  business succession, trusts, blended families  -  are surfaced in your Vault, where you can reach our partner lawyers directly.' },
               { tag: 'Document Storage', h: "Everything in one place, always up to date.", p: "Your Will, asset register, and instructions stored securely in your Vault  -  so nothing is left to find at the worst possible time." },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: '#fff', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>

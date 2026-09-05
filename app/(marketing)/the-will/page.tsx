@@ -143,14 +143,14 @@ export default function TheWillPage() {
         </div>
       </section>
 
-      {/* ── Solicitor review add-on note ──────────────────────────────────── */}
+      {/* ── Solicitor review note ─────────────────────────────────────────── */}
       <section id="solicitor-review" style={{ ...SECTION_PAD, background: '#fff', scrollMarginTop: '6rem' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem' }}>
-            Solicitor review, when you need it.
+            Solicitor review, included as standard.
           </h2>
           <p style={{ fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>
-            Template Wills are not automatically reviewed by a solicitor  -  they don&#8217;t need to be for straightforward estates. For situations that are more complex  -  business succession, blended families, overseas assets, testamentary trusts  -  your Vault will flag the specific areas of concern. You can then request a solicitor review as an add-on for around $150, and communicate directly with our partner lawyers through the platform.
+            Every Will issued through Heirloom Life is subject to a standard solicitor quality review before being issued. For situations that are more complex  -  business succession, blended families, overseas assets, testamentary trusts  -  your Vault will flag the specific areas of concern, and you can communicate directly with our partner lawyers through your Vault for a more detailed bespoke engagement.
           </p>
         </div>
       </section>

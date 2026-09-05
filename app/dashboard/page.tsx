@@ -223,16 +223,55 @@ export default async function DashboardPage({
         {/* ── Payment success banner ────────────────────────────────────────── */}
         {paymentSuccess && (
           <div
-            className="rounded-lg border px-5 py-4 flex items-center gap-3"
+            className="rounded-lg border px-5 py-4 flex items-start gap-3"
             style={{ borderColor: '#bbf7d0', background: '#f0fdf4' }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+            <svg className="shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 24 24" fill="none"
               stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
             </svg>
-            <p className="text-sm font-medium" style={{ color: '#166534' }}>
-              Payment received  -  your plan will be activated shortly.
-            </p>
+            <div>
+              <p className="text-sm font-medium" style={{ color: '#166534' }}>
+                Payment received — your Will document will be available to download below shortly.
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: '#166534', opacity: 0.8 }}>
+                If it doesn&apos;t appear, refresh the page in a moment.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* ── Will download card — shown once Will is paid ──────────────────── */}
+        {will && plan === 'will' && planStatus === 'active' && (
+          <div
+            className="rounded-lg border-2 overflow-hidden"
+            style={{ borderColor: 'var(--teal)' }}
+          >
+            <div
+              className="px-5 py-1.5 text-center text-xs font-bold text-white"
+              style={{ backgroundColor: 'var(--teal)' }}
+            >
+              Ready to download
+            </div>
+            <div className="px-5 py-5 bg-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <p className="text-sm font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+                  Your Will is ready
+                </p>
+                <p className="text-sm mt-1" style={{ color: 'var(--neutral)' }}>
+                  Print and sign with two witnesses present to make it legally valid.
+                </p>
+              </div>
+              <a
+                href="/api/will/download"
+                className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold shrink-0"
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                </svg>
+                Download Will
+              </a>
+            </div>
           </div>
         )}
 

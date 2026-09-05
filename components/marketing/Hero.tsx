@@ -81,7 +81,7 @@ export function Hero() {
               className="text-xs tracking-wide"
               style={{ color: '#4A6A67' }}
             >
-              Solicitor-reviewed · Currently available in NSW and VIC · Pricing to be confirmed
+              Solicitor-reviewed
             </motion.p>
 
           </div>

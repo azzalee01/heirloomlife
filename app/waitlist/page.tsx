@@ -2,11 +2,6 @@ import Link from 'next/link'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 
-export const metadata = {
-  title: 'Join the waitlist  -  Heirloom Life',
-  description: 'Heirloom Life is currently available in NSW and VIC. Join the waitlist and we\'ll let you know when your state is added.',
-}
-
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',

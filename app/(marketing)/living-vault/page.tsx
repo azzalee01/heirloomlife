@@ -111,7 +111,7 @@ export default function LivingVaultPage() {
               {
                 tag: 'Lawyer Review',
                 title: 'Included where it matters, priced where it doesn\'t.',
-                body: 'High-severity flags  -  guardianship, trusts, business succession  -  are surfaced in your Vault with a clear recommendation. A solicitor review add-on is available for around $150, and you can communicate directly with our partner lawyers through the platform.',
+                body: 'High-severity flags  -  guardianship, trusts, business succession  -  are surfaced in your Vault with a clear recommendation. Every Will issued through Heirloom Life is subject to a standard solicitor quality review. For complex situations, you can communicate directly with our partner lawyers through your Vault.',
               },
               {
                 tag: 'Document Storage',

@@ -77,10 +77,10 @@ export default function PricingPage() {
               {[
                 'Seven-step guided questionnaire',
                 'State-specific legal compliance for all Australian states and territories',
-                'Ingest-and-redraft from your existing Will',
-                'Downloadable, print-and-sign Will document',
-                'Three months of full Living Vault benefits',
-                'Permanent access to download your completed Will',
+                'Standard solicitor quality review before your Will is issued',
+                'Your Will, permanently downloadable',
+                '3 months Living Vault membership included',
+                'Witnessing guidance and remote witness scheduling',
               ].map((f) => (
                 <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>
                   <Check />
@@ -146,8 +146,7 @@ export default function PricingPage() {
                 'A maintained register of assets, beneficiaries, gifts, and executors',
                 'Will status and estate-review guidance',
                 'NSW members only: access to Heirloom\'s team AV witness pool for remote execution',
-                'Member pricing for optional solicitor advice and reviews',
-                'Solicitor review add-on available (~$150) with direct access to partner lawyers through the platform',
+                'Direct access to partner lawyers through the platform for complex or bespoke situations',
               ].map((f) => (
                 <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>
                   <Check />
@@ -175,7 +174,7 @@ export default function PricingPage() {
             Complete your Will  -  we&apos;ll flag what needs a closer look.
           </h2>
           <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', maxWidth: '36rem', marginBottom: '2rem' }}>
-            If your estate involves overseas assets, a business, a blended family, or a beneficiary with special needs, complete the questionnaire and your Vault will flag the specific areas of concern. From there you can request a solicitor review for around $150 and communicate directly with our partner lawyers  -  without starting over.
+            If your estate involves overseas assets, a business, a blended family, or a beneficiary with special needs, complete the questionnaire and your Vault will flag the specific areas of concern. From there you can communicate directly with our partner lawyers through your Vault  -  without starting over.
           </p>
           <a href="/start?path=retail" className="mkt-btn-ghost-m">Start your Will</a>
         </div>
@@ -206,7 +205,7 @@ export default function PricingPage() {
             },
             {
               q: 'What if my situation is complex?',
-              a: 'Complete the questionnaire and your Vault will flag the specific areas of concern. You can then request a solicitor review add-on for around $150 and communicate directly with our partner lawyers through the platform. For estates too complex for a template Will entirely, we can refer you to a solicitor for a bespoke engagement.',
+              a: 'Complete the questionnaire and your Vault will flag the specific areas of concern. Your Will also receives a standard solicitor quality review before being issued. For situations that need a more detailed bespoke engagement, you can communicate directly with our partner lawyers through your Vault. For estates too complex for a template Will entirely, we can refer you to a solicitor for a bespoke engagement.',
             },
           ].map((item) => (
             <details

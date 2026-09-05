@@ -163,9 +163,15 @@ export async function saveStep(
   let id = willId
   let willStatus = 'draft'
   if (!id) {
+    const cookieStore = await cookies()
+    const partnerRef = cookieStore.get('hl_partner_ref')?.value ?? null
     const { data, error } = await supabase
       .from('wills')
-      .insert({ user_id: user.id, status: 'draft' })
+      .insert({
+        user_id: user.id,
+        status: 'draft',
+        ...(partnerRef && { partner_referral_code: partnerRef }),
+      })
       .select('id')
       .single()
     if (error) throw new Error(error.message)

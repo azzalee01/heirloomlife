@@ -33,7 +33,7 @@ export default function TryItPage() {
 
         <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--mkt-line)' }}>
           <p style={{ fontSize: '.82rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.6, margin: 0 }}>
-            Creating an account does not purchase anything. Pricing applies when you submit your completed Will for solicitor review.{' '}
+            Creating an account is free. Your Will costs $129 when you&apos;re ready to download — one payment, no subscription required.{' '}
             <Link href="/pricing" style={{ color: 'var(--teal-deep)', textDecoration: 'underline' }}>See pricing →</Link>
           </p>
         </div>

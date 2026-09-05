@@ -19,7 +19,7 @@ const STEPS = [
   {
     num: '03',
     title: 'Download and sign your Will',
-    body: 'Download your completed Will and sign it in the presence of two independent witnesses. Complex situations  -  business succession, blended families, overseas assets  -  are flagged in your Vault with the option to add a solicitor review for around $150.',
+    body: 'Download your completed Will and sign it in the presence of two independent witnesses. Complex situations  -  business succession, blended families, overseas assets  -  are flagged in your Vault, where you can reach our partner lawyers directly.',
   },
   {
     num: '04',
@@ -100,7 +100,7 @@ export default function HowItWorksPage() {
             Australian succession law is largely state-based. Heirloom Life is available across all states and territories, accounting for each state&#8217;s specific requirements throughout the drafting and review process.
           </p>
           <p style={{ marginTop: '1rem', fontSize: '.85rem', color: 'var(--mkt-stone-soft)' }}>
-            Complex situations are flagged in your Vault after you complete your Will. A solicitor review add-on is available from your Vault for around $150  -  the same price point as Safewill and similar services.
+            Complex situations are flagged in your Vault after you complete your Will. Every Will issued through Heirloom Life is subject to a standard solicitor quality review. For complex situations flagged in your Vault, we can connect you with a partner lawyer directly.
           </p>
         </div>
       </section>
