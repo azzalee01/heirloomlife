@@ -118,7 +118,6 @@ export default function HomePage() {
           <div>
             <p style={{ margin: 0, fontSize: '.72rem', fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--teal)' }}>A different way to pay</p>
             <p style={{ margin: '.45rem 0 0', fontSize: '1.05rem', fontWeight: 500 }}>Include a gift to an eligible charity and your Will can be sponsored for $0.</p>
-            <p style={{ margin: '.3rem 0 0', fontSize: '.78rem', color: 'var(--mkt-stone)' }}>Or continue without a charitable gift and purchase the standard Will. Your choices stay yours.</p>
           </div>
           <Link href="/charity-wills" className="mkt-btn-ghost-m" style={{ flexShrink: 0 }}>How sponsored Wills work</Link>
         </div>
