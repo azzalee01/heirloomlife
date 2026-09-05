@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
 import { renderWillText } from '../_render'
@@ -195,6 +195,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const [vaultCheckingOut, setVaultCheckingOut] = useState(false)
   const [vaultCheckoutError, setVaultCheckoutError] = useState<string | null>(null)
 
+  const pendingSaveRef = useRef<Promise<string> | null>(null)
+
   const willPreviewText = useMemo(() => {
     if (!showCompletion || hasWillAccess) return ''
     const sections = renderWillText(form).split('\n\n')
@@ -250,24 +252,39 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       return
     }
 
-    setSaving(true)
     setError(null)
-    try {
-      const willId = await saveStep(form.willId, currentStaticStep, form)
-      setForm((prev) => ({ ...prev, willId }))
-      const nextIndex = Math.min(stepIndex + 1, wizardSteps.length - 1)
-      setStepIndex(nextIndex)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+    const nextIndex = Math.min(stepIndex + 1, wizardSteps.length - 1)
 
-      // Soft email capture after personal details step, for anon users only
-      if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
-        setShowEmailCapture(true)
+    // First save: must block to obtain the willId before we can save anything else
+    if (!form.willId) {
+      setSaving(true)
+      try {
+        const willId = await saveStep(null, currentStaticStep, form)
+        setForm((prev) => ({ ...prev, willId }))
+        setStepIndex(nextIndex)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
+          setShowEmailCapture(true)
+        }
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Failed to save. Please try again.')
+      } finally {
+        setSaving(false)
       }
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Failed to save. Please try again.')
-    } finally {
-      setSaving(false)
+      return
     }
+
+    // willId exists — advance instantly, save in the background
+    setStepIndex(nextIndex)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
+      setShowEmailCapture(true)
+    }
+
+    pendingSaveRef.current = saveStep(form.willId, currentStaticStep, form)
+    pendingSaveRef.current.catch((e) => {
+      setError(e instanceof Error ? e.message : 'Your progress may not have saved. Please try again.')
+    })
   }
 
   function handleBack() {
@@ -286,6 +303,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     setSaving(true)
     setError(null)
     try {
+      // Ensure any in-flight background save finishes before we finalise
+      if (pendingSaveRef.current) await pendingSaveRef.current
       await completeWill(form.willId)
       setShowCompletion(true)
       window.scrollTo({ top: 0, behavior: 'smooth' })
