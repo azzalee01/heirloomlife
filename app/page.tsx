@@ -58,15 +58,15 @@ export default function HomePage() {
         <div style={{ ...W, paddingTop: '8rem', paddingBottom: '3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ maxWidth: '52rem' }}>
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(2.7rem, 6.2vw, 5.4rem)', lineHeight: .98, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0 }}>
-              Life changes. Your Will{' '}
-              <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>should keep up</em>.
+              Protect what matters,{' '}
+              <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Marriage, children, property, separation and everything that comes next can change what you need to protect. Plan for free, create your Will for $129, then keep it current with Living Vault.
+              Create a signing-ready Australian Will online for $129. Living Vault keeps your Will, estate details and important information organised, accessible and ready when life changes.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', flexWrap: 'wrap', gap: '.9rem', justifyContent: 'center' }}>
               <Link href="/start?path=retail" className="mkt-btn-ink-l">
-                Plan my Will for free
+                Create my Will
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
