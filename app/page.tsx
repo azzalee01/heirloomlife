@@ -61,7 +61,7 @@ export default function HomePage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Australia&#8217;s modern Will and life-management platform—bringing your Will, Living Vault and ongoing support together through every chapter.
+              Australia&#8217;s modern Will and life-management platform.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', flexWrap: 'wrap', gap: '.9rem', justifyContent: 'center' }}>
               <Link href="/start?path=retail" className="mkt-btn-ink-l">
