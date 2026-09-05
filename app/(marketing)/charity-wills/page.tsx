@@ -1,6 +1,4 @@
 import Link from 'next/link'
-import MarketingNav from '@/components/marketing/MarketingNav'
-import MarketingFooter from '@/components/marketing/MarketingFooter'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
 import CharityIntakeForm from './_components/CharityIntakeForm'
 
@@ -18,8 +16,6 @@ export const metadata = {
 export default function CharityWillsPage() {
   return (
     <>
-      <MarketingNav />
-
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section style={{ background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden' }}>
         <div className="relative md:flex md:min-h-[34rem] md:items-center md:px-10" style={W}>
@@ -145,7 +141,6 @@ export default function CharityWillsPage() {
         </div>
       </section>
 
-      <MarketingFooter />
     </>
   )
 }
