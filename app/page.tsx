@@ -135,16 +135,16 @@ export default function HomePage() {
           </div>
           <div className="sm:grid-cols-2 lg:grid-cols-4" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', gap: '.75rem' }}>
             {[
-              ['Marriage', 'Review your relationship, beneficiaries and existing Will.'],
-              ['A new child', 'Revisit guardianship, gifts and distribution choices.'],
-              ['Property', 'Keep your asset register and specific gifts current.'],
-              ['Separation', 'Check the people, gifts and appointments in your plan.'],
-              ['Business', 'Record a major change in the composition of your estate.'],
-              ['Inheritance', 'Review how new wealth changes your intentions.'],
-              ['Moving interstate', 'Check your details and state-specific guidance.'],
-              ['Pet care', 'Record who should care for the animals you love.'],
-            ].map(([event, note]) => (
-              <Link key={event} href="/start" style={{ display: 'block', padding: '1.25rem', borderRadius: 10, border: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)', textDecoration: 'none' }}>
+              ['Marriage', 'Review your relationship, beneficiaries and existing Will.', 'getting-married'],
+              ['A new child', 'Revisit guardianship, gifts and distribution choices.', 'new-child'],
+              ['Property', 'Keep your asset register and specific gifts current.', 'buying-selling-property'],
+              ['Separation', 'Check the people, gifts and appointments in your plan.', 'separation-divorce'],
+              ['Business', 'Record a major change in the composition of your estate.', 'starting-selling-business'],
+              ['Inheritance', 'Review how new wealth changes your intentions.', 'receiving-inheritance'],
+              ['Moving interstate', 'Check your details and state-specific guidance.', 'moving-interstate'],
+              ['Serious illness', 'Organise important documents and review who may need access.', 'serious-illness'],
+            ].map(([event, note, slug]) => (
+              <Link key={event} href={`/life-changes/${slug}`} style={{ display: 'block', padding: '1.25rem', borderRadius: 10, border: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)', textDecoration: 'none' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '.75rem' }}>
                   <p style={{ margin: 0, fontSize: '.9rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>{event}</p>
                   <span style={{ color: 'var(--teal-deep)', fontSize: '.9rem' }}>→</span>
@@ -153,7 +153,7 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
-          <p style={{ marginTop: '1.25rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)' }}>A life change may affect your estate record, your Will, or both. Rules and effects vary by state and individual circumstances.</p>
+          <p style={{ marginTop: '1.25rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)' }}>A life change may affect your estate record, your Will, or both. Rules and effects vary by state and individual circumstances. <Link href="/life-changes" style={{ color: 'var(--teal-deep)', fontWeight: 600 }}>Explore all life changes →</Link></p>
         </div>
       </section>
 
