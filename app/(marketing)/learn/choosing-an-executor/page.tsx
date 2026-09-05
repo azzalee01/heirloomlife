@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import EditorialBanner from '@/components/marketing/EditorialBanner'
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
@@ -23,26 +24,29 @@ const CALLOUT: React.CSSProperties = {
 export default function ExecutorPage() {
   return (
     <>
-      <section style={{ paddingTop: '4rem', paddingBottom: '4rem', background: 'var(--mkt-surface)' }}>
-        <div style={{ maxWidth: 720, marginInline: 'auto', paddingInline: '1.5rem' }} className="md:px-10">
-          <span style={LABEL}>Learn · People &amp; roles</span>
-          <h1 style={{
-            fontFamily: "var(--font-body)",
-            fontSize: 'clamp(2rem, 3.5vw, 3rem)', lineHeight: 1.1,
-            letterSpacing: '-.02em', fontWeight: 500,
-            color: 'var(--mkt-ink-text)', margin: '0 0 1.1rem',
-          }}>
-            Choosing an{' '}
-            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>
-              executor
-            </em>
-          </h1>
-          <p style={{ fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', marginBottom: 0 }}>
-            Your executor is the person who carries out your Will. They handle everything from applying for probate to distributing your assets and settling your debts. It&#8217;s one of the most consequential appointments in your Will.
-          </p>
-          <p style={{ marginTop: '.75rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)' }}>
-            Australian law · 7 min read
-          </p>
+      <section style={{ background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
+        <div style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }} className="relative md:flex md:min-h-[22rem] md:items-center md:px-10">
+          <div className="relative z-10 md:w-[54%]" style={{ maxWidth: '38rem', paddingBlock: '5rem' }}>
+            <span style={LABEL}>Learn · People &amp; roles</span>
+            <h1 style={{
+              fontFamily: "var(--font-body)",
+              fontSize: 'clamp(2rem, 3.5vw, 3rem)', lineHeight: 1.1,
+              letterSpacing: '-.02em', fontWeight: 500,
+              color: 'var(--mkt-ink-text)', margin: '0 0 1.1rem',
+            }}>
+              Choosing an{' '}
+              <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>
+                executor
+              </em>
+            </h1>
+            <p style={{ fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', marginBottom: 0 }}>
+              Your executor is the person who carries out your Will. They handle everything from applying for probate to distributing your assets and settling your debts. It&#8217;s one of the most consequential appointments in your Will.
+            </p>
+            <p style={{ marginTop: '.75rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)' }}>
+              Australian law · 7 min read
+            </p>
+          </div>
+          <EditorialBanner src="/images/learn/choosing-an-executor.jpg" alt="Two trusted people reviewing estate documents together" />
         </div>
       </section>
 

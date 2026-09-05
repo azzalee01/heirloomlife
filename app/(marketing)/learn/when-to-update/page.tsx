@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import EditorialBanner from '@/components/marketing/EditorialBanner'
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
@@ -66,27 +67,30 @@ const EVENTS = [
 export default function WhenToUpdatePage() {
   return (
     <>
-      <section style={{ paddingTop: '4rem', paddingBottom: '4rem', background: 'var(--mkt-surface)' }}>
-        <div style={{ maxWidth: 720, marginInline: 'auto', paddingInline: '1.5rem' }} className="md:px-10">
-          <span style={LABEL}>Learn · Life stages</span>
-          <h1 style={{
-            fontFamily: "var(--font-body)",
-            fontSize: 'clamp(2rem, 3.5vw, 3rem)', lineHeight: 1.1,
-            letterSpacing: '-.02em', fontWeight: 500,
-            color: 'var(--mkt-ink-text)', margin: '0 0 1.1rem',
-          }}>
-            When to{' '}
-            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>
-              update
-            </em>{' '}
-            your Will
-          </h1>
-          <p style={{ fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', marginBottom: 0 }}>
-            A Will is not a set-and-forget document. Life changes, and your estate plan should keep up. Some of those changes are more urgent than others.
-          </p>
-          <p style={{ marginTop: '.75rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)' }}>
-            Australian law · 7 min read
-          </p>
+      <section style={{ background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
+        <div style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }} className="relative md:flex md:min-h-[22rem] md:items-center md:px-10">
+          <div className="relative z-10 md:w-[54%]" style={{ maxWidth: '38rem', paddingBlock: '5rem' }}>
+            <span style={LABEL}>Learn · Life stages</span>
+            <h1 style={{
+              fontFamily: "var(--font-body)",
+              fontSize: 'clamp(2rem, 3.5vw, 3rem)', lineHeight: 1.1,
+              letterSpacing: '-.02em', fontWeight: 500,
+              color: 'var(--mkt-ink-text)', margin: '0 0 1.1rem',
+            }}>
+              When to{' '}
+              <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>
+                update
+              </em>{' '}
+              your Will
+            </h1>
+            <p style={{ fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', marginBottom: 0 }}>
+              A Will is not a set-and-forget document. Life changes, and your estate plan should keep up. Some of those changes are more urgent than others.
+            </p>
+            <p style={{ marginTop: '.75rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)' }}>
+              Australian law · 7 min read
+            </p>
+          </div>
+          <EditorialBanner src="/images/learn/when-to-update.jpg" alt="Life-event keepsakes arranged beside an open planner" />
         </div>
       </section>
 
