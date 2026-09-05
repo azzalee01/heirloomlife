@@ -7,9 +7,6 @@ const NAV_LINKS = [
   { label: 'Living Vault', href: '/living-vault' },
   { label: 'Life Changes', href: '/life-changes' },
   { label: 'Charity Wills', href: '/charity-wills' },
-  { label: 'How it works', href: '/how-it-works' },
-  { label: 'Learn', href: '/learn' },
-  { label: 'Passing', href: '/passing' },
   { label: 'Pricing', href: '/pricing' },
 ]
 
@@ -51,7 +48,7 @@ export default function MarketingNav() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center" style={{ gap: '1.2rem' }} aria-label="Main">
+        <nav className="hidden lg:flex items-center" style={{ gap: '1.75rem' }} aria-label="Main">
           {NAV_LINKS.map(l => (
             <Link key={l.href} href={l.href} className="mkt-nav-link">
               {l.label}

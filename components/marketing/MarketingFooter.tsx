@@ -14,12 +14,15 @@ const COLUMNS = [
     title: 'Company',
     links: [
       { label: 'About', href: '/about' },
+      { label: 'How it works', href: '/how-it-works' },
     ],
   },
   {
-    title: 'For Advisers',
+    title: 'Resources',
     links: [
-      { label: 'Overview', href: '/for-advisers' },
+      { label: 'Learn', href: '/learn' },
+      { label: 'Passing', href: '/passing' },
+      { label: 'For advisers', href: '/for-advisers' },
     ],
   },
   {
