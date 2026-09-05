@@ -534,12 +534,12 @@ export default function PlatformPreview() {
                       <Icon d="M2 2h8l4 4v8H2V2zM10 2v4h4" color="var(--teal)" size={11}/>
                     </div>
                     <div>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>Aaron Lee  -  Last Will &amp; Testament</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>Sample Last Will &amp; Testament</div>
                       <div style={{ fontSize: 10, color: 'var(--neutral)', marginTop: 1 }}>
                         Version {willVersion} · {willStatus === 'pending' ? 'Pending solicitor review' : 'Solicitor reviewed 12 Jun 2026'}
                       </div>
                     </div>
-                    <div style={{ marginLeft: 'auto', fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 99, border: '1px solid var(--teal)', color: 'var(--teal-deep)', flexShrink: 0 }}>
+                    <div style={{ marginLeft: 'auto', fontSize: 9, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', paddingLeft: 7, borderLeft: '2px solid var(--teal)', color: 'var(--teal-deep)', flexShrink: 0 }}>
                       {willStatus === 'pending' ? 'Pending review' : 'Solicitor reviewed'}
                     </div>
                   </div>
@@ -560,10 +560,10 @@ export default function PlatformPreview() {
                       </div>
                     ))}
                   </div>
-                  <div style={{ margin: '10px 14px 14px', borderRadius: 7, background: 'var(--ink)', padding: '9px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Link href="/the-will#solicitor-review" style={{ margin: '10px 14px 14px', borderRadius: 7, background: 'var(--ink)', padding: '9px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', textDecoration: 'none' }}>
                     <span style={{ fontSize: 11, fontWeight: 600, color: '#fff' }}>Request solicitor review</span>
                     <Icon d="M3 8h10M9 4l4 4-4 4" color="var(--teal)" size={12}/>
-                  </div>
+                  </Link>
                 </div>
               )}
 

@@ -33,14 +33,13 @@ function Sub({ children }: { children: React.ReactNode }) {
 }
 
 function Pill({ children, variant = 'teal' }: { children: React.ReactNode; variant?: 'teal' | 'amber' | 'quiet' }) {
-  const border = variant === 'teal' ? 'var(--teal)' : variant === 'amber' ? 'var(--mkt-ink-text)' : 'var(--mkt-line)'
-  const color = variant === 'quiet' ? 'var(--mkt-stone)' : 'var(--mkt-ink-text)'
+  const accent = variant === 'teal' ? 'var(--teal)' : variant === 'amber' ? 'var(--mkt-stone)' : 'var(--mkt-line)'
+  const color = variant === 'quiet' ? 'var(--mkt-stone)' : 'var(--teal-deep)'
   return (
     <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: '.4rem',
-      fontSize: '.68rem', fontWeight: 600,
-      padding: '.32rem .7rem', borderRadius: 99,
-      background: '#fff', color, border: `1px solid ${border}`,
+      display: 'inline-flex', alignItems: 'center',
+      fontSize: '.62rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase',
+      paddingLeft: '.55rem', color, borderLeft: `2px solid ${accent}`,
     }}>
       {children}
     </span>
@@ -201,10 +200,10 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            <div style={{ margin: '0 1.5rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 8, background: 'var(--mkt-ink)', padding: '1rem 1.25rem', color: '#fff' }}>
+            <Link href="/the-will#solicitor-review" style={{ margin: '0 1.5rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 8, background: 'var(--mkt-ink)', padding: '1rem 1.25rem', color: '#fff', textDecoration: 'none' }}>
               <span style={{ fontSize: '.85rem', fontWeight: 600 }}>Request solicitor review</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </div>
+            </Link>
           </div>
         </Reveal>
       </section>

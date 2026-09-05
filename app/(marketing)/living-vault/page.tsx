@@ -9,13 +9,13 @@ const SECTION_LABEL: React.CSSProperties = {
 }
 
 function Pill({ children, variant = 'teal' }: { children: React.ReactNode; variant?: 'teal' | 'amber' | 'quiet' }) {
-  const border = variant === 'teal' ? 'var(--teal)' : variant === 'amber' ? 'var(--mkt-ink-text)' : 'var(--mkt-line)'
-  const color = variant === 'quiet' ? 'var(--mkt-stone)' : 'var(--mkt-ink-text)'
+  const accent = variant === 'teal' ? 'var(--teal)' : variant === 'amber' ? 'var(--mkt-stone)' : 'var(--mkt-line)'
+  const color = variant === 'quiet' ? 'var(--mkt-stone)' : 'var(--teal-deep)'
   return (
     <span style={{
-      display: 'inline-flex', alignItems: 'center', gap: '.4rem',
-      fontSize: '.68rem', fontWeight: 600, padding: '.32rem .7rem', borderRadius: 99,
-      background: '#fff', color, border: `1px solid ${border}`,
+      display: 'inline-flex', alignItems: 'center',
+      fontSize: '.62rem', fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase',
+      paddingLeft: '.55rem', color, borderLeft: `2px solid ${accent}`,
     }}>
       {children}
     </span>
