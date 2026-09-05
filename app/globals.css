@@ -121,6 +121,23 @@
 }
 .mkt-nav-link:hover { color: var(--mkt-ink-text); }
 
+/* Mega-menu panel item */
+.mega-nav-item {
+  display: block; padding: .45rem 0;
+  font-size: .875rem; font-weight: 500;
+  color: var(--mkt-ink-text); text-decoration: none;
+  transition: color .12s ease;
+}
+.mega-nav-item:hover { color: var(--teal-deep); }
+
+/* Mega-menu mobile item */
+.mega-nav-mobile-item {
+  display: block; padding: .6rem .75rem;
+  font-size: .875rem; color: var(--mkt-stone); text-decoration: none;
+  border-radius: 6px; transition: background .12s ease, color .12s ease;
+}
+.mega-nav-mobile-item:hover { background: var(--mkt-surface); color: var(--mkt-ink-text); }
+
 /* Nav CTA button */
 .mkt-nav-cta {
   display: inline-flex; align-items: center; justify-content: center;
