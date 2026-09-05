@@ -56,23 +56,34 @@ export default function HomePage() {
         {/* Hero text  -  constrained */}
         <div style={{ ...W, paddingTop: '8rem', paddingBottom: '3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ maxWidth: '52rem' }}>
+            {/* Solicitor reviewed badge */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '.5rem', marginBottom: '1.5rem', padding: '.35rem .75rem', background: 'rgba(42,180,174,0.08)', border: '1px solid rgba(42,180,174,0.25)' }}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z"/>
+                <path d="M9 12l2 2 4-4"/>
+              </svg>
+              <span style={{ fontSize: '.72rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--teal-deep)' }}>
+                Solicitor reviewed as standard
+              </span>
+            </div>
+
             <h1 style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(2.7rem, 6.2vw, 5.4rem)', lineHeight: .98, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0 }}>
               Protect what matters,{' '}
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Australia&#8217;s modern Will and life-management platform.
+              Write your Will in under 20 minutes. Solicitor-reviewed as standard. $129, once — no subscription required.
             </p>
-            <div style={{ marginTop: '2.5rem', display: 'flex', flexWrap: 'wrap', gap: '.9rem', justifyContent: 'center' }}>
+            <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.75rem' }}>
               <Link href="/start?path=retail" className="mkt-btn-ink-l">
                 Create my Will
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </Link>
-              <Link href="/living-vault" className="mkt-btn-ghost-l">
-                See Living Vault
-              </Link>
+              <p style={{ margin: 0, fontSize: '.8rem', color: 'var(--mkt-stone-soft)' }}>
+                Free to start  ·  $129 when you&apos;re ready to download  ·  All Australian states
+              </p>
             </div>
           </div>
         </div>
