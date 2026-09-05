@@ -74,7 +74,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
                 marginInline: 'auto',
               }}
             >
-              Free to draft. Pay $129 to download your solicitor-reviewed, signed-ready Will -- or $99/year for your Will and continuing membership.
+              Your answers are saved at every step. Take your time.
             </p>
           </div>
 
