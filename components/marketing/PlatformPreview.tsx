@@ -382,6 +382,7 @@ export default function PlatformPreview() {
                   <button key={item.label}
                     onClick={e => { e.stopPropagation(); if (item.tab) { setActiveTab(item.tab); if (!userTookOver.current) handlePreviewClick() } }}
                     disabled={!item.tab}
+                    className="platform-nav-btn"
                     style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '7px 10px', borderRadius: 8, fontSize: 13, cursor: item.tab ? 'pointer' : 'default', background: active ? 'var(--paper-warm)' : 'transparent', color: active ? 'var(--ink)' : 'var(--neutral)', fontWeight: active ? 500 : 400, border: 'none', width: '100%', textAlign: 'left', opacity: !item.tab ? 0.45 : 1, transition: 'background .12s, color .12s' }}>
                     <span style={{ color: active ? 'var(--teal)' : 'inherit', flexShrink: 0 }}>
                       <Icon d={item.d} size={15} color="currentColor"/>

@@ -130,6 +130,7 @@ export default function MarketingNav() {
       {/* ── Header ───────────────────────────────────────────────────────── */}
       <header
         onMouseLeave={scheduleClose}
+        className={hasBg ? 'nav-glass' : ''}
         style={{
           position: 'fixed', left: 0, right: 0, top: 0, zIndex: 50,
           transition: 'background .35s ease, border-color .35s ease',
@@ -168,6 +169,7 @@ export default function MarketingNav() {
                     onMouseEnter={() => { cancelClose(); setActiveTab(tab.id) }}
                     onClick={() => setActiveTab(isOpen ? null : tab.id)}
                     aria-expanded={isOpen}
+                    className="mega-nav-tab"
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: '.28rem',
                       padding: '.5rem .8rem',
@@ -177,7 +179,6 @@ export default function MarketingNav() {
                       fontFamily: 'inherit',
                       borderBottom: isOpen ? '2px solid var(--teal-deep)' : '2px solid transparent',
                       marginBottom: '-1px',
-                      transition: 'color .15s, border-color .15s',
                       whiteSpace: 'nowrap',
                     }}
                   >
@@ -245,7 +246,7 @@ export default function MarketingNav() {
       {/* ── Desktop mega-panel — fixed, width fits content ────────────────── */}
       {panelTab && (
         <div
-          className="hidden lg:block"
+          className="hidden lg:block mega-panel"
           onMouseEnter={cancelClose}
           onMouseLeave={scheduleClose}
           style={{

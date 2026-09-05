@@ -117,16 +117,33 @@
 /* Nav links — CSS hover (no JS event handlers) */
 .mkt-nav-link {
   font-size: .85rem; color: var(--mkt-stone); text-decoration: none;
-  transition: color .15s ease;
+  transition: color .15s cubic-bezier(0.16,1,0.3,1);
 }
 .mkt-nav-link:hover { color: var(--mkt-ink-text); }
+
+/* Mega-menu tab buttons — pointer-down feedback + spring easing */
+.mega-nav-tab {
+  transition: color .15s cubic-bezier(0.16,1,0.3,1),
+              border-color .15s cubic-bezier(0.16,1,0.3,1),
+              transform .08s ease-out;
+}
+.mega-nav-tab:active { transform: scale(0.97); }
+
+/* Mega-menu panel — materialise on enter, spring-like settle */
+@keyframes panelEnter {
+  from { opacity: 0; transform: translateY(-5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.mega-panel {
+  animation: panelEnter 160ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
 
 /* Mega-menu panel item */
 .mega-nav-item {
   display: block; padding: .45rem 0;
   font-size: .875rem; font-weight: 500;
   color: var(--mkt-ink-text); text-decoration: none;
-  transition: color .12s ease;
+  transition: color .12s cubic-bezier(0.16,1,0.3,1);
 }
 .mega-nav-item:hover { color: var(--teal-deep); }
 
@@ -134,9 +151,12 @@
 .mega-nav-mobile-item {
   display: block; padding: .6rem .75rem;
   font-size: .875rem; color: var(--mkt-stone); text-decoration: none;
-  border-radius: 6px; transition: background .12s ease, color .12s ease;
+  border-radius: 6px; transition: background .12s cubic-bezier(0.16,1,0.3,1), color .12s cubic-bezier(0.16,1,0.3,1);
 }
 .mega-nav-mobile-item:hover { background: var(--mkt-surface); color: var(--mkt-ink-text); }
+
+/* Platform preview sidebar nav buttons — pointer-down feedback */
+.platform-nav-btn:active:not(:disabled) { background: var(--teal-light) !important; }
 
 /* Nav CTA button */
 .mkt-nav-cta {
@@ -149,10 +169,48 @@
 .mkt-nav-cta:hover { background: var(--mkt-ink-soft); }
 .mkt-nav-cta:active { transform: scale(0.97); }
 
+/* ── Font optical sizing for display type ────────────────────────────────────── */
+h1, h2, h3, h4 { font-optical-sizing: auto; }
+
+/* ── Reduced motion — comprehensive ─────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
+  /* Kill all transitions */
+  .mkt-btn-ink-l, .mkt-btn-ink-m, .mkt-btn-ink-sm,
+  .mkt-btn-ghost-l, .mkt-btn-ghost-m, .mkt-nav-cta,
+  .mkt-nav-link, .mega-nav-tab, .mega-nav-item, .mega-nav-mobile-item,
+  .nav-link, .btn, .mkt-link {
+    transition: none !important;
+  }
+  /* Kill all transforms on active */
   .mkt-btn-ink-l:active, .mkt-btn-ink-m:active, .mkt-btn-ink-sm:active,
-  .mkt-btn-ghost-l:active, .mkt-btn-ghost-m:active, .mkt-nav-cta:active {
-    transform: none;
+  .mkt-btn-ghost-l:active, .mkt-btn-ghost-m:active, .mkt-nav-cta:active,
+  .mega-nav-tab:active,
+  .btn-primary:active, .btn-secondary:active, .btn-ghost:active,
+  .btn-dark:active, .btn-glass:active, .btn-glass-primary:active,
+  .nav-link:active {
+    transform: none !important;
+  }
+  /* Panel — appear instantly, no slide */
+  .mega-panel { animation: none !important; opacity: 1; transform: none; }
+  /* Platform demo — collapse to cross-fades only */
+  @keyframes slideUpCard { from { opacity: 1; transform: none; } }
+  @keyframes slideInRow  { from { opacity: 1; transform: none; } }
+  @keyframes bounce      { 0%, 80%, 100% { transform: none; opacity: 1; } 40% { transform: none; } }
+  @keyframes pulseGlow   { 0%, 100% { box-shadow: none; } }
+  @keyframes msg-in      { from { opacity: 1; transform: none; } }
+  /* Intro overlay — skip entirely */
+  .hl-overlay { animation: none !important; opacity: 0 !important; }
+  .hl-body, .hl-fold, .hl-l1, .hl-l2 { animation: none !important; stroke-dashoffset: 0; }
+  .hl-word-gray, .hl-word-teal { animation: none !important; opacity: 1; clip-path: none !important; }
+  .hl-ripple { animation: none !important; }
+}
+
+/* ── Reduced transparency — solid nav fallback ───────────────────────────────── */
+@media (prefers-reduced-transparency: reduce) {
+  .nav-glass {
+    background: rgba(255,255,255,1) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 }
 
