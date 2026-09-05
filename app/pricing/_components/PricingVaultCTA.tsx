@@ -30,7 +30,7 @@ export default function PricingVaultCTA() {
       disabled={loading}
       className="mkt-btn-ink-m"
     >
-      {loading ? 'Loading…' : 'Get unlimited amendments  -  $8/mo'}
+      {loading ? 'Loading…' : 'Get unlimited amendments  -  $12/mo'}
     </button>
   )
 }
