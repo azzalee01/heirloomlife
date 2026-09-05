@@ -24,6 +24,7 @@ type AssetRow = {
   vehicle_make: string | null
   vehicle_model: string | null
   vehicle_year: string | null
+  has_death_benefit_nomination: boolean | null
 }
 
 type BeneficiaryRow = {
@@ -152,7 +153,7 @@ export default async function DashboardPage({
 
   if (will) {
     const [aRes, bRes, eRes, tRes, cRes, gRes, wRes] = await Promise.all([
-      supabase.from('assets').select('id, asset_type, description, estimated_value, property_address_line_1, institution_name, vehicle_make, vehicle_model, vehicle_year').eq('will_id', will.id),
+      supabase.from('assets').select('id, asset_type, description, estimated_value, property_address_line_1, institution_name, vehicle_make, vehicle_model, vehicle_year, has_death_benefit_nomination').eq('will_id', will.id),
       supabase.from('beneficiaries').select('id, beneficiary_type, first_name, organisation_name, relationship, share_percentage').eq('will_id', will.id).order('order_index'),
       supabase.from('executors').select('id, first_name, last_name, relationship, is_primary').eq('will_id', will.id).order('order_index'),
       supabase.from('testators').select('first_name, marital_status').eq('will_id', will.id),
@@ -190,6 +191,10 @@ export default async function DashboardPage({
   const visibleAssets = assets.slice(0, 5)
   const visibleBeneficiaries = beneficiaries.slice(0, 4)
   const visibleExecutors = executors.slice(0, 2)
+
+  const bdbnNudges = assets.filter(
+    a => (a.asset_type === 'superannuation' || a.asset_type === 'life_insurance') && !a.has_death_benefit_nomination
+  )
 
   return (
     <div className="min-h-screen min-w-0 max-w-full overflow-x-hidden" style={{ background: 'var(--paper)' }}>
@@ -356,6 +361,37 @@ export default async function DashboardPage({
             </div>
             <span className="shrink-0 text-xs font-semibold transition-transform group-hover:translate-x-0.5" style={{ color: 'var(--teal)' }}>Report a life change →</span>
           </Link>
+        )}
+
+        {/* ── BDBN nudge — superannuation / life insurance with no nomination ── */}
+        {will && bdbnNudges.length > 0 && (
+          <div className="rounded-lg border px-5 py-4 flex gap-3" style={{ borderColor: '#fbbf24', background: '#fffbeb' }}>
+            <svg className="mt-0.5 shrink-0" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b45309" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01" />
+            </svg>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold" style={{ color: '#92400e' }}>
+                {bdbnNudges.length === 1
+                  ? `${assetLabel(bdbnNudges[0])} — no binding nomination on file`
+                  : `${bdbnNudges.length} assets have no binding nomination on file`}
+              </p>
+              <p className="mt-1 text-xs leading-5" style={{ color: '#78350f' }}>
+                {bdbnNudges.length === 1
+                  ? `${bdbnNudges[0].asset_type === 'life_insurance' ? 'Life insurance' : 'Superannuation'} sits outside your Will. Your fund trustee has full discretion over who receives this money unless you lodge a Binding Death Benefit Nomination directly with your fund.`
+                  : 'Superannuation and life insurance sit outside your Will. The trustee of each fund has full discretion over who receives the money unless you lodge a Binding Death Benefit Nomination directly with them.'}
+              </p>
+              {bdbnNudges.length > 1 && (
+                <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                  {bdbnNudges.map(a => (
+                    <li key={a.id} className="text-xs font-medium" style={{ color: '#92400e' }}>· {assetLabel(a)}</li>
+                  ))}
+                </ul>
+              )}
+              <Link href="/learn/superannuation" className="mt-2 inline-block text-xs font-semibold" style={{ color: '#b45309' }}>
+                What is a Binding Death Benefit Nomination? →
+              </Link>
+            </div>
+          </div>
         )}
 
         {/* ── Estate + people: mirrors the landing-page platform preview ───── */}
