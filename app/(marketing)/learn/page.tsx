@@ -106,7 +106,7 @@ export default function LearnPage() {
             {ARTICLES.map((group) => (
               <div key={group.category}>
                 <p style={{ ...LABEL, marginBottom: '1.5rem' }}>{group.category}</p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1px', background: 'var(--mkt-line)', border: '1px solid var(--mkt-line)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1px', background: 'var(--mkt-line)', border: '1px solid var(--mkt-line)', maxWidth: group.items.length === 1 ? 420 : group.items.length === 2 ? 840 : undefined }}>
                   {group.items.map((article) => (
                     <Link
                       key={article.href}
