@@ -114,14 +114,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section style={{ background: 'var(--mkt-ink)', color: '#fff', borderBottom: '1px solid rgba(255,255,255,.12)' }}>
+      <section style={{ background: 'var(--mkt-surface-2)', color: 'var(--mkt-ink-text)', borderBottom: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10 md:flex-row md:items-center md:justify-between" style={{ ...W, display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingBlock: '2rem' }}>
           <div>
             <p style={{ margin: 0, fontSize: '.72rem', fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--teal)' }}>A different way to pay</p>
             <p style={{ margin: '.45rem 0 0', fontSize: '1.05rem', fontWeight: 500 }}>Include a gift to an eligible charity and your Will can be sponsored for $0.</p>
-            <p style={{ margin: '.3rem 0 0', fontSize: '.78rem', color: 'rgba(255,255,255,.66)' }}>Or continue without a charitable gift and purchase the standard Will. Your choices stay yours.</p>
+            <p style={{ margin: '.3rem 0 0', fontSize: '.78rem', color: 'var(--mkt-stone)' }}>Or continue without a charitable gift and purchase the standard Will. Your choices stay yours.</p>
           </div>
-          <Link href="/charity-wills" className="mkt-btn-ghost-m" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.35)', flexShrink: 0 }}>How sponsored Wills work</Link>
+          <Link href="/charity-wills" className="mkt-btn-ghost-m" style={{ flexShrink: 0 }}>How sponsored Wills work</Link>
         </div>
       </section>
 
@@ -133,23 +133,19 @@ export default function HomePage() {
             <H2>Every new chapter can change<br/>what your estate plan needs to <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>protect</em>.</H2>
             <Sub>Tell Heirloom what changed. We&#8217;ll help you review the people, assets and wishes that may need attention  -  and prepare supported updates for your approval.</Sub>
           </div>
-          <div className="sm:grid-cols-2 lg:grid-cols-4" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', gap: '.75rem' }}>
+          <div style={{ marginTop: '2.25rem', display: 'flex', flexWrap: 'wrap', gap: '.65rem' }}>
             {[
-              ['Marriage', 'Review your relationship, beneficiaries and existing Will.', 'getting-married'],
-              ['A new child', 'Revisit guardianship, gifts and distribution choices.', 'new-child'],
-              ['Property', 'Keep your asset register and specific gifts current.', 'buying-selling-property'],
-              ['Separation', 'Check the people, gifts and appointments in your plan.', 'separation-divorce'],
-              ['Business', 'Record a major change in the composition of your estate.', 'starting-selling-business'],
-              ['Inheritance', 'Review how new wealth changes your intentions.', 'receiving-inheritance'],
-              ['Moving interstate', 'Check your details and state-specific guidance.', 'moving-interstate'],
-              ['Serious illness', 'Organise important documents and review who may need access.', 'serious-illness'],
-            ].map(([event, note, slug]) => (
-              <Link key={event} href={`/life-changes/${slug}`} style={{ display: 'block', padding: '1.25rem', borderRadius: 10, border: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)', textDecoration: 'none' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '.75rem' }}>
-                  <p style={{ margin: 0, fontSize: '.9rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>{event}</p>
-                  <span style={{ color: 'var(--teal-deep)', fontSize: '.9rem' }}>→</span>
-                </div>
-                <p style={{ margin: '.5rem 0 0', fontSize: '.78rem', lineHeight: 1.55, color: 'var(--mkt-stone)' }}>{note}</p>
+              ['Marriage', 'getting-married'],
+              ['A new child', 'new-child'],
+              ['Property', 'buying-selling-property'],
+              ['Separation', 'separation-divorce'],
+              ['Business', 'starting-selling-business'],
+              ['Inheritance', 'receiving-inheritance'],
+              ['Moving interstate', 'moving-interstate'],
+              ['Serious illness', 'serious-illness'],
+            ].map(([event, slug]) => (
+              <Link key={event} href={`/life-changes/${slug}`} className="hover:bg-[var(--mkt-surface-2)]" style={{ display: 'inline-flex', alignItems: 'center', gap: '.65rem', padding: '.7rem .9rem', borderRadius: 999, border: '1px solid var(--mkt-line)', background: '#fff', textDecoration: 'none', color: 'var(--mkt-ink-text)', fontSize: '.82rem', fontWeight: 600 }}>
+                {event}<span style={{ color: 'var(--teal-deep)' }}>→</span>
               </Link>
             ))}
           </div>
@@ -170,7 +166,7 @@ export default function HomePage() {
             {/* Doc header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--mkt-line)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '.9rem' }}>
-                <div style={{ width: '2.6rem', height: '2.6rem', borderRadius: 8, background: 'var(--mkt-ink)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: '2.6rem', height: '2.6rem', borderRadius: 8, background: 'var(--mkt-surface-2)', border: '1px solid var(--mkt-line)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 2h8l4 4v8H2V2Z" stroke="#2ab4ae" strokeWidth="1.2"/><path d="M10 2v4h4" stroke="#2ab4ae" strokeWidth="1.2"/></svg>
                 </div>
                 <div>

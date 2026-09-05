@@ -66,7 +66,7 @@ export default function TheWillPage() {
               {/* Doc header */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--mkt-line)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.9rem' }}>
-                  <div style={{ width: '2.6rem', height: '2.6rem', borderRadius: 8, background: 'var(--mkt-ink)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <div style={{ width: '2.6rem', height: '2.6rem', borderRadius: 8, background: 'var(--mkt-surface-2)', border: '1px solid var(--mkt-line)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                       <path d="M2 2h8l4 4v8H2V2Z" stroke="#2ab4ae" strokeWidth="1.2"/>
                       <path d="M10 2v4h4" stroke="#2ab4ae" strokeWidth="1.2"/>

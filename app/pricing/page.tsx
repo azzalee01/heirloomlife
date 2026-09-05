@@ -92,22 +92,22 @@ export default function PricingPage() {
         </div>
       </section>
 
-      <section style={{ paddingBlock: '4rem 5rem', background: 'var(--mkt-ink)', color: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
+      <section style={{ paddingBlock: '4rem 5rem', background: 'var(--mkt-surface-2)', color: 'var(--mkt-ink-text)', borderTop: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
           <div>
             <span style={{ ...SECTION_LABEL, color: 'var(--teal)' }}>Charity-sponsored Will</span>
             <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', lineHeight: 1, margin: '0 0 .5rem' }}>$0</p>
-            <p style={{ marginBottom: '1.5rem', color: 'rgba(255,255,255,.68)' }}>Available when your Will includes an eligible charitable gift.</p>
-            <p style={{ maxWidth: '30rem', fontSize: '1rem', lineHeight: 1.7, color: 'rgba(255,255,255,.72)' }}>Choose the charity and share that reflect your intentions. If you decide not to include a charitable gift, every answer is preserved and you can continue with the standard $129 Will.</p>
+            <p style={{ marginBottom: '1.5rem', color: 'var(--mkt-stone)' }}>Available when your Will includes an eligible charitable gift.</p>
+            <p style={{ maxWidth: '30rem', fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>Choose the charity and share that reflect your intentions. If you decide not to include a charitable gift, every answer is preserved and you can continue with the standard $129 Will.</p>
             <div style={{ marginTop: '2rem', display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
-              <Link href="/start?path=sponsored" className="mkt-btn-ghost-m" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.35)' }}>Create a sponsored Will</Link>
-              <Link href="/charity-wills" style={{ alignSelf: 'center', fontSize: '.82rem', fontWeight: 600, color: 'var(--teal)' }}>Read how sponsorship works →</Link>
+              <Link href="/start?path=sponsored" className="mkt-btn-ink-m">Create a sponsored Will</Link>
+              <Link href="/charity-wills" style={{ alignSelf: 'center', fontSize: '.82rem', fontWeight: 600, color: 'var(--teal-deep)' }}>Read how sponsorship works →</Link>
             </div>
           </div>
-          <div style={{ borderRadius: 14, border: '1px solid rgba(255,255,255,.16)', background: 'rgba(255,255,255,.06)', padding: '2rem' }}>
-            <p style={{ margin: '0 0 1.25rem', fontSize: '.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'rgba(255,255,255,.62)' }}>The transparent choice</p>
+          <div style={{ borderRadius: 14, border: '1px solid var(--mkt-line)', background: '#fff', padding: '2rem' }}>
+            <p style={{ margin: '0 0 1.25rem', fontSize: '.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--teal-deep)' }}>The transparent choice</p>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
-              {['A positive share to an eligible registered charity is required', 'A valid-format ABN and any campaign eligibility conditions are required', 'You control which charity and what share to include', 'No charity gift is required for the paid standard Will', 'Changing paths never deletes your estate-plan answers'].map((item) => <li key={item} style={{ display: 'flex', gap: '.6rem', fontSize: '.9rem', color: 'rgba(255,255,255,.78)' }}><Check />{item}</li>)}
+              {['A positive share to an eligible registered charity is required', 'A valid-format ABN and any campaign eligibility conditions are required', 'You control which charity and what share to include', 'No charity gift is required for the paid standard Will', 'Changing paths never deletes your estate-plan answers'].map((item) => <li key={item} style={{ display: 'flex', gap: '.6rem', fontSize: '.9rem', color: 'var(--mkt-stone)' }}><Check />{item}</li>)}
             </ul>
           </div>
         </div>
