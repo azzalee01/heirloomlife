@@ -8,6 +8,7 @@ const NAV_LINKS = [
   { label: 'Life Changes', href: '/life-changes' },
   { label: 'Charity', href: '/charity-wills' },
   { label: 'Pricing', href: '/pricing' },
+  { label: 'Why Heirloom', href: '/why-heirloom' },
 ]
 
 export default function MarketingNav() {
