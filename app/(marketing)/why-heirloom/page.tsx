@@ -117,9 +117,13 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
 
 function CellContent({ cell }: { cell: CellValue }) {
   if (cell.kind === 'yes') return (
-    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '.1rem' }}>
+    <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
       <Tick />
-      {cell.tooltip && <InfoTooltip text={cell.tooltip} />}
+      {cell.tooltip && (
+        <span style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 2 }}>
+          <InfoTooltip text={cell.tooltip} />
+        </span>
+      )}
     </span>
   )
   if (cell.kind === 'no') return (
