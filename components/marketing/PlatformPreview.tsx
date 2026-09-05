@@ -11,8 +11,7 @@ function Icon({ d, color = 'currentColor', size = 14, fill = 'none' }: { d: stri
   )
 }
 
-const TABS = ['Overview', 'The Will', 'Vault'] as const
-type Tab = typeof TABS[number]
+type Tab = 'Overview' | 'The Will' | 'Vault'
 
 const NAV: { label: string; d: string; tab: Tab | null }[] = [
   { label: 'Overview',     d: 'M3 11.5L12 4l9 7.5M5 10v9h5v-5h4v5h5v-9', tab: 'Overview' },
@@ -86,6 +85,7 @@ export default function PlatformPreview() {
   const [beneficiaries,  setBeneficiaries]  = useState<Beneficiary[]>(BASE_BENEFICIARIES)
   const [willVersion,    setWillVersion]    = useState(4)
   const [willStatus,     setWillStatus]     = useState<'approved' | 'pending'>('approved')
+  const [replayKey,      setReplayKey]      = useState(0)
 
   // ── tracks whether user has taken manual control (state so button re-renders) ──
   const [userMode, setUserMode] = useState(false)
@@ -166,7 +166,7 @@ export default function PlatformPreview() {
                       addTimer(() => {
                         if (userTookOver.current) return
                         resetDemo()
-                        addTimer(runDemo, 2500)
+                        setReplayKey(key => key + 1)
                       }, 700)
                     }, 4500)
                   }, 700)
@@ -181,9 +181,9 @@ export default function PlatformPreview() {
   }, [resetDemo])
 
   useEffect(() => {
-    const t = setTimeout(runDemo, 2000)
+    const t = setTimeout(runDemo, replayKey === 0 ? 2000 : 2500)
     return () => { clearTimeout(t); clearTimers() }
-  }, [runDemo])
+  }, [replayKey, runDemo])
 
   // ── "Watch demo"  -  reset user mode and replay ────────────────────────────
   function watchDemo() {
@@ -232,13 +232,99 @@ export default function PlatformPreview() {
   const isThinking   = (phase === 'thinking' && !userMode) || chatLoading
   const demoRunning  = !userMode && phase !== 'idle'
 
+  const assistantPanel = (
+    <aside
+      onClick={e => e.stopPropagation()}
+      style={{ width: 270, flexShrink: 0, borderLeft: '1px solid var(--line)', background: '#fff', display: 'flex', flexDirection: 'column', minHeight: 0 }}
+      aria-label="Estate Assistant demo"
+    >
+      <div style={{ padding: '12px 14px', borderBottom: '1px solid var(--line-soft)', display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+        <div style={{ width: 26, height: 26, borderRadius: 6, background: 'var(--paper-warm)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <Icon d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" color="var(--teal)" size={12}/>
+        </div>
+        <div style={{ minWidth: 0 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink)' }}>Estate Assistant</div>
+          <div style={{ fontSize: 9, color: 'var(--neutral)', lineHeight: 1.35 }}>Ask about your Will or share a life change</div>
+        </div>
+      </div>
+
+      <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 7 }}>
+        {displayMsgs.length === 0 && !isThinking && (
+          <div style={{ margin: 'auto', padding: '12px', textAlign: 'center' }}>
+            <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink)' }}>What has changed?</div>
+            <div style={{ marginTop: 3, fontSize: 9, lineHeight: 1.45, color: 'var(--neutral)' }}>Tell me about a new asset, beneficiary, executor, or life event.</div>
+          </div>
+        )}
+        {displayMsgs.map((m, i) => (
+          <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
+            <div style={{ maxWidth: '88%', padding: '7px 9px', borderRadius: 7, fontSize: 9.5, lineHeight: 1.5, background: m.role === 'user' ? 'var(--teal)' : 'var(--paper-warm)', color: m.role === 'user' ? '#fff' : 'var(--ink)' }}>
+              {m.text}
+              {m.role === 'assistant' && userMode && (
+                <Link href="/auth/signup" onClick={e => e.stopPropagation()} style={{ display: 'block', marginTop: 5, fontSize: 9, fontWeight: 700, color: 'var(--teal-deep)', textDecoration: 'underline' }}>
+                  Create a free account →
+                </Link>
+              )}
+            </div>
+          </div>
+        ))}
+        {isThinking && (
+          <div style={{ display: 'flex' }}>
+            <div style={{ padding: '7px 10px', borderRadius: 7, background: 'var(--paper-warm)', display: 'flex', gap: 4, alignItems: 'center' }}>
+              {[0, 150, 300].map(d => (
+                <span key={d} style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--neutral)', display: 'inline-block', animation: 'bounce 1s infinite', animationDelay: `${d}ms`, opacity: 0.7 }}/>
+              ))}
+            </div>
+          </div>
+        )}
+        <div ref={chatEndRef}/>
+      </div>
+
+      <div style={{ padding: '10px 12px', borderTop: '1px solid var(--line-soft)', flexShrink: 0 }}>
+        <div style={{ display: 'flex', gap: 7 }}>
+          <input
+            ref={inputRef}
+            type="text"
+            value={displayInput}
+            readOnly={!userMode}
+            onChange={e => { if (userMode) setChatInput(e.target.value) }}
+            onFocus={() => {
+              if (!userTookOver.current) {
+                userTookOver.current = true
+                setUserMode(true)
+                clearTimers()
+                setTypedText('')
+                setPhase('idle')
+                setShowAmendments(false)
+                setDemoMsgs([])
+              }
+            }}
+            onKeyDown={e => { if (e.key === 'Enter') sendChat() }}
+            placeholder="Ask about your estate plan…"
+            style={{ flex: 1, minWidth: 0, padding: '7px 9px', border: '1px solid var(--line)', borderRadius: 6, fontSize: 10, color: 'var(--ink)', background: 'var(--paper-warm)', outline: 'none', fontFamily: 'inherit', cursor: userMode ? 'text' : 'default' }}
+            onFocusCapture={e => { e.currentTarget.style.borderColor = 'var(--teal)' }}
+            onBlur={e => { e.currentTarget.style.borderColor = 'var(--line)' }}
+          />
+          <button
+            onClick={e => { e.stopPropagation(); sendChat() }}
+            disabled={!userMode || !chatInput.trim() || chatLoading}
+            style={{ width: 32, height: 32, borderRadius: 6, background: 'var(--teal)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: (!userMode || !chatInput.trim() || chatLoading) ? 0.4 : 1, transition: 'opacity .15s' }}
+            aria-label="Send"
+          >
+            <Icon d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" color="#fff" size={12}/>
+          </button>
+        </div>
+        <div style={{ marginTop: 5, fontSize: 8, lineHeight: 1.35, color: 'var(--neutral)' }}>Review every proposed change before confirming.</div>
+      </div>
+    </aside>
+  )
+
   // ── render ───────────────────────────────────────────────────────────────
   return (
     <div>
       {/* Control bar  -  sits above the preview frame */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', paddingInline: '2px' }}>
         <span style={{ fontSize: '.72rem', letterSpacing: '.14em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--mkt-stone)' }}>
-          {userMode ? 'Click the assistant below to send a message' : demoRunning ? 'Watching demo…' : 'Live platform preview'}
+          {userMode ? 'Use the assistant panel to send a message' : demoRunning ? 'Watching demo…' : 'Live platform preview'}
         </span>
         {userMode ? (
           <button
@@ -436,81 +522,6 @@ export default function PlatformPreview() {
                     </div>
                   )}
 
-                  {/* Estate Assistant */}
-                  <div
-                    onClick={e => e.stopPropagation()}
-                    style={{ borderRadius: 8, border: '1px solid var(--line)', background: '#fff', overflow: 'hidden', flexShrink: 0 }}>
-                    <div style={{ padding: '9px 14px', borderBottom: '1px solid var(--line-soft)', display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <div style={{ width: 24, height: 24, borderRadius: 6, background: 'var(--paper-warm)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        <Icon d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" color="var(--teal)" size={12}/>
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink)' }}>Estate Assistant</div>
-                        <div style={{ fontSize: 9, color: 'var(--neutral)' }}>Tell me about a life change  -  I'll flag what needs updating</div>
-                      </div>
-                    </div>
-
-                    {(displayMsgs.length > 0 || isThinking) && (
-                      <div style={{ maxHeight: 130, overflowY: 'auto', padding: '8px 14px', display: 'flex', flexDirection: 'column', gap: 6, borderBottom: '1px solid var(--line-soft)' }}>
-                        {displayMsgs.map((m, i) => (
-                          <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
-                            <div style={{ maxWidth: '82%', padding: '6px 10px', borderRadius: 6, fontSize: 10, lineHeight: 1.5, background: m.role === 'user' ? 'var(--teal)' : 'var(--paper-warm)', color: m.role === 'user' ? '#fff' : 'var(--ink)' }}>
-                              {m.text}
-                              {m.role === 'assistant' && userMode && (
-                                <Link href="/auth/signup" onClick={e => e.stopPropagation()} style={{ display: 'block', marginTop: 4, fontSize: 9, fontWeight: 700, color: 'var(--teal-deep)', textDecoration: 'underline' }}>
-                                  Create a free account →
-                                </Link>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                        {isThinking && (
-                          <div style={{ display: 'flex' }}>
-                            <div style={{ padding: '6px 10px', borderRadius: 6, background: 'var(--paper-warm)', display: 'flex', gap: 4, alignItems: 'center' }}>
-                              {[0, 150, 300].map(d => (
-                                <span key={d} style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--neutral)', display: 'inline-block', animation: 'bounce 1s infinite', animationDelay: `${d}ms`, opacity: 0.7 }}/>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        <div ref={chatEndRef}/>
-                      </div>
-                    )}
-
-                    <div style={{ padding: '8px 12px', display: 'flex', gap: 8 }}>
-                      <input
-                        ref={inputRef}
-                        type="text"
-                        value={displayInput}
-                        readOnly={!userMode}
-                        onChange={e => { if (userMode) setChatInput(e.target.value) }}
-                        onFocus={() => {
-                          if (!userTookOver.current) {
-                            userTookOver.current = true
-                            setUserMode(true)
-                            clearTimers()
-                            setTypedText('')
-                            setPhase('idle')
-                            setShowAmendments(false)
-                            setDemoMsgs([])
-                          }
-                        }}
-                        onKeyDown={e => { if (e.key === 'Enter') sendChat() }}
-                        placeholder="e.g. I just got married, or I bought a new house…"
-                        style={{ flex: 1, padding: '7px 11px', border: '1px solid var(--line)', borderRadius: 6, fontSize: 11, color: 'var(--ink)', background: 'var(--paper-warm)', outline: 'none', fontFamily: 'inherit', cursor: userMode ? 'text' : 'default' }}
-                        onFocusCapture={e => { e.currentTarget.style.borderColor = 'var(--teal)' }}
-                        onBlur={e => { e.currentTarget.style.borderColor = 'var(--line)' }}
-                      />
-                      <button
-                        onClick={e => { e.stopPropagation(); sendChat() }}
-                        disabled={!userMode || !chatInput.trim() || chatLoading}
-                        style={{ width: 32, height: 32, borderRadius: 6, background: 'var(--teal)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: (!userMode || !chatInput.trim() || chatLoading) ? 0.4 : 1, transition: 'opacity .15s', alignSelf: 'center' }}
-                        aria-label="Send"
-                      >
-                        <Icon d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" color="#fff" size={12}/>
-                      </button>
-                    </div>
-                  </div>
                 </>
               )}
 
@@ -595,6 +606,7 @@ export default function PlatformPreview() {
 
             </div>
           </div>
+          {assistantPanel}
         </div>
       </div>
     </div>

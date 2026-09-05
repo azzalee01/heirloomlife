@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr';
 import { supabaseAdmin } from '@/src/lib/supabase-server';
 import LogoutButton from '@/src/components/LogoutButton';
-import AiChat from './_components/AiChat';
 import IntroAnimationLoader from './_components/IntroAnimationLoader';
 import PlanCTA from './_components/PlanCTA';
 
@@ -571,9 +570,6 @@ export default async function DashboardPage({
             </section>
           </div>
         )}
-
-        {/* ── AI Chat ───────────────────────────────────────────────────────── */}
-        <AiChat />
 
       </main>
     </div>

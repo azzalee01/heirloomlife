@@ -6,6 +6,7 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr';
 import { SideNavWrapper } from './_components/SideNavWrapper';
+import DashboardWorkspace from './_components/DashboardWorkspace';
 
 export default async function DashboardLayout({
   children,
@@ -27,9 +28,9 @@ export default async function DashboardLayout({
   return (
     <div className="flex h-screen overflow-hidden" style={{ background: 'var(--paper)' }}>
       <SideNavWrapper userName={fullName} />
-      <div className="flex-1 min-w-0 overflow-y-auto">
+      <DashboardWorkspace>
         {children}
-      </div>
+      </DashboardWorkspace>
     </div>
   );
 }

@@ -7,20 +7,27 @@ import { loadChatHistory, sendChatMessage, applyAmendment, type AmendmentProposa
 type ProposalState = AmendmentProposal & { status: 'pending' | 'applying' | 'applied' | 'dismissed' | 'error' }
 type Message = { id: string; role: 'user' | 'assistant'; text: string; proposals?: ProposalState[] }
 
-export default function AiChat() {
+export default function AiChat({
+  variant = 'card',
+  onClose,
+}: {
+  variant?: 'card' | 'rail'
+  onClose?: () => void
+}) {
   const router = useRouter()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const loadedCountRef = useRef(0)
+  const [loadedCount, setLoadedCount] = useState(0)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     loadChatHistory()
       .then((history) => {
         const msgs = history.map((h) => ({ id: h.id, role: h.role, text: h.content }))
-        loadedCountRef.current = msgs.length
+        setLoadedCount(msgs.length)
         setMessages(msgs)
       })
       .catch(() => {
@@ -28,6 +35,10 @@ export default function AiChat() {
         // will surface the real error on first send attempt.
       })
   }, [])
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ block: 'nearest' })
+  }, [messages, loading])
 
   async function send() {
     const text = input.trim()
@@ -81,26 +92,36 @@ export default function AiChat() {
   }
 
   return (
-    <div className="bg-white border border-[var(--line)] rounded-xl overflow-hidden">
+    <div className={variant === 'rail' ? 'flex h-full flex-col overflow-hidden bg-white' : 'overflow-hidden rounded-xl border border-[var(--line)] bg-white'}>
       {/* Header */}
-      <div className="px-6 py-4 border-b border-[var(--line-soft)] flex items-center gap-3">
+      <div className="flex items-center gap-3 border-b border-[var(--line-soft)] px-5 py-4">
         <div className="w-8 h-8 flex items-center justify-center shrink-0 bg-[var(--paper-warm)]">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
             stroke="var(--teal)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
           </svg>
         </div>
-        <div>
+        <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-[var(--ink)]">Estate Assistant</p>
-          <p className="text-xs text-[var(--neutral)]">Tell me about life changes and I&apos;ll help keep your will up to date</p>
+          <p className="text-xs leading-snug text-[var(--neutral)]">Tell me about life changes and I&apos;ll help keep your will up to date</p>
         </div>
+        {onClose && (
+          <button type="button" onClick={onClose} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--neutral)] transition-colors hover:bg-[var(--paper-warm)] hover:text-[var(--ink)]" aria-label="Close Estate Assistant">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+          </button>
+        )}
       </div>
 
       {/* Messages */}
-      {(messages.length > 0 || loading) && (
-        <div className="px-6 py-4 space-y-3 border-b border-[var(--line-soft)] max-h-[420px] overflow-y-auto">
+      <div className={`${variant === 'rail' ? 'min-h-0 flex-1' : 'max-h-[420px]'} space-y-3 overflow-y-auto border-b border-[var(--line-soft)] px-5 py-4`}>
+          {messages.length === 0 && !loading && (
+            <div className="flex h-full min-h-32 flex-col items-center justify-center px-4 text-center">
+              <p className="text-sm font-medium text-[var(--ink)]">What has changed?</p>
+              <p className="mt-1 max-w-64 text-xs leading-relaxed text-[var(--neutral)]">Ask about your Will or tell me about a new asset, beneficiary, executor, or life event.</p>
+            </div>
+          )}
           {messages.map((m, i) => (
-            <div key={m.id} className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : 'justify-start'} ${i >= loadedCountRef.current ? 'msg-in' : ''}`}>
+            <div key={m.id} className={`flex gap-2.5 ${m.role === 'user' ? 'justify-end' : 'justify-start'} ${i >= loadedCount ? 'msg-in' : ''}`}>
               {m.role === 'assistant' && (
                 <div className="w-6 h-6 rounded-md flex items-center justify-center shrink-0 mt-0.5 bg-[var(--paper-warm)]">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
@@ -167,8 +188,8 @@ export default function AiChat() {
               </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
-      )}
 
       {error && error !== '__MEMBERSHIP_REQUIRED__' && (
         <div className="px-6 py-2 text-xs text-red-600 bg-red-50 border-b border-red-100">{error}</div>
@@ -189,15 +210,15 @@ export default function AiChat() {
       )}
 
       {/* Input */}
-      <div className="px-6 py-4">
-        <div className="flex gap-3 items-center">
+      <div className="px-5 py-4">
+        <div className="flex items-center gap-3">
           <input
             ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') send() }}
-            placeholder="Tell me about a life update… e.g. I bought a new house"
+            placeholder={variant === 'rail' ? 'Ask about your estate plan…' : 'Tell me about a life update… e.g. I bought a new house'}
             className="flex-1 px-4 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-[var(--paper-warm)]"
           />
           <button
@@ -213,6 +234,7 @@ export default function AiChat() {
             </svg>
           </button>
         </div>
+        {variant === 'rail' && <p className="mt-2 text-[10px] leading-relaxed text-[var(--neutral)]">AI can make mistakes. Review every proposed change before confirming.</p>}
       </div>
     </div>
   )
