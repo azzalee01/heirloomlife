@@ -53,10 +53,10 @@ const TD_HEIRLOOM: React.CSSProperties = {
 }
 
 type CellValue =
-  | { kind: 'yes' }
+  | { kind: 'yes'; tooltip?: string }
   | { kind: 'no' }
   | { kind: 'dash' }
-  | { kind: 'text'; lines: string[]; tooltip?: boolean }
+  | { kind: 'text'; lines: string[]; tooltip?: string }
 
 const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: CellValue }[] = [
   {
@@ -67,7 +67,7 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
   },
   {
     label: 'Ongoing cost',
-    heirloom: { kind: 'text', lines: ['$30 first year,', 'then $99/yr'], tooltip: true },
+    heirloom: { kind: 'text', lines: ['$30 first year,', 'then $99/yr'], tooltip: TOOLTIP_TEXT },
     safewill: { kind: 'text', lines: ['$15/yr'] },
     willed:   { kind: 'dash' },
   },
@@ -107,10 +107,21 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
     safewill: { kind: 'no' },
     willed:   { kind: 'dash' },
   },
+  {
+    label: 'Dedicated witnessing team (NSW only)',
+    heirloom: { kind: 'yes', tooltip: 'Our dedicated NSW witnessing team guides you through the entire signing and witnessing process -- no need to find, coordinate, or explain the process to your own witnesses. We know the requirements and make sure it\'s done correctly, every time.' },
+    safewill: { kind: 'no' },
+    willed:   { kind: 'dash' },
+  },
 ]
 
 function CellContent({ cell }: { cell: CellValue }) {
-  if (cell.kind === 'yes') return <Tick />
+  if (cell.kind === 'yes') return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '.1rem' }}>
+      <Tick />
+      {cell.tooltip && <InfoTooltip text={cell.tooltip} />}
+    </span>
+  )
   if (cell.kind === 'no')  return <Cross />
   if (cell.kind === 'dash') return <Dash />
   return (
@@ -125,7 +136,7 @@ function CellContent({ cell }: { cell: CellValue }) {
         }}>
           {line}
           {i === cell.lines.length - 1 && cell.tooltip && (
-            <InfoTooltip text={TOOLTIP_TEXT} />
+            <InfoTooltip text={cell.tooltip} />
           )}
         </span>
       ))}
