@@ -28,7 +28,7 @@ export default function StepBeneficiaryBackup({ beneficiary, otherBeneficiaries:
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+        <h2 className="text-xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
           Backup for {beneficiary.name}
         </h2>
         <p className="text-sm mt-1" style={{ color: 'var(--neutral)' }}>

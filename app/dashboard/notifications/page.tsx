@@ -104,7 +104,7 @@ export default async function NotificationsPage() {
         }}
       >
         <div>
-          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             Recommendations
           </h1>
           <p className="text-xs" style={{ color: 'var(--neutral)' }}>

@@ -80,7 +80,7 @@ function FeatureRow({
 
         <h3
           className="text-2xl md:text-3xl font-heading font-light text-primary mb-3 tracking-tight"
-          style={{ fontFamily: 'var(--font-instrument-serif), Georgia, serif' }}
+          style={{ fontFamily: 'var(--font-display)' }}
         >
           {feature.title}
         </h3>
@@ -128,7 +128,7 @@ export function FeatureShowcase() {
           <div className="max-w-3xl mb-14 md:mb-20">
             <h2
               className="hero-heading text-3xl md:text-4xl lg:text-5xl text-primary mb-5 text-balance"
-              style={{ fontFamily: 'var(--font-instrument-serif), Georgia, serif' }}
+              style={{ fontFamily: 'var(--font-display)' }}
             >
               Everything your Will needs.
               <br />

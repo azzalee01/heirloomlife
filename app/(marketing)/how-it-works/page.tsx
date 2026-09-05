@@ -42,13 +42,13 @@ export default function HowItWorksPage() {
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>How it works</span>
             <h1 style={{
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
               letterSpacing: '-.02em', fontWeight: 500,
               color: 'var(--mkt-ink-text)', margin: 0,
             }}>
               From first login to a{' '}
-              <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>complete estate plan</em>{' '}
+              <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>complete estate plan</em>{' '}
                -  what happens and when.
             </h1>
             <p style={{ marginTop: '1.1rem', maxWidth: '34rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
@@ -72,7 +72,7 @@ export default function HowItWorksPage() {
                 }}
               >
                 <div style={{ paddingTop: '.1rem' }}>
-                  <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '1.4rem', color: 'var(--teal)', fontStyle: 'italic' }}>
+                  <span style={{ fontFamily: "var(--font-display)", fontSize: '1.4rem', color: 'var(--teal)', fontStyle: 'italic' }}>
                     {step.num}
                   </span>
                 </div>

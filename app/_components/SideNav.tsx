@@ -82,7 +82,7 @@ export default function SideNav({ userName, userEmail }: Props) {
               className="text-[15px] ml-1 select-none"
               style={{
                 color: 'var(--teal)',
-                fontFamily: "'Instrument Serif', Georgia, serif",
+                fontFamily: "var(--font-display)",
                 fontStyle: 'italic',
               }}
             >

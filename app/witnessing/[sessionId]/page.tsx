@@ -45,7 +45,7 @@ export default async function WitnessingSessionPage({ params }: { params: Promis
       <header className="sticky top-0 z-20 border-b px-6 h-14 flex items-center justify-between" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
         <div className="flex items-center gap-2.5">
           <Link href="/witnessing" className="text-xs font-semibold" style={{ color: 'var(--neutral)' }}>← Witnessing</Link>
-          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             Signing session
           </h1>
         </div>

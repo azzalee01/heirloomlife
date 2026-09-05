@@ -27,13 +27,13 @@ export default function PricingPage() {
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <span style={SECTION_LABEL}>Pricing</span>
           <h1 style={{
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: 0,
           }}>
             Plan for free. Pay for the Will—or let a{' '}
-            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>charity sponsor it</em>.
+            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>charity sponsor it</em>.
           </h1>
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
             Build your estate plan before paying. A standard Will is $129, or $0 when it includes an eligible charitable gift. Living Vault keeps it current as life changes.
@@ -46,7 +46,7 @@ export default function PricingPage() {
         <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
           <div>
             <span style={SECTION_LABEL}>The Will</span>
-            <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .5rem' }}>
+            <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .5rem' }}>
               $129
             </p>
             <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>One-time payment. Plan before you pay.</p>
@@ -95,7 +95,7 @@ export default function PricingPage() {
         <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
           <div>
             <span style={{ ...SECTION_LABEL, color: 'var(--teal)' }}>Charity-sponsored Will</span>
-            <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3.5rem, 6vw, 5rem)', lineHeight: 1, margin: '0 0 .5rem' }}>$0</p>
+            <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', lineHeight: 1, margin: '0 0 .5rem' }}>$0</p>
             <p style={{ marginBottom: '1.5rem', color: 'rgba(255,255,255,.68)' }}>Available when your Will includes an eligible charitable gift.</p>
             <p style={{ maxWidth: '30rem', fontSize: '1rem', lineHeight: 1.7, color: 'rgba(255,255,255,.72)' }}>Choose the charity and share that reflect your intentions. If you decide not to include a charitable gift, every answer is preserved and you can continue with the standard $129 Will.</p>
             <div style={{ marginTop: '2rem', display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
@@ -117,7 +117,7 @@ export default function PricingPage() {
         <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
           <div>
             <span style={SECTION_LABEL}>Living Vault</span>
-            <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
+            <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
               $12
             </p>
             <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>per month. Cancel anytime.</p>
@@ -164,7 +164,7 @@ export default function PricingPage() {
         <div className="md:px-10" style={{ ...W, maxWidth: 800 }}>
           <span style={SECTION_LABEL}>Complex situation?</span>
           <h2 style={{
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', lineHeight: 1.1,
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem',

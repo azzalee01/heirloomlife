@@ -18,7 +18,7 @@ export default async function WitnessInvitePage({ params }: { params: Promise<{ 
         <div className="text-center mb-6">
           <span
             className="text-lg"
-            style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', color: 'var(--teal)' }}
+            style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', color: 'var(--teal)' }}
           >
             Heirloom
           </span>
@@ -27,7 +27,7 @@ export default async function WitnessInvitePage({ params }: { params: Promise<{ 
         <div className="bg-white border border-[var(--line)] overflow-hidden">
           <div className="h-[3px] w-full" style={{ backgroundColor: 'var(--teal)' }} />
           <div className="px-6 py-6 space-y-4">
-            <h1 className="text-lg" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+            <h1 className="text-lg" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
               Hi {invite.witnessName}, you&apos;ve been asked to witness a will signing
             </h1>
             <p className="text-sm" style={{ color: 'var(--neutral)' }}>

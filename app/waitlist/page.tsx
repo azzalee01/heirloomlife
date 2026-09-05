@@ -22,7 +22,7 @@ export default function WaitlistPage() {
         <div className="md:px-10" style={{ ...W, maxWidth: 640 }}>
           <span style={SECTION_LABEL}>Waitlist</span>
           <h1 style={{
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 'clamp(2.2rem, 4vw, 3.2rem)', lineHeight: 1.1,
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem',

@@ -27,13 +27,13 @@ export default function SuperannuationPage() {
         <div style={{ maxWidth: 720, marginInline: 'auto', paddingInline: '1.5rem' }} className="md:px-10">
           <span style={LABEL}>Learn · Assets</span>
           <h1 style={{
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 'clamp(2rem, 3.5vw, 3rem)', lineHeight: 1.1,
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: '0 0 1.1rem',
           }}>
             Superannuation and your{' '}
-            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>
+            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>
               estate
             </em>
           </h1>
@@ -95,7 +95,7 @@ export default function SuperannuationPage() {
                 borderBottom: '1px solid var(--mkt-line)',
               }}
             >
-              <span style={{ color: 'var(--teal)', fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontSize: '1.1rem', paddingTop: '.05rem', flexShrink: 0 }}> - </span>
+              <span style={{ color: 'var(--teal)', fontFamily: "var(--font-display)", fontStyle: 'italic', fontSize: '1.1rem', paddingTop: '.05rem', flexShrink: 0 }}> - </span>
               <p style={{ ...BODY, margin: 0 }}>{item}</p>
             </div>
           ))}

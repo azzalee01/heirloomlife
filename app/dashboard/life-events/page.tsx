@@ -15,13 +15,13 @@ export default function LifeEventsPage() {
   return (
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
       <header className="sticky top-0 z-20 flex h-14 items-center border-b px-6" style={{ background: 'rgba(255,255,255,.86)', backdropFilter: 'blur(16px)', borderColor: 'var(--line)' }}>
-        <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>Life Changes</h1>
+        <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>Life Changes</h1>
       </header>
 
       <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[.16em]" style={{ color: 'var(--teal-deep)' }}>Keep your plan current</p>
-          <h2 className="mt-3 text-3xl font-medium leading-tight sm:text-4xl" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+          <h2 className="mt-3 text-3xl font-medium leading-tight sm:text-4xl" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             Life changed. Let&apos;s check what your estate plan needs next.
           </h2>
           <p className="mt-4 max-w-xl text-sm leading-6" style={{ color: 'var(--neutral)' }}>

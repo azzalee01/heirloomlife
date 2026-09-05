@@ -7,7 +7,7 @@ export default function PoaPage() {
       >
         <h1
           className="text-base font-medium"
-          style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}
+          style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}
         >
           Power of Attorney
         </h1>

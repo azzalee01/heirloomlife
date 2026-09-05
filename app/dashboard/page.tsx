@@ -200,7 +200,7 @@ export default async function DashboardPage({
           borderColor: 'var(--line)',
         }}
       >
-        <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+        <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
           Hi, {firstName}
         </h1>
         <div className="flex items-center gap-3">

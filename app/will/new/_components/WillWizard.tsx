@@ -95,7 +95,7 @@ function EmailCapture({ onSubmit, onSkip }: { onSubmit: (email: string) => void;
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div className="bg-white max-w-sm w-full p-6 space-y-4 shadow-xl">
         <div>
-          <p className="text-base font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+          <p className="text-base font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             Save a link to your progress
           </p>
           <p className="text-sm mt-1" style={{ color: 'var(--neutral)' }}>
@@ -401,7 +401,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
         className="shrink-0 border-b px-6 h-14 flex items-center justify-between"
         style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}
       >
-        <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+        <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
           My Will
         </h1>
         {isAuthenticated ? (
@@ -541,19 +541,19 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                   <div className="space-y-6 py-4">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[.14em]" style={{ color: 'var(--teal-deep)' }}>Choose how to complete your Will</p>
-                      <h2 className="mt-2 text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>Your estate plan is ready.</h2>
+                      <h2 className="mt-2 text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>Your estate plan is ready.</h2>
                       <p className="mt-2 max-w-lg text-sm leading-6" style={{ color: 'var(--neutral)' }}>Your answers are saved. Purchase your signing-ready Heirloom Will, or include a gift to an eligible registered charity to receive a sponsored Will for $0.</p>
                     </div>
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                       <button type="button" onClick={startWillCheckout} disabled={checkoutLoading} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)] disabled:opacity-60" style={{ borderColor: commercialPath === 'retail' ? 'var(--teal)' : 'var(--line)', background: 'white' }}>
                         <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>Standard Will</span>
-                        <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>$129</span>
+                        <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$129</span>
                         <span className="mt-2 block text-xs leading-5" style={{ color: 'var(--neutral)' }}>Create and download your signing-ready Will without including a charitable gift.</span>
                         <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>{checkoutLoading ? 'Opening secure checkout…' : 'Purchase Will →'}</span>
                       </button>
                       <button type="button" onClick={() => { setShowPaymentGate(false); jumpToStep('beneficiaries') }} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)]" style={{ borderColor: commercialPath === 'sponsored' ? 'var(--teal)' : 'var(--line)', background: 'var(--paper-warm)' }}>
                         <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>Charity-sponsored Will</span>
-                        <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>$0</span>
+                        <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$0</span>
                         <span className="mt-2 block text-xs leading-5" style={{ color: 'var(--neutral)' }}>Include a positive share for an eligible registered charity and provide a valid-format ABN. Campaign and charity eligibility conditions may also apply.</span>
                         <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>Add a charity gift →</span>
                       </button>
@@ -574,7 +574,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                           <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
                         </svg>
                       </div>
-                      <h2 className="text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+                      <h2 className="text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
                         Your Will is complete
                       </h2>
                       <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>

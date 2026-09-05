@@ -29,7 +29,7 @@ export default function AuthCallbackPage() {
 
   return (
     <div style={{ minHeight: '100svh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--paper)' }}>
-      <p style={{ color: 'var(--neutral)', fontSize: '.9rem', fontFamily: "'DM Sans', sans-serif" }}>Signing you in…</p>
+      <p style={{ color: 'var(--neutral)', fontSize: '.9rem', fontFamily: "var(--font-body)" }}>Signing you in…</p>
     </div>
   )
 }

@@ -8,7 +8,7 @@ export default function TryItPage() {
           Try it
         </span>
         <h1 style={{
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "var(--font-body)",
           fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
           letterSpacing: '-.02em', fontWeight: 500,
           color: 'var(--mkt-ink-text)', margin: 0,

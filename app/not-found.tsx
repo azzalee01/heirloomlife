@@ -11,7 +11,7 @@ export default function NotFound() {
           href="/"
           style={{
             color: 'var(--mkt-ink-text)',
-            fontFamily: "'Instrument Serif', Georgia, serif",
+            fontFamily: "var(--font-display)",
             fontSize: '1.35rem',
             letterSpacing: '.01em',
             textDecoration: 'none',
@@ -48,7 +48,7 @@ export default function NotFound() {
               maxWidth: '44rem',
               margin: '1.25rem 0 0',
               color: 'var(--mkt-ink-text)',
-              fontFamily: "'Instrument Serif', Georgia, serif",
+              fontFamily: "var(--font-display)",
               fontSize: 'clamp(3rem, 8vw, 6.5rem)',
               fontWeight: 400,
               letterSpacing: '-.02em',

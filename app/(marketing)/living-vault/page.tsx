@@ -32,7 +32,7 @@ export default function LivingVaultPage() {
           <div style={{ maxWidth: '44rem' }}>
             <span style={SECTION_LABEL}>The Command Centre</span>
             <h1 style={{
-              fontFamily: "'Instrument Serif', Georgia, serif",
+              fontFamily: "var(--font-display)",
               fontSize: 'clamp(2.6rem, 5vw, 4.6rem)', lineHeight: 1.04,
               letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0,
             }}>
@@ -130,7 +130,7 @@ export default function LivingVaultPage() {
         <div className="md:px-10" style={W}>
           <div style={{ maxWidth: '38rem', marginBottom: '3rem' }}>
             <span style={SECTION_LABEL}>Life events</span>
-            <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 'clamp(1.9rem, 3vw, 2.6rem)', lineHeight: 1.1, letterSpacing: '-.02em', fontWeight: 500, color: 'var(--mkt-ink-text)', margin: 0 }}>
+            <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.9rem, 3vw, 2.6rem)', lineHeight: 1.1, letterSpacing: '-.02em', fontWeight: 500, color: 'var(--mkt-ink-text)', margin: 0 }}>
               The events that change your estate  -  and that most Wills miss.
             </h2>
           </div>

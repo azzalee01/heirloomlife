@@ -45,7 +45,7 @@ export default function MarketingNav() {
         }}
       >
         {/* Brand mark */}
-        <Link href="/" style={{ color: 'var(--mkt-ink-text)', textDecoration: 'none', fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '1.35rem', letterSpacing: '.01em' }}>
+        <Link href="/" style={{ color: 'var(--mkt-ink-text)', textDecoration: 'none', fontFamily: "var(--font-display)", fontSize: '1.35rem', letterSpacing: '.01em' }}>
           Heirloom Life
         </Link>
 

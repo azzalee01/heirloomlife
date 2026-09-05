@@ -70,13 +70,13 @@ export default function WhenToUpdatePage() {
         <div style={{ maxWidth: 720, marginInline: 'auto', paddingInline: '1.5rem' }} className="md:px-10">
           <span style={LABEL}>Learn · Life stages</span>
           <h1 style={{
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 'clamp(2rem, 3.5vw, 3rem)', lineHeight: 1.1,
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: '0 0 1.1rem',
           }}>
             When to{' '}
-            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>
+            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>
               update
             </em>{' '}
             your Will

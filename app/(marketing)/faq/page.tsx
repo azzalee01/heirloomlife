@@ -48,13 +48,13 @@ export default function FaqPage() {
         <div className="md:px-10" style={{ maxWidth: 720, marginInline: 'auto', paddingInline: '1.5rem' }}>
           <span style={SECTION_LABEL}>FAQ</span>
           <h1 style={{
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: 0,
           }}>
             Answers to the questions people{' '}
-            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>actually ask</em>.
+            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>actually ask</em>.
           </h1>
         </div>
       </section>

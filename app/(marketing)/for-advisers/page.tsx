@@ -11,7 +11,7 @@ export default function ForAdvisersPage() {
         <div className="md:px-10" style={{ maxWidth: 720, marginInline: 'auto', paddingInline: '1.5rem' }}>
           <span style={SECTION_LABEL}>For Advisers</span>
           <h1 style={{
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: 0,

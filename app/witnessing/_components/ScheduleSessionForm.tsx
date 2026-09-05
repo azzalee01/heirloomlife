@@ -80,7 +80,7 @@ export default function ScheduleSessionForm() {
     <form onSubmit={handleSubmit} className="bg-white border border-[var(--line)] overflow-hidden">
       <div className="h-[3px] w-full" style={{ backgroundColor: 'var(--teal)' }} />
       <div className="px-6 py-6 space-y-5">
-        <h2 className="text-lg" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+        <h2 className="text-lg" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
           Schedule a witnessing session
         </h2>
 

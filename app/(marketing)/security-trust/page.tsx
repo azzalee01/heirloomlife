@@ -34,13 +34,13 @@ export default function SecurityTrustPage() {
         <div className="md:px-10" style={{ maxWidth: 720, marginInline: 'auto', paddingInline: '1.5rem' }}>
           <span style={SECTION_LABEL}>Security &amp; Trust</span>
           <h1 style={{
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: 0,
           }}>
             What we can tell you,{' '}
-            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>accurately</em>.
+            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>accurately</em>.
           </h1>
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
             Estate documents are among the most sensitive records you can hold. We have written this page to describe what is actually in place today  -  not to match the length of a competitor&#8217;s security marketing page.

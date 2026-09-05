@@ -24,7 +24,7 @@ export default async function WitnessingPage() {
     return (
       <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
         <header className="sticky top-0 z-20 border-b px-6 h-14 flex items-center" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
-          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             Witnessing
           </h1>
         </header>
@@ -56,7 +56,7 @@ export default async function WitnessingPage() {
     return (
       <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
         <header className="sticky top-0 z-20 border-b px-6 h-14 flex items-center" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
-          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>Witnessing</h1>
+          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>Witnessing</h1>
         </header>
         <main className="max-w-3xl mx-auto px-6 py-8">
           <div className="border border-[var(--line)] bg-white p-8 text-center space-y-4">
@@ -103,7 +103,7 @@ export default async function WitnessingPage() {
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
       <header className="sticky top-0 z-20 border-b px-6 h-14 flex items-center justify-between" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
         <div className="flex items-center gap-2.5">
-          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             Witnessing
           </h1>
           <span

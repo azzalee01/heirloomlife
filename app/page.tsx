@@ -17,7 +17,7 @@ function H2({ children }: { children: React.ReactNode }) {
     <h2 style={{
       fontSize: 'clamp(1.9rem, 3.2vw, 3.1rem)', lineHeight: 1.08,
       letterSpacing: '-.02em', fontWeight: 500,
-      fontFamily: "'DM Sans', sans-serif", color: 'var(--mkt-ink-text)', margin: 0,
+      fontFamily: "var(--font-body)", color: 'var(--mkt-ink-text)', margin: 0,
     }}>
       {children}
     </h2>
@@ -57,7 +57,7 @@ export default function HomePage() {
         {/* Hero text  -  constrained */}
         <div style={{ ...W, paddingTop: '8rem', paddingBottom: '3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ maxWidth: '52rem' }}>
-            <h1 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(2.7rem, 6.2vw, 5.4rem)', lineHeight: .98, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0 }}>
+            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(2.7rem, 6.2vw, 5.4rem)', lineHeight: .98, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0 }}>
               Life changes. Your Will{' '}
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>should keep up</em>.
             </h1>
@@ -130,7 +130,7 @@ export default function HomePage() {
         <div className="md:px-10" style={W}>
           <div style={{ maxWidth: '42rem' }}>
             <span style={SECTION_LABEL}>Built around real life</span>
-            <H2>Every new chapter can change<br/>what your estate plan needs to <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>protect</em>.</H2>
+            <H2>Every new chapter can change<br/>what your estate plan needs to <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>protect</em>.</H2>
             <Sub>Tell Heirloom what changed. We&#8217;ll help you review the people, assets and wishes that may need attention  -  and prepare supported updates for your approval.</Sub>
           </div>
           <div className="sm:grid-cols-2 lg:grid-cols-4" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', gap: '.75rem' }}>
@@ -162,7 +162,7 @@ export default function HomePage() {
         <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>The Will</span>
-            <H2>Not a document you sign once<br/>and hope you never think about <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>again</em>.</H2>
+            <H2>Not a document you sign once<br/>and hope you never think about <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>again</em>.</H2>
             <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault  -  readable in plain English, versioned every time your life moves forward, with a solicitor review add-on available when your situation calls for it.</Sub>
           </div>
 
@@ -218,7 +218,7 @@ export default function HomePage() {
         <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>The Command Centre</span>
-            <H2>A single home for everything<br/>your estate needs to <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>keep working</em>.</H2>
+            <H2>A single home for everything<br/>your estate needs to <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>keep working</em>.</H2>
             <Sub>Your Will gets your estate plan created. Living Vault keeps it current, together and ready as your life changes.</Sub>
           </div>
           <div className="lg:grid-cols-[1.15fr_1fr] lg:grid-rows-2" style={{ marginTop: '3.5rem', display: 'grid', gap: '1.1rem', gridTemplateColumns: '1fr' }}>
@@ -260,7 +260,7 @@ export default function HomePage() {
         <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '40rem' }}>
             <span style={SECTION_LABEL}>Why now</span>
-            <H2>Estate planning has been <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>deprioritised</em>,<br/>not because it doesn&#8217;t matter.</H2>
+            <H2>Estate planning has been <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>deprioritised</em>,<br/>not because it doesn&#8217;t matter.</H2>
           </div>
           <div className="md:grid-cols-3" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', borderTop: '1px solid var(--mkt-line)', borderLeft: '1px solid var(--mkt-line)' }}>
             {[
@@ -269,7 +269,7 @@ export default function HomePage() {
               { num: '1', label: "Place your Will, your Vault, and your executor's instructions all live" },
             ].map(stat => (
               <div key={stat.num} style={{ borderRight: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)', padding: '2.4rem 2rem' }}>
-                <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3rem, 5vw, 4.6rem)', lineHeight: .9, color: 'var(--mkt-ink-text)', margin: 0 }}>{stat.num}</p>
+                <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3rem, 5vw, 4.6rem)', lineHeight: .9, color: 'var(--mkt-ink-text)', margin: 0 }}>{stat.num}</p>
                 <p style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--mkt-line)', fontSize: '.8rem', color: 'var(--mkt-stone)', letterSpacing: '.02em' }}>{stat.label}</p>
               </div>
             ))}
@@ -281,7 +281,7 @@ export default function HomePage() {
       <section style={{ ...SECTION_PAD, background: '#fff', borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)' }}>
         <Reveal className="md:px-10" style={W}>
           <p style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal)', marginBottom: '2rem' }}>From the founder</p>
-          <blockquote style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: 'clamp(1.7rem, 2.9vw, 2.6rem)', lineHeight: 1.25, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', maxWidth: '46rem', margin: 0 }}>
+          <blockquote style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontSize: 'clamp(1.7rem, 2.9vw, 2.6rem)', lineHeight: 1.25, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', maxWidth: '46rem', margin: 0 }}>
             &#8220;We built Heirloom Life because a Will isn&#8217;t paperwork  -  it&#8217;s the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet.&#8221;
           </blockquote>
           <p style={{ marginTop: '2rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>Aaron Lee</p>
@@ -294,7 +294,7 @@ export default function HomePage() {
         <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '34rem' }}>
             <span style={SECTION_LABEL}>Membership</span>
-            <H2>Priced like something<br/>worth <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.</H2>
+            <H2>Priced like something<br/>worth <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.</H2>
             <Sub>A one-off Will to get your estate in order, and a Vault membership to keep it that way. No per-clause upsells, no surprise renewals.</Sub>
           </div>
           <div style={{ marginTop: '2rem' }}>

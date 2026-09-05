@@ -13,13 +13,13 @@ export default function AboutPage() {
         <div className="md:px-10" style={{ maxWidth: 760, marginInline: 'auto', paddingInline: '1.5rem' }}>
           <span style={SECTION_LABEL}>About</span>
           <h1 style={{
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-body)",
             fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: 0,
           }}>
             Built because the alternative is a form you fill in once and{' '}
-            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>forget</em>.
+            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>forget</em>.
           </h1>
         </div>
       </section>
@@ -27,7 +27,7 @@ export default function AboutPage() {
       {/* Manifesto */}
       <section style={{ paddingBlock: '5.5rem', background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10" style={{ maxWidth: 720, marginInline: 'auto', paddingInline: '1.5rem' }}>
-          <blockquote style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: 'clamp(1.5rem, 2.4vw, 2.2rem)', lineHeight: 1.3, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: '0 0 2.5rem' }}>
+          <blockquote style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontSize: 'clamp(1.5rem, 2.4vw, 2.2rem)', lineHeight: 1.3, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: '0 0 2.5rem' }}>
             &#8220;A Will isn&#8217;t paperwork. It&#8217;s the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet.&#8221;
           </blockquote>
 

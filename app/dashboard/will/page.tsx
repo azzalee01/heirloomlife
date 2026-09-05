@@ -30,7 +30,7 @@ export default async function TheWillPage() {
     return (
       <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
         <header className="sticky top-0 z-20 border-b px-6 h-14 flex items-center" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
-          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             The Will
           </h1>
         </header>
@@ -69,7 +69,7 @@ export default async function TheWillPage() {
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
       <header className="sticky top-0 z-20 border-b px-6 h-14 flex items-center justify-between" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
         <div className="flex items-center gap-2.5">
-          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+          <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             The Will
           </h1>
           <span

@@ -53,7 +53,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
           <div className="text-center mb-10">
             <h1
               style={{
-                fontFamily: "'Instrument Serif', Georgia, serif",
+                fontFamily: "var(--font-display)",
                 fontSize: 'clamp(2rem, 4vw, 3rem)',
                 lineHeight: 1.05,
                 letterSpacing: '-.01em',

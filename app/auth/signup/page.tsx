@@ -43,7 +43,7 @@ export default function SignUpPage() {
         <div className="text-center mb-10">
           <Link
             href="/"
-            style={{ color: 'var(--teal)', fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: '1.5rem', textDecoration: 'none' }}
+            style={{ color: 'var(--teal)', fontFamily: "var(--font-display)", fontStyle: 'italic', fontSize: '1.5rem', textDecoration: 'none' }}
           >
             Heirloom Life
           </Link>

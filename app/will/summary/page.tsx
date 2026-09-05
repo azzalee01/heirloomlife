@@ -266,7 +266,7 @@ export default async function WillSummaryPage() {
             className="text-lg font-semibold tracking-tight shrink-0"
             style={{
               color: 'var(--teal)',
-              fontFamily: "'Instrument Serif', Georgia, serif",
+              fontFamily: "var(--font-display)",
               fontStyle: 'italic',
             }}
           >

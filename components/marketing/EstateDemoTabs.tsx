@@ -72,7 +72,7 @@ export default function EstateDemoTabs() {
             />
           </svg>
           <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '1.5rem', lineHeight: 1, color: 'var(--mkt-ink-text)' }}>85</span>
+            <span style={{ fontFamily: "var(--font-display)", fontSize: '1.5rem', lineHeight: 1, color: 'var(--mkt-ink-text)' }}>85</span>
             <span style={{ fontSize: '.6rem', color: 'var(--mkt-stone)', marginTop: '.1rem', fontWeight: 600, letterSpacing: '.06em', textTransform: 'uppercase' }}>ready</span>
           </div>
         </div>

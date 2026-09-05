@@ -373,7 +373,7 @@ export default function PlatformPreview() {
           {/* Sidebar */}
           <aside style={{ width: 184, flexShrink: 0, borderRight: '1px solid var(--line)', background: 'var(--paper)', display: 'flex', flexDirection: 'column', padding: '12px 8px' }}>
             <div style={{ padding: '4px 10px 16px' }}>
-              <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: '1rem', color: 'var(--teal)' }}>Heirloom</span>
+              <span style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontSize: '1rem', color: 'var(--teal)' }}>Heirloom</span>
             </div>
             <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
               {NAV.map(item => {
@@ -403,7 +403,7 @@ export default function PlatformPreview() {
           {/* Main */}
           <div style={{ flex: 1, minWidth: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
             <header style={{ borderBottom: '1px solid var(--line)', padding: '0 20px', height: 48, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--paper)', flexShrink: 0 }}>
-              <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '1rem', color: 'var(--ink)' }}>Hi, Aaron</span>
+              <span style={{ fontFamily: "var(--font-display)", fontSize: '1rem', color: 'var(--ink)' }}>Hi, Aaron</span>
               <Link href="/will/new"
                 onClick={e => e.stopPropagation()}
                 style={{ fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 6, background: 'var(--teal)', color: '#fff', textDecoration: 'none' }}>

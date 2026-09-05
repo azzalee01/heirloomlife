@@ -7,7 +7,7 @@ export default function DocumentsPage() {
       >
         <h1
           className="text-base font-medium"
-          style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}
+          style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}
         >
           Documents
         </h1>

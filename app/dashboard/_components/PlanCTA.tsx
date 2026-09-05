@@ -42,7 +42,7 @@ export default function PlanCTA() {
           <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>
             $12 / month · cancel anytime
           </p>
-          <h3 className="text-base font-bold mt-0.5" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
+          <h3 className="text-base font-bold mt-0.5" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             Living Vault
           </h3>
           <p className="text-sm mt-1.5 leading-relaxed" style={{ color: 'var(--neutral)' }}>

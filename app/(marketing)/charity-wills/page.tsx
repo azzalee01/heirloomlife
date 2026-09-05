@@ -1,6 +1,4 @@
 import Link from 'next/link'
-import MarketingNav from '@/components/marketing/MarketingNav'
-import MarketingFooter from '@/components/marketing/MarketingFooter'
 
 const W: React.CSSProperties = { maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }
 
@@ -12,12 +10,11 @@ export const metadata = {
 export default function CharityWillsPage() {
   return (
     <>
-      <MarketingNav />
-      <main>
+      <div>
         <section style={{ paddingBlock: '8.5rem 5rem', background: 'var(--mkt-ink)', color: '#fff' }}>
           <div className="md:px-10" style={W}>
             <p style={{ margin: 0, color: 'var(--teal)', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase' }}>Charity-sponsored Wills</p>
-            <h1 style={{ margin: '1.25rem 0 0', maxWidth: '48rem', fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(2.7rem, 5.5vw, 5rem)', lineHeight: 1.02, fontWeight: 400 }}>Leave something meaningful behind—and receive your Will for $0.</h1>
+            <h1 style={{ margin: '1.25rem 0 0', maxWidth: '48rem', fontFamily: "var(--font-display)", fontSize: 'clamp(2.7rem, 5.5vw, 5rem)', lineHeight: 1.02, fontWeight: 400 }}>Leave something meaningful behind—and receive your Will for $0.</h1>
             <p style={{ margin: '1.5rem 0 0', maxWidth: '36rem', fontSize: '1.05rem', lineHeight: 1.7, color: 'rgba(255,255,255,.7)' }}>Include a gift to an eligible registered charity and the cost of your standard Will is sponsored. Prefer not to include a gift? Continue seamlessly with the $129 standard Will.</p>
             <div style={{ marginTop: '2.25rem', display: 'flex', gap: '.85rem', flexWrap: 'wrap' }}>
               <Link href="/start?path=sponsored" className="mkt-btn-ghost-l" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.4)' }}>Start a sponsored Will</Link>
@@ -45,7 +42,7 @@ export default function CharityWillsPage() {
         <section style={{ paddingBlock: '4.5rem', background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)' }}>
           <div className="md:px-10 lg:grid-cols-2" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem' }}>
             <div>
-              <h2 style={{ margin: 0, fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '2.4rem', fontWeight: 400, color: 'var(--mkt-ink-text)' }}>Your Will remains your decision.</h2>
+              <h2 style={{ margin: 0, fontFamily: "var(--font-display)", fontSize: '2.4rem', fontWeight: 400, color: 'var(--mkt-ink-text)' }}>Your Will remains your decision.</h2>
               <p style={{ margin: '1rem 0 0', fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>The sponsored price is conditional, but the testamentary choices remain yours. Heirloom does not select a charity or gift percentage for you. The charity does not see your Will or family beneficiaries through this process.</p>
             </div>
             <div style={{ borderLeft: '2px solid var(--teal)', paddingLeft: '1.5rem' }}>
@@ -54,8 +51,7 @@ export default function CharityWillsPage() {
             </div>
           </div>
         </section>
-      </main>
-      <MarketingFooter />
+      </div>
     </>
   )
 }

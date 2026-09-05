@@ -41,7 +41,7 @@ export default function MarketingFooter() {
 
           {/* Brand */}
           <div style={{ flex: '0 0 auto', maxWidth: '22rem' }}>
-            <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: '1.2rem', color: 'var(--mkt-ink-text)' }}>
+            <span style={{ fontFamily: "var(--font-display)", fontSize: '1.2rem', color: 'var(--mkt-ink-text)' }}>
               Heirloom Life
             </span>
             <p style={{ marginTop: '1rem', fontSize: '.85rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>

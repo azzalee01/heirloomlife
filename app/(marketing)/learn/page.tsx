@@ -66,13 +66,13 @@ export default function LearnPage() {
           <div style={{ maxWidth: '38rem' }}>
             <span style={LABEL}>Learn</span>
             <h1 style={{
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "var(--font-body)",
               fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
               letterSpacing: '-.02em', fontWeight: 500,
               color: 'var(--mkt-ink-text)', margin: 0,
             }}>
               Australian estate law,{' '}
-              <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>
+              <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>
                 plainly written
               </em>
             </h1>

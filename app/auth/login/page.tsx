@@ -39,7 +39,7 @@ export default function LoginPage() {
           <Link
             href="/dashboard"
             className="text-2xl"
-            style={{ color: 'var(--teal)', fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic' }}
+            style={{ color: 'var(--teal)', fontFamily: "var(--font-display)", fontStyle: 'italic' }}
           >
             Heirloom Life
           </Link>

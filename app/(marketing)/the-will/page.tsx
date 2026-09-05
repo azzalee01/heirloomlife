@@ -32,7 +32,7 @@ export default function TheWillPage() {
           <div style={{ maxWidth: '44rem' }}>
             <span style={SECTION_LABEL}>The Will</span>
             <h1 style={{
-              fontFamily: "'Instrument Serif', Georgia, serif",
+              fontFamily: "var(--font-display)",
               fontSize: 'clamp(2.6rem, 5vw, 4.6rem)', lineHeight: 1.04,
               letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0,
             }}>
@@ -120,7 +120,7 @@ export default function TheWillPage() {
         <div className="md:px-10" style={W}>
           <div style={{ maxWidth: '38rem', marginBottom: '3.5rem' }}>
             <span style={SECTION_LABEL}>How it works</span>
-            <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 'clamp(1.9rem, 3.2vw, 2.8rem)', lineHeight: 1.1, letterSpacing: '-.02em', fontWeight: 500, color: 'var(--mkt-ink-text)', margin: 0 }}>
+            <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.9rem, 3.2vw, 2.8rem)', lineHeight: 1.1, letterSpacing: '-.02em', fontWeight: 500, color: 'var(--mkt-ink-text)', margin: 0 }}>
               Seven guided steps. A document that actually stays current.
             </h2>
           </div>
@@ -134,7 +134,7 @@ export default function TheWillPage() {
               { n: '+', title: 'Versioned as your life changes', body: 'Every amendment creates a new version. A change to your family, your assets, or your executors prompts an update  -  not a whole new Will.' },
             ].map(step => (
               <div key={step.n} style={{ background: '#fff', borderRadius: 10, border: '1px solid var(--mkt-line)', padding: '1.75rem' }}>
-                <span style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', fontSize: '1.3rem', color: 'var(--teal)', display: 'block', marginBottom: '.75rem' }}>{step.n}</span>
+                <span style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontSize: '1.3rem', color: 'var(--teal)', display: 'block', marginBottom: '.75rem' }}>{step.n}</span>
                 <h3 style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--mkt-ink-text)', margin: '0 0 .5rem' }}>{step.title}</h3>
                 <p style={{ fontSize: '.9rem', lineHeight: 1.6, color: 'var(--mkt-stone)', margin: 0 }}>{step.body}</p>
               </div>
@@ -146,7 +146,7 @@ export default function TheWillPage() {
       {/* ── Solicitor review add-on note ──────────────────────────────────── */}
       <section style={{ ...SECTION_PAD, background: '#fff' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
-          <h2 style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem' }}>
+          <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem' }}>
             Solicitor review, when you need it.
           </h2>
           <p style={{ fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>

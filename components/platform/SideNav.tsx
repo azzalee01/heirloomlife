@@ -222,7 +222,7 @@ export function SideNav({
                 <Link href="/dashboard" className="flex items-center ml-2">
                   <span
                     className="text-lg"
-                    style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', color: 'var(--teal)' }}
+                    style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', color: 'var(--teal)' }}
                   >
                     Heirloom
                   </span>
@@ -245,7 +245,7 @@ export function SideNav({
                 >
                   <span
                     className="text-sm transition-opacity duration-100 group-hover:opacity-0"
-                    style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontStyle: 'italic', color: 'var(--teal)' }}
+                    style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', color: 'var(--teal)' }}
                   >
                     H
                   </span>
