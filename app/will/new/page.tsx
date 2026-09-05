@@ -73,14 +73,14 @@ export default async function WillNewPage({
                   Amendments require Living Vault
                 </h2>
                 <p className="text-sm leading-relaxed" style={{ color: 'var(--neutral)' }}>
-                  Your Will has been downloaded  -  that&apos;s your free generation. To make further amendments, add beneficiaries, or redraft via AI chat, upgrade to Living Vault for $8/month.
+                  Your Will has been downloaded  -  that&apos;s your free generation. To make further amendments, add beneficiaries, or redraft via AI chat, upgrade to Living Vault for $12/month.
                 </p>
                 <div className="flex flex-col gap-3">
                   <Link
                     href="/pricing"
                     className="btn btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold"
                   >
-                    See Living Vault  -  $8/mo
+                    See Living Vault  -  $12/mo
                   </Link>
                   <Link
                     href="/dashboard"
