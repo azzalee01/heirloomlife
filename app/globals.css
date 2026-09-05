@@ -102,6 +102,14 @@
 }
 .mkt-link:hover { color: var(--mkt-ink-text); }
 
+/* Long-form legal documents */
+.legal-copy { color: var(--mkt-stone); font-size: .94rem; line-height: 1.75; }
+.legal-copy p { margin: 0; }
+.legal-copy p + p { margin-top: .9rem; }
+.legal-copy a { color: var(--teal-deep); text-decoration: underline; text-underline-offset: 2px; }
+.legal-copy a:hover { color: var(--teal-hover); }
+.legal-copy a:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
 /* Nav links — CSS hover (no JS event handlers) */
 .mkt-nav-link {
   font-size: .85rem; color: var(--mkt-stone); text-decoration: none;
