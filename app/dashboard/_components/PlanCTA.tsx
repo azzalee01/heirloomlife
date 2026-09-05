@@ -46,7 +46,7 @@ export default function PlanCTA() {
             Living Vault
           </h3>
           <p className="text-sm mt-1.5 leading-relaxed" style={{ color: 'var(--neutral)' }}>
-            Your first Will is free. To make amendments after downloading, upgrade to Living Vault.
+            Keep your Will and estate record current as life changes, with supported amendments and ongoing Vault access.
           </p>
         </div>
 

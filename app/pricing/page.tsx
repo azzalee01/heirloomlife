@@ -32,12 +32,11 @@ export default function PricingPage() {
             letterSpacing: '-.02em', fontWeight: 500,
             color: 'var(--mkt-ink-text)', margin: 0,
           }}>
-            Start for free.{' '}
-            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>Stay current</em>{' '}
-            with the Vault.
+            Plan for free. Pay for the Will—or let a{' '}
+            <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>charity sponsor it</em>.
           </h1>
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
-            A legally-structured Will at no cost, with a membership option to keep it current as your life changes.
+            Build your estate plan before paying. A standard Will is $129, or $0 when it includes an eligible charitable gift. Living Vault keeps it current as life changes.
           </p>
         </div>
       </section>
@@ -48,17 +47,17 @@ export default function PricingPage() {
           <div>
             <span style={SECTION_LABEL}>The Will</span>
             <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .5rem' }}>
-              $0
+              $129
             </p>
-            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>Free, always.</p>
+            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>One-time payment. Plan before you pay.</p>
 
             <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '28rem' }}>
-              Answer a short questionnaire  -  or upload your existing will and tell us what&apos;s changed  -  and get a legally-structured Will, ready to print and sign.
+              Complete the guided questionnaire and review your estate plan for free. Pay only when you are ready to create your signing-ready Will.
             </p>
 
             <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
-              <Link href="/start" className="mkt-btn-ink-m">
-                Start your Will
+              <Link href="/start?path=retail" className="mkt-btn-ink-m">
+                Plan my Will for free
               </Link>
               <Link href="/will/new?mode=upload" className="mkt-btn-ink-m">
                 Upload your existing Will
@@ -66,7 +65,7 @@ export default function PricingPage() {
             </div>
 
             <p style={{ marginTop: '1.1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-              Available across all Australian states and territories.
+              No charitable gift is required for the standard Will. Available across all Australian states and territories.
             </p>
           </div>
 
@@ -92,6 +91,27 @@ export default function PricingPage() {
         </div>
       </section>
 
+      <section style={{ paddingBlock: '4rem 5rem', background: 'var(--mkt-ink)', color: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
+          <div>
+            <span style={{ ...SECTION_LABEL, color: 'var(--teal)' }}>Charity-sponsored Will</span>
+            <p style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(3.5rem, 6vw, 5rem)', lineHeight: 1, margin: '0 0 .5rem' }}>$0</p>
+            <p style={{ marginBottom: '1.5rem', color: 'rgba(255,255,255,.68)' }}>Available when your Will includes an eligible charitable gift.</p>
+            <p style={{ maxWidth: '30rem', fontSize: '1rem', lineHeight: 1.7, color: 'rgba(255,255,255,.72)' }}>Choose the charity and share that reflect your intentions. If you decide not to include a charitable gift, every answer is preserved and you can continue with the standard $129 Will.</p>
+            <div style={{ marginTop: '2rem', display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
+              <Link href="/start?path=sponsored" className="mkt-btn-ghost-m" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.35)' }}>Create a sponsored Will</Link>
+              <Link href="/charity-wills" style={{ alignSelf: 'center', fontSize: '.82rem', fontWeight: 600, color: 'var(--teal)' }}>Read how sponsorship works →</Link>
+            </div>
+          </div>
+          <div style={{ borderRadius: 14, border: '1px solid rgba(255,255,255,.16)', background: 'rgba(255,255,255,.06)', padding: '2rem' }}>
+            <p style={{ margin: '0 0 1.25rem', fontSize: '.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'rgba(255,255,255,.62)' }}>The transparent choice</p>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
+              {['A positive share to an eligible registered charity is required', 'A valid-format ABN and any campaign eligibility conditions are required', 'You control which charity and what share to include', 'No charity gift is required for the paid standard Will', 'Changing paths never deletes your estate-plan answers'].map((item) => <li key={item} style={{ display: 'flex', gap: '.6rem', fontSize: '.9rem', color: 'rgba(255,255,255,.78)' }}><Check />{item}</li>)}
+            </ul>
+          </div>
+        </div>
+      </section>
+
       {/* ── Living Vault ─────────────────────────────────────────────────────── */}
       <section style={{ paddingBlock: '4rem 5rem', background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
@@ -103,13 +123,13 @@ export default function PricingPage() {
             <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>per month. Cancel anytime.</p>
 
             <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '28rem' }}>
-              Keep your Will current as your life changes. Unlimited amendments, immediate redrafted documents, and access to Heirloom&apos;s witness pool if you&apos;re in NSW.
+              The ongoing home for your estate plan. Report life changes, maintain your estate record, make supported amendments and access Heirloom&apos;s witness pool if you&apos;re in NSW.
             </p>
 
             <PricingVaultCTA />
 
             <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-              Your first Will is always free. Membership unlocks repeat amendments.
+              Living Vault is optional and separate from your initial Will purchase.
             </p>
           </div>
 
@@ -119,8 +139,10 @@ export default function PricingPage() {
             </p>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
               {[
-                'Unlimited will reviews and quick amendments  -  chat-based update, immediate redrafted document',
-                'Unlimited quick add/remove of beneficiaries, gifts, and executors',
+                'Guided life-change check-ins through your Vault',
+                'Unlimited supported amendments and updated Will documents',
+                'A maintained register of assets, beneficiaries, gifts, and executors',
+                'Will status and estate-review guidance',
                 'NSW members only: access to Heirloom\'s team AV witness pool for remote execution',
                 'Solicitor review add-on available (~$150) with direct access to partner lawyers through the platform',
               ].map((f) => (
@@ -152,7 +174,7 @@ export default function PricingPage() {
           <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', maxWidth: '36rem', marginBottom: '2rem' }}>
             If your estate involves overseas assets, a business, a blended family, or a beneficiary with special needs, complete the questionnaire and your Vault will flag the specific areas of concern. From there you can request a solicitor review for around $150 and communicate directly with our partner lawyers  -  without starting over.
           </p>
-          <a href="/start" className="mkt-btn-ghost-m">Start your Will</a>
+          <a href="/start?path=retail" className="mkt-btn-ghost-m">Start your Will</a>
         </div>
       </section>
 
@@ -164,8 +186,8 @@ export default function PricingPage() {
           </h2>
           {[
             {
-              q: 'Is the Will really free?',
-              a: 'Yes. The questionnaire, the Will document, and the download are free. There are no hidden charges, no per-clause upsells, and no GST on free.',
+              q: 'Can I create a Will for $0?',
+              a: 'The guided questionnaire and estate-plan review are free. The standard Will is $129. A charity-sponsored Will is $0 when you include an eligible charitable gift, provide a valid-format ABN and meet any applicable campaign conditions.',
             },
             {
               q: 'Which states are supported?',
@@ -177,7 +199,7 @@ export default function PricingPage() {
             },
             {
               q: 'What is the Living Vault?',
-              a: 'An $12/month membership that keeps your Will current as your life changes. It unlocks unlimited chat-based amendments with an immediate redrafted document, unlimited add/remove of beneficiaries and executors, and access to Heirloom\'s AV witness pool for NSW members. Cancel anytime.',
+              a: 'A $12/month membership that keeps your Will current as your life changes. It unlocks unlimited supported amendments and updated documents, an organised estate record, and access to Heirloom\'s AV witness pool for NSW members. Cancel anytime.',
             },
             {
               q: 'What if my situation is complex?',

@@ -297,6 +297,23 @@ export default async function DashboardPage({
           </div>
         )}
 
+        {will && (
+          <Link href="/dashboard/life-events" className="group flex flex-col gap-3 rounded-lg border bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between" style={{ borderColor: 'var(--line)' }}>
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ background: 'var(--paper-warm)', color: 'var(--teal-deep)' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M12 21s-7-4.35-7-10a4 4 0 017-2.65A4 4 0 0119 11c0 5.65-7 10-7 10z" /><path d="M12 8v6M9 11h6" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Has something changed in your life?</p>
+                <p className="mt-0.5 text-xs" style={{ color: 'var(--neutral)' }}>Marriage, children, property and other changes may affect your estate plan.</p>
+              </div>
+            </div>
+            <span className="shrink-0 text-xs font-semibold transition-transform group-hover:translate-x-0.5" style={{ color: 'var(--teal)' }}>Report a life change →</span>
+          </Link>
+        )}
+
         {/* ── Estate + people: mirrors the landing-page platform preview ───── */}
         {will && (
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.15fr_.85fr]">

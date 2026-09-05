@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
 import { markWillDownloaded } from '@/app/dashboard/will/_actions'
@@ -77,6 +76,15 @@ function totalAllocated(bd: BeneficiariesData): number {
     bd.people.reduce((s, p) => s + (parseFloat(p.percentage) || 0), 0) +
     bd.charities.reduce((s, c) => s + (parseFloat(c.percentage) || 0), 0)
   )
+}
+
+function hasValidAbnChecksum(value: string): boolean {
+  const digits = value.replace(/\D/g, '')
+  if (digits.length !== 11) return false
+  const weights = [10, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+  return digits
+    .split('')
+    .reduce((sum, digit, index) => sum + (Number(digit) - (index === 0 ? 1 : 0)) * weights[index], 0) % 89 === 0
 }
 
 // ── Soft email capture (shown once after personal details) ───────────────────
@@ -171,10 +179,11 @@ interface Props {
   initialData: WillFormData
   initialStep?: StepId
   isAuthenticated: boolean
+  hasWillAccess?: boolean
+  commercialPath?: 'retail' | 'sponsored'
 }
 
-export default function WillWizard({ initialData, initialStep, isAuthenticated }: Props) {
-  const router = useRouter()
+export default function WillWizard({ initialData, initialStep, isAuthenticated, hasWillAccess = false, commercialPath = 'retail' }: Props) {
   const [form, setForm] = useState<WillFormData>(initialData)
   const [wizardSteps, setWizardSteps] = useState<WizardStepId[]>(() =>
     buildWizardSteps(initialData)
@@ -191,6 +200,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [showDownloadGate, setShowDownloadGate] = useState(false)
   const [showCompletion, setShowCompletion] = useState(false)
+  const [showPaymentGate, setShowPaymentGate] = useState(false)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [downloading, setDownloading] = useState(false)
 
   const currentStepId = wizardSteps[stepIndex]
@@ -201,7 +212,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
   const isFirst = stepIndex === 0
   const isLast = currentStaticStep === 'review'
   const isEligibilityStep = currentStaticStep === 'eligibility'
-  const isComplete = isLast && showDownloadGate
 
   // Eligibility check  -  must have selected a state and be 18+
   const eligibilityState = form.personalDetails.state
@@ -276,6 +286,17 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
       return
     }
     if (!form.willId) return
+    const hasQualifyingCharityGift = form.beneficiariesData.charities.some(
+      (charity) => Boolean(
+        charity.name.trim() &&
+        hasValidAbnChecksum(charity.abn) &&
+        (parseFloat(charity.percentage) || 0) > 0
+      )
+    )
+    if (!hasWillAccess && !hasQualifyingCharityGift) {
+      setShowPaymentGate(true)
+      return
+    }
     setSaving(true)
     setError(null)
     try {
@@ -286,6 +307,24 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
       setError(e instanceof Error ? e.message : 'Failed to complete will. Please try again.')
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function startWillCheckout() {
+    setCheckoutLoading(true)
+    setError(null)
+    try {
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product: 'will' }),
+      })
+      const data = await response.json() as { url?: string; error?: string }
+      if (!response.ok || !data.url) throw new Error(data.error ?? 'Checkout could not be started.')
+      window.location.href = data.url
+    } catch (checkoutError) {
+      setError(checkoutError instanceof Error ? checkoutError.message : 'Checkout could not be started.')
+      setCheckoutLoading(false)
     }
   }
 
@@ -489,7 +528,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
                     onChange={(updates) => setForm((prev) => ({ ...prev, ...updates }))}
                   />
                 )}
-                {currentStaticStep === 'review' && !showDownloadGate && !showCompletion && (
+                {currentStaticStep === 'review' && !showDownloadGate && !showCompletion && !showPaymentGate && (
                   <StepReview
                     formData={form}
                     activeSteps={baseStepsFor(form.personalDetails.maritalStatus).filter(s => s !== 'eligibility')}
@@ -497,6 +536,31 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
                   />
                 )}
                 {showDownloadGate && <AnonDownloadGate />}
+
+                {showPaymentGate && (
+                  <div className="space-y-6 py-4">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[.14em]" style={{ color: 'var(--teal-deep)' }}>Choose how to complete your Will</p>
+                      <h2 className="mt-2 text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>Your estate plan is ready.</h2>
+                      <p className="mt-2 max-w-lg text-sm leading-6" style={{ color: 'var(--neutral)' }}>Your answers are saved. Purchase your signing-ready Heirloom Will, or include a gift to an eligible registered charity to receive a sponsored Will for $0.</p>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                      <button type="button" onClick={startWillCheckout} disabled={checkoutLoading} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)] disabled:opacity-60" style={{ borderColor: commercialPath === 'retail' ? 'var(--teal)' : 'var(--line)', background: 'white' }}>
+                        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>Standard Will</span>
+                        <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>$129</span>
+                        <span className="mt-2 block text-xs leading-5" style={{ color: 'var(--neutral)' }}>Create and download your signing-ready Will without including a charitable gift.</span>
+                        <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>{checkoutLoading ? 'Opening secure checkout…' : 'Purchase Will →'}</span>
+                      </button>
+                      <button type="button" onClick={() => { setShowPaymentGate(false); jumpToStep('beneficiaries') }} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)]" style={{ borderColor: commercialPath === 'sponsored' ? 'var(--teal)' : 'var(--line)', background: 'var(--paper-warm)' }}>
+                        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>Charity-sponsored Will</span>
+                        <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>$0</span>
+                        <span className="mt-2 block text-xs leading-5" style={{ color: 'var(--neutral)' }}>Include a positive share for an eligible registered charity and provide a valid-format ABN. Campaign and charity eligibility conditions may also apply.</span>
+                        <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>Add a charity gift →</span>
+                      </button>
+                    </div>
+                    <p className="text-xs leading-5" style={{ color: 'var(--neutral)' }}>A charitable gift is required only for the $0 sponsored option. It is not required to purchase a standard Will, and you control the charity and share you choose.</p>
+                  </div>
+                )}
 
                 {/* Completion screen  -  shown after authenticated user completes */}
                 {showCompletion && (
@@ -564,7 +628,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated }
                   </div>
                 )}
 
-                {!showDownloadGate && !showCompletion && (
+                {!showDownloadGate && !showCompletion && !showPaymentGate && (
                   <div className="flex items-center justify-between pt-6 mt-8 border-t border-[var(--line)]">
                     <button
                       type="button"

@@ -7,10 +7,11 @@ import { Settings, HelpCircle, LogOut, PanelLeft, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ── Nav items ────────────────────────────────────────────────────────────────
-type NavKey = 'dashboard' | 'will' | 'live-will' | 'witnessing' | 'vault' | 'poa' | 'documents';
+type NavKey = 'dashboard' | 'life-events' | 'will' | 'live-will' | 'witnessing' | 'vault' | 'poa' | 'documents';
 
 const NAV_ITEMS: { key: NavKey; label: string; href: string; shortcut: string }[] = [
   { key: 'dashboard', label: 'Overview',   href: '/dashboard',  shortcut: '⌘H' },
+  { key: 'life-events', label: 'Life Changes', href: '/dashboard/life-events', shortcut: '⌘C' },
   { key: 'will',      label: 'Edit Will',      href: '/will/new',       shortcut: '⌘W' },
   { key: 'live-will', label: 'Will Document', href: '/dashboard/will', shortcut: '⌘L' },
   { key: 'witnessing', label: 'Witnessing', href: '/witnessing', shortcut: '⌘E' },
@@ -28,6 +29,13 @@ function NavIcon({ k }: { k: NavKey }) {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
           <path d="M3 11.5L12 4l9 7.5" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    case 'life-events':
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
+          <path d="M12 21s-7-4.35-7-10a4 4 0 017-2.65A4 4 0 0119 11c0 5.65-7 10-7 10z" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 8v6M9 11h6" strokeWidth="1.8" strokeLinecap="round" />
         </svg>
       );
     case 'will':

@@ -5,6 +5,7 @@ import Link from 'next/link'
 const NAV_LINKS = [
   { label: 'The Will', href: '/the-will' },
   { label: 'Living Vault', href: '/living-vault' },
+  { label: 'Charity Wills', href: '/charity-wills' },
   { label: 'How it works', href: '/how-it-works' },
   { label: 'Learn', href: '/learn' },
   { label: 'Passing', href: '/passing' },
@@ -49,7 +50,7 @@ export default function MarketingNav() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden lg:flex items-center" style={{ gap: '2.4rem' }} aria-label="Main">
+        <nav className="hidden lg:flex items-center" style={{ gap: '1.65rem' }} aria-label="Main">
           {NAV_LINKS.map(l => (
             <Link key={l.href} href={l.href} className="mkt-nav-link">
               {l.label}
@@ -62,7 +63,7 @@ export default function MarketingNav() {
           <Link href="/auth/login" className="hidden lg:block mkt-nav-link">
             Log in
           </Link>
-          <Link href="/start" className="mkt-nav-cta">
+          <Link href="/start?path=retail" className="mkt-nav-cta">
             Start your Will
           </Link>
         </div>

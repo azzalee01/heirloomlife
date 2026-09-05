@@ -51,7 +51,7 @@ export default async function WitnessingPage() {
 
   if (!isActiveMember || !isNSW) {
     const reason = !isActiveMember
-      ? { heading: 'Living Vault membership required', body: 'AV witness scheduling is available to Living Vault members. Your first Will is free  -  upgrade to unlock remote witnessing and unlimited amendments.' }
+      ? { heading: 'Living Vault membership required', body: 'AV witness scheduling is available to active Living Vault members, alongside supported amendments and ongoing estate-plan access.' }
       : { heading: 'NSW only', body: 'Remote AV witnessing is currently available for NSW addresses only, consistent with NSW\'s statutory AV witnessing scheme. Your address on file is ' + (userState ?? 'not set') + '.' }
     return (
       <div className="min-h-screen" style={{ background: 'var(--paper)' }}>

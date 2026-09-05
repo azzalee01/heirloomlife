@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
+import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from './_data'
 import { generateWillDocumentText } from './_drafting'
 import { recordVersion } from './_versioning'
@@ -10,15 +11,18 @@ import { sendResumeEmail } from '@/src/lib/email'
 
 const ANON_COOKIE = 'hl_anon_session'
 
+function hasValidAbnChecksum(value: string): boolean {
+  const digits = value.replace(/\D/g, '')
+  if (digits.length !== 11) return false
+  const weights = [10, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+  return digits
+    .split('')
+    .reduce((sum, digit, index) => sum + (Number(digit) - (index === 0 ? 1 : 0)) * weights[index], 0) % 89 === 0
+}
+
 async function getAnonSessionId(): Promise<string | null> {
   const store = await cookies()
   return store.get(ANON_COOKIE)?.value ?? null
-}
-
-async function isAuthenticatedUser(): Promise<boolean> {
-  const supabase = await createSupabaseServerClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  return !!user
 }
 
 // Save entire WillFormData as JSONB to an anonymous session.
@@ -452,6 +456,30 @@ export async function completeWill(willId: string): Promise<void> {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
+
+  const [{ data: profile }, { data: charityRows }] = await Promise.all([
+    supabaseAdmin.from('profiles').select('plan, plan_status').eq('id', user.id).single(),
+    supabase
+      .from('beneficiaries')
+      .select('organisation_name, abn, share_percentage')
+      .eq('will_id', willId)
+      .eq('beneficiary_type', 'organisation'),
+  ])
+
+  const hasPaidWill =
+    (profile?.plan === 'will' || profile?.plan === 'vault') && profile?.plan_status === 'active'
+  const hasQualifyingCharityGift = (charityRows ?? []).some((charity) =>
+    Boolean(
+      charity.organisation_name &&
+      charity.abn &&
+      hasValidAbnChecksum(charity.abn) &&
+      Number(charity.share_percentage) > 0
+    )
+  )
+
+  if (!hasPaidWill && !hasQualifyingCharityGift) {
+    throw new Error('WILL_PAYMENT_REQUIRED')
+  }
 
   const { error } = await supabase
     .from('wills')

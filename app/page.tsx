@@ -58,21 +58,21 @@ export default function HomePage() {
         <div style={{ ...W, paddingTop: '8rem', paddingBottom: '3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ maxWidth: '52rem' }}>
             <h1 style={{ fontFamily: "'Instrument Serif', Georgia, serif", fontSize: 'clamp(2.7rem, 6.2vw, 5.4rem)', lineHeight: .98, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0 }}>
-              Your Will, kept{' '}
-              <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>current</em>.
+              Life changes. Your Will{' '}
+              <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>should keep up</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Heirloom Life is the estate command centre for Australians who&#8217;ve built something worth protecting  -  a living Will and a private Vault that keeps your estate current as your life changes.
+              Marriage, children, property, separation and everything that comes next can change what you need to protect. Plan for free, create your Will for $129, then keep it current with Living Vault.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', flexWrap: 'wrap', gap: '.9rem', justifyContent: 'center' }}>
-              <Link href="/start" className="mkt-btn-ink-l">
-                Start your Will
+              <Link href="/start?path=retail" className="mkt-btn-ink-l">
+                Plan my Will for free
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </Link>
-              <Link href="/how-it-works" className="mkt-btn-ghost-l">
-                See how it works
+              <Link href="/living-vault" className="mkt-btn-ghost-l">
+                See Living Vault
               </Link>
             </div>
           </div>
@@ -111,6 +111,49 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section style={{ background: 'var(--mkt-ink)', color: '#fff', borderBottom: '1px solid rgba(255,255,255,.12)' }}>
+        <div className="md:px-10 md:flex-row md:items-center md:justify-between" style={{ ...W, display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingBlock: '2rem' }}>
+          <div>
+            <p style={{ margin: 0, fontSize: '.72rem', fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--teal)' }}>A different way to pay</p>
+            <p style={{ margin: '.45rem 0 0', fontSize: '1.05rem', fontWeight: 500 }}>Include a gift to an eligible charity and your Will can be sponsored for $0.</p>
+            <p style={{ margin: '.3rem 0 0', fontSize: '.78rem', color: 'rgba(255,255,255,.66)' }}>Or continue without a charitable gift and purchase the standard Will. Your choices stay yours.</p>
+          </div>
+          <Link href="/charity-wills" className="mkt-btn-ghost-m" style={{ color: '#fff', borderColor: 'rgba(255,255,255,.35)', flexShrink: 0 }}>How sponsored Wills work</Link>
+        </div>
+      </section>
+
+      {/* ─── LIFE CHANGES ───────────────────────────────────────────────── */}
+      <section style={{ ...SECTION_PAD, background: '#fff', borderBottom: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10" style={W}>
+          <div style={{ maxWidth: '42rem' }}>
+            <span style={SECTION_LABEL}>Built around real life</span>
+            <H2>Every new chapter can change<br/>what your estate plan needs to <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>protect</em>.</H2>
+            <Sub>Tell Heirloom what changed. We&#8217;ll help you review the people, assets and wishes that may need attention  -  and prepare supported updates for your approval.</Sub>
+          </div>
+          <div className="sm:grid-cols-2 lg:grid-cols-4" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', gap: '.75rem' }}>
+            {[
+              ['Marriage', 'Review your relationship, beneficiaries and existing Will.'],
+              ['A new child', 'Revisit guardianship, gifts and distribution choices.'],
+              ['Property', 'Keep your asset register and specific gifts current.'],
+              ['Separation', 'Check the people, gifts and appointments in your plan.'],
+              ['Business', 'Record a major change in the composition of your estate.'],
+              ['Inheritance', 'Review how new wealth changes your intentions.'],
+              ['Moving interstate', 'Check your details and state-specific guidance.'],
+              ['Pet care', 'Record who should care for the animals you love.'],
+            ].map(([event, note]) => (
+              <Link key={event} href="/start" style={{ display: 'block', padding: '1.25rem', borderRadius: 10, border: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)', textDecoration: 'none' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '.75rem' }}>
+                  <p style={{ margin: 0, fontSize: '.9rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>{event}</p>
+                  <span style={{ color: 'var(--teal-deep)', fontSize: '.9rem' }}>→</span>
+                </div>
+                <p style={{ margin: '.5rem 0 0', fontSize: '.78rem', lineHeight: 1.55, color: 'var(--mkt-stone)' }}>{note}</p>
+              </Link>
+            ))}
+          </div>
+          <p style={{ marginTop: '1.25rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)' }}>A life change may affect your estate record, your Will, or both. Rules and effects vary by state and individual circumstances.</p>
         </div>
       </section>
 
@@ -176,7 +219,7 @@ export default function HomePage() {
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>The Command Centre</span>
             <H2>A single home for everything<br/>your estate needs to <em style={{ fontFamily: "'Instrument Serif', serif", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>keep working</em>.</H2>
-            <Sub>Your Will is the start, not the finish. The Living Vault keeps your estate current as your life does  -  your assets, your people, your instructions, always in step.</Sub>
+            <Sub>Your Will gets your estate plan created. Living Vault keeps it current, together and ready as your life changes.</Sub>
           </div>
           <div className="lg:grid-cols-[1.15fr_1fr] lg:grid-rows-2" style={{ marginTop: '3.5rem', display: 'grid', gap: '1.1rem', gridTemplateColumns: '1fr' }}>
             <div className="lg:row-span-2" style={{ borderRadius: 14, background: '#fff', padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '20rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>

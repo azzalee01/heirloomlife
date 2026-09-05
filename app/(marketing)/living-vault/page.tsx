@@ -36,12 +36,12 @@ export default function LivingVaultPage() {
               fontSize: 'clamp(2.6rem, 5vw, 4.6rem)', lineHeight: 1.04,
               letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0,
             }}>
-              A single home for everything<br/>
-              your estate needs to{' '}
-              <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>keep working</em>.
+              Your Will starts the plan.<br/>
+              Living Vault keeps it{' '}
+              <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>ready for life</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '34rem', fontSize: '1.1rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Your Will is the start, not the finish. The Living Vault keeps your estate current as your life does  -  your assets, your people, your instructions, always in step.
+              Tell us when life changes. Living Vault helps you review what may be affected, maintain your Will and estate record, and keep everything organised for the people who may one day need it.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <Link href="/dashboard" className="mkt-btn-ink-l">
@@ -50,11 +50,26 @@ export default function LivingVaultPage() {
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </Link>
-              <Link href="/start" className="mkt-btn-ghost-l">
+              <Link href="/start?path=retail" className="mkt-btn-ghost-l">
                 Start your Will
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section style={{ paddingBlock: '3rem', background: '#fff', borderBottom: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10 md:grid-cols-3" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '1px', background: 'var(--mkt-line)', border: '1px solid var(--mkt-line)', borderRadius: 12, overflow: 'hidden' }}>
+          {[
+            ['Keep it current', 'Guided life-change check-ins and unlimited supported amendments when your details or wishes change.'],
+            ['Keep it together', 'Your Will, assets, beneficiaries, executors and important estate information in one organised place.'],
+            ['Keep it ready', 'Will status, witnessing guidance, estate recommendations and a pathway to professional support when needed.'],
+          ].map(([title, body]) => (
+            <div key={title} style={{ background: 'var(--mkt-surface)', padding: '1.75rem' }}>
+              <h2 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>{title}</h2>
+              <p style={{ margin: '.7rem 0 0', fontSize: '.86rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>{body}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -71,7 +86,7 @@ export default function LivingVaultPage() {
                   Your estate, kept current.
                 </h2>
                 <p style={{ marginTop: '.75rem', fontSize: '.95rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-                  Marriage, a new child, a property purchase, a business sold  -  each one can quietly invalidate parts of a Will. The Vault tracks the life events that matter and prompts an update before a gap becomes a problem for the people you&#8217;ve named.
+                  Marriage, a new child, a property purchase or a business sale can change what your estate plan needs to do. Report the change in your Vault and we&#8217;ll guide you through the information that may need review.
                 </p>
               </div>
               <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', gap: '.6rem' }}>

@@ -1,5 +1,4 @@
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
@@ -28,16 +27,24 @@ export default async function WillNewPage({
     const cookieStore = await cookies()
     const anonSessionId = cookieStore.get('hl_anon_session')?.value
 
-    const { formData } = await loadWillFormData(supabase, user.id, willIdParam)
+    const [{ formData }, { data: profile }] = await Promise.all([
+      loadWillFormData(supabase, user.id, willIdParam),
+      supabaseAdmin.from('profiles').select('plan, plan_status').eq('id', user.id).single(),
+    ])
+    const hasWillAccess =
+      (profile?.plan === 'will' || profile?.plan === 'vault') && profile?.plan_status === 'active'
 
     // Pre-populate wizard from an anonymous session when the user has no existing will.
     // The anon data becomes the initial state; real DB records are created on first step save.
     if (!formData.willId && !willIdParam && anonSessionId) {
+      let anonData = null
       try {
-        const anonData = await loadAnonSessionFormData(supabase, anonSessionId)
-        return <WillWizard initialData={{ ...anonData, willId: null }} initialStep={initialStep} isAuthenticated={true} />
+        anonData = await loadAnonSessionFormData(supabase, anonSessionId)
       } catch {
         // Stale session  -  fall through to empty form
+      }
+      if (anonData) {
+        return <WillWizard initialData={{ ...anonData, willId: null }} initialStep={initialStep} isAuthenticated={true} hasWillAccess={hasWillAccess} />
       }
     }
 
@@ -73,7 +80,7 @@ export default async function WillNewPage({
                   Amendments require Living Vault
                 </h2>
                 <p className="text-sm leading-relaxed" style={{ color: 'var(--neutral)' }}>
-                  Your Will has been downloaded  -  that&apos;s your free generation. To make further amendments, add beneficiaries, or redraft via AI chat, upgrade to Living Vault for $12/month.
+                  Your Will has already been downloaded. To make further amendments, add beneficiaries, or redraft via AI chat, upgrade to Living Vault for $12/month.
                 </p>
                 <div className="flex flex-col gap-3">
                   <Link
@@ -96,7 +103,7 @@ export default async function WillNewPage({
       }
     }
 
-    return <WillWizard initialData={formData} initialStep={initialStep} isAuthenticated={true} />
+    return <WillWizard initialData={formData} initialStep={initialStep} isAuthenticated={true} hasWillAccess={hasWillAccess} />
   }
 
   // ── Anonymous path ─────────────────────────────────────────────────────────
@@ -112,5 +119,5 @@ export default async function WillNewPage({
     }
   }
 
-  return <WillWizard initialData={anonFormData} initialStep={initialStep} isAuthenticated={false} />
+  return <WillWizard initialData={anonFormData} initialStep={initialStep} isAuthenticated={false} hasWillAccess={false} />
 }

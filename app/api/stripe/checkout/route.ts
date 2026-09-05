@@ -45,13 +45,15 @@ export async function POST(request: NextRequest) {
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+  const successPath = product === 'will' ? '/will/new?payment=success&step=review' : '/dashboard?payment=success'
+  const cancelPath = product === 'will' ? '/will/new?step=review' : '/dashboard'
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
     line_items: [{ price, quantity: 1 }],
     mode: isSubscriptionProduct(product) ? 'subscription' : 'payment',
-    success_url: `${baseUrl}/dashboard?payment=success`,
-    cancel_url: `${baseUrl}/dashboard`,
+    success_url: `${baseUrl}${successPath}`,
+    cancel_url: `${baseUrl}${cancelPath}`,
     metadata: { userId: user.id, product },
   })
 
