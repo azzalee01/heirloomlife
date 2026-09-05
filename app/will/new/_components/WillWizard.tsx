@@ -198,8 +198,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [showDownloadGate, setShowDownloadGate] = useState(false)
   const [showCompletion, setShowCompletion] = useState(false)
-  const [showPaymentGate, setShowPaymentGate] = useState(false)
-  const [checkoutLoading, setCheckoutLoading] = useState(false)
   const [checkingOut, setCheckingOut] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
 
@@ -285,17 +283,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       return
     }
     if (!form.willId) return
-    const hasQualifyingCharityGift = form.beneficiariesData.charities.some(
-      (charity) => Boolean(
-        charity.name.trim() &&
-        hasValidAbnChecksum(charity.abn) &&
-        (parseFloat(charity.percentage) || 0) > 0
-      )
-    )
-    if (!hasWillAccess && !hasQualifyingCharityGift) {
-      setShowPaymentGate(true)
-      return
-    }
     setSaving(true)
     setError(null)
     try {
@@ -306,24 +293,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       setError(e instanceof Error ? e.message : 'Failed to complete will. Please try again.')
     } finally {
       setSaving(false)
-    }
-  }
-
-  async function startCheckout(product: 'will' | 'vault') {
-    setCheckoutLoading(true)
-    setError(null)
-    try {
-      const response = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product, returnToWill: true }),
-      })
-      const data = await response.json() as { url?: string; error?: string }
-      if (!response.ok || !data.url) throw new Error(data.error ?? 'Checkout could not be started.')
-      window.location.href = data.url
-    } catch (checkoutError) {
-      setError(checkoutError instanceof Error ? checkoutError.message : 'Checkout could not be started.')
-      setCheckoutLoading(false)
     }
   }
 
@@ -533,7 +502,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     onChange={(updates) => setForm((prev) => ({ ...prev, ...updates }))}
                   />
                 )}
-                {currentStaticStep === 'review' && !showDownloadGate && !showCompletion && !showPaymentGate && (
+                {currentStaticStep === 'review' && !showDownloadGate && !showCompletion && (
                   <StepReview
                     formData={form}
                     activeSteps={baseStepsFor(form.personalDetails.maritalStatus).filter(s => s !== 'eligibility')}
@@ -542,38 +511,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                 )}
                 {showDownloadGate && <AnonDownloadGate />}
 
-                {showPaymentGate && (
-                  <div className="space-y-6 py-4">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[.14em]" style={{ color: 'var(--teal-deep)' }}>Choose how to complete your Will</p>
-                      <h2 className="mt-2 text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>Your estate plan is ready.</h2>
-                      <p className="mt-2 max-w-lg text-sm leading-6" style={{ color: 'var(--neutral)' }}>Your answers are saved. Purchase your signing-ready Heirloom Will, or include a gift to an eligible registered charity to receive a sponsored Will for $0.</p>
-                    </div>
-                    <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-                      <button type="button" onClick={() => startCheckout('will')} disabled={checkoutLoading} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)] disabled:opacity-60" style={{ borderColor: commercialPath === 'retail' ? 'var(--teal)' : 'var(--line)', background: 'white' }}>
-                        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>Will · pay once</span>
-                        <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$129</span>
-                        <span className="mt-2 block text-xs leading-5" style={{ color: 'var(--neutral)' }}>Your signing-ready Will plus three months of full Living Vault benefits. Keep and download your Will permanently.</span>
-                        <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>{checkoutLoading ? 'Opening secure checkout…' : 'Pay once →'}</span>
-                      </button>
-                      <button type="button" onClick={() => startCheckout('vault')} disabled={checkoutLoading} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)] disabled:opacity-60" style={{ borderColor: 'var(--teal)', background: 'var(--paper-warm)' }}>
-                        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--teal-deep)' }}>Heirloom Membership</span>
-                        <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$99/year</span>
-                        <span className="mt-2 block text-xs leading-5" style={{ color: 'var(--neutral)' }}>Your Will included, with continuing Vault access, supported updates, version history and member benefits.</span>
-                        <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>{checkoutLoading ? 'Opening secure checkout…' : 'Join Heirloom →'}</span>
-                      </button>
-                      <button type="button" onClick={() => { setShowPaymentGate(false); jumpToStep('beneficiaries') }} className="rounded-lg border p-5 text-left transition-colors hover:border-[var(--teal)]" style={{ borderColor: commercialPath === 'sponsored' ? 'var(--teal)' : 'var(--line)', background: 'var(--paper-warm)' }}>
-                        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>Charity-sponsored Will</span>
-                        <span className="mt-2 block text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$0</span>
-                        <span className="mt-2 block text-xs leading-5" style={{ color: 'var(--neutral)' }}>Include a positive share for an eligible registered charity and provide a valid-format ABN. Campaign and charity eligibility conditions may also apply.</span>
-                        <span className="mt-4 block text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>Add a charity gift →</span>
-                      </button>
-                    </div>
-                    <p className="text-xs leading-5" style={{ color: 'var(--neutral)' }}>The $99 membership renews annually until cancelled. A charitable gift is required only for the $0 sponsored option. You control the charity and share you choose.</p>
-                  </div>
-                )}
-
-                {/* Completion screen  -  shown after authenticated user completes */}
+                {/* Completion screen — shown after user submits the review step */}
                 {showCompletion && (
                   <div className="py-6 space-y-8">
                     <div className="text-center space-y-3">
@@ -588,72 +526,89 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                       <h2 className="text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
                         Your Will is ready
                       </h2>
-                      <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>
-                        Saved to your account. Pay once to download and get three months of Living Vault included — no ongoing subscription required.
-                      </p>
+                      {!hasWillAccess && (
+                        <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>
+                          Saved to your account. Pay once to download and get three months of Living Vault included — no ongoing subscription required.
+                        </p>
+                      )}
                     </div>
 
-                    <div className="max-w-md mx-auto space-y-3">
-                      {/* Primary: payment card */}
-                      <div className="border-2 p-6 space-y-4" style={{ borderColor: 'var(--teal)' }}>
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Download your Will</p>
-                            <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>One payment. No subscription required.</p>
-                          </div>
-                          <p className="text-xl font-bold shrink-0" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>$129</p>
-                        </div>
-                        <ul className="space-y-1.5">
-                          {[
-                            'Your Will, permanently downloadable',
-                            'Standard solicitor quality review included',
-                            '3 months Living Vault membership',
-                          ].map((f) => (
-                            <li key={f} className="flex items-center gap-2 text-xs" style={{ color: 'var(--ink)' }}>
-                              <svg className="shrink-0" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                                <path d="M20 6L9 17l-5-5" />
-                              </svg>
-                              {f}
-                            </li>
-                          ))}
-                        </ul>
-                        {checkoutError && (
-                          <p className="text-xs text-red-600">{checkoutError}</p>
-                        )}
-                        <button
-                          type="button"
-                          onClick={handleWillCheckout}
-                          disabled={checkingOut}
-                          className="w-full py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-60"
-                          style={{ backgroundColor: 'var(--teal)', border: 'none' }}
+                    {hasWillAccess ? (
+                      <div className="max-w-md mx-auto space-y-3">
+                        <p className="text-sm text-center" style={{ color: 'var(--neutral)' }}>
+                          Your Will has been updated. Your download is available in your Vault.
+                        </p>
+                        <Link
+                          href="/dashboard"
+                          className="flex items-center justify-center gap-2 py-3 text-sm font-semibold text-white"
+                          style={{ backgroundColor: 'var(--teal)' }}
                         >
-                          {checkingOut ? 'Loading…' : 'Pay $129 and get your Will'}
-                        </button>
+                          Go to Vault
+                        </Link>
                       </div>
+                    ) : (
+                      <div className="max-w-md mx-auto space-y-3">
+                        {/* Primary: payment card */}
+                        <div className="border-2 p-6 space-y-4" style={{ borderColor: 'var(--teal)' }}>
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Download your Will</p>
+                              <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>One payment. No subscription required.</p>
+                            </div>
+                            <p className="text-xl font-bold shrink-0" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$129</p>
+                          </div>
+                          <ul className="space-y-1.5">
+                            {[
+                              'Your Will, permanently downloadable',
+                              'Standard solicitor quality review included',
+                              '3 months Living Vault membership',
+                            ].map((f) => (
+                              <li key={f} className="flex items-center gap-2 text-xs" style={{ color: 'var(--ink)' }}>
+                                <svg className="shrink-0" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                                  <path d="M20 6L9 17l-5-5" />
+                                </svg>
+                                {f}
+                              </li>
+                            ))}
+                          </ul>
+                          {checkoutError && (
+                            <p className="text-xs text-red-600">{checkoutError}</p>
+                          )}
+                          <button
+                            type="button"
+                            onClick={handleWillCheckout}
+                            disabled={checkingOut}
+                            className="w-full py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-60"
+                            style={{ backgroundColor: 'var(--teal)', border: 'none' }}
+                          >
+                            {checkingOut ? 'Loading…' : 'Pay $129 and get your Will'}
+                          </button>
+                        </div>
 
-                      {/* Secondary: view in Vault, no payment needed */}
-                      <Link
-                        href="/dashboard"
-                        className="flex items-center gap-3 border px-5 py-4 hover:border-[var(--teal)] transition-colors"
-                        style={{ borderColor: 'var(--line)' }}
-                      >
-                        <div className="w-8 h-8 flex items-center justify-center shrink-0" style={{ background: 'var(--paper-warm)' }}>
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>View in Vault</p>
-                          <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
-                            See your estate plan, assets, and people in one place
-                          </p>
-                        </div>
-                      </Link>
-                    </div>
+                        {/* Secondary: view in Vault */}
+                        <Link
+                          href="/dashboard"
+                          className="flex items-center gap-3 border px-5 py-4 hover:border-[var(--teal)] transition-colors"
+                          style={{ borderColor: 'var(--line)' }}
+                        >
+                          <div className="w-8 h-8 flex items-center justify-center shrink-0" style={{ background: 'var(--paper-warm)' }}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>View in Vault</p>
+                            <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
+                              See your estate plan, assets, and people in one place
+                            </p>
+                          </div>
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {!showDownloadGate && !showCompletion && !showPaymentGate && (
+                {!showDownloadGate && !showCompletion && (
                   <div className="flex items-center justify-between pt-6 mt-8 border-t border-[var(--line)]">
                     <button
                       type="button"
