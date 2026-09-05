@@ -122,7 +122,11 @@ function CellContent({ cell }: { cell: CellValue }) {
       {cell.tooltip && <InfoTooltip text={cell.tooltip} />}
     </span>
   )
-  if (cell.kind === 'no')  return <Cross />
+  if (cell.kind === 'no') return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+      <Cross />
+    </span>
+  )
   if (cell.kind === 'dash') return <Dash />
   return (
     <span>
