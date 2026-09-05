@@ -40,7 +40,7 @@ export default function PlanCTA() {
       <div className="px-5 py-5 space-y-4 bg-white">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>
-            $8 / month · cancel anytime
+            $12 / month · cancel anytime
           </p>
           <h3 className="text-base font-bold mt-0.5" style={{ color: 'var(--ink)', fontFamily: "'Instrument Serif', Georgia, serif" }}>
             Living Vault
@@ -74,7 +74,7 @@ export default function PlanCTA() {
           className="w-full py-2.5 text-sm font-semibold transition-opacity disabled:opacity-60 cursor-pointer text-white"
           style={{ backgroundColor: 'var(--teal)', border: 'none' }}
         >
-          {loading ? 'Loading…' : 'Get Living Vault  -  $8/mo'}
+          {loading ? 'Loading…' : 'Get Living Vault  -  $12/mo'}
         </button>
       </div>
 
