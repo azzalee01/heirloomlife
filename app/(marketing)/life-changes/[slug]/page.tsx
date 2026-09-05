@@ -29,8 +29,7 @@ export default async function LifeChangePage({ params }: Props) {
         <div className="relative md:flex md:min-h-[25rem] md:items-center md:px-10" style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }}>
           <div className="relative z-10 md:w-[54%]" style={{ paddingBlock: '3.25rem' }}>
             <Link href="/life-changes" style={{ fontSize: '.78rem', color: 'var(--teal-deep)', textDecoration: 'none', fontWeight: 600 }}>← All life changes</Link>
-            <p style={{ margin: '1.5rem 0 0', color: 'var(--teal-deep)', fontSize: '.7rem', fontWeight: 700, letterSpacing: '.15em', textTransform: 'uppercase' }}>{event.eyebrow}</p>
-            <h1 style={{ margin: '1rem 0 0', maxWidth: '45rem', fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', lineHeight: 1.03, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>{event.title}</h1>
+            <h1 style={{ margin: '1.5rem 0 0', maxWidth: '45rem', fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', lineHeight: 1.03, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>{event.title}</h1>
             <p style={{ margin: '1.4rem 0 0', maxWidth: '36rem', fontSize: '1.08rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>{event.introduction}</p>
           </div>
           <EditorialBanner src={`/images/life-changes/${event.slug}.jpg`} alt={`${event.shortTitle} — a new chapter in life`} />
