@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
+import { renderWillText } from '../_render'
 import {
   type WillFormData,
   type StepId,
@@ -170,10 +171,9 @@ interface Props {
   initialStep?: StepId
   isAuthenticated: boolean
   hasWillAccess?: boolean
-  commercialPath?: 'retail' | 'sponsored'
 }
 
-export default function WillWizard({ initialData, initialStep, isAuthenticated, hasWillAccess = false, commercialPath = 'retail' }: Props) {
+export default function WillWizard({ initialData, initialStep, isAuthenticated, hasWillAccess = false }: Props) {
   const [form, setForm] = useState<WillFormData>(initialData)
   const [wizardSteps, setWizardSteps] = useState<WizardStepId[]>(() =>
     buildWizardSteps(initialData)
@@ -192,6 +192,14 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const [showCompletion, setShowCompletion] = useState(false)
   const [checkingOut, setCheckingOut] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
+  const [vaultCheckingOut, setVaultCheckingOut] = useState(false)
+  const [vaultCheckoutError, setVaultCheckoutError] = useState<string | null>(null)
+
+  const willPreviewText = useMemo(() => {
+    if (!showCompletion || hasWillAccess) return ''
+    const sections = renderWillText(form).split('\n\n')
+    return sections.slice(0, Math.ceil(sections.length / 2)).join('\n\n')
+  }, [showCompletion, hasWillAccess, form])
 
   const currentStepId = wizardSteps[stepIndex]
   const isBackupStep = typeof currentStepId === 'string' && currentStepId.startsWith('backup_')
@@ -311,6 +319,32 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       setCheckoutError('Checkout failed. Please try again.')
     } finally {
       setCheckingOut(false)
+    }
+  }
+
+  async function handleVaultCheckout() {
+    setVaultCheckingOut(true)
+    setVaultCheckoutError(null)
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product: 'vault' }),
+      })
+      if (res.status === 401) {
+        window.location.href = '/auth/login?next=/will/new'
+        return
+      }
+      const data = await res.json() as { url?: string; error?: string }
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        setVaultCheckoutError(data.error ?? 'Checkout failed. Please try again.')
+      }
+    } catch {
+      setVaultCheckoutError('Checkout failed. Please try again.')
+    } finally {
+      setVaultCheckingOut(false)
     }
   }
 
@@ -505,8 +539,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
 
                 {/* Completion screen — shown after user submits the review step */}
                 {showCompletion && (
-                  <div className="py-6 space-y-8">
-                    <div className="text-center space-y-3">
+                  <div className="py-6 space-y-6">
+                    <div className="text-center space-y-2">
                       <div
                         className="w-14 h-14 mx-auto flex items-center justify-center"
                         style={{ background: 'rgba(42,180,174,0.1)' }}
@@ -518,11 +552,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                       <h2 className="text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
                         Your Will is ready
                       </h2>
-                      {!hasWillAccess && (
-                        <p className="text-sm max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>
-                          Saved to your account. Pay once to download and get three months of Living Vault included — no ongoing subscription required.
-                        </p>
-                      )}
                     </div>
 
                     {hasWillAccess ? (
@@ -539,45 +568,106 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                         </Link>
                       </div>
                     ) : (
-                      <div className="max-w-md mx-auto space-y-3">
-                        {/* Primary: payment card */}
-                        <div className="border-2 p-6 space-y-4" style={{ borderColor: 'var(--teal)' }}>
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Download your Will</p>
-                              <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>One payment. No subscription required.</p>
-                            </div>
-                            <p className="text-xl font-bold shrink-0" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$129</p>
-                          </div>
-                          <ul className="space-y-1.5">
-                            {[
-                              'Your Will, permanently downloadable',
-                              'Standard solicitor quality review included',
-                              '3 months Living Vault membership',
-                            ].map((f) => (
-                              <li key={f} className="flex items-center gap-2 text-xs" style={{ color: 'var(--ink)' }}>
-                                <svg className="shrink-0" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                                  <path d="M20 6L9 17l-5-5" />
-                                </svg>
-                                {f}
-                              </li>
-                            ))}
-                          </ul>
-                          {checkoutError && (
-                            <p className="text-xs text-red-600">{checkoutError}</p>
-                          )}
-                          <button
-                            type="button"
-                            onClick={handleWillCheckout}
-                            disabled={checkingOut}
-                            className="w-full py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-60"
-                            style={{ backgroundColor: 'var(--teal)', border: 'none' }}
+                      <div className="space-y-5">
+                        {/* Scrollable document preview — only first half of sections reach the DOM */}
+                        <div style={{ position: 'relative' }}>
+                          <div
+                            style={{
+                              maxHeight: '22rem',
+                              overflowY: 'auto',
+                              border: '1px solid var(--line)',
+                              padding: '1.25rem 1.5rem',
+                              fontFamily: 'monospace',
+                              fontSize: '.75rem',
+                              lineHeight: 1.75,
+                              whiteSpace: 'pre-wrap',
+                              color: 'var(--ink)',
+                              background: 'var(--paper-warm)',
+                            }}
                           >
-                            {checkingOut ? 'Loading…' : 'Pay $129 and get your Will'}
-                          </button>
+                            {willPreviewText}
+                          </div>
+                          <div
+                            style={{
+                              position: 'absolute',
+                              bottom: 0, left: 0, right: 0,
+                              height: '5rem',
+                              background: 'linear-gradient(to bottom, transparent, var(--paper-warm))',
+                              pointerEvents: 'none',
+                            }}
+                          />
                         </div>
 
-                        {/* Secondary: view in Vault */}
+                        <p className="text-sm text-center" style={{ color: 'var(--neutral)' }}>
+                          This is your complete Will. Choose how to unlock it.
+                        </p>
+
+                        {/* Two pricing tiers */}
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {/* The Will — one-time */}
+                          <div className="border-2 p-5 space-y-4 flex flex-col" style={{ borderColor: 'var(--teal)' }}>
+                            <div>
+                              <p className="text-xs font-semibold uppercase" style={{ color: 'var(--teal-deep)', letterSpacing: '.1em' }}>The Will</p>
+                              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$129</p>
+                              <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>One payment · no subscription</p>
+                            </div>
+                            <ul className="space-y-1.5 flex-1">
+                              {[
+                                'Solicitor-reviewed, signed-ready Will',
+                                'Permanently downloadable',
+                                '3 months Living Vault included',
+                              ].map((f) => (
+                                <li key={f} className="flex items-start gap-2 text-xs" style={{ color: 'var(--ink)' }}>
+                                  <svg className="shrink-0 mt-0.5" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M20 6L9 17l-5-5"/></svg>
+                                  {f}
+                                </li>
+                              ))}
+                            </ul>
+                            {checkoutError && <p className="text-xs text-red-600">{checkoutError}</p>}
+                            <button
+                              type="button"
+                              onClick={handleWillCheckout}
+                              disabled={checkingOut}
+                              className="w-full py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-60"
+                              style={{ backgroundColor: 'var(--teal)', border: 'none' }}
+                            >
+                              {checkingOut ? 'Loading…' : 'Pay $129 · get your Will'}
+                            </button>
+                          </div>
+
+                          {/* Living Vault — annual */}
+                          <div className="border p-5 space-y-4 flex flex-col" style={{ borderColor: 'var(--line)' }}>
+                            <div>
+                              <p className="text-xs font-semibold uppercase" style={{ color: 'var(--teal-deep)', letterSpacing: '.1em' }}>Living Vault</p>
+                              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$99</p>
+                              <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>per year · Will included</p>
+                            </div>
+                            <ul className="space-y-1.5 flex-1">
+                              {[
+                                'Will included and downloadable',
+                                'Supported updates as life changes',
+                                'Full platform access, renews annually',
+                              ].map((f) => (
+                                <li key={f} className="flex items-start gap-2 text-xs" style={{ color: 'var(--ink)' }}>
+                                  <svg className="shrink-0 mt-0.5" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M20 6L9 17l-5-5"/></svg>
+                                  {f}
+                                </li>
+                              ))}
+                            </ul>
+                            {vaultCheckoutError && <p className="text-xs text-red-600">{vaultCheckoutError}</p>}
+                            <button
+                              type="button"
+                              onClick={handleVaultCheckout}
+                              disabled={vaultCheckingOut}
+                              className="w-full py-2.5 text-sm font-semibold transition-opacity disabled:opacity-60"
+                              style={{ border: '1.5px solid var(--teal-deep)', color: 'var(--teal-deep)', background: 'transparent' }}
+                            >
+                              {vaultCheckingOut ? 'Loading…' : 'Join for $99 / year'}
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Tertiary: view in Vault without paying */}
                         <Link
                           href="/dashboard"
                           className="flex items-center gap-3 border px-5 py-4 hover:border-[var(--teal)] transition-colors"

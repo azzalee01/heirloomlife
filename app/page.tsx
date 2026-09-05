@@ -61,7 +61,7 @@ export default function HomePage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Write your Will in under 20 minutes. Solicitor-reviewed as standard.
+              Start for free — draft your whole Will at your own pace. You only pay $129 when you&apos;re ready to download it, signed and ready to go.
             </p>
             <div style={{ marginTop: '2.5rem' }}>
               <Link href="/start?path=retail" className="mkt-btn-ink-l">
@@ -84,7 +84,7 @@ export default function HomePage() {
         {/* Trust bar */}
         <div style={{ position: 'relative', zIndex: 2, borderTop: '1px solid var(--mkt-line)', background: '#fff' }}>
           <div
-            className="md:px-10 md:grid-cols-3"
+            className="md:px-10 md:grid-cols-4"
             style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '1.4rem', paddingBlock: '1.6rem', fontSize: '.8rem', color: 'var(--mkt-stone)' }}
           >
             {[
@@ -100,6 +100,10 @@ export default function HomePage() {
                 d: <><rect x="4" y="10" width="16" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.4"/></>,
                 t: 'Solicitor reviewed, encrypted, executor-ready',
               },
+              {
+                d: <><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
+                t: 'Free to start  -  pay only when you download',
+              },
             ].map((item, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '.65rem' }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0, color: 'var(--teal-deep)' }} aria-hidden="true">{item.d}</svg>
@@ -111,12 +115,8 @@ export default function HomePage() {
       </section>
 
       <section style={{ background: 'var(--mkt-surface-2)', color: 'var(--mkt-ink-text)', borderBottom: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10 md:flex-row md:items-center md:justify-between" style={{ ...W, display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingBlock: '2rem' }}>
-          <div>
-            <p style={{ margin: 0, fontSize: '.72rem', fontWeight: 700, letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--teal)' }}>A different way to pay</p>
-            <p style={{ margin: '.45rem 0 0', fontSize: '1.05rem', fontWeight: 500 }}>Include a gift to an eligible charity and your Will can be sponsored for $0.</p>
-          </div>
-          <Link href="/charity-wills" className="mkt-btn-ghost-m" style={{ flexShrink: 0 }}>How sponsored Wills work</Link>
+        <div className="md:px-10" style={{ ...W, paddingBlock: '1.25rem', fontSize: '.875rem', color: 'var(--mkt-stone)', textAlign: 'center' }}>
+          No payment to begin. No subscription required to finish.
         </div>
       </section>
 

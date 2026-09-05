@@ -10,7 +10,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   const params = await searchParams
-  const commercialPath = params.path === 'sponsored' ? 'sponsored' : 'retail'
+  void params
 
   // Load existing data  -  from DB for authenticated users, from anon session cookie otherwise
   let formData = { ...EMPTY_WILL_FORM_DATA }
@@ -62,7 +62,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
                 margin: 0,
               }}
             >
-              {commercialPath === 'sponsored' ? 'Create a charity-sponsored Will' : 'Create your Will'}
+              Create your Will
             </h1>
             <p
               style={{
@@ -74,9 +74,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
                 marginInline: 'auto',
               }}
             >
-              {commercialPath === 'sponsored'
-                ? 'Your Will costs $0 when it includes a gift to an eligible registered charity. Your choices remain yours.'
-                : 'Choose $129 once with three months of full Living Vault benefits, or $99 a year for your Will and continuing membership.'}
+              Free to draft. Pay $129 to download your solicitor-reviewed, signed-ready Will -- or $99/year for your Will and continuing membership.
             </p>
           </div>
 
@@ -89,7 +87,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
               overflow: 'hidden',
             }}
           >
-            <WillWizard initialData={formData} isAuthenticated={!!user} hasWillAccess={hasWillAccess} commercialPath={commercialPath} />
+            <WillWizard initialData={formData} isAuthenticated={!!user} hasWillAccess={hasWillAccess} />
           </div>
 
           {/* Trust footnote */}

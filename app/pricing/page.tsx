@@ -36,7 +36,7 @@ export default function PricingPage() {
             <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>ready for life</em>.
           </h1>
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
-            Choose a $129 one-off Will with three months of full Living Vault benefits, or join for $99 a year with your Will and continuing membership included.
+            Free to start. Draft your whole Will at your own pace, then pay $129 to download your reviewed, signed-ready document -- or join for $99 a year with your Will and continuing membership included.
           </p>
         </div>
       </section>
@@ -46,13 +46,14 @@ export default function PricingPage() {
         <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
           <div>
             <span style={SECTION_LABEL}>The Will</span>
-            <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .5rem' }}>
-              $129
+            <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
+              $0
             </p>
-            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>One-time payment. Three months of full platform benefits included.</p>
+            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '.35rem' }}>Free to draft. No account required to start.</p>
+            <p style={{ fontSize: '.85rem', color: 'var(--teal-deep)', fontWeight: 600, marginBottom: '1.5rem' }}>Pay $129 to download -- solicitor review included.</p>
 
             <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '28rem' }}>
-              Create and keep your signing-ready Will, with three months to organise your Vault, make supported updates and use included member benefits.
+              Draft your complete Will at your own pace. When you&apos;re ready, pay once to get your solicitor-reviewed, signed-ready document -- with three months of Living Vault included. No subscription required.
             </p>
 
             <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
@@ -65,7 +66,7 @@ export default function PricingPage() {
             </div>
 
             <p style={{ marginTop: '1.1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-              No charitable gift is required for the standard Will. Available across all Australian states and territories.
+              No payment required to begin. Available across all Australian states and territories.
             </p>
           </div>
 
@@ -87,27 +88,6 @@ export default function PricingPage() {
                   {f}
                 </li>
               ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section style={{ paddingBlock: '4rem 5rem', background: 'var(--mkt-surface-2)', color: 'var(--mkt-ink-text)', borderTop: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
-          <div>
-            <span style={{ ...SECTION_LABEL, color: 'var(--teal)' }}>Charity-sponsored Will</span>
-            <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', lineHeight: 1, margin: '0 0 .5rem' }}>$0</p>
-            <p style={{ marginBottom: '1.5rem', color: 'var(--mkt-stone)' }}>Available when your Will includes an eligible charitable gift.</p>
-            <p style={{ maxWidth: '30rem', fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>Choose the charity and share that reflect your intentions. If you decide not to include a charitable gift, every answer is preserved and you can continue with the standard $129 Will.</p>
-            <div style={{ marginTop: '2rem', display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
-              <Link href="/start?path=sponsored" className="mkt-btn-ink-m">Create a sponsored Will</Link>
-              <Link href="/charity-wills" style={{ alignSelf: 'center', fontSize: '.82rem', fontWeight: 600, color: 'var(--teal-deep)' }}>Read how sponsorship works →</Link>
-            </div>
-          </div>
-          <div style={{ borderRadius: 14, border: '1px solid var(--mkt-line)', background: '#fff', padding: '2rem' }}>
-            <p style={{ margin: '0 0 1.25rem', fontSize: '.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--teal-deep)' }}>The transparent choice</p>
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
-              {['A positive share to an eligible registered charity is required', 'A valid-format ABN and any campaign eligibility conditions are required', 'You control which charity and what share to include', 'No charity gift is required for the paid standard Will', 'Changing paths never deletes your estate-plan answers'].map((item) => <li key={item} style={{ display: 'flex', gap: '.6rem', fontSize: '.9rem', color: 'var(--mkt-stone)' }}><Check />{item}</li>)}
             </ul>
           </div>
         </div>
@@ -188,8 +168,8 @@ export default function PricingPage() {
           </h2>
           {[
             {
-              q: 'Can I create a Will for $0?',
-              a: 'The standard Will is $129 once and includes three months of full Living Vault benefits. Annual membership is $99 and includes your Will. A charity-sponsored Will is $0 when you include an eligible charitable gift, provide a valid-format ABN and meet any applicable campaign conditions.',
+              q: 'Is it really free to start?',
+              a: 'Yes. You can draft your complete Will -- every step, every clause -- without paying anything. You pay $129 when you\'re ready to download your solicitor-reviewed, signed-ready document. Annual Vault membership ($99/year) includes your Will and ongoing updates.',
             },
             {
               q: 'Which states are supported?',
