@@ -18,8 +18,9 @@ const ARTICLES = [
 export default function PassingIndexPage() {
   return (
     <>
-      <section style={{ paddingTop: '4rem', paddingBottom: '5rem', background: 'var(--mkt-surface)' }}>
-        <div style={{ maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }} className="md:px-10">
+      <section style={{ paddingTop: '4rem', paddingBottom: '5rem', background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
+        <div style={{ maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }} className="relative md:flex md:min-h-[28rem] md:items-center md:px-10">
+          <div className="relative z-10 md:w-[54%]">
           <span style={LABEL}>Passing</span>
           <h1 style={{
             fontFamily: "var(--font-body)",
@@ -35,6 +36,7 @@ export default function PassingIndexPage() {
           <p style={{ fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
             Guides for executors, families, and anyone navigating what comes after a death. Clear, practical, and specific to Australian law.
           </p>
+          </div>
           <EditorialBanner src="/images/editorial/passing.jpg" alt="A calm home setting with an envelope and personal keepsakes" />
         </div>
       </section>

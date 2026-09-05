@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import EditorialBanner from '@/components/marketing/EditorialBanner'
 import { getLifeChange, LIFE_CHANGES } from '../_data'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -25,23 +25,15 @@ export default async function LifeChangePage({ params }: Props) {
 
   return (
     <>
-      <section style={{ paddingBlock: '6.5rem 4.5rem', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10" style={{ maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }}>
-          <Link href="/life-changes" style={{ fontSize: '.78rem', color: 'var(--teal-deep)', textDecoration: 'none', fontWeight: 600 }}>← All life changes</Link>
-          <p style={{ margin: '2rem 0 0', color: 'var(--teal-deep)', fontSize: '.7rem', fontWeight: 700, letterSpacing: '.15em', textTransform: 'uppercase' }}>{event.eyebrow}</p>
-          <h1 style={{ margin: '1rem 0 0', maxWidth: '45rem', fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', lineHeight: 1.03, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>{event.title}</h1>
-          <p style={{ margin: '1.4rem 0 0', maxWidth: '40rem', fontSize: '1.08rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>{event.introduction}</p>
-          <div style={{ position: 'relative', height: 'clamp(15rem, 34vw, 23rem)', marginTop: '2.75rem', overflow: 'hidden', border: '1px solid var(--mkt-line)', borderRadius: 16, background: 'var(--mkt-surface)' }}>
-            <Image
-              src={`/images/life-changes/${event.slug}.jpg`}
-              alt={`${event.shortTitle} — a new chapter in life`}
-              fill
-              priority
-              sizes="(max-width: 768px) 100vw, 1100px"
-              style={{ objectFit: 'cover', objectPosition: 'center', filter: 'saturate(.78)', transform: 'scale(1.01)' }}
-            />
-            <div aria-hidden="true" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(244,247,246,.5) 0%, rgba(244,247,246,.08) 38%, transparent 68%)' }} />
+      <section style={{ paddingBlock: '6.5rem 4.5rem', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden' }}>
+        <div className="relative md:flex md:min-h-[29rem] md:items-center md:px-10" style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }}>
+          <div className="relative z-10 md:w-[54%]">
+            <Link href="/life-changes" style={{ fontSize: '.78rem', color: 'var(--teal-deep)', textDecoration: 'none', fontWeight: 600 }}>← All life changes</Link>
+            <p style={{ margin: '2rem 0 0', color: 'var(--teal-deep)', fontSize: '.7rem', fontWeight: 700, letterSpacing: '.15em', textTransform: 'uppercase' }}>{event.eyebrow}</p>
+            <h1 style={{ margin: '1rem 0 0', maxWidth: '45rem', fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', lineHeight: 1.03, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>{event.title}</h1>
+            <p style={{ margin: '1.4rem 0 0', maxWidth: '36rem', fontSize: '1.08rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>{event.introduction}</p>
           </div>
+          <EditorialBanner src={`/images/life-changes/${event.slug}.jpg`} alt={`${event.shortTitle} — a new chapter in life`} />
         </div>
       </section>
 

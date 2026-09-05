@@ -62,9 +62,9 @@ const ARTICLES = [
 export default function LearnPage() {
   return (
     <>
-      <section style={{ paddingTop: '4rem', paddingBottom: '5rem', background: 'var(--mkt-surface)' }}>
-        <div style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }} className="md:px-10">
-          <div style={{ maxWidth: '38rem' }}>
+      <section style={{ paddingTop: '4rem', paddingBottom: '5rem', background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
+        <div style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }} className="relative md:flex md:min-h-[28rem] md:items-center md:px-10">
+          <div className="relative z-10 md:w-[54%]" style={{ maxWidth: '38rem' }}>
             <span style={LABEL}>Learn</span>
             <h1 style={{
               fontFamily: "var(--font-body)",

@@ -7,8 +7,9 @@ export default function ForAdvisersPage() {
   return (
     <>
       {/* Hero */}
-      <section style={{ paddingTop: '4rem', paddingBottom: '5.5rem', background: 'var(--mkt-surface)' }}>
-        <div className="md:px-10" style={{ maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }}>
+      <section style={{ paddingTop: '4rem', paddingBottom: '5.5rem', background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
+        <div className="relative md:flex md:min-h-[30rem] md:items-center md:px-10" style={{ maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }}>
+          <div className="relative z-10 md:w-[54%]">
           <span style={SECTION_LABEL}>For Advisers</span>
           <h1 style={{
             fontFamily: "var(--font-body)",
@@ -21,6 +22,7 @@ export default function ForAdvisersPage() {
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
             We&#8217;re building a referral programme for financial advisers, accountants, and estate planning professionals. Details are being finalised  -  this page will be updated when the programme is ready to launch.
           </p>
+          </div>
           <EditorialBanner src="/images/editorial/advisers.jpg" alt="Professional advisers reviewing an estate plan together" />
         </div>
       </section>
