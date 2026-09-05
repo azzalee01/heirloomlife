@@ -28,9 +28,9 @@ export default function LivingVaultPage() {
   return (
     <>
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
-      <section style={{ paddingTop: '7rem', paddingBottom: '5.5rem', background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
+      <section style={{ background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
         <div className="relative md:flex md:min-h-[30rem] md:items-center md:px-10" style={W}>
-          <div className="relative z-10 md:w-[54%]" style={{ maxWidth: '44rem' }}>
+          <div className="relative z-10 md:w-[54%]" style={{ maxWidth: '44rem', paddingBlock: '7rem 5.5rem' }}>
             <span style={SECTION_LABEL}>The Command Centre</span>
             <h1 style={{
               fontFamily: "var(--font-display)",

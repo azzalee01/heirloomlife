@@ -11,9 +11,9 @@ export const metadata = {
 export default function CharityWillsPage() {
   return (
     <>
-        <section style={{ paddingBlock: '7rem 5.5rem', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden' }}>
+        <section style={{ background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden' }}>
           <div className="relative md:flex md:min-h-[34rem] md:items-center md:px-10" style={W}>
-            <div className="relative z-10 md:w-[55%]">
+            <div className="relative z-10 md:w-[55%]" style={{ paddingBlock: '7rem 5.5rem' }}>
             <p style={{ margin: 0, color: 'var(--teal-deep)', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase' }}>Charity-sponsored Wills</p>
             <h1 style={{ margin: '1.25rem 0 0', maxWidth: '48rem', fontFamily: "var(--font-display)", fontSize: 'clamp(2.7rem, 5.5vw, 5rem)', lineHeight: 1.02, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>Leave something meaningful behind—and receive your Will for <em style={{ color: 'var(--teal-deep)', fontWeight: 400 }}>$0</em>.</h1>
             <p style={{ margin: '1.5rem 0 0', maxWidth: '36rem', fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>Include a gift to an eligible registered charity and the cost of your standard Will is sponsored. Prefer not to include a gift? Choose $129 once with three months of Vault benefits, or $99 a year with your Will and continuing membership included.</p>

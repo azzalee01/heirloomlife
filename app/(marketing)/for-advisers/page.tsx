@@ -7,9 +7,9 @@ export default function ForAdvisersPage() {
   return (
     <>
       {/* Hero */}
-      <section style={{ paddingTop: '4rem', paddingBottom: '5.5rem', background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
+      <section style={{ background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
         <div className="relative md:flex md:min-h-[30rem] md:items-center md:px-10" style={{ maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }}>
-          <div className="relative z-10 md:w-[54%]">
+          <div className="relative z-10 md:w-[54%]" style={{ paddingBlock: '4rem 5.5rem' }}>
           <span style={SECTION_LABEL}>For Advisers</span>
           <h1 style={{
             fontFamily: "var(--font-body)",
