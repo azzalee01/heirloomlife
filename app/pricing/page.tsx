@@ -41,99 +41,82 @@ export default function PricingPage() {
         </div>
       </section>
 
-      {/* ── The Will ─────────────────────────────────────────────────────────── */}
+      {/* ── Pricing tiers ────────────────────────────────────────────────────── */}
       <section style={{ paddingBlock: '4rem 5rem', background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
-          <div>
-            <span style={SECTION_LABEL}>The Will</span>
-            <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
-              $0
-            </p>
-            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '.35rem' }}>Free to draft. No account required to start.</p>
-            <p style={{ fontSize: '.85rem', color: 'var(--teal-deep)', fontWeight: 600, marginBottom: '1.5rem' }}>Pay $129 to download -- solicitor review included.</p>
+        <div className="md:px-10" style={W}>
+          <div className="md:grid-cols-2" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.25rem', alignItems: 'start' }}>
 
-            <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '28rem' }}>
-              Draft your complete Will at your own pace. When you&apos;re ready, pay once to get your solicitor-reviewed, signed-ready document -- with three months of Living Vault included. No subscription required.
-            </p>
+            {/* ── The Will ── */}
+            <div style={{ borderRadius: 16, border: '1px solid var(--mkt-line)', background: '#fff', padding: '2.25rem', display: 'flex', flexDirection: 'column' }}>
+              <span style={SECTION_LABEL}>The Will</span>
+              <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3rem, 5vw, 4.5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
+                $0
+              </p>
+              <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>Free to draft. No account required to start.</p>
+              <p style={{ fontSize: '.85rem', color: 'var(--teal-deep)', fontWeight: 600, marginBottom: '1.5rem' }}>Pay $129 to download -- solicitor review included.</p>
 
-            <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
-              <Link href="/start?path=retail" className="mkt-btn-ink-m">
-                Plan my Will for free
-              </Link>
-              <Link href="/will/new?mode=upload" className="mkt-btn-ink-m">
-                Upload your existing Will
-              </Link>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
+                {[
+                  'Seven-step guided questionnaire',
+                  'State-specific legal compliance for all Australian states and territories',
+                  'Standard solicitor quality review before your Will is issued',
+                  'Your Will, permanently downloadable',
+                  '3 months Living Vault membership included',
+                  'Witnessing guidance and remote witness scheduling',
+                ].map((f) => (
+                  <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.875rem', color: 'var(--mkt-stone)' }}>
+                    <Check />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+
+              <div style={{ marginTop: 'auto', display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
+                <Link href="/start?path=retail" className="mkt-btn-ink-m">
+                  Plan my Will for free
+                </Link>
+                <Link href="/will/new?mode=upload" className="mkt-btn-ink-m">
+                  Upload existing Will
+                </Link>
+              </div>
+              <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
+                No payment required to begin. Available across all Australian states and territories.
+              </p>
             </div>
 
-            <p style={{ marginTop: '1.1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-              No payment required to begin. Available across all Australian states and territories.
-            </p>
-          </div>
+            {/* ── Living Vault ── */}
+            <div id="living-vault" style={{ borderRadius: 16, border: '2px solid var(--teal-deep)', background: '#fff', padding: '2.25rem', display: 'flex', flexDirection: 'column' }}>
+              <span style={SECTION_LABEL}>Living Vault</span>
+              <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3rem, 5vw, 4.5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
+                $99
+              </p>
+              <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>per year. Your Will is included.</p>
 
-          <div style={{ borderRadius: 14, border: '1px solid var(--mkt-line)', background: '#fff', padding: '2rem' }}>
-            <p style={{ fontSize: '.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--mkt-stone)', margin: '0 0 1.25rem' }}>
-              What&apos;s included
-            </p>
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
-              {[
-                'Seven-step guided questionnaire',
-                'State-specific legal compliance for all Australian states and territories',
-                'Standard solicitor quality review before your Will is issued',
-                'Your Will, permanently downloadable',
-                '3 months Living Vault membership included',
-                'Witnessing guidance and remote witness scheduling',
-              ].map((f) => (
-                <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>
-                  <Check />
-                  {f}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
+                {[
+                  'Guided life-change check-ins through your Vault',
+                  'Your signing-ready Will included in the first year',
+                  'Supported amendments and updated Will documents',
+                  'A maintained register of assets, beneficiaries, gifts, and executors',
+                  'Will status and estate-review guidance',
+                  'NSW members only: access to Heirloom\'s team AV witness pool for remote execution',
+                  'Direct access to partner lawyers through the platform for complex or bespoke situations',
+                ].map((f) => (
+                  <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.875rem', color: 'var(--mkt-stone)' }}>
+                    <Check />
+                    {f}
+                  </li>
+                ))}
+              </ul>
 
-      {/* ── Living Vault ─────────────────────────────────────────────────────── */}
-      <section id="living-vault" style={{ paddingBlock: '4rem 5rem', background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10 lg:grid-cols-2 lg:gap-16" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '3rem', alignItems: 'center' }}>
-          <div>
-            <span style={SECTION_LABEL}>Living Vault</span>
-            <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3.5rem, 6vw, 5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
-              $99
-            </p>
-            <p style={{ fontSize: '1rem', color: 'var(--mkt-stone)', marginBottom: '1.5rem' }}>per year. Your Will is included.</p>
+              <div style={{ marginTop: 'auto' }}>
+                <PricingVaultCTA />
+              </div>
+              <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
+                Renews annually until cancelled. You can download and retain your completed Will if you later leave.
+              </p>
+            </div>
 
-            <p style={{ fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)', marginBottom: '2rem', maxWidth: '28rem' }}>
-              One annual membership for the Will and what comes after it. Report life changes, maintain your estate record, make supported amendments and access Heirloom&apos;s witness pool if you&apos;re in NSW.
-            </p>
-
-            <PricingVaultCTA />
-
-            <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-              Renews annually until cancelled. You can download and retain your completed Will if you later leave.
-            </p>
-          </div>
-
-          <div style={{ borderRadius: 14, border: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)', padding: '2rem' }}>
-            <p style={{ fontSize: '.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--mkt-stone)', margin: '0 0 1.25rem' }}>
-              What&apos;s included
-            </p>
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: 0 }}>
-              {[
-                'Guided life-change check-ins through your Vault',
-                'Your signing-ready Will included in the first year',
-                'Supported amendments and updated Will documents',
-                'A maintained register of assets, beneficiaries, gifts, and executors',
-                'Will status and estate-review guidance',
-                'NSW members only: access to Heirloom\'s team AV witness pool for remote execution',
-                'Direct access to partner lawyers through the platform for complex or bespoke situations',
-              ].map((f) => (
-                <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>
-                  <Check />
-                  {f}
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </section>

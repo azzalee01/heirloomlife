@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { label: 'Living Vault', href: '/living-vault' },
   { label: 'Life Changes', href: '/life-changes' },
   { label: 'Charity', href: '/charity-wills' },
+  { label: 'For Charities', href: '/for-charities' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Why Heirloom', href: '/why-heirloom' },
 ]
