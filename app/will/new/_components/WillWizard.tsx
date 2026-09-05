@@ -76,14 +76,6 @@ function totalAllocated(bd: BeneficiariesData): number {
   )
 }
 
-function hasValidAbnChecksum(value: string): boolean {
-  const digits = value.replace(/\D/g, '')
-  if (digits.length !== 11) return false
-  const weights = [10, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
-  return digits
-    .split('')
-    .reduce((sum, digit, index) => sum + (Number(digit) - (index === 0 ? 1 : 0)) * weights[index], 0) % 89 === 0
-}
 
 // ── Soft email capture (shown once after personal details) ───────────────────
 
