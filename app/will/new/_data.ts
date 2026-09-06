@@ -77,6 +77,7 @@ type AssetRow = {
   death_benefit_nominees: string | null
   is_overseas: boolean | null
   overseas_country: string | null
+  access_location: string | null
 }
 
 type BeneficiaryRow = {
@@ -216,6 +217,7 @@ function mapAsset(a: AssetRow): Asset {
     insurerName: '', policyNumber: '', coverAmount: '',
     make: '', model: '', year: '', rego: '',
     description: '', otherValue: '',
+    accessLocation: '',
     hasDeathBenefitNomination: !!a.has_death_benefit_nomination,
     deathBenefitNominees: str(a.death_benefit_nominees),
     isOverseas: !!a.is_overseas,
@@ -235,6 +237,8 @@ function mapAsset(a: AssetRow): Asset {
       return { ...base, insurerName: str(a.institution_name), policyNumber: str(a.policy_number), coverAmount: numStr(a.estimated_value) }
     case 'vehicle':
       return { ...base, make: str(a.vehicle_make), model: str(a.vehicle_model), year: str(a.vehicle_year), rego: str(a.vehicle_rego) }
+    case 'digital_asset':
+      return { ...base, description: str(a.description), estimatedValue: numStr(a.estimated_value), accessLocation: str(a.access_location) }
     default:
       return { ...base, description: str(a.description), otherValue: numStr(a.estimated_value) }
   }

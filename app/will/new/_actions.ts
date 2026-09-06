@@ -306,6 +306,7 @@ export async function saveStep(
           death_benefit_nominees: nominationApplies && a.hasDeathBenefitNomination ? a.deathBenefitNominees || null : null,
           is_overseas: a.isOverseas,
           overseas_country: a.isOverseas ? a.overseasCountry || null : null,
+          access_location: a.assetType === 'digital_asset' ? a.accessLocation || null : null,
         }
       })
       await replaceRows(supabase, 'assets', id, rows)

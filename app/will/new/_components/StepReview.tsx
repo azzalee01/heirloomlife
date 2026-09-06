@@ -10,6 +10,7 @@ const ASSET_TYPE_LABELS: Record<AssetType, string> = {
   shares: 'Shares / Investments',
   life_insurance: 'Life Insurance',
   vehicle: 'Vehicle',
+  digital_asset: 'Cryptocurrency',
   other: 'Other',
 }
 

@@ -13,6 +13,7 @@ export type AssetType =
   | 'shares'
   | 'life_insurance'
   | 'vehicle'
+  | 'digital_asset'
   | 'other'
 
 export interface PersonalDetails {
@@ -111,6 +112,8 @@ export interface Asset {
   model: string
   year: string
   rego: string
+  // digital asset (cryptocurrency)
+  accessLocation: string
   // other
   description: string
   otherValue: string

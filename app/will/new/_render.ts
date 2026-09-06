@@ -17,7 +17,18 @@ const ASSET_TYPE_LABELS: Record<string, string> = {
   shares: 'Shares / Investments',
   life_insurance: 'Life Insurance',
   vehicle: 'Vehicle',
+  digital_asset: 'Cryptocurrency',
   other: 'Other Asset',
+}
+
+function looksLikeCredential(text: string): boolean {
+  if (/[0-9a-fA-F]{64}/.test(text)) return true
+  if (/\b[0-9a-fA-F]{32,}\b/.test(text)) return true
+  if (/\b[1-9A-HJ-NP-Za-km-z]{50,}\b/.test(text)) return true
+  if (/(password|mnemonic|seed phrase|private key|secret key)\s*(is|:)/i.test(text)) return true
+  const words = text.trim().split(/\s+/)
+  if (words.length >= 11 && words.every(w => /^[a-z]+$/.test(w))) return true
+  return false
 }
 
 const CONDITION_LABELS: Record<string, string> = {
@@ -44,6 +55,8 @@ function assetLabel(a: WillFormData['assets'][number]): string {
       return a.insurerName || 'Life insurance policy'
     case 'vehicle':
       return [a.year, a.make, a.model].filter(Boolean).join(' ') || 'Vehicle'
+    case 'digital_asset':
+      return a.description || 'Cryptocurrency'
     default:
       return a.description || 'Asset'
   }
@@ -187,6 +200,12 @@ return line
         if (a.isOverseas) line += ` (overseas  -  ${a.overseasCountry || 'country not specified'})`
         if ((a.assetType === 'superannuation' || a.assetType === 'life_insurance') && a.hasDeathBenefitNomination) {
           line += `  -  NOTE: has a binding death benefit nomination on file (${a.deathBenefitNominees || 'nominee not specified'}); this asset may pass outside this will`
+        }
+        if (a.assetType === 'digital_asset' && a.accessLocation) {
+          const safe = looksLikeCredential(a.accessLocation)
+            ? '[Access instructions location withheld  -  contact executor directly]'
+            : a.accessLocation
+          line += `  -  Access instructions: ${safe}`
         }
         return line
       })

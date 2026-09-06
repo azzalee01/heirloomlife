@@ -1,6 +1,16 @@
 import Anthropic from '@anthropic-ai/sdk'
 import type { WillFormData } from './_types'
 import { resolveSubstituteBeneficiaryText } from './_types'
+
+function looksLikeCredential(text: string): boolean {
+  if (/[0-9a-fA-F]{64}/.test(text)) return true
+  if (/\b[0-9a-fA-F]{32,}\b/.test(text)) return true
+  if (/\b[1-9A-HJ-NP-Za-km-z]{50,}\b/.test(text)) return true
+  if (/(password|mnemonic|seed phrase|private key|secret key)\s*(is|:)/i.test(text)) return true
+  const words = text.trim().split(/\s+/)
+  if (words.length >= 11 && words.every(w => /^[a-z]+$/.test(w))) return true
+  return false
+}
 const client = new Anthropic()
 
 const SYSTEM_PROMPT = `You are drafting a formal Australian Will document from structured intake data for Heirloom, an online will-writing platform. Produce the complete will text, customised to this testator's specific circumstances (their state's conventions, whether they have a spouse, children, specific gifts, etc  -  omit any section that doesn't apply rather than leaving placeholders).
@@ -66,6 +76,10 @@ function buildIntakeSummary(formData: WillFormData): string {
         formData.assets
           .map((a) => {
             let s = `${a.assetType}${a.propertyAddress ? ` at ${a.propertyAddress}` : ''}${a.estimatedValue ? ` (est. $${a.estimatedValue})` : ''}`
+            if (a.assetType === 'digital_asset' && a.description) s += ` - ${a.description}`
+            if (a.assetType === 'digital_asset' && a.accessLocation && !looksLikeCredential(a.accessLocation)) {
+              s += ` [access instructions at: ${a.accessLocation}]`
+            }
             if (a.isOverseas) s += ` [overseas: ${a.overseasCountry}]`
             if ((a.assetType === 'superannuation' || a.assetType === 'life_insurance') && a.hasDeathBenefitNomination) {
               s += ` [has binding death benefit nomination: ${a.deathBenefitNominees}]`

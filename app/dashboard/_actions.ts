@@ -278,6 +278,7 @@ export async function applyAmendment(proposal: AmendmentProposal): Promise<void>
           rego: str(input.rego),
           description: str(input.description),
           otherValue: str(input.otherValue),
+          accessLocation: '',
           hasDeathBenefitNomination: false,
           deathBenefitNominees: '',
           isOverseas: false,

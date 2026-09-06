@@ -13,7 +13,20 @@ const ASSET_TYPE_LABELS: Record<AssetType, string> = {
   shares: 'Shares / Investments',
   life_insurance: 'Life Insurance',
   vehicle: 'Vehicle',
+  digital_asset: 'Cryptocurrency',
   other: 'Other',
+}
+
+function emptyCryptoAsset(): Asset {
+  return {
+    id: crypto.randomUUID(),
+    assetType: 'digital_asset', ownershipType: 'sole', propertyAddress: '', estimatedValue: '',
+    bankName: '', bsb: '', accountNumber: '', fundName: '', memberNumber: '',
+    companyName: '', numberOfShares: '', insurerName: '', policyNumber: '',
+    coverAmount: '', make: '', model: '', year: '', rego: '', description: '', otherValue: '',
+    accessLocation: '',
+    hasDeathBenefitNomination: false, deathBenefitNominees: '', isOverseas: false, overseasCountry: '',
+  }
 }
 
 function emptyAsset(): Asset {
@@ -23,6 +36,7 @@ function emptyAsset(): Asset {
     bankName: '', bsb: '', accountNumber: '', fundName: '', memberNumber: '',
     companyName: '', numberOfShares: '', insurerName: '', policyNumber: '',
     coverAmount: '', make: '', model: '', year: '', rego: '', description: '', otherValue: '',
+    accessLocation: '',
     hasDeathBenefitNomination: false, deathBenefitNominees: '', isOverseas: false, overseasCountry: '',
   }
 }
@@ -205,6 +219,34 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
         </div>
       )}
 
+      {asset.assetType === 'digital_asset' && (
+        <div className="space-y-4">
+          <div className="border border-blue-100 bg-blue-50 px-3 py-2.5 text-xs text-blue-700 space-y-1">
+            <p><strong>Disclosure only.</strong> Record what you hold and where your access instructions are kept. Do not enter passwords, seed phrases, or private keys here - Wills become public on probate.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className={lbl}>Description <span className="text-red-400">*</span></label>
+              <input className={inp} placeholder="e.g. Bitcoin on Coinbase, Ethereum cold wallet" value={asset.description} onChange={(e) => set('description', e.target.value)} />
+            </div>
+            <div>
+              <label className={lbl}>Estimated value (optional)</label>
+              <input className={inp} placeholder="$0" value={asset.estimatedValue} onChange={(e) => set('estimatedValue', e.target.value)} />
+            </div>
+          </div>
+          <div>
+            <label className={lbl}>Where are the access instructions kept?</label>
+            <input
+              className={inp}
+              placeholder="e.g. Sealed envelope with my executor, safe at home, LastPass vault"
+              value={asset.accessLocation}
+              onChange={(e) => set('accessLocation', e.target.value)}
+            />
+            <p className="mt-1 text-xs text-[var(--neutral)]">Location only - not the credentials themselves.</p>
+          </div>
+        </div>
+      )}
+
       {asset.assetType === 'other' && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -250,6 +292,9 @@ interface Props {
 }
 
 export default function StepAssets({ data, onChange }: Props) {
+  const nonCryptoAssets = data.filter((a) => a.assetType !== 'digital_asset')
+  const cryptoAssets = data.filter((a) => a.assetType === 'digital_asset')
+
   function updateAsset(id: string, updated: Asset) {
     onChange(data.map((a) => (a.id === id ? updated : a)))
   }
@@ -262,6 +307,10 @@ export default function StepAssets({ data, onChange }: Props) {
     onChange([...data, emptyAsset()])
   }
 
+  function addCryptoAsset() {
+    onChange([...data, emptyCryptoAsset()])
+  }
+
   return (
     <div className="space-y-7">
       <div>
@@ -271,7 +320,7 @@ export default function StepAssets({ data, onChange }: Props) {
         </p>
       </div>
 
-      {data.length === 0 ? (
+      {data.filter((a) => a.assetType !== 'digital_asset').length === 0 ? (
         <div className="text-center py-10 border-2 border-dashed border-[var(--line)]">
           <p className="text-sm text-[var(--neutral)] mb-3">No assets added yet</p>
           <button
@@ -285,7 +334,7 @@ export default function StepAssets({ data, onChange }: Props) {
         </div>
       ) : (
         <div className="space-y-4">
-          {data.map((asset, i) => (
+          {nonCryptoAssets.map((asset, i) => (
             <AssetCard
               key={asset.id}
               asset={asset}
@@ -305,6 +354,39 @@ export default function StepAssets({ data, onChange }: Props) {
           </button>
         </div>
       )}
+
+      {/* Cryptocurrency prompt */}
+      <div className="border border-[var(--line)] bg-[var(--paper-warm)] p-5 space-y-3">
+        <div>
+          <p className="text-sm font-semibold text-[var(--ink)]">Do you hold any cryptocurrency?</p>
+          <p className="text-xs text-[var(--neutral)] mt-0.5">
+            Bitcoin, Ethereum, or other digital assets can be listed in your estate register for your executor to locate.
+          </p>
+        </div>
+
+        {cryptoAssets.length > 0 && (
+          <div className="space-y-4">
+            {cryptoAssets.map((asset, i) => (
+              <AssetCard
+                key={asset.id}
+                asset={asset}
+                index={i}
+                showRemove
+                onChange={(updated) => updateAsset(asset.id, updated)}
+                onRemove={() => removeAsset(asset.id)}
+              />
+            ))}
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={addCryptoAsset}
+          className="text-sm font-medium text-[var(--teal)] transition-colors"
+        >
+          + {cryptoAssets.length === 0 ? 'Yes, add cryptocurrency' : 'Add another'}
+        </button>
+      </div>
     </div>
   )
 }
