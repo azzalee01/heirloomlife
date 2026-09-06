@@ -386,9 +386,9 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
         </div>
       )}
 
-      {/* Header */}
+      {/* Header — desktop only */}
       <div
-        className="shrink-0 border-b px-5 sm:px-6 h-14 flex items-center justify-between"
+        className="hidden sm:flex shrink-0 border-b px-6 h-14 items-center justify-between"
         style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}
       >
         <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
@@ -405,23 +405,54 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
         )}
       </div>
 
-      {/* Progress — pinned below header */}
-      <div
-        className="shrink-0 px-5 sm:px-6 pt-4 pb-3"
-        style={{ background: 'var(--paper)', borderBottom: '1px solid var(--line)' }}
-      >
-        <div className="max-w-5xl mx-auto">
-          <ProgressBar
-            steps={progressSteps}
-            currentIndex={Math.max(0, progressIndex)}
-            onStepClick={(i) => {
-              const nonBackup = wizardSteps
-                .map((s, idx) => ({ s, idx }))
-                .filter(({ s }) => !s.startsWith('backup_'))
-              const target = nonBackup[i]
-              if (target && target.idx < stepIndex) jumpToIndex(target.idx)
-            }}
-          />
+      {/* Progress — mobile: back arrow + inline track; desktop: full ProgressBar */}
+      <div className="shrink-0" style={{ background: 'var(--paper)', borderBottom: '1px solid var(--line)' }}>
+
+        {/* Mobile progress row */}
+        <div className="sm:hidden px-4 pt-3 pb-3">
+          <div className="flex items-center gap-3">
+            <Link
+              href={isAuthenticated ? '/dashboard' : '/'}
+              className="flex items-center justify-center w-8 h-8 rounded-full -ml-1 transition-colors hover:bg-[var(--paper-warm)]"
+              aria-label={isAuthenticated ? 'Save & exit' : 'Back to Heirloom'}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+              </svg>
+            </Link>
+            <div className="flex flex-1 items-center gap-0.5">
+              {progressSteps.map((_, i) => (
+                <div
+                  key={i}
+                  className="h-1 flex-1 transition-all duration-300"
+                  style={{ background: i <= progressIndex ? 'var(--teal)' : 'var(--line)' }}
+                />
+              ))}
+            </div>
+            <span className="text-xs shrink-0 tabular-nums" style={{ color: 'var(--neutral)' }}>
+              {progressIndex + 1}/{progressSteps.length}
+            </span>
+          </div>
+          <p className="text-sm font-semibold mt-2 ml-1" style={{ color: 'var(--ink)' }}>
+            {progressSteps[Math.max(0, progressIndex)]}
+          </p>
+        </div>
+
+        {/* Desktop progress bar */}
+        <div className="hidden sm:block px-6 py-4">
+          <div className="max-w-5xl mx-auto">
+            <ProgressBar
+              steps={progressSteps}
+              currentIndex={Math.max(0, progressIndex)}
+              onStepClick={(i) => {
+                const nonBackup = wizardSteps
+                  .map((s, idx) => ({ s, idx }))
+                  .filter(({ s }) => !s.startsWith('backup_'))
+                const target = nonBackup[i]
+                if (target && target.idx < stepIndex) jumpToIndex(target.idx)
+              }}
+            />
+          </div>
         </div>
       </div>
 
