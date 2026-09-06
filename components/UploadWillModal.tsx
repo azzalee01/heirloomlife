@@ -290,6 +290,7 @@ export default function UploadWillModal({ onClose, onComplete }: Props) {
 
   return (
     <div
+      className="modal-backdrop"
       onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
       style={{
         position: 'fixed', inset: 0, zIndex: 200,
@@ -298,10 +299,13 @@ export default function UploadWillModal({ onClose, onComplete }: Props) {
         padding: '1.5rem',
       }}
     >
-      <div style={{
-        background: '#fff', borderRadius: 12, width: '100%', maxWidth: 480,
-        boxShadow: '0 24px 64px rgba(0,0,0,.18)', overflow: 'hidden',
-      }}>
+      <div
+        className="modal-card"
+        style={{
+          background: '#fff', borderRadius: 12, width: '100%', maxWidth: 480,
+          boxShadow: '0 24px 64px rgba(0,0,0,.18)', overflow: 'hidden',
+        }}
+      >
         {/* Header */}
         <div style={{ padding: '1.25rem 1.5rem .75rem', borderBottom: '1px solid var(--mkt-line)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
