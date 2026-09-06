@@ -81,9 +81,9 @@ export default function LivingVaultPage() {
       {/* ── Vault cards ───────────────────────────────────────────────────── */}
       <section style={{ ...SECTION_PAD, background: '#fff' }}>
         <div className="md:px-10" style={W}>
-          <div className="lg:grid-cols-[1.15fr_1fr] lg:grid-rows-2" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.1rem' }}>
+          <div className="lg:grid-cols-[1.15fr_1fr] lg:grid-rows-3" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.1rem' }}>
             {/* Tall card */}
-            <div className="lg:row-span-2" style={{ borderRadius: 14, background: 'var(--mkt-surface)', padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '24rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
+            <div className="lg:row-span-3" style={{ borderRadius: 14, background: 'var(--mkt-surface)', padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '24rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--teal) 30%, var(--teal) 70%, transparent)', pointerEvents: 'none' }}/>
               <div>
                 <Pill variant="quiet">Living Vault</Pill>
@@ -103,6 +103,10 @@ export default function LivingVaultPage() {
                   <span style={{ flex: 1, color: 'var(--mkt-ink-text)' }}>New asset added: Investment property, Bondi</span>
                   <Pill>Synced</Pill>
                 </div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '.85rem 1rem', borderRadius: 8, background: '#fff', border: '1px solid var(--mkt-line)', fontSize: '.82rem' }}>
+                  <span style={{ flex: 1, color: 'var(--mkt-ink-text)' }}>ANZ savings account balance synced</span>
+                  <Pill>Synced</Pill>
+                </div>
               </div>
             </div>
 
@@ -117,6 +121,11 @@ export default function LivingVaultPage() {
                 tag: 'Document Storage',
                 title: 'Everything your family needs, in one place.',
                 body: 'Your Will, asset register, and instructions are stored securely in your Vault. When it matters, there is no searching through filing cabinets  -  it\'s all there.',
+              },
+              {
+                tag: 'Bank Connections',
+                title: 'Your complete financial picture, alongside your estate.',
+                body: 'Connect your bank accounts securely through Basiq, a Consumer Data Right accredited intermediary. Your account name and balance appear alongside your manually entered assets. Heirloom never sees your banking credentials  -  you authenticate directly on Basiq\'s consent page. Balance data only, no transactions. Consent lasts 12 months and can be revoked from your Vault at any time.',
               },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: 'var(--mkt-surface)', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
