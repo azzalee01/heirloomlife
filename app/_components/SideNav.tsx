@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import LogoutButton from '@/src/components/LogoutButton'
@@ -48,12 +48,11 @@ interface Props {
 
 export default function SideNav({ userName, userEmail }: Props) {
   const pathname = usePathname()
-  const [expanded, setExpanded] = useState(true)
-
-  useEffect(() => {
+  const [expanded, setExpanded] = useState(() => {
+    if (typeof window === 'undefined') return true
     const saved = localStorage.getItem('hl-nav-expanded')
-    if (saved !== null) setExpanded(saved === 'true')
-  }, [])
+    return saved !== null ? saved === 'true' : true
+  })
 
   function toggle() {
     setExpanded((v) => {

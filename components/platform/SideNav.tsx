@@ -115,7 +115,13 @@ function NavTooltip({
     setVisible(false);
   };
 
-  useEffect(() => { if (disabled) hide(); }, [disabled]);
+  useEffect(() => {
+    if (disabled) {
+      if (timer.current) clearTimeout(timer.current);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setVisible(false);
+    }
+  }, [disabled]);
 
   return (
     <>

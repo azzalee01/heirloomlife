@@ -11,13 +11,7 @@ import { FileText, Archive } from 'lucide-react';
 
 type Product = 'will' | 'vault';
 
-interface ProductToggleProps {
-  product: Product;
-  setProduct: (p: Product) => void;
-  noSticky?: boolean;
-}
-
-export function ProductToggle({ product, setProduct, noSticky }: { noSticky?: boolean }) {
+export function ProductToggle({ noSticky }: { noSticky?: boolean }) {
   const [activeProduct, setActiveProduct] = useState<Product>('will');
   const inlineRef = useRef<HTMLDivElement>(null);
   const [pinned, setPinned] = useState(false);

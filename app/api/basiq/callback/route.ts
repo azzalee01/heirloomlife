@@ -1,4 +1,3 @@
-import { NextRequest } from 'next/server'
 import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
@@ -6,7 +5,7 @@ import { getBasiqServerToken, fetchBasiqAccounts } from '@/src/lib/basiq'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   // Identify the Heirloom user from their active session — more reliable than
   // depending on Basiq passing userId in the redirect since the param name is
   // not guaranteed across Basiq CDR gateway versions.

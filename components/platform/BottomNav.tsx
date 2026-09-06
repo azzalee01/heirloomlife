@@ -103,6 +103,8 @@ export default function BottomNav({ userName }: { userName: string }) {
   const [moreOpen, setMoreOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const sheetRef = useRef<HTMLDivElement>(null)
+  const dragRef = useRef<{ startY: number; prevY: number; prevTime: number; velocity: number } | null>(null)
 
   // Hide during focused Will wizard flow
   const hidden = pathname.startsWith('/will/new')
@@ -110,8 +112,10 @@ export default function BottomNav({ userName }: { userName: string }) {
   // Close sheet instantly on route change
   useEffect(() => {
     if (moreOpen || isClosing) {
+      /* eslint-disable react-hooks/set-state-in-effect */
       setMoreOpen(false)
       setIsClosing(false)
+      /* eslint-enable react-hooks/set-state-in-effect */
       if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -138,6 +142,47 @@ export default function BottomNav({ userName }: { userName: string }) {
       setMoreOpen(false)
       setIsClosing(false)
     }, 230)
+  }
+
+  function onSheetPointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    if ((e.target as HTMLElement).closest('a,button,input')) return
+    dragRef.current = { startY: e.clientY, prevY: e.clientY, prevTime: e.timeStamp, velocity: 0 }
+    e.currentTarget.setPointerCapture(e.pointerId)
+  }
+
+  function onSheetPointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current
+    if (!drag || !sheetRef.current) return
+    const dy = Math.max(0, e.clientY - drag.startY)
+    sheetRef.current.style.transform = `translateY(${dy}px)`
+    sheetRef.current.style.transition = 'none'
+    const dt = e.timeStamp - drag.prevTime
+    if (dt > 0) {
+      const iv = (e.clientY - drag.prevY) / dt * 1000
+      drag.velocity = iv * 0.4 + drag.velocity * 0.6
+    }
+    drag.prevY = e.clientY
+    drag.prevTime = e.timeStamp
+  }
+
+  function onSheetPointerUp(e: React.PointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current
+    if (!drag) return
+    dragRef.current = null
+    if (!sheetRef.current) return
+    const dy = Math.max(0, e.clientY - drag.startY)
+    const vel = drag.velocity
+    if (dy > 80 || vel > 700) {
+      sheetRef.current.style.transition = 'transform 0.22s cubic-bezier(0.4, 0, 1, 1)'
+      sheetRef.current.style.transform = 'translateY(110%)'
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
+      closeTimerRef.current = setTimeout(() => { setMoreOpen(false); setIsClosing(false) }, 220)
+    } else {
+      sheetRef.current.style.transition = 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
+      sheetRef.current.style.transform = 'translateY(0)'
+      const el = sheetRef.current
+      el.addEventListener('transitionend', () => { el.style.transform = ''; el.style.transition = '' }, { once: true })
+    }
   }
 
   async function handleSignOut() {
@@ -223,7 +268,12 @@ export default function BottomNav({ userName }: { userName: string }) {
 
           {/* Sheet */}
           <div
+            ref={sheetRef}
             className={isClosing ? 'sheet-exit' : 'sheet-enter'}
+            onPointerDown={onSheetPointerDown}
+            onPointerMove={onSheetPointerMove}
+            onPointerUp={onSheetPointerUp}
+            onPointerCancel={onSheetPointerUp}
             style={{
               position: 'fixed', left: 0, right: 0,
               bottom: `calc(60px + env(safe-area-inset-bottom))`,
@@ -232,6 +282,7 @@ export default function BottomNav({ userName }: { userName: string }) {
               borderTop: '1px solid var(--line)',
               borderRadius: '16px 16px 0 0',
               paddingTop: 8,
+              touchAction: 'none',
             }}
           >
             {/* Handle */}

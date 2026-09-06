@@ -73,6 +73,34 @@ function demoReply(text: string) {
   return DEMO_REPLIES.default
 }
 
+function AmendmentPanel({ compact, phase, approvePulse }: { compact?: boolean; phase: Phase; approvePulse: boolean }) {
+  return (
+    <div style={{ borderRadius: 8, border: '1px solid var(--teal)', background: '#fff', overflow: 'hidden', animation: 'slideUpCard .4s ease' }}>
+      <div style={{ padding: compact ? '6px 10px' : '8px 14px', borderBottom: '1px solid var(--line)', background: 'rgba(42,180,174,.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: compact ? 10 : 11, fontWeight: 700, color: 'var(--teal-deep)' }}>2 amendments suggested</span>
+        {!compact && <span style={{ fontSize: 9, color: 'var(--neutral)' }}>Pending your approval</span>}
+      </div>
+      {DEMO_AMENDMENTS.map((a, i) => (
+        <div key={i} style={{ padding: compact ? '6px 10px' : '8px 14px', borderBottom: i < DEMO_AMENDMENTS.length - 1 ? '1px solid var(--line)' : 'none', animation: `slideUpCard .4s ease ${i * 100 + 100}ms both` }}>
+          <div style={{ fontSize: compact ? 10 : 11, fontWeight: 600, color: 'var(--ink)' }}>{a.title}</div>
+          <div style={{ fontSize: compact ? 8.5 : 9, color: 'var(--neutral)', marginTop: 2 }}>{a.detail}</div>
+        </div>
+      ))}
+      <div style={{ padding: compact ? '8px 10px' : '10px 14px' }}>
+        <button
+          onClick={e => e.stopPropagation()}
+          style={{ width: '100%', padding: compact ? '6px' : '7px', borderRadius: 6, background: phase === 'applied' ? '#ecfdf5' : 'var(--ink)', color: phase === 'applied' ? '#065f46' : '#fff', fontSize: compact ? 10 : 11, fontWeight: 700, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, animation: approvePulse ? 'pulseGlow 1s ease infinite' : 'none', transition: 'background .4s ease, color .4s ease' }}
+        >
+          {phase === 'applied'
+            ? <><Icon d="M20 6L9 17l-5-5" color="#065f46" size={compact ? 11 : 13}/> Amendments approved</>
+            : phase === 'approving' ? 'Approving…'
+            : 'Approve all amendments'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
 export default function PlatformPreview() {
   const [activeTab, setActiveTab] = useState<Tab>('Overview')
 
@@ -263,34 +291,6 @@ export default function PlatformPreview() {
           <div style={{ fontSize: 8.5, color: 'var(--neutral)' }}>{b.rel}</div>
         </div>
         <div style={{ fontSize: 9, fontWeight: 700, color: '#fff', background: b.changed ? 'var(--teal-deep)' : 'var(--teal)', padding: '1px 5px', borderRadius: 4, flexShrink: 0, transition: 'background .4s ease' }}>{b.pct}%</div>
-      </div>
-    )
-  }
-
-  function AmendmentPanel({ compact }: { compact?: boolean }) {
-    return (
-      <div style={{ borderRadius: 8, border: '1px solid var(--teal)', background: '#fff', overflow: 'hidden', animation: 'slideUpCard .4s ease' }}>
-        <div style={{ padding: compact ? '6px 10px' : '8px 14px', borderBottom: '1px solid var(--line)', background: 'rgba(42,180,174,.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <span style={{ fontSize: compact ? 10 : 11, fontWeight: 700, color: 'var(--teal-deep)' }}>2 amendments suggested</span>
-          {!compact && <span style={{ fontSize: 9, color: 'var(--neutral)' }}>Pending your approval</span>}
-        </div>
-        {DEMO_AMENDMENTS.map((a, i) => (
-          <div key={i} style={{ padding: compact ? '6px 10px' : '8px 14px', borderBottom: i < DEMO_AMENDMENTS.length - 1 ? '1px solid var(--line)' : 'none', animation: `slideUpCard .4s ease ${i * 100 + 100}ms both` }}>
-            <div style={{ fontSize: compact ? 10 : 11, fontWeight: 600, color: 'var(--ink)' }}>{a.title}</div>
-            <div style={{ fontSize: compact ? 8.5 : 9, color: 'var(--neutral)', marginTop: 2 }}>{a.detail}</div>
-          </div>
-        ))}
-        <div style={{ padding: compact ? '8px 10px' : '10px 14px' }}>
-          <button
-            onClick={e => e.stopPropagation()}
-            style={{ width: '100%', padding: compact ? '6px' : '7px', borderRadius: 6, background: phase === 'applied' ? '#ecfdf5' : 'var(--ink)', color: phase === 'applied' ? '#065f46' : '#fff', fontSize: compact ? 10 : 11, fontWeight: 700, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, animation: approvePulse ? 'pulseGlow 1s ease infinite' : 'none', transition: 'background .4s ease, color .4s ease' }}
-          >
-            {phase === 'applied'
-              ? <><Icon d="M20 6L9 17l-5-5" color="#065f46" size={compact ? 11 : 13}/> Amendments approved</>
-              : phase === 'approving' ? 'Approving…'
-              : 'Approve all amendments'}
-          </button>
-        </div>
       </div>
     )
   }
@@ -558,7 +558,7 @@ export default function PlatformPreview() {
 
                     {showAmendments && !userMode && (
                       <div style={{ flexShrink: 0 }}>
-                        <AmendmentPanel />
+                        <AmendmentPanel phase={phase} approvePulse={approvePulse} />
                       </div>
                     )}
                   </>
@@ -769,7 +769,7 @@ export default function PlatformPreview() {
                 )}
                 {showAmendments && !userMode && (
                   <div style={{ marginTop: 2 }}>
-                    <AmendmentPanel compact />
+                    <AmendmentPanel compact phase={phase} approvePulse={approvePulse} />
                   </div>
                 )}
                 <div ref={mobileChatEndRef}/>

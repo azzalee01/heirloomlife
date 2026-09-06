@@ -55,7 +55,7 @@ export default async function VaultPage() {
                 <h3 className="text-base font-semibold" style={{ color: 'var(--ink)' }}>{feature.title}</h3>
                 <p className="mt-2 text-sm leading-6" style={{ color: 'var(--neutral)' }}>{feature.body}</p>
               </div>
-              <Link href={feature.href} className="mt-5 text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>{feature.action} →</Link>
+              <Link href={feature.href} className="mt-5 min-h-[44px] sm:min-h-0 inline-flex items-center text-sm font-semibold" style={{ color: 'var(--teal-deep)' }}>{feature.action} →</Link>
             </div>
           ))}
         </section>

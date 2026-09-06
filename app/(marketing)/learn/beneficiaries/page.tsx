@@ -101,7 +101,7 @@ export default function BeneficiariesPage() {
             What happens if a beneficiary dies before you? If you haven&#8217;t named a substitute, the gift typically lapses and falls back into the residual estate. For significant gifts, this may not be what you intended.
           </p>
           <p style={BODY}>
-            A substitute (or alternate) beneficiary takes the gift if the primary beneficiary cannot. "I leave my estate to my partner; if they predecease me, to my children in equal shares" is a common and practical structure. Think through the second-order scenario when naming each beneficiary.
+            A substitute (or alternate) beneficiary takes the gift if the primary beneficiary cannot. &ldquo;I leave my estate to my partner; if they predecease me, to my children in equal shares&rdquo; is a common and practical structure. Think through the second-order scenario when naming each beneficiary.
           </p>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -131,7 +131,7 @@ export default function BeneficiariesPage() {
 
           <h2 style={H2}>Identify your beneficiaries precisely</h2>
           <p style={BODY}>
-            Use full legal names, not nicknames or descriptions. "My daughter" is vague; "Sarah Emma Thompson, born 14 March 1991" is unambiguous. The same applies to organisations: use the registered legal name, not a common shorthand.
+            Use full legal names, not nicknames or descriptions. &ldquo;My daughter&rdquo; is vague; &ldquo;Sarah Emma Thompson, born 14 March 1991&rdquo; is unambiguous. The same applies to organisations: use the registered legal name, not a common shorthand.
           </p>
           <p style={BODY}>
             Include contact details or addresses where practical. Your executor will need to locate and notify each beneficiary when the time comes.

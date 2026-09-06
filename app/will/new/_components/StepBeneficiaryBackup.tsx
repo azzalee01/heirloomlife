@@ -18,7 +18,7 @@ function isPreset(value: string): boolean {
   return PRESET_OPTIONS.some((o) => o.value === value)
 }
 
-export default function StepBeneficiaryBackup({ beneficiary, otherBeneficiaries: _, onChange }: Props) {
+export default function StepBeneficiaryBackup({ beneficiary, onChange }: Props) {
   const current = beneficiary.substituteBeneficiary
   const isCustom = current !== '' && !isPreset(current)
   const selected = isCustom ? '__custom__' : (current || '')

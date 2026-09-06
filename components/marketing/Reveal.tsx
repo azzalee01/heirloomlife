@@ -22,8 +22,10 @@ export default function Reveal({
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      /* eslint-disable react-hooks/set-state-in-effect */
       setReduced(true)
       setVisible(true)
+      /* eslint-enable react-hooks/set-state-in-effect */
       return
     }
     const el = ref.current

@@ -82,7 +82,7 @@ export default function CharityIntakeForm() {
             <path d="M20 6L9 17l-5-5" />
           </svg>
         </div>
-        <h3 style={{ margin: '0 0 .65rem', fontSize: '1.15rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>Thanks, we'll be in touch.</h3>
+        <h3 style={{ margin: '0 0 .65rem', fontSize: '1.15rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>Thanks, we&apos;ll be in touch.</h3>
         <p style={{ margin: 0, fontSize: '.9rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
           We typically respond within one business day. In the meantime, feel free to email us directly at{' '}
           <a href="mailto:hello@heirloomlife.com.au" style={{ color: 'var(--teal-deep)' }}>hello@heirloomlife.com.au</a>.
@@ -160,7 +160,7 @@ export default function CharityIntakeForm() {
       </div>
 
       <div>
-        <label style={labelStyle} htmlFor="ci-message">Anything you'd like us to know</label>
+        <label style={labelStyle} htmlFor="ci-message">Anything you&apos;d like us to know</label>
         <textarea
           id="ci-message"
           rows={4}

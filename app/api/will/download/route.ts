@@ -1,10 +1,9 @@
-import { NextRequest } from 'next/server'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(_request: NextRequest) {
+export async function GET() {
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return new Response('Unauthorized', { status: 401 })

@@ -40,12 +40,12 @@ export default async function TheWillPage() {
   if (!will) {
     return (
       <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
-        <header className="sticky top-0 z-20 border-b px-6 h-14 flex items-center" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
+        <header className="sticky top-0 z-20 border-b px-4 sm:px-6 h-14 flex items-center" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
           <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             The Will
           </h1>
         </header>
-        <main className="max-w-3xl mx-auto px-6 py-8">
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <div className="rounded-lg border-2 border-dashed p-12 text-center" style={{ borderColor: 'var(--line)' }}>
             <h2 className="text-lg font-semibold mb-2" style={{ color: 'var(--ink)' }}>No will started yet</h2>
             <p className="text-sm mb-6" style={{ color: 'var(--neutral)' }}>
@@ -78,7 +78,7 @@ export default async function TheWillPage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
-      <header className="sticky top-0 z-20 border-b px-6 h-14 flex items-center justify-between" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
+      <header className="sticky top-0 z-20 border-b px-4 sm:px-6 h-14 flex items-center justify-between" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
         <div className="flex items-center gap-2.5">
           <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
             The Will
@@ -93,7 +93,7 @@ export default async function TheWillPage() {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-6 py-8 space-y-6">
+      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-6">
 
         {will.needs_review && (
           <LegalReviewCallout reasons={will.needs_review_reasons ?? []} />

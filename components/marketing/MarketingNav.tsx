@@ -125,9 +125,11 @@ export default function MarketingNav() {
   }, [])
 
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect */
     setActiveTab(null)
     setMobileOpen(false)
     setMobileExpanded(null)
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, [pathname])
 
   useEffect(() => {

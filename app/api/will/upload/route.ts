@@ -58,7 +58,6 @@ async function extractTextFromPdf(buffer: Buffer): Promise<string> {
   // Cast to any: @types/pdf-parse uses `export =` but ESM interop may wrap it in .default
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const pdfParseModule = await import('pdf-parse') as any
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const pdfParse: (buf: Buffer) => Promise<{ text: string }> = pdfParseModule.default ?? pdfParseModule
   const result = await pdfParse(buffer)
   return result.text ?? ''

@@ -126,10 +126,6 @@ export default function StartPageClient({ serverFormData, isAuthenticated, hasWi
   const [discountApplied, setDiscountApplied] = useState(false)
 
   useEffect(() => {
-    if (autoOpenUpload) setShowUploadModal(true)
-  }, [autoOpenUpload])
-
-  useEffect(() => {
     if (!partnerCode) return
     setPartnerCodeCookie(partnerCode).then(() => setDiscountApplied(true))
   }, [partnerCode])
@@ -159,7 +155,7 @@ export default function StartPageClient({ serverFormData, isAuthenticated, hasWi
           color: 'var(--teal-deep)',
           fontWeight: 500,
         }}>
-          Your partner discount has been applied. You'll save $40 at checkout.
+          Your partner discount has been applied. You&apos;ll save $40 at checkout.
         </div>
       )}
 
