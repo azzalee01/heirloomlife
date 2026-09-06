@@ -1,6 +1,4 @@
 import Link from 'next/link'
-import MarketingNav from '@/components/marketing/MarketingNav'
-import MarketingFooter from '@/components/marketing/MarketingFooter'
 import InfoTooltip from './_components/InfoTooltip'
 
 export const metadata = {
@@ -155,8 +153,6 @@ function CellContent({ cell }: { cell: CellValue }) {
 export default function WhyHeirloomPage() {
   return (
     <>
-      <MarketingNav />
-
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
       <section style={{ paddingTop: '8rem', paddingBottom: '4rem', background: 'var(--mkt-surface)' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
@@ -259,8 +255,6 @@ export default function WhyHeirloomPage() {
           <Link href="/start" className="mkt-btn-ink-l">Start your Will</Link>
         </div>
       </section>
-
-      <MarketingFooter />
     </>
   )
 }
