@@ -23,7 +23,7 @@ export default function LifeChangesPage() {
 
       <section style={{ paddingBlock: '5rem', background: '#fff' }}>
         <div className="md:px-10" style={W}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '.85rem' }}>
+          <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '.85rem' }}>
             {LIFE_CHANGES.map((event) => (
               <Link key={event.slug} href={`/life-changes/${event.slug}`} style={{ position: 'relative', overflow: 'hidden', display: 'flex', minHeight: 230, flexDirection: 'column', justifyContent: 'space-between', padding: '1.75rem 2rem', border: '1px solid var(--mkt-line)', borderRadius: 12, background: 'var(--mkt-surface)', color: 'inherit', textDecoration: 'none' }}>
                 <span aria-hidden="true" style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--teal) 30%, var(--teal) 70%, transparent)', pointerEvents: 'none' }} />
