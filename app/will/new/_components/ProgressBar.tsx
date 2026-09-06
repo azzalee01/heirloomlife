@@ -35,8 +35,8 @@ export default function ProgressBar({ steps, currentIndex, onStepClick }: Props)
         </p>
       </div>
 
-      {/* Clickable step chips */}
-      <div className="mt-2 flex flex-wrap gap-1">
+      {/* Clickable step chips — desktop only */}
+      <div className="mt-2 hidden sm:flex flex-wrap gap-1">
         {steps.map((label, i) => {
           const done = i < currentIndex
           const active = i === currentIndex

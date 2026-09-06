@@ -102,6 +102,9 @@ export default function BottomNav({ userName }: { userName: string }) {
   const router = useRouter()
   const [moreOpen, setMoreOpen] = useState(false)
 
+  // Hide during focused Will wizard flow
+  if (pathname.startsWith('/will/new')) return null
+
   // Close sheet on route change
   useEffect(() => { setMoreOpen(false) }, [pathname])
 

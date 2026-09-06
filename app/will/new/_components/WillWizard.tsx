@@ -197,6 +197,11 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const [checkoutProduct, setCheckoutProduct] = useState<'will' | 'vault' | null>(null)
 
   const pendingSaveRef = useRef<Promise<string> | null>(null)
+  const contentScrollRef = useRef<HTMLDivElement>(null)
+
+  function scrollContentToTop() {
+    contentScrollRef.current?.scrollTo({ top: 0 })
+  }
 
   const willPreviewText = useMemo(() => {
     if (!showCompletion || hasWillAccess) return ''
@@ -243,7 +248,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     if (isEligibilityStep) {
       if (!canPassEligibility) return
       setStepIndex((i) => Math.min(i + 1, wizardSteps.length - 1))
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollContentToTop()
       return
     }
 
@@ -263,7 +268,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
         const willId = await saveStep(null, currentStaticStep, form)
         setForm((prev) => ({ ...prev, willId }))
         setStepIndex(nextIndex)
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        scrollContentToTop()
         if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
           setShowEmailCapture(true)
         }
@@ -308,7 +313,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       if (pendingSaveRef.current) await pendingSaveRef.current
       await completeWill(form.willId)
       setShowCompletion(true)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollContentToTop()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to complete will. Please try again.')
     } finally {
@@ -328,7 +333,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     if (idx >= 0 && idx < wizardSteps.length) {
       setError(null)
       setStepIndex(idx)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      scrollContentToTop()
     }
   }
 
@@ -381,9 +386,9 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
         </div>
       )}
 
-      {/* Page header */}
+      {/* Header */}
       <div
-        className="shrink-0 border-b px-6 h-14 flex items-center justify-between"
+        className="shrink-0 border-b px-5 sm:px-6 h-14 flex items-center justify-between"
         style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}
       >
         <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
@@ -400,15 +405,16 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
         )}
       </div>
 
-      {/* Scrollable wizard content */}
-      <div className="flex-1 overflow-auto">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-7">
-          {/* Progress bar */}
+      {/* Progress — pinned below header */}
+      <div
+        className="shrink-0 px-5 sm:px-6 pt-4 pb-3"
+        style={{ background: 'var(--paper)', borderBottom: '1px solid var(--line)' }}
+      >
+        <div className="max-w-5xl mx-auto">
           <ProgressBar
             steps={progressSteps}
             currentIndex={Math.max(0, progressIndex)}
             onStepClick={(i) => {
-              // Map progress bar index back to wizardSteps index
               const nonBackup = wizardSteps
                 .map((s, idx) => ({ s, idx }))
                 .filter(({ s }) => !s.startsWith('backup_'))
@@ -416,16 +422,23 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
               if (target && target.idx < stepIndex) jumpToIndex(target.idx)
             }}
           />
+        </div>
+      </div>
 
-          <div className="mt-6 flex gap-8 items-start">
-            {/* Main content */}
+      {/* Scrollable step content */}
+      <div ref={contentScrollRef} className="flex-1 overflow-y-auto" style={{ background: 'var(--paper-warm)' }}>
+        <div className="max-w-5xl mx-auto sm:px-6 sm:py-7">
+          <div className="flex gap-8 items-start">
             <div className="flex-1 min-w-0">
-              <div className="card p-6 sm:p-8">
-                {error && (
-                  <div className="mb-6 text-sm text-red-600 bg-red-50 border border-red-100 px-4 py-3">
-                    {error}
-                  </div>
-                )}
+
+              {error && (
+                <div className="text-sm text-red-600 bg-red-50 border-b border-red-100 px-5 py-3 sm:border sm:mb-4">
+                  {error}
+                </div>
+              )}
+
+              {/* Step card — borderless full-bleed on mobile, framed on sm+ */}
+              <div className="bg-[var(--paper)] px-5 py-6 sm:border sm:border-[var(--line)] sm:rounded-[10px] sm:overflow-hidden sm:px-8 sm:py-8">
 
                 {isEligibilityStep && (
                   <StepEligibility
@@ -527,7 +540,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                 )}
                 {showDownloadGate && <AnonDownloadGate />}
 
-                {/* Completion screen — shown after user submits the review step */}
+                {/* Completion screen */}
                 {showCompletion && (
                   <div className="py-6 space-y-6">
                     <div className="text-center space-y-2">
@@ -559,7 +572,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                       </div>
                     ) : (
                       <div className="space-y-5">
-                        {/* Scrollable document preview — only first half of sections reach the DOM */}
                         <div style={{ position: 'relative' }}>
                           <div
                             style={{
@@ -592,9 +604,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                           This is your complete Will. Choose how to unlock it.
                         </p>
 
-                        {/* Two pricing tiers */}
                         <div className="grid gap-3 sm:grid-cols-2">
-                          {/* The Will — one-time */}
                           <div className="border-2 p-5 space-y-4 flex flex-col" style={{ borderColor: 'var(--teal)' }}>
                             <div>
                               <p className="text-xs font-semibold uppercase" style={{ color: 'var(--teal-deep)', letterSpacing: '.1em' }}>The Will</p>
@@ -602,28 +612,18 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                               <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>One payment · no subscription</p>
                             </div>
                             <ul className="space-y-1.5 flex-1">
-                              {[
-                                'Solicitor-reviewed, signed-ready Will',
-                                'Permanently downloadable',
-                                '3 months Living Vault included',
-                              ].map((f) => (
+                              {['Solicitor-reviewed, signed-ready Will', 'Permanently downloadable', '3 months Living Vault included'].map((f) => (
                                 <li key={f} className="flex items-start gap-2 text-xs" style={{ color: 'var(--ink)' }}>
                                   <svg className="shrink-0 mt-0.5" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M20 6L9 17l-5-5"/></svg>
                                   {f}
                                 </li>
                               ))}
                             </ul>
-                            <button
-                              type="button"
-                              onClick={handleWillCheckout}
-                              className="w-full py-2.5 text-sm font-semibold text-white transition-opacity"
-                              style={{ backgroundColor: 'var(--teal)', border: 'none' }}
-                            >
+                            <button type="button" onClick={handleWillCheckout} className="w-full py-2.5 text-sm font-semibold text-white transition-opacity" style={{ backgroundColor: 'var(--teal)', border: 'none' }}>
                               Pay $129 · get your Will
                             </button>
                           </div>
 
-                          {/* Living Vault — annual */}
                           <div className="border p-5 space-y-4 flex flex-col" style={{ borderColor: 'var(--line)' }}>
                             <div>
                               <p className="text-xs font-semibold uppercase" style={{ color: 'var(--teal-deep)', letterSpacing: '.1em' }}>Living Vault</p>
@@ -631,29 +631,19 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                               <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>per year · Will included</p>
                             </div>
                             <ul className="space-y-1.5 flex-1">
-                              {[
-                                'Will included and downloadable',
-                                'Supported updates as life changes',
-                                'Full platform access, renews annually',
-                              ].map((f) => (
+                              {['Will included and downloadable', 'Supported updates as life changes', 'Full platform access, renews annually'].map((f) => (
                                 <li key={f} className="flex items-start gap-2 text-xs" style={{ color: 'var(--ink)' }}>
                                   <svg className="shrink-0 mt-0.5" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M20 6L9 17l-5-5"/></svg>
                                   {f}
                                 </li>
                               ))}
                             </ul>
-                            <button
-                              type="button"
-                              onClick={handleVaultCheckout}
-                              className="w-full py-2.5 text-sm font-semibold transition-opacity"
-                              style={{ border: '1.5px solid var(--teal-deep)', color: 'var(--teal-deep)', background: 'transparent' }}
-                            >
+                            <button type="button" onClick={handleVaultCheckout} className="w-full py-2.5 text-sm font-semibold transition-opacity" style={{ border: '1.5px solid var(--teal-deep)', color: 'var(--teal-deep)', background: 'transparent' }}>
                               Join for $99 / year
                             </button>
                           </div>
                         </div>
 
-                        {/* Tertiary: view in Vault without paying */}
                         <Link
                           href="/dashboard"
                           className="flex items-center gap-3 border px-5 py-4 hover:border-[var(--teal)] transition-colors"
@@ -666,41 +656,18 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                           </div>
                           <div>
                             <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>View in Vault</p>
-                            <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
-                              See your estate plan, assets, and people in one place
-                            </p>
+                            <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>See your estate plan, assets, and people in one place</p>
                           </div>
                         </Link>
                       </div>
                     )}
                   </div>
                 )}
-
-                {!showDownloadGate && !showCompletion && (
-                  <div className="flex items-center justify-between pt-6 mt-8 border-t border-[var(--line)]">
-                    <button
-                      type="button"
-                      onClick={handleBack}
-                      disabled={isFirst || saving}
-                      className="btn btn-secondary disabled:opacity-40"
-                    >
-                      Back
-                    </button>
-                    <button
-                      type="button"
-                      onClick={isLast ? handleComplete : handleNext}
-                      disabled={saving || !canAdvance}
-                      className="btn btn-primary disabled:opacity-60"
-                    >
-                      {saveLabel}
-                    </button>
-                  </div>
-                )}
               </div>
 
-              {/* Personal Wishes add-on  -  shown after review */}
+              {/* Personal Wishes add-on — shown after review */}
               {currentStaticStep === 'review' && (
-                <div className="mt-4">
+                <div className="mt-4 px-5 sm:px-0">
                   <PersonalWishes
                     willId={form.willId}
                     initialData={form.personalWishes}
@@ -710,13 +677,38 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
               )}
             </div>
 
-            {/* Right-rail help panel  -  desktop only */}
-            <div className="hidden lg:block w-64 shrink-0 pt-0">
+            {/* Right-rail help panel — desktop only */}
+            <div className="hidden lg:block w-64 shrink-0">
               <HelpPanel stepId={isBackupStep ? currentStepId : currentStaticStep} />
             </div>
           </div>
         </div>
       </div>
+
+      {/* Nav buttons — pinned at bottom */}
+      {!showDownloadGate && !showCompletion && (
+        <div
+          className="shrink-0 border-t border-[var(--line)] px-5 sm:px-8 py-3 flex items-center justify-between"
+          style={{ background: 'var(--paper)' }}
+        >
+          <button
+            type="button"
+            onClick={handleBack}
+            disabled={isFirst || saving}
+            className="btn btn-secondary disabled:opacity-40"
+          >
+            Back
+          </button>
+          <button
+            type="button"
+            onClick={isLast ? handleComplete : handleNext}
+            disabled={saving || !canAdvance}
+            className="btn btn-primary disabled:opacity-60"
+          >
+            {saveLabel}
+          </button>
+        </div>
+      )}
     </div>
 
     {checkoutProduct && (
