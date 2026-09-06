@@ -237,7 +237,7 @@ export default async function DashboardPage({
           borderColor: 'var(--line)',
         }}
       >
-        <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
+        <h1 className="text-lg sm:text-base font-medium" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
           Hi, {firstName}
         </h1>
         <div className="flex items-center gap-3">
@@ -461,7 +461,7 @@ export default async function DashboardPage({
                 Connected accounts
               </p>
               {connectedAccounts.length > 0 && (
-                <Link href="/dashboard/bank-connect" className="text-xs font-medium" style={{ color: 'var(--teal)' }}>
+                <Link href="/dashboard/bank-connect" className="min-h-[44px] sm:min-h-0 inline-flex items-center text-xs font-medium" style={{ color: 'var(--teal)' }}>
                   + Add account
                 </Link>
               )}
@@ -500,7 +500,7 @@ export default async function DashboardPage({
                 {connectedAccounts.length === 0 && (
                   <Link
                     href="/dashboard/bank-connect"
-                    className="shrink-0 self-center text-xs font-semibold"
+                    className="shrink-0 self-center min-h-[44px] sm:min-h-0 inline-flex items-center text-xs font-semibold"
                     style={{ color: 'var(--teal)' }}
                   >
                     Connect →
@@ -544,7 +544,7 @@ export default async function DashboardPage({
                 <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
                   Your Estate
                 </p>
-                <Link href="/will/new?step=assets" className="text-xs font-medium" style={{ color: 'var(--teal)' }}>
+                <Link href="/will/new?step=assets" className="min-h-[44px] sm:min-h-0 inline-flex items-center text-xs font-medium" style={{ color: 'var(--teal)' }}>
                   Manage
                 </Link>
               </div>
@@ -600,7 +600,7 @@ export default async function DashboardPage({
                 <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
                   Your People
                 </p>
-                <Link href="/will/new?step=beneficiaries" className="text-xs font-medium" style={{ color: 'var(--teal)' }}>
+                <Link href="/will/new?step=beneficiaries" className="min-h-[44px] sm:min-h-0 inline-flex items-center text-xs font-medium" style={{ color: 'var(--teal)' }}>
                   Manage
                 </Link>
               </div>
@@ -707,8 +707,12 @@ export default async function DashboardPage({
                 </div>
               </div>
               {nextStep && (
-                <Link href={`/will/new?step=${nextStep.step}`} className="shrink-0 text-xs font-semibold" style={{ color: 'var(--teal)' }}>
-                  Continue with {nextStep.label.toLowerCase()} →
+                <Link
+                  href={`/will/new?step=${nextStep.step}`}
+                  className="mt-3 sm:mt-0 shrink-0 w-full sm:w-auto inline-flex items-center justify-center sm:justify-start gap-1 rounded-lg sm:rounded-none bg-[var(--teal-light)] sm:bg-transparent px-4 sm:px-0 py-3 sm:py-0 text-sm sm:text-xs font-semibold"
+                  style={{ color: 'var(--teal-deep)' }}
+                >
+                  Continue: {nextStep.label} →
                 </Link>
               )}
             </div>

@@ -209,6 +209,7 @@ h1, h2, h3, h4 { font-optical-sizing: auto; }
   }
   /* Panel — appear instantly, no slide */
   .mega-panel { animation: none !important; opacity: 1; transform: none; }
+  /* Mobile fixes have no animations — nothing to override */
   /* Sheet and step transitions — cross-fade only */
   .sheet-enter, .sheet-exit { animation: none !important; transform: none !important; }
   .overlay-enter, .overlay-exit { animation: none !important; }
@@ -291,6 +292,48 @@ a, button, [role="button"], label, summary {
   background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+/* ── Mobile-only fixes ───────────────────────────────────────────────────────── */
+@media (max-width: 639px) {
+  /* Prevent iOS Safari from zooming on input focus (triggers when font-size < 16px) */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="date"],
+  input[type="password"],
+  input:not([type]),
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
+  /* Comfortable touch height on text fields and textareas */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="password"],
+  input:not([type]),
+  textarea {
+    min-height: 44px;
+  }
+
+  /* Wizard nav — taller buttons for thumb comfort */
+  .wizard-nav-mobile .btn {
+    height: 48px;
+    padding-inline: 24px;
+    font-size: 15px;
+    border-radius: 10px;
+    flex: 1;
+    max-width: 48%;
+  }
+  .wizard-nav-mobile {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    gap: 12px;
+  }
 }
 
 /* ── Base ────────────────────────────────────────────────────────────────────── */

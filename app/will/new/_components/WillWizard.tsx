@@ -750,7 +750,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       {/* Mobile navigation remains pinned at the bottom. */}
       {!showDownloadGate && !showCompletion && (
         <div
-          className="sm:hidden shrink-0 border-t border-[var(--line)] px-5 py-3 flex items-center justify-between"
+          className="wizard-nav-mobile sm:hidden shrink-0 border-t border-[var(--line)] px-5 py-3 flex items-center justify-between"
           style={{ background: 'var(--paper)' }}
         >
           <button
