@@ -195,6 +195,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const [showDownloadGate, setShowDownloadGate] = useState(false)
   const [showCompletion, setShowCompletion] = useState(false)
   const [checkoutProduct, setCheckoutProduct] = useState<'will' | 'vault' | null>(null)
+  const [stepKey, setStepKey] = useState(0)
+  const [slideDir, setSlideDir] = useState<'right' | 'left'>('right')
 
   const pendingSaveRef = useRef<Promise<string> | null>(null)
   const contentScrollRef = useRef<HTMLDivElement>(null)
@@ -247,6 +249,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     // Eligibility step: no DB save, just validate and advance
     if (isEligibilityStep) {
       if (!canPassEligibility) return
+      setSlideDir('right')
+      setStepKey(k => k + 1)
       setStepIndex((i) => Math.min(i + 1, wizardSteps.length - 1))
       scrollContentToTop()
       return
@@ -267,6 +271,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       try {
         const willId = await saveStep(null, currentStaticStep, form)
         setForm((prev) => ({ ...prev, willId }))
+        setSlideDir('right')
+        setStepKey(k => k + 1)
         setStepIndex(nextIndex)
         scrollContentToTop()
         if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
@@ -281,8 +287,10 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     }
 
     // willId exists — advance instantly, save in the background
+    setSlideDir('right')
+    setStepKey(k => k + 1)
     setStepIndex(nextIndex)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollContentToTop()
     if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
       setShowEmailCapture(true)
     }
@@ -295,8 +303,10 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
 
   function handleBack() {
     setError(null)
+    setSlideDir('left')
+    setStepKey(k => k + 1)
     setStepIndex((i) => Math.max(0, i - 1))
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    scrollContentToTop()
   }
 
   async function handleComplete() {
@@ -332,6 +342,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   function jumpToIndex(idx: number) {
     if (idx >= 0 && idx < wizardSteps.length) {
       setError(null)
+      setSlideDir(idx < stepIndex ? 'left' : 'right')
+      setStepKey(k => k + 1)
       setStepIndex(idx)
       scrollContentToTop()
     }
@@ -410,7 +422,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
           <div className="flex items-center gap-3">
             <Link
               href={isAuthenticated ? '/dashboard' : '/'}
-              className="flex items-center justify-center w-8 h-8 rounded-full -ml-1 transition-colors hover:bg-[var(--paper-warm)]"
+              className="flex items-center justify-center w-10 h-10 rounded-full -ml-2 hover:bg-[var(--paper-warm)] active:bg-[var(--teal-light)] transition-colors"
               aria-label={isAuthenticated ? 'Save & exit' : 'Back to Heirloom'}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -463,7 +475,10 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
               )}
 
               {/* Step card — borderless full-bleed on mobile, framed on sm+ */}
-              <div className="bg-[var(--paper)] px-5 py-6 sm:border sm:border-[var(--line)] sm:rounded-[10px] sm:overflow-hidden sm:px-8 sm:py-8">
+              <div
+                key={stepKey}
+                className={`bg-[var(--paper)] px-5 py-6 sm:border sm:border-[var(--line)] sm:rounded-[10px] sm:overflow-hidden sm:px-8 sm:py-8${stepKey > 0 ? ` step-enter-${slideDir}` : ''}`}
+              >
 
                 {isEligibilityStep && (
                   <StepEligibility

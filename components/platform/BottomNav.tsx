@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/src/lib/supabase'
 
 const TABS = [
@@ -101,34 +101,62 @@ export default function BottomNav({ userName }: { userName: string }) {
   const pathname = usePathname()
   const router = useRouter()
   const [moreOpen, setMoreOpen] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Hide during focused Will wizard flow
-  if (pathname.startsWith('/will/new')) return null
+  const hidden = pathname.startsWith('/will/new')
 
-  // Close sheet on route change
-  useEffect(() => { setMoreOpen(false) }, [pathname])
+  // Close sheet instantly on route change
+  useEffect(() => {
+    if (moreOpen || isClosing) {
+      setMoreOpen(false)
+      setIsClosing(false)
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
 
   // Prevent body scroll when sheet is open
   useEffect(() => {
+    if (hidden) return
     document.body.style.overflow = moreOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
-  }, [moreOpen])
+  }, [moreOpen, hidden])
+
+  if (hidden) return null
+
+  function openMore() {
+    if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
+    setIsClosing(false)
+    setMoreOpen(true)
+  }
+
+  function closeMore() {
+    setIsClosing(true)
+    closeTimerRef.current = setTimeout(() => {
+      setMoreOpen(false)
+      setIsClosing(false)
+    }, 230)
+  }
 
   async function handleSignOut() {
-    await supabase.auth.signOut()
-    router.push('/auth/login')
+    closeMore()
+    setTimeout(async () => {
+      await supabase.auth.signOut()
+      router.push('/auth/login')
+    }, 230)
   }
 
   const initials = userName.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || '?'
 
   return (
     <>
-      {/* Bottom tab bar */}
+      {/* Bottom tab bar — iOS glass */}
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 z-40"
+        className="md:hidden nav-glass fixed bottom-0 left-0 right-0 z-40"
         style={{
-          background: '#fff',
-          borderTop: '1px solid var(--line)',
+          borderTop: '1px solid rgba(221, 232, 231, 0.6)',
           paddingBottom: 'env(safe-area-inset-bottom)',
         }}
         aria-label="Main navigation"
@@ -142,9 +170,10 @@ export default function BottomNav({ userName }: { userName: string }) {
               return (
                 <button
                   key="more"
-                  onClick={() => setMoreOpen(v => !v)}
+                  onClick={() => moreOpen ? closeMore() : openMore()}
                   aria-label="More options"
                   aria-expanded={moreOpen}
+                  className="tab-press"
                   style={{
                     flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
                     justifyContent: 'center', gap: 3, background: 'none', border: 'none',
@@ -162,6 +191,7 @@ export default function BottomNav({ userName }: { userName: string }) {
               <Link
                 key={tab.href}
                 href={tab.href}
+                className="tab-press"
                 style={{
                   flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
                   justifyContent: 'center', gap: 3, textDecoration: 'none', padding: '8px 0',
@@ -182,7 +212,8 @@ export default function BottomNav({ userName }: { userName: string }) {
         <div className="md:hidden">
           {/* Overlay */}
           <div
-            onClick={() => setMoreOpen(false)}
+            onClick={closeMore}
+            className={isClosing ? 'overlay-exit' : 'overlay-enter'}
             style={{
               position: 'fixed', inset: 0, zIndex: 50,
               background: 'rgba(0,0,0,0.3)',
@@ -192,6 +223,7 @@ export default function BottomNav({ userName }: { userName: string }) {
 
           {/* Sheet */}
           <div
+            className={isClosing ? 'sheet-exit' : 'sheet-enter'}
             style={{
               position: 'fixed', left: 0, right: 0,
               bottom: `calc(60px + env(safe-area-inset-bottom))`,
@@ -224,6 +256,7 @@ export default function BottomNav({ userName }: { userName: string }) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  className="sheet-item"
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '12px 20px', textDecoration: 'none',
@@ -243,6 +276,7 @@ export default function BottomNav({ userName }: { userName: string }) {
             <div style={{ borderTop: '1px solid var(--line)', padding: '6px 0 12px' }}>
               <button
                 onClick={handleSignOut}
+                className="sheet-item"
                 style={{
                   width: '100%', display: 'flex', alignItems: 'center', gap: 12,
                   padding: '12px 20px', background: 'none', border: 'none',
