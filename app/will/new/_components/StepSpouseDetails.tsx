@@ -1,6 +1,7 @@
 'use client'
 
 import type { SpouseDetails, MaritalStatus } from '../_types'
+import ExtractedBadge from './ExtractedBadge'
 
 const AU_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA']
 
@@ -12,9 +13,11 @@ interface Props {
   data: SpouseDetails
   onChange: (data: SpouseDetails) => void
   maritalStatus: MaritalStatus | ''
+  extractedFields?: Set<string>
 }
 
-export default function StepSpouseDetails({ data, onChange, maritalStatus }: Props) {
+export default function StepSpouseDetails({ data, onChange, maritalStatus, extractedFields }: Props) {
+  function ex(field: string) { return extractedFields?.has(`spouseDetails.${field}`) ?? false }
   function set(field: keyof SpouseDetails, value: string) {
     onChange({ ...data, [field]: value })
   }
@@ -33,14 +36,17 @@ export default function StepSpouseDetails({ data, onChange, maritalStatus }: Pro
         <p className={eyebrow}>Full Name</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
+            {ex('firstName') && <ExtractedBadge />}
             <label className={lbl}>First name <span className="text-red-400">*</span></label>
             <input required className={inp} value={data.firstName} onChange={(e) => set('firstName', e.target.value)} />
           </div>
           <div>
+            {ex('middleName') && <ExtractedBadge />}
             <label className={lbl}>Middle name</label>
             <input className={inp} value={data.middleName} onChange={(e) => set('middleName', e.target.value)} />
           </div>
           <div>
+            {ex('lastName') && <ExtractedBadge />}
             <label className={lbl}>Last name <span className="text-red-400">*</span></label>
             <input required className={inp} value={data.lastName} onChange={(e) => set('lastName', e.target.value)} />
           </div>

@@ -63,13 +63,19 @@ export default function HomePage() {
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
               Start for free. Complete your whole Will in just 15 minutes and download it when you are ready.
             </p>
-            <div style={{ marginTop: '2.5rem' }}>
+            <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.9rem' }}>
               <Link href="/start?path=retail" className="mkt-btn-ink-l">
                 Create my Will
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </Link>
+              <p style={{ margin: 0, fontSize: '.85rem', color: 'var(--mkt-stone)' }}>
+                Already have a Will?{' '}
+                <Link href="/start?mode=upload" style={{ color: 'var(--teal-deep)', fontWeight: 600, textDecoration: 'underline' }}>
+                  Upload it and we&apos;ll take care of you.
+                </Link>
+              </p>
             </div>
           </div>
         </div>

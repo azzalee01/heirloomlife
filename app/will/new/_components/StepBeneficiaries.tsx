@@ -2,6 +2,7 @@
 
 import type { BeneficiariesData, PersonBeneficiary, CharityBeneficiary, TriageFlags } from '../_types'
 import TriageFlag from './TriageFlag'
+import ExtractedBadge from './ExtractedBadge'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -26,9 +27,11 @@ interface Props {
   onChange: (data: BeneficiariesData) => void
   triageFlags: TriageFlags
   onTriageFlagsChange: (flags: TriageFlags) => void
+  extractedFields?: Set<string>
 }
 
-export default function StepBeneficiaries({ data, onChange, triageFlags, onTriageFlagsChange }: Props) {
+export default function StepBeneficiaries({ data, onChange, triageFlags, onTriageFlagsChange, extractedFields }: Props) {
+  const hasExtracted = extractedFields && extractedFields.has('beneficiariesData.people')
   const total = totalAllocated(data)
   const remaining = 100 - total
 
@@ -52,6 +55,12 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
     <div className="space-y-8">
       <div>
         <h2 className="text-xl font-semibold text-[var(--ink)]">Beneficiaries</h2>
+        {hasExtracted && (
+          <div className="mb-2 flex items-center gap-2">
+            <ExtractedBadge />
+            <span className="text-xs text-[var(--neutral)]">pre-filled from your uploaded Will — confirm or edit</span>
+          </div>
+        )}
         <p className="text-sm text-[var(--neutral)] mt-1">
           Specify who inherits your estate and the percentage each receives. This forms your{' '}
           <strong>residuary clause</strong>  -  it covers everything not given away as a specific gift, so it&apos;s

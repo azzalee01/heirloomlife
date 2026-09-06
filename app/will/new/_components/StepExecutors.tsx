@@ -1,6 +1,7 @@
 'use client'
 
 import type { ExecutorsData, ExecutorPerson } from '../_types'
+import ExtractedBadge from './ExtractedBadge'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -53,9 +54,14 @@ function ExecutorForm({ label, data, onChange }: ExecutorFormProps) {
 interface Props {
   data: ExecutorsData
   onChange: (data: ExecutorsData) => void
+  extractedFields?: Set<string>
 }
 
-export default function StepExecutors({ data, onChange }: Props) {
+export default function StepExecutors({ data, onChange, extractedFields }: Props) {
+  const hasExtracted = extractedFields && (
+    extractedFields.has('executorsData.primary.firstName') ||
+    extractedFields.has('executorsData.primary.lastName')
+  )
   return (
     <div className="space-y-7">
       <div>
@@ -63,6 +69,12 @@ export default function StepExecutors({ data, onChange }: Props) {
         <p className="text-sm text-[var(--neutral)] mt-1">
           An executor administers your estate and carries out the instructions in your will.
         </p>
+        {hasExtracted && (
+          <div className="mt-2 flex items-center gap-2">
+            <ExtractedBadge />
+            <span className="text-xs text-[var(--neutral)]">pre-filled from your uploaded Will — confirm or edit</span>
+          </div>
+        )}
       </div>
 
       <ExecutorForm

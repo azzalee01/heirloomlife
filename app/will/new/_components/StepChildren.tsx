@@ -1,6 +1,7 @@
 'use client'
 
 import type { ChildrenData, Child } from '../_types'
+import ExtractedBadge from './ExtractedBadge'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -13,9 +14,15 @@ function emptyChild(): Child {
 interface Props {
   data: ChildrenData
   onChange: (data: ChildrenData) => void
+  extractedFields?: Set<string>
 }
 
-export default function StepChildren({ data, onChange }: Props) {
+export default function StepChildren({ data, onChange, extractedFields }: Props) {
+  const hasExtracted = extractedFields && (
+    extractedFields.has('childrenData.children') ||
+    extractedFields.has('childrenData.hasChildren') ||
+    extractedFields.has('childrenData.guardian')
+  )
   const hasMinors = data.children.some((c) => c.isDependent)
 
   function updateChild(id: string, updates: Partial<Child>) {
@@ -35,6 +42,12 @@ export default function StepChildren({ data, onChange }: Props) {
       <div>
         <h2 className="text-xl font-semibold text-[var(--ink)]">Children</h2>
         <p className="text-sm text-[var(--neutral)] mt-1">Tell us about your children</p>
+        {hasExtracted && (
+          <div className="mt-2 flex items-center gap-2">
+            <ExtractedBadge />
+            <span className="text-xs text-[var(--neutral)]">pre-filled from your uploaded Will — confirm or edit</span>
+          </div>
+        )}
       </div>
 
       <div>

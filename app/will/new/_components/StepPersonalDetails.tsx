@@ -1,6 +1,7 @@
 'use client'
 
 import type { PersonalDetails } from '../_types'
+import ExtractedBadge from './ExtractedBadge'
 
 const AU_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA']
 
@@ -11,9 +12,11 @@ const eyebrow = 'text-xs font-semibold uppercase tracking-widest text-[var(--neu
 interface Props {
   data: PersonalDetails
   onChange: (data: PersonalDetails) => void
+  extractedFields?: Set<string>
 }
 
-export default function StepPersonalDetails({ data, onChange }: Props) {
+export default function StepPersonalDetails({ data, onChange, extractedFields }: Props) {
+  function ex(field: string) { return extractedFields?.has(`personalDetails.${field}`) ?? false }
   function set(field: keyof PersonalDetails, value: string) {
     onChange({ ...data, [field]: value })
   }
@@ -30,14 +33,17 @@ export default function StepPersonalDetails({ data, onChange }: Props) {
         <p className={eyebrow}>Full Name</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
+            {ex('firstName') && <ExtractedBadge />}
             <label className={lbl}>First name <span className="text-red-400">*</span></label>
             <input required className={inp} value={data.firstName} onChange={(e) => set('firstName', e.target.value)} />
           </div>
           <div>
+            {ex('middleName') && <ExtractedBadge />}
             <label className={lbl}>Middle name</label>
             <input className={inp} value={data.middleName} onChange={(e) => set('middleName', e.target.value)} />
           </div>
           <div>
+            {ex('lastName') && <ExtractedBadge />}
             <label className={lbl}>Last name <span className="text-red-400">*</span></label>
             <input required className={inp} value={data.lastName} onChange={(e) => set('lastName', e.target.value)} />
           </div>
@@ -47,6 +53,7 @@ export default function StepPersonalDetails({ data, onChange }: Props) {
       {/* Personal info */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
+          {ex('dateOfBirth') && <ExtractedBadge />}
           <label className={lbl}>Date of birth <span className="text-red-400">*</span></label>
           <input type="date" required className={inp} value={data.dateOfBirth} onChange={(e) => set('dateOfBirth', e.target.value)} />
         </div>
@@ -76,15 +83,18 @@ export default function StepPersonalDetails({ data, onChange }: Props) {
         <p className={eyebrow}>Address</p>
         <div className="space-y-3">
           <div>
+            {ex('addressLine1') && <ExtractedBadge />}
             <label className={lbl}>Street address <span className="text-red-400">*</span></label>
             <input required className={inp} placeholder="123 Example Street" value={data.addressLine1} onChange={(e) => set('addressLine1', e.target.value)} />
           </div>
           <div className="grid grid-cols-4 gap-3">
             <div className="col-span-2">
+              {ex('suburb') && <ExtractedBadge />}
               <label className={lbl}>Suburb <span className="text-red-400">*</span></label>
               <input required className={inp} value={data.suburb} onChange={(e) => set('suburb', e.target.value)} />
             </div>
             <div>
+              {ex('state') && <ExtractedBadge />}
               <label className={lbl}>State <span className="text-red-400">*</span></label>
               <select required className={inp} value={data.state} onChange={(e) => set('state', e.target.value)}>
                 <option value=""> - </option>
@@ -92,6 +102,7 @@ export default function StepPersonalDetails({ data, onChange }: Props) {
               </select>
             </div>
             <div>
+              {ex('postcode') && <ExtractedBadge />}
               <label className={lbl}>Postcode <span className="text-red-400">*</span></label>
               <input required maxLength={4} className={inp} value={data.postcode} onChange={(e) => set('postcode', e.target.value)} />
             </div>
@@ -101,6 +112,7 @@ export default function StepPersonalDetails({ data, onChange }: Props) {
 
       {/* Marital status */}
       <div className="sm:max-w-xs">
+        {ex('maritalStatus') && <ExtractedBadge />}
         <label className={lbl}>Marital status <span className="text-red-400">*</span></label>
         <select required className={inp} value={data.maritalStatus} onChange={(e) => set('maritalStatus', e.target.value)}>
           <option value="">Select…</option>

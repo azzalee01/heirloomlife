@@ -3,14 +3,13 @@ import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { loadWillFormData, loadAnonSessionFormData, EMPTY_WILL_FORM_DATA } from '@/app/will/new/_data'
-import WillWizard from '@/app/will/new/_components/WillWizard'
+import StartPageClient from './_components/StartPageClient'
 import { hasWillAccess as profileHasWillAccess } from '@/src/lib/entitlements'
 
-export default async function StartPage({ searchParams }: { searchParams: Promise<{ path?: string }> }) {
+export default async function StartPage({ searchParams }: { searchParams: Promise<{ path?: string; mode?: string }> }) {
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   const params = await searchParams
-  void params
 
   // Load existing data  -  from DB for authenticated users, from anon session cookie otherwise
   let formData = { ...EMPTY_WILL_FORM_DATA }
@@ -50,45 +49,12 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
           className="mx-auto px-4"
           style={{ maxWidth: '860px' }}
         >
-          {/* Page intro */}
-          <div className="text-center mb-10">
-            <h1
-              style={{
-                fontFamily: "var(--font-display)",
-                fontSize: 'clamp(2rem, 4vw, 3rem)',
-                lineHeight: 1.05,
-                letterSpacing: '-.01em',
-                color: 'var(--mkt-ink-text)',
-                margin: 0,
-              }}
-            >
-              Create your Will
-            </h1>
-            <p
-              style={{
-                marginTop: '1rem',
-                fontSize: '1rem',
-                lineHeight: 1.65,
-                color: 'var(--mkt-stone)',
-                maxWidth: '30rem',
-                marginInline: 'auto',
-              }}
-            >
-              Your answers are saved at every step. Take your time.
-            </p>
-          </div>
-
-          {/* Wizard  -  rendered inside a white card */}
-          <div
-            style={{
-              background: '#fff',
-              border: '1px solid var(--mkt-line)',
-              borderRadius: 12,
-              overflow: 'hidden',
-            }}
-          >
-            <WillWizard initialData={formData} isAuthenticated={!!user} hasWillAccess={hasWillAccess} />
-          </div>
+          <StartPageClient
+            serverFormData={formData}
+            isAuthenticated={!!user}
+            hasWillAccess={hasWillAccess}
+            autoOpenUpload={params.mode === 'upload'}
+          />
 
           {/* Trust footnote */}
           <p

@@ -174,9 +174,10 @@ interface Props {
   initialStep?: StepId
   isAuthenticated: boolean
   hasWillAccess?: boolean
+  extractedFields?: Set<string>
 }
 
-export default function WillWizard({ initialData, initialStep, isAuthenticated, hasWillAccess = false }: Props) {
+export default function WillWizard({ initialData, initialStep, isAuthenticated, hasWillAccess = false, extractedFields }: Props) {
   const [form, setForm] = useState<WillFormData>(initialData)
   const [wizardSteps, setWizardSteps] = useState<WizardStepId[]>(() =>
     buildWizardSteps(initialData)
@@ -372,6 +373,14 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
         />
       )}
 
+      {/* Upload-mode notice */}
+      {extractedFields && extractedFields.size > 0 && (
+        <div style={{ background: '#fef3c7', borderBottom: '1px solid #fde68a', padding: '.55rem 1.5rem', fontSize: '.8rem', color: '#78350f', display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          Fields marked <strong style={{ fontWeight: 700 }}>from your uploaded Will</strong> are pre-filled. Review and confirm every step — nothing is submitted automatically.
+        </div>
+      )}
+
       {/* Page header */}
       <div
         className="shrink-0 border-b px-6 h-14 flex items-center justify-between"
@@ -441,6 +450,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                   <StepPersonalDetails
                     data={form.personalDetails}
                     onChange={(personalDetails: PersonalDetails) => update('personalDetails', personalDetails)}
+                    extractedFields={extractedFields}
                   />
                 )}
                 {currentStaticStep === 'spouse' && (
@@ -448,18 +458,21 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     data={form.spouseDetails}
                     onChange={(spouseDetails: SpouseDetails) => update('spouseDetails', spouseDetails)}
                     maritalStatus={form.personalDetails.maritalStatus}
+                    extractedFields={extractedFields}
                   />
                 )}
                 {currentStaticStep === 'children' && (
                   <StepChildren
                     data={form.childrenData}
                     onChange={(childrenData: ChildrenData) => update('childrenData', childrenData)}
+                    extractedFields={extractedFields}
                   />
                 )}
                 {currentStaticStep === 'executors' && (
                   <StepExecutors
                     data={form.executorsData}
                     onChange={(executorsData: ExecutorsData) => update('executorsData', executorsData)}
+                    extractedFields={extractedFields}
                   />
                 )}
                 {currentStaticStep === 'assets' && (
@@ -474,6 +487,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     onChange={(beneficiariesData: BeneficiariesData) => update('beneficiariesData', beneficiariesData)}
                     triageFlags={form.triageFlags}
                     onTriageFlagsChange={(triageFlags: TriageFlags) => update('triageFlags', triageFlags)}
+                    extractedFields={extractedFields}
                   />
                 )}
                 {isBackupStep && backupIndex >= 0 && form.beneficiariesData.people[backupIndex] && (
