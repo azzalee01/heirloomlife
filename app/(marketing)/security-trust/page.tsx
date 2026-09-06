@@ -3,6 +3,21 @@ const SECTION_LABEL: React.CSSProperties = {
   fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block',
 }
 
+const BANK_ITEMS = [
+  {
+    title: 'How bank connections work',
+    body: 'When you connect a bank or super account, you are redirected to a consent page operated by Basiq, a Consumer Data Right accredited data intermediary. Heirloom never sees your banking credentials. You authenticate directly on Basiq\'s hosted page  -  not through any Heirloom screen.',
+  },
+  {
+    title: 'What data we request',
+    body: 'We request account name, type and balance only, under the CDR scope bank:accounts.basic:read. We do not request transaction history. Your consent covers this scope specifically and can be revoked from your Vault at any time.',
+  },
+  {
+    title: 'Basiq\'s role',
+    body: 'Basiq is named on the consent screen alongside the CDR logo. This is a regulatory requirement under the Consumer Data Right framework and cannot be removed. You are consenting to Basiq collecting data on Heirloom\'s behalf under that framework. Basiq\'s privacy policy governs data in transit.',
+  },
+]
+
 const ITEMS = [
   {
     title: 'Data encryption',
@@ -61,6 +76,33 @@ export default function SecurityTrustPage() {
                 style={{
                   paddingBlock: '2rem',
                   borderBottom: i < ITEMS.length - 1 ? '1px solid var(--mkt-line)' : 'none',
+                  display: 'grid', gridTemplateColumns: '1fr', gap: '.75rem',
+                }}
+                className="md:grid-cols-[240px_1fr]"
+              >
+                <h3 style={{ fontSize: '.9rem', fontWeight: 600, color: 'var(--mkt-ink-text)', margin: 0, paddingTop: '.1rem' }}>
+                  {item.title}
+                </h3>
+                <p style={{ fontSize: '.95rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: 0 }}>
+                  {item.body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Bank connections */}
+      <section style={{ paddingBlock: '5.5rem', background: 'var(--mkt-surface)' }}>
+        <div className="md:px-10" style={{ maxWidth: 720, marginInline: 'auto', paddingInline: '1.5rem' }}>
+          <span style={SECTION_LABEL}>Bank connections</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {BANK_ITEMS.map((item, i) => (
+              <div
+                key={item.title}
+                style={{
+                  paddingBlock: '2rem',
+                  borderBottom: i < BANK_ITEMS.length - 1 ? '1px solid var(--mkt-line)' : 'none',
                   display: 'grid', gridTemplateColumns: '1fr', gap: '.75rem',
                 }}
                 className="md:grid-cols-[240px_1fr]"
