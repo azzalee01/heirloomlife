@@ -779,7 +779,7 @@ export default function PlatformPreview() {
           </div>
 
           {/* Sticky input */}
-          <div onClick={e => e.stopPropagation()} style={{ padding: '10px 14px 12px', borderTop: '1px solid var(--line)', background: '#fff', flexShrink: 0 }}>
+          <div onClick={e => e.stopPropagation()} style={{ padding: '10px 14px 10px', borderTop: '1px solid var(--line)', background: '#fff', flexShrink: 0 }}>
             <div style={{ display: 'flex', gap: 7 }}>
               <input
                 type="text"
@@ -810,6 +810,37 @@ export default function PlatformPreview() {
                 <Icon d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" color="#fff" size={13}/>
               </button>
             </div>
+          </div>
+
+          {/* Bottom tab bar */}
+          <div style={{ display: 'flex', height: 52, background: '#fff', borderTop: '1px solid var(--line)', flexShrink: 0 }}>
+            {([
+              { label: 'Overview', active: true, icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M3 11.5L12 4l9 7.5"/><path d="M5 10v9a1 1 0 001 1h12a1 1 0 001-1v-9"/>
+                </svg>
+              )},
+              { label: 'Will', active: false, icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+              )},
+              { label: 'Vault', active: false, icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/><circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/>
+                </svg>
+              )},
+              { label: 'More', active: false, icon: (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <circle cx="5" cy="12" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="1.2" fill="currentColor"/><circle cx="19" cy="12" r="1.2" fill="currentColor"/>
+                </svg>
+              )},
+            ] as const).map(tab => (
+              <div key={tab.label} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2, color: tab.active ? 'var(--teal-deep)' : 'var(--neutral)' }}>
+                <span style={{ color: 'inherit' }}>{tab.icon}</span>
+                <span style={{ fontSize: 9, fontWeight: tab.active ? 600 : 400 }}>{tab.label}</span>
+              </div>
+            ))}
           </div>
 
         </div>
