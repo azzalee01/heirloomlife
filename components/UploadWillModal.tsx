@@ -25,6 +25,211 @@ const REASONS: Record<string, string> = {
   no_file: 'No file was received. Please try again.',
 }
 
+const STEPS = [
+  'Uploading your document...',
+  'Reading the text...',
+  'Identifying names, executors and beneficiaries...',
+  'Almost there...',
+]
+
+const FACTS: { label: string; heading: string; body: string }[] = [
+  {
+    label: 'Did you know',
+    heading: 'Most Australians don\'t have a valid Will.',
+    body: 'Over 60% of Australians haven\'t made one. If you pass without a Will, the state decides who gets what — regardless of your wishes.',
+  },
+  {
+    label: 'Solicitor review',
+    heading: 'Every Heirloom Will is reviewed before issue.',
+    body: 'A standard solicitor quality review is included as part of every Will — not an optional extra. Complex situations are flagged and escalated automatically.',
+  },
+  {
+    label: 'Stays current',
+    heading: 'Marriage automatically revokes a prior Will in most states.',
+    body: 'Life events — marriage, a new child, buying property — can quietly invalidate your Will. Heirloom tracks what changed and prompts a review before a gap becomes a problem.',
+  },
+  {
+    label: 'Your Vault',
+    heading: 'Everything your executor needs, in one place.',
+    body: 'Your Will, asset register and instructions live securely in your Vault — clear, up to date, and ready when it matters most.',
+  },
+  {
+    label: 'All states covered',
+    heading: 'Drafted to the requirements of wherever you live.',
+    body: 'Your Will is legally structured for your Australian state or territory. Move interstate? We\'ll update it.',
+  },
+  {
+    label: 'Amend anytime',
+    heading: 'Your estate plan isn\'t a one-time document.',
+    body: 'Update beneficiaries, add gifts, change your executor — all from your Vault, without starting from scratch.',
+  },
+  {
+    label: 'Takes 15 minutes',
+    heading: 'Most people complete their Will in a single session.',
+    body: 'Seven guided steps. Your answers are saved at every point. Pick up where you left off whenever you\'re ready.',
+  },
+]
+
+function UploadingScreen() {
+  const [stepIndex, setStepIndex] = useState(0)
+  const [factIndex, setFactIndex] = useState(0)
+  const [factVisible, setFactVisible] = useState(true)
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setStepIndex(i => Math.min(i + 1, STEPS.length - 1))
+    }, 3500)
+    return () => clearInterval(t)
+  }, [])
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setFactVisible(false)
+      const swap = setTimeout(() => {
+        setFactIndex(i => (i + 1) % FACTS.length)
+        setFactVisible(true)
+      }, 380)
+      return () => clearTimeout(swap)
+    }, 5500)
+    return () => clearInterval(t)
+  }, [])
+
+  const fact = FACTS[factIndex]
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 300,
+      background: '#fff',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'center',
+      padding: '2rem',
+    }}>
+      {/* Top teal rule */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 3, background: 'linear-gradient(90deg, var(--teal-deep), var(--teal))' }} />
+
+      {/* Wordmark */}
+      <div style={{ position: 'absolute', top: '1.5rem', left: '1.75rem' }}>
+        <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', color: 'var(--mkt-ink-text)', letterSpacing: '-.01em' }}>
+          heirloom
+        </span>
+      </div>
+
+      {/* Main content */}
+      <div style={{ textAlign: 'center', maxWidth: '36rem', width: '100%' }}>
+
+        {/* Animated dots */}
+        <div style={{ display: 'flex', gap: '.5rem', justifyContent: 'center', marginBottom: '2rem' }}>
+          {[0, 1, 2].map(i => (
+            <div
+              key={i}
+              style={{
+                width: 9, height: 9, borderRadius: '50%',
+                background: 'var(--teal)',
+                animation: `hl-dot 1.4s ease-in-out ${i * 0.22}s infinite`,
+              }}
+            />
+          ))}
+        </div>
+
+        <h1 style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'clamp(1.75rem, 3.5vw, 2.4rem)',
+          lineHeight: 1.1,
+          letterSpacing: '-.02em',
+          color: 'var(--mkt-ink-text)',
+          margin: '0 0 .85rem',
+          fontWeight: 500,
+        }}>
+          Reading your Will
+        </h1>
+
+        {/* Step text */}
+        <p
+          key={stepIndex}
+          style={{
+            fontSize: '.9rem',
+            color: 'var(--mkt-stone)',
+            margin: 0,
+            animation: 'hl-fadein .4s ease',
+          }}
+        >
+          {STEPS[stepIndex]}
+        </p>
+
+        {/* Divider */}
+        <div style={{
+          margin: '2.5rem auto',
+          height: 1,
+          background: 'var(--mkt-line)',
+          maxWidth: '20rem',
+        }} />
+
+        {/* Rotating fact */}
+        <div style={{
+          opacity: factVisible ? 1 : 0,
+          transition: 'opacity .38s ease',
+        }}>
+          <span style={{
+            display: 'inline-block',
+            fontSize: '.65rem',
+            fontWeight: 700,
+            letterSpacing: '.12em',
+            textTransform: 'uppercase',
+            color: 'var(--teal-deep)',
+            marginBottom: '.75rem',
+          }}>
+            {fact.label}
+          </span>
+          <p style={{
+            fontSize: '1.05rem',
+            fontWeight: 600,
+            color: 'var(--mkt-ink-text)',
+            margin: '0 0 .5rem',
+            lineHeight: 1.35,
+          }}>
+            {fact.heading}
+          </p>
+          <p style={{
+            fontSize: '.88rem',
+            lineHeight: 1.65,
+            color: 'var(--mkt-stone)',
+            margin: 0,
+            maxWidth: '28rem',
+            marginInline: 'auto',
+          }}>
+            {fact.body}
+          </p>
+        </div>
+
+        {/* Fact dots */}
+        <div style={{ display: 'flex', gap: '.4rem', justifyContent: 'center', marginTop: '1.75rem' }}>
+          {FACTS.map((_, i) => (
+            <div
+              key={i}
+              style={{
+                width: 5, height: 5, borderRadius: '50%',
+                background: i === factIndex ? 'var(--teal)' : 'var(--mkt-line)',
+                transition: 'background .3s ease',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes hl-dot {
+          0%, 80%, 100% { opacity: .2; transform: translateY(0); }
+          40% { opacity: 1; transform: translateY(-6px); }
+        }
+        @keyframes hl-fadein {
+          from { opacity: 0; transform: translateY(4px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>
+  )
+}
+
 export default function UploadWillModal({ onClose, onComplete }: Props) {
   const [status, setStatus] = useState<'idle' | 'uploading' | 'error' | 'low_confidence'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
@@ -37,10 +242,10 @@ export default function UploadWillModal({ onClose, onComplete }: Props) {
   }, [])
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape' && status !== 'uploading') onClose() }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [onClose])
+  }, [onClose, status])
 
   const handleFile = useCallback(async (file: File) => {
     setStatus('uploading')
@@ -77,6 +282,10 @@ export default function UploadWillModal({ onClose, onComplete }: Props) {
     e.preventDefault()
     const file = e.dataTransfer.files?.[0]
     if (file) handleFile(file)
+  }
+
+  if (status === 'uploading') {
+    return <UploadingScreen />
   }
 
   return (
@@ -141,14 +350,6 @@ export default function UploadWillModal({ onClose, onComplete }: Props) {
                 We extract what we can — names, executors, beneficiaries — and pre-fill the questionnaire. You confirm every field before anything becomes part of your new Will. We never edit your uploaded file directly.
               </p>
             </>
-          )}
-
-          {status === 'uploading' && (
-            <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-              <div style={{ width: 36, height: 36, border: '3px solid var(--mkt-line)', borderTopColor: 'var(--teal)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', marginInline: 'auto' }} />
-              <p style={{ marginTop: '1rem', fontSize: '.9rem', color: 'var(--mkt-stone)' }}>Reading your Will...</p>
-              <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
-            </div>
           )}
 
           {status === 'error' && (
