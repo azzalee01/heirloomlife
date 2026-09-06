@@ -30,6 +30,10 @@ export default function CheckoutModal({ product, onClose }: Props) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ product, embedded: true }),
     })
+    if (res.status === 401) {
+      window.location.href = `/auth/signup?next=${encodeURIComponent(window.location.pathname)}`
+      return ''
+    }
     const data = await res.json() as { clientSecret?: string; error?: string }
     if (!data.clientSecret) throw new Error(data.error ?? 'Failed to start checkout')
     return data.clientSecret
