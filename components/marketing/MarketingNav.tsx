@@ -182,7 +182,7 @@ export default function MarketingNav() {
           </Link>
 
           {/* Desktop tabs */}
-          <nav className="hidden lg:flex items-center" aria-label="Main">
+          <nav className="hidden xl:flex items-center" aria-label="Main">
             {TABS.map(tab => {
               const isOpen = activeTab === tab.id
               if (hasDropdown(tab)) {
@@ -235,7 +235,7 @@ export default function MarketingNav() {
             onMouseEnter={() => { cancelClose(); setActiveTab(null) }}
             style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexShrink: 0 }}
           >
-            <Link href="/auth/login" className="hidden lg:block mkt-nav-link">
+            <Link href="/auth/login" className="hidden xl:block mkt-nav-link">
               Log in
             </Link>
             <Link href="/start?path=retail" className="mkt-nav-cta">
@@ -243,7 +243,7 @@ export default function MarketingNav() {
             </Link>
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden"
+              className="xl:hidden"
               onClick={() => setMobileOpen(o => !o)}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileOpen}
@@ -259,7 +259,7 @@ export default function MarketingNav() {
                 </svg>
               ) : (
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
-                  <path d="M3 8h18M3 16h18"/>
+                  <path d="M3 6h18M3 12h18M3 18h18"/>
                 </svg>
               )}
             </button>
@@ -270,7 +270,7 @@ export default function MarketingNav() {
       {/* ── Desktop mega-panel — fixed, width fits content ────────────────── */}
       {panelTab && (
         <div
-          className="hidden lg:block mega-panel"
+          className="hidden xl:block mega-panel"
           onMouseEnter={cancelClose}
           onMouseLeave={scheduleClose}
           style={{
@@ -337,7 +337,7 @@ export default function MarketingNav() {
       {/* ── Mobile overlay ────────────────────────────────────────────────── */}
       {mobileOpen && (
         <div
-          className="lg:hidden"
+          className="xl:hidden"
           style={{
             position: 'fixed', inset: 0, top: NAV_H, zIndex: 49,
             background: '#fff', overflowY: 'auto',
