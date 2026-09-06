@@ -10,9 +10,10 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const body = await request.json() as { product?: unknown; returnToWill?: boolean }
+  const body = await request.json() as { product?: unknown; returnToWill?: boolean; embedded?: boolean }
   const product = body.product
   if (!isProduct(product)) return Response.json({ error: 'Unknown product' }, { status: 400 })
+  const embedded = body.embedded === true
 
   let price: string
   try {
@@ -62,13 +63,26 @@ export async function POST(request: NextRequest) {
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
-  const returnToWill = product === 'will' || body.returnToWill === true
-  const successPath = returnToWill ? '/will/new?payment=success&step=review' : '/dashboard?payment=success'
-  const cancelPath = returnToWill ? '/will/new?step=review' : '/dashboard'
 
   const metadata: Record<string, string> = { userId: user.id, product }
   if (willId) metadata.will_id = willId
   if (partnerCode) metadata.partner_code = partnerCode
+
+  if (embedded) {
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      line_items: [{ price, quantity: 1 }],
+      mode: isSubscriptionProduct(product) ? 'subscription' : 'payment',
+      ui_mode: 'embedded_page' as const,
+      return_url: `${baseUrl}/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      metadata,
+    })
+    return Response.json({ clientSecret: session.client_secret })
+  }
+
+  const returnToWill = product === 'will' || body.returnToWill === true
+  const successPath = returnToWill ? '/will/new?payment=success&step=review' : '/dashboard?payment=success'
+  const cancelPath = returnToWill ? '/will/new?step=review' : '/dashboard'
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,

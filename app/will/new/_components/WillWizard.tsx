@@ -19,8 +19,11 @@ import {
   STEP_IDS,
   STEP_LABELS,
 } from '../_types'
+import dynamic from 'next/dynamic'
 import ProgressBar from './ProgressBar'
 import HelpPanel from './HelpPanel'
+
+const CheckoutModal = dynamic(() => import('@/components/CheckoutModal'), { ssr: false })
 import StepEligibility from './StepEligibility'
 import StepPersonalDetails from './StepPersonalDetails'
 import StepSpouseDetails from './StepSpouseDetails'
@@ -190,10 +193,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [showDownloadGate, setShowDownloadGate] = useState(false)
   const [showCompletion, setShowCompletion] = useState(false)
-  const [checkingOut, setCheckingOut] = useState(false)
-  const [checkoutError, setCheckoutError] = useState<string | null>(null)
-  const [vaultCheckingOut, setVaultCheckingOut] = useState(false)
-  const [vaultCheckoutError, setVaultCheckoutError] = useState<string | null>(null)
+  const [checkoutProduct, setCheckoutProduct] = useState<'will' | 'vault' | null>(null)
 
   const pendingSaveRef = useRef<Promise<string> | null>(null)
 
@@ -315,56 +315,12 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     }
   }
 
-  async function handleWillCheckout() {
-    setCheckingOut(true)
-    setCheckoutError(null)
-    try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product: 'will' }),
-      })
-      if (res.status === 401) {
-        window.location.href = '/auth/login?next=/will/new'
-        return
-      }
-      const data = await res.json() as { url?: string; error?: string }
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        setCheckoutError(data.error ?? 'Checkout failed. Please try again.')
-      }
-    } catch {
-      setCheckoutError('Checkout failed. Please try again.')
-    } finally {
-      setCheckingOut(false)
-    }
+  function handleWillCheckout() {
+    setCheckoutProduct('will')
   }
 
-  async function handleVaultCheckout() {
-    setVaultCheckingOut(true)
-    setVaultCheckoutError(null)
-    try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product: 'vault' }),
-      })
-      if (res.status === 401) {
-        window.location.href = '/auth/login?next=/will/new'
-        return
-      }
-      const data = await res.json() as { url?: string; error?: string }
-      if (data.url) {
-        window.location.href = data.url
-      } else {
-        setVaultCheckoutError(data.error ?? 'Checkout failed. Please try again.')
-      }
-    } catch {
-      setVaultCheckoutError('Checkout failed. Please try again.')
-    } finally {
-      setVaultCheckingOut(false)
-    }
+  function handleVaultCheckout() {
+    setCheckoutProduct('vault')
   }
 
   function jumpToIndex(idx: number) {
@@ -406,6 +362,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const canAdvance = isEligibilityStep ? canPassEligibility : true
 
   return (
+    <>
     <div className="h-full flex flex-col">
       {/* Email capture overlay */}
       {showEmailCapture && (
@@ -642,15 +599,13 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                                 </li>
                               ))}
                             </ul>
-                            {checkoutError && <p className="text-xs text-red-600">{checkoutError}</p>}
                             <button
                               type="button"
                               onClick={handleWillCheckout}
-                              disabled={checkingOut}
-                              className="w-full py-2.5 text-sm font-semibold text-white transition-opacity disabled:opacity-60"
+                              className="w-full py-2.5 text-sm font-semibold text-white transition-opacity"
                               style={{ backgroundColor: 'var(--teal)', border: 'none' }}
                             >
-                              {checkingOut ? 'Loading…' : 'Pay $129 · get your Will'}
+                              Pay $129 · get your Will
                             </button>
                           </div>
 
@@ -673,15 +628,13 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                                 </li>
                               ))}
                             </ul>
-                            {vaultCheckoutError && <p className="text-xs text-red-600">{vaultCheckoutError}</p>}
                             <button
                               type="button"
                               onClick={handleVaultCheckout}
-                              disabled={vaultCheckingOut}
-                              className="w-full py-2.5 text-sm font-semibold transition-opacity disabled:opacity-60"
+                              className="w-full py-2.5 text-sm font-semibold transition-opacity"
                               style={{ border: '1.5px solid var(--teal-deep)', color: 'var(--teal-deep)', background: 'transparent' }}
                             >
-                              {vaultCheckingOut ? 'Loading…' : 'Join for $99 / year'}
+                              Join for $99 / year
                             </button>
                           </div>
                         </div>
@@ -751,5 +704,10 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
         </div>
       </div>
     </div>
+
+    {checkoutProduct && (
+      <CheckoutModal product={checkoutProduct} onClose={() => setCheckoutProduct(null)} />
+    )}
+    </>
   )
 }

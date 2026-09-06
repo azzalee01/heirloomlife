@@ -1,6 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
+
+const CheckoutModal = dynamic(() => import('@/components/CheckoutModal'), { ssr: false })
 
 const FEATURES = [
   'Unlimited will reviews and quick amendments',
@@ -10,25 +13,12 @@ const FEATURES = [
 ]
 
 export default function PlanCTA() {
-  const [loading, setLoading] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  async function startCheckout() {
-    setLoading(true)
+  function startCheckout() {
     setError(null)
-    try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product: 'vault' }),
-      })
-      const data = await res.json() as { url?: string; error?: string }
-      if (!res.ok || !data.url) throw new Error(data.error ?? 'Checkout failed. Please try again.')
-      window.location.href = data.url
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Something went wrong')
-      setLoading(false)
-    }
+    setShowModal(true)
   }
 
   return (
@@ -70,17 +60,14 @@ export default function PlanCTA() {
 
         <button
           onClick={startCheckout}
-          disabled={loading}
-          className="w-full py-2.5 text-sm font-semibold transition-opacity disabled:opacity-60 cursor-pointer text-white"
+          className="w-full py-2.5 text-sm font-semibold transition-opacity cursor-pointer text-white"
           style={{ backgroundColor: 'var(--teal)', border: 'none' }}
         >
-          {loading ? 'Loading…' : 'Join Heirloom  -  $99/year'}
+          Join Heirloom  -  $99/year
         </button>
       </div>
 
-      <p className="pb-3 text-xs text-center" style={{ color: 'var(--neutral)' }}>
-        Test mode  -  use card <span className="font-mono font-semibold">4242 4242 4242 4242</span>, any future date, any CVC.
-      </p>
+      {showModal && <CheckoutModal product="vault" onClose={() => setShowModal(false)} />}
     </div>
   )
 }
