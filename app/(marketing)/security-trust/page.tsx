@@ -21,11 +21,11 @@ const BANK_ITEMS = [
 const ITEMS = [
   {
     title: 'Data encryption',
-    body: 'Your data is stored in a PostgreSQL database hosted on Supabase, which encrypts data at rest and enforces TLS for all data in transit. We do not store Will content in plaintext outside of the secured database.',
+    body: 'Your data is stored on encrypted, access-controlled cloud infrastructure. Data is encrypted at rest and all connections are enforced over TLS. We do not store Will content in plaintext outside the secured database.',
   },
   {
     title: 'Authentication',
-    body: 'Access to your account is managed via Supabase Auth, which issues short-lived JWT tokens. We support secure email and password login. All sessions are scoped and signed  -  no shared secrets, no persistent tokens stored in local storage.',
+    body: 'Access to your account is managed through a purpose-built authentication service. We support secure email and password login and issue short-lived, signed session tokens. No shared secrets, no persistent tokens stored in local storage.',
   },
   {
     title: 'Executor access controls',
@@ -34,10 +34,6 @@ const ITEMS = [
   {
     title: 'Solicitor review independence',
     body: 'Solicitor review is conducted by qualified Australian legal practitioners who are independent of Heirloom Life. Review is triggered by you or by high-severity flags in your Will  -  not automatically shared on document creation.',
-  },
-  {
-    title: 'What we are not claiming',
-    body: "We do not hold ISO 27001 certification at this time. We are not claiming specific penetration testing results, specific uptime SLAs, or specific data residency guarantees until these are formally verified and documented. This page will be updated when those confirmations are in place. Where engineering has not yet confirmed specifics, we have noted them here rather than omitting the uncertainty.",
   },
 ]
 
@@ -60,9 +56,6 @@ export default function SecurityTrustPage() {
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
             Estate documents are among the most sensitive records you can hold. We have written this page to describe what is actually in place today  -  not to match the length of a competitor&#8217;s security marketing page.
           </p>
-          <div style={{ marginTop: '1.5rem', padding: '1rem 1.25rem', borderRadius: 4, border: '1px solid var(--mkt-line)', background: '#fff', fontSize: '.85rem', color: 'var(--mkt-stone)', lineHeight: 1.5 }}>
-            This page is subject to engineering confirmation. Items pending confirmation are clearly noted. We will update this page as each item is verified rather than publish claims in advance.
-          </div>
         </div>
       </section>
 
