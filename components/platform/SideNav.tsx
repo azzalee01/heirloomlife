@@ -190,23 +190,9 @@ export function SideNav({
   }
 
   return (
-    <>
-      {/* Mobile backdrop */}
-      <div
+    <aside
         className={cn(
-          'md:hidden fixed inset-0 bg-black/70 z-40 transition-opacity duration-300',
-          open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
-        )}
-        onClick={() => setOpen(false)}
-        aria-hidden
-      />
-
-      <aside
-        className={cn(
-          'h-screen border-r flex-shrink-0 flex flex-col',
-          'fixed top-0 left-0 z-50 transition-transform duration-300 ease-out w-[256px]',
-          open ? 'translate-x-0' : '-translate-x-full',
-          'md:static md:translate-x-0 md:transition-[width] md:duration-150',
+          'hidden md:flex md:flex-col h-screen border-r shrink-0 static transition-[width] duration-150',
           open ? 'md:w-[256px]' : 'md:w-[56px]',
         )}
         style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}
@@ -379,6 +365,5 @@ export function SideNav({
 
         </div>
       </aside>
-    </>
   );
 }

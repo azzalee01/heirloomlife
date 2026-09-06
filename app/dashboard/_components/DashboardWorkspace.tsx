@@ -19,7 +19,7 @@ export default function DashboardWorkspace({ children }: { children: React.React
 
   return (
     <div className="flex h-full min-w-0 max-w-full flex-1 overflow-hidden">
-      <div className="min-w-0 max-w-full flex-1 overflow-x-hidden overflow-y-auto">{children}</div>
+      <div className="min-w-0 max-w-full flex-1 overflow-x-hidden overflow-y-auto pb-16 md:pb-0">{children}</div>
 
       {!desktopOpen && (
         <div className="hidden w-14 shrink-0 border-l border-[var(--line)] bg-white xl:flex xl:justify-center xl:pt-4">
@@ -48,7 +48,7 @@ export default function DashboardWorkspace({ children }: { children: React.React
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
-          className="fixed bottom-5 right-5 z-40 flex h-12 items-center gap-2 rounded-full bg-[var(--ink)] px-4 text-sm font-semibold text-white shadow-lg transition-transform active:scale-[0.96] xl:hidden"
+          className="fixed bottom-[4.5rem] right-4 z-40 flex h-12 items-center gap-2 rounded-full bg-[var(--ink)] px-4 text-sm font-semibold text-white shadow-lg transition-transform active:scale-[0.96] md:bottom-5 md:right-5 xl:hidden"
           aria-label="Open Estate Assistant"
         >
           <span className="text-[var(--teal)]"><AssistantIcon /></span>

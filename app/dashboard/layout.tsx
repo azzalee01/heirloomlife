@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr';
 import { SideNavWrapper } from './_components/SideNavWrapper';
 import DashboardWorkspace from './_components/DashboardWorkspace';
+import BottomNav from '@/components/platform/BottomNav';
 
 export default async function DashboardLayout({
   children,
@@ -31,6 +32,7 @@ export default async function DashboardLayout({
       <DashboardWorkspace>
         {children}
       </DashboardWorkspace>
+      <BottomNav userName={fullName} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr';
 import { SideNavWrapper } from '@/app/dashboard/_components/SideNavWrapper';
+import BottomNav from '@/components/platform/BottomNav';
 
 export default async function WillLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createSupabaseServerClient();
@@ -18,6 +19,7 @@ export default async function WillLayout({ children }: { children: React.ReactNo
       <main className="h-full min-w-0 flex-1 overflow-hidden bg-[var(--paper-warm)]">
         {children}
       </main>
+      <BottomNav userName={fullName} />
     </div>
   );
 }
