@@ -43,11 +43,6 @@ export async function POST(request: NextRequest) {
       if (isSubscriptionProduct(product) && session.subscription) {
         updates.stripe_subscription_id = session.subscription as string
       }
-      if (product === 'will') {
-        const vaultUntil = new Date()
-        vaultUntil.setDate(vaultUntil.getDate() + 90)
-        updates.vault_included_until = vaultUntil.toISOString()
-      }
       await supabaseAdmin.from('profiles').update(updates).eq('id', userId)
 
       // Record partner referral if this Will was attributed to a charity partner
