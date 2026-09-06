@@ -145,7 +145,7 @@ export default function StartPageClient({ serverFormData, isAuthenticated, hasWi
   }
 
   return (
-    <>
+    <div className="h-full flex flex-col sm:h-auto sm:block">
       {/* Partner discount banner */}
       {discountApplied && (
         <div style={{
@@ -165,7 +165,7 @@ export default function StartPageClient({ serverFormData, isAuthenticated, hasWi
 
       {/* Mode choice — only shown when no existing Will data and not yet in upload mode */}
       {!uploadMode && !serverFormData.willId && (
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <div className="hidden sm:block" style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h1 style={{
             fontFamily: "var(--font-display)",
             fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -193,7 +193,7 @@ export default function StartPageClient({ serverFormData, isAuthenticated, hasWi
 
       {/* Upload-mode heading */}
       {uploadMode && (
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <div className="hidden sm:block" style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h1 style={{
             fontFamily: "var(--font-display)",
             fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -210,7 +210,7 @@ export default function StartPageClient({ serverFormData, isAuthenticated, hasWi
 
       {/* Existing-Will heading (returning user with saved data) */}
       {!uploadMode && serverFormData.willId && (
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <div className="hidden sm:block" style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <h1 style={{
             fontFamily: "var(--font-display)",
             fontSize: 'clamp(2rem, 4vw, 3rem)',
@@ -225,8 +225,8 @@ export default function StartPageClient({ serverFormData, isAuthenticated, hasWi
         </div>
       )}
 
-      {/* Wizard card */}
-      <div style={{ background: '#fff', border: '1px solid var(--mkt-line)', borderRadius: 12, overflow: 'hidden' }}>
+      {/* Wizard card — full-height borderless on mobile, card on desktop */}
+      <div className="flex-1 min-h-0 bg-white sm:flex-none sm:border sm:border-[var(--mkt-line)] sm:rounded-xl sm:overflow-hidden">
         <WillWizard
           key={wizardKey}
           initialData={formData}
@@ -242,6 +242,6 @@ export default function StartPageClient({ serverFormData, isAuthenticated, hasWi
           onComplete={handleUploadComplete}
         />
       )}
-    </>
+    </div>
   )
 }

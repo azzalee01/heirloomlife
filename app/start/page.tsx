@@ -39,15 +39,19 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
 
   return (
     <>
-      <MarketingNav />
+      {/* Nav — desktop only */}
+      <div className="hidden sm:block">
+        <MarketingNav />
+      </div>
 
-      <main
-        className="min-h-screen"
-        style={{ background: 'var(--mkt-surface)', paddingTop: '5rem', paddingBottom: '5rem' }}
+      {/* Mobile: full-screen shell. Desktop: scrollable marketing page */}
+      <div
+        className="flex flex-col h-dvh overflow-hidden sm:h-auto sm:overflow-visible sm:min-h-screen"
+        style={{ background: 'var(--mkt-surface)' }}
       >
         <div
-          className="mx-auto px-4"
-          style={{ maxWidth: '860px' }}
+          className="flex-1 min-h-0 flex flex-col sm:flex-none sm:mx-auto sm:px-4 sm:py-20"
+          style={{ maxWidth: '860px', width: '100%' }}
         >
           <StartPageClient
             serverFormData={formData}
@@ -57,17 +61,16 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
             partnerCode={params.partner ?? null}
           />
 
-          {/* Trust footnote */}
-          <p
-            className="text-center mt-6 text-xs"
-            style={{ color: 'var(--mkt-stone-soft)' }}
-          >
+          <p className="hidden sm:block text-center mt-6 text-xs" style={{ color: 'var(--mkt-stone-soft)' }}>
             Your answers are saved automatically. Available across Australia.
           </p>
         </div>
-      </main>
+      </div>
 
-      <MarketingFooter />
+      {/* Footer — desktop only */}
+      <div className="hidden sm:block">
+        <MarketingFooter />
+      </div>
     </>
   )
 }
