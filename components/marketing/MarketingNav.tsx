@@ -4,9 +4,11 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 type NavItem = { label: string; href: string }
+type NavGroup = { groupLabel: string; items: NavItem[] }
 type NavTab =
-  | { id: string; label: string; href: string; items?: undefined }
-  | { id: string; label: string; href?: undefined; items: NavItem[]; cols: 1 | 2 | 3 }
+  | { id: string; label: string; href: string; items?: undefined; groups?: undefined }
+  | { id: string; label: string; href?: undefined; items: NavItem[]; cols: 1 | 2 | 3; groups?: undefined }
+  | { id: string; label: string; href?: undefined; groups: NavGroup[]; items?: undefined }
 
 const TABS: NavTab[] = [
   {
@@ -28,13 +30,29 @@ const TABS: NavTab[] = [
   {
     id: 'life-events',
     label: 'Life Events',
-    items: [
-      { label: 'Life Changes', href: '/life-changes' },
-      { label: 'After a Death', href: '/passing' },
-      { label: 'Estate Administration', href: '/passing/estate-administration' },
-      { label: 'Guidance Notes', href: '/guidance-notes' },
+    groups: [
+      {
+        groupLabel: 'Life Changes',
+        items: [
+          { label: 'Getting married', href: '/life-changes/getting-married' },
+          { label: 'Separation or divorce', href: '/life-changes/separation-divorce' },
+          { label: 'A new child', href: '/life-changes/new-child' },
+          { label: 'Property bought or sold', href: '/life-changes/buying-selling-property' },
+          { label: 'A business change', href: '/life-changes/starting-selling-business' },
+          { label: 'Receiving an inheritance', href: '/life-changes/receiving-inheritance' },
+          { label: 'Serious illness', href: '/life-changes/serious-illness' },
+          { label: 'Moving interstate', href: '/life-changes/moving-interstate' },
+        ],
+      },
+      {
+        groupLabel: 'Passing',
+        items: [
+          { label: 'After a death', href: '/passing' },
+          { label: 'Estate administration', href: '/passing/estate-administration' },
+          { label: 'Guidance notes', href: '/guidance-notes' },
+        ],
+      },
     ],
-    cols: 2,
   },
   {
     id: 'learn',
@@ -77,6 +95,11 @@ const W: React.CSSProperties = {
   maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem',
 }
 
+const GROUP_LABEL_STYLE: React.CSSProperties = {
+  fontSize: '.68rem', letterSpacing: '.12em', textTransform: 'uppercase',
+  fontWeight: 600, color: 'var(--mkt-stone)', marginBottom: '.5rem', display: 'block',
+}
+
 export default function MarketingNav() {
   const [scrolled, setScrolled] = useState(false)
   const [activeTab, setActiveTab] = useState<string | null>(null)
@@ -117,13 +140,14 @@ export default function MarketingNav() {
   useEffect(() => {
     if (activeTab && tabRefs.current[activeTab]) {
       const rect = tabRefs.current[activeTab]!.getBoundingClientRect()
-      // Clamp so the panel never overflows the right edge of the viewport
       setPanelLeft(rect.left)
     }
   }, [activeTab])
 
-  const panelTab = TABS.find(t => t.id === activeTab && t.items) as Extract<NavTab, { items: NavItem[] }> | undefined
+  const panelTab = TABS.find(t => t.id === activeTab && (t.items || t.groups))
   const hasBg = scrolled || !!activeTab || mobileOpen
+
+  const hasDropdown = (tab: NavTab) => !!(tab.items || tab.groups)
 
   return (
     <>
@@ -161,7 +185,7 @@ export default function MarketingNav() {
           <nav className="hidden lg:flex items-center" aria-label="Main">
             {TABS.map(tab => {
               const isOpen = activeTab === tab.id
-              if (tab.items) {
+              if (hasDropdown(tab)) {
                 return (
                   <button
                     key={tab.id}
@@ -262,24 +286,51 @@ export default function MarketingNav() {
             minWidth: 'max-content',
           }}
         >
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: `repeat(${panelTab.cols}, minmax(0, 1fr))`,
-              gap: '.05rem 2.5rem',
-            }}
-          >
-            {panelTab.items.map(item => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="mega-nav-item"
-                onClick={() => setActiveTab(null)}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
+          {panelTab.groups ? (
+            /* Grouped layout — two columns with labelled sections */
+            <div style={{ display: 'flex', gap: '2.5rem', alignItems: 'flex-start' }}>
+              {panelTab.groups.map((group, gi) => (
+                <div key={group.groupLabel}>
+                  <span style={GROUP_LABEL_STYLE}>{group.groupLabel}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '.05rem' }}>
+                    {group.items.map(item => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="mega-nav-item"
+                        onClick={() => setActiveTab(null)}
+                      >
+                        {item.label}
+                      </Link>
+                    ))}
+                  </div>
+                  {gi < panelTab.groups!.length - 1 && (
+                    <div style={{ width: 1, background: 'var(--mkt-line)', alignSelf: 'stretch', margin: '0 -.05rem' }} />
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* Flat grid layout */
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${(panelTab as Extract<NavTab, { cols: 1|2|3 }>).cols}, minmax(0, 1fr))`,
+                gap: '.05rem 2.5rem',
+              }}
+            >
+              {panelTab.items!.map(item => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="mega-nav-item"
+                  onClick={() => setActiveTab(null)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -295,7 +346,7 @@ export default function MarketingNav() {
           <div style={{ paddingInline: '1.5rem', paddingBottom: '3rem' }}>
             {TABS.map(tab => (
               <div key={tab.id} style={{ borderBottom: '1px solid var(--mkt-line)' }}>
-                {tab.items ? (
+                {hasDropdown(tab) ? (
                   <>
                     <button
                       onClick={() => setMobileExpanded(mobileExpanded === tab.id ? null : tab.id)}
@@ -320,11 +371,26 @@ export default function MarketingNav() {
                     </button>
                     {mobileExpanded === tab.id && (
                       <div style={{ paddingBottom: '.75rem', display: 'flex', flexDirection: 'column', gap: '.1rem' }}>
-                        {tab.items.map(item => (
-                          <Link key={item.href} href={item.href} className="mega-nav-mobile-item">
-                            {item.label}
-                          </Link>
-                        ))}
+                        {tab.groups ? (
+                          tab.groups.map(group => (
+                            <div key={group.groupLabel}>
+                              <span style={{ ...GROUP_LABEL_STYLE, marginTop: '.6rem', marginBottom: '.35rem' }}>
+                                {group.groupLabel}
+                              </span>
+                              {group.items.map(item => (
+                                <Link key={item.href} href={item.href} className="mega-nav-mobile-item">
+                                  {item.label}
+                                </Link>
+                              ))}
+                            </div>
+                          ))
+                        ) : (
+                          tab.items!.map(item => (
+                            <Link key={item.href} href={item.href} className="mega-nav-mobile-item">
+                              {item.label}
+                            </Link>
+                          ))
+                        )}
                       </div>
                     )}
                   </>
