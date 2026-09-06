@@ -9,6 +9,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server';
 import LogoutButton from '@/src/components/LogoutButton';
 import IntroAnimationLoader from './_components/IntroAnimationLoader';
 import PlanCTA from './_components/PlanCTA';
+import PartnerShareCard from './_components/PartnerShareCard';
 import { hasVaultBenefits } from '@/src/lib/entitlements';
 
 // ─── DB row types ─────────────────────────────────────────────────────────────
@@ -139,11 +140,18 @@ export default async function DashboardPage({
 
   const will = (willRows?.[0] as Will) ?? null;
 
-  const { data: profileRow } = await supabaseAdmin
-    .from('profiles')
-    .select('plan, plan_status, vault_access_until')
-    .eq('id', user.id)
-    .single();
+  const [{ data: profileRow }, { data: coupleCodes }] = await Promise.all([
+    supabaseAdmin
+      .from('profiles')
+      .select('plan, plan_status, vault_access_until')
+      .eq('id', user.id)
+      .single(),
+    supabaseAdmin
+      .from('couple_discount_codes')
+      .select('code, product, discount_cents, expires_at, used_at')
+      .eq('generator_id', user.id)
+      .order('created_at', { ascending: false }),
+  ]);
 
   const plan = (profileRow?.plan as string) ?? 'free';
   const planStatus = (profileRow?.plan_status as string | null) ?? null;
@@ -264,6 +272,18 @@ export default async function DashboardPage({
             </div>
           </div>
         )}
+
+        {/* ── Partner discount share cards ─────────────────────────────────── */}
+        {(coupleCodes ?? []).map((c) => (
+          <PartnerShareCard
+            key={c.code as string}
+            code={c.code as string}
+            product={c.product as 'will' | 'vault'}
+            discountCents={c.discount_cents as number}
+            expiresAt={c.expires_at as string}
+            usedAt={c.used_at as string | null}
+          />
+        ))}
 
         {/* ── Bank connection success / error banners ───────────────────────── */}
         {bankConnected && (

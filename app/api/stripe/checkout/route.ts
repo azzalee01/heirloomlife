@@ -14,6 +14,27 @@ export async function POST(request: NextRequest) {
   const product = body.product
   if (!isProduct(product)) return Response.json({ error: 'Unknown product' }, { status: 400 })
   const embedded = body.embedded === true
+  // Read couple discount code from httpOnly cookie (set when visiting /start?partner=...)
+  const coupleCode = request.cookies.get('hl_partner_code')?.value?.trim().toUpperCase() ?? null
+
+  // Validate couple discount code if provided
+  let stripePromoId: string | null = null
+  if (coupleCode) {
+    const { data: discountRow } = await supabaseAdmin
+      .from('couple_discount_codes')
+      .select('stripe_promo_id, generator_id, expires_at, used_at, product')
+      .eq('code', coupleCode)
+      .maybeSingle()
+    if (
+      discountRow &&
+      !discountRow.used_at &&
+      new Date(discountRow.expires_at as string) > new Date() &&
+      discountRow.generator_id !== user.id &&
+      discountRow.product === product
+    ) {
+      stripePromoId = discountRow.stripe_promo_id as string
+    }
+  }
 
   let price: string
   try {
@@ -46,10 +67,9 @@ export async function POST(request: NextRequest) {
       .eq('id', user.id)
   }
 
-  // For Will purchases, carry will_id and partner_referral_code into Stripe metadata
-  // so the webhook can record payment status and referral attribution atomically.
+  // For Will purchases, carry will_id and charity referral code into Stripe metadata
   let willId: string | null = null
-  let partnerCode: string | null = null
+  let charityReferralCode: string | null = null
   if (product === 'will') {
     const { data: willRow } = await supabaseAdmin
       .from('wills')
@@ -59,14 +79,17 @@ export async function POST(request: NextRequest) {
       .limit(1)
       .single()
     willId = (willRow?.id as string | null) ?? null
-    partnerCode = (willRow?.partner_referral_code as string | null) ?? null
+    charityReferralCode = (willRow?.partner_referral_code as string | null) ?? null
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 
   const metadata: Record<string, string> = { userId: user.id, product }
   if (willId) metadata.will_id = willId
-  if (partnerCode) metadata.partner_code = partnerCode
+  if (charityReferralCode) metadata.partner_code = charityReferralCode
+  if (coupleCode) metadata.couple_code = coupleCode
+
+  const discounts = stripePromoId ? [{ promotion_code: stripePromoId }] : undefined
 
   if (embedded) {
     const session = await stripe.checkout.sessions.create({
@@ -76,6 +99,7 @@ export async function POST(request: NextRequest) {
       ui_mode: 'embedded_page' as const,
       return_url: `${baseUrl}/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       metadata,
+      ...(discounts ? { discounts } : {}),
     })
     return Response.json({ clientSecret: session.client_secret })
   }
@@ -91,6 +115,7 @@ export async function POST(request: NextRequest) {
     success_url: `${baseUrl}${successPath}`,
     cancel_url: `${baseUrl}${cancelPath}`,
     metadata,
+    ...(discounts ? { discounts } : {}),
   })
 
   return Response.json({ url: session.url })

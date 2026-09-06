@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic'
 import WillWizard from '@/app/will/new/_components/WillWizard'
 import type { WillFormData } from '@/app/will/new/_types'
 import { EMPTY_WILL_FORM_DATA } from '@/app/will/new/_data'
+import { setPartnerCodeCookie } from '@/app/actions/partner'
 
 const UploadWillModal = dynamic(() => import('@/components/UploadWillModal'), { ssr: false })
 
@@ -113,18 +114,25 @@ interface Props {
   isAuthenticated: boolean
   hasWillAccess: boolean
   autoOpenUpload?: boolean
+  partnerCode?: string | null
 }
 
-export default function StartPageClient({ serverFormData, isAuthenticated, hasWillAccess, autoOpenUpload }: Props) {
+export default function StartPageClient({ serverFormData, isAuthenticated, hasWillAccess, autoOpenUpload, partnerCode }: Props) {
   const [showUploadModal, setShowUploadModal] = useState(autoOpenUpload ?? false)
   const [uploadMode, setUploadMode] = useState(false)
   const [formData, setFormData] = useState<WillFormData>(serverFormData)
   const [extractedFields, setExtractedFields] = useState<Set<string>>(new Set())
   const [wizardKey, setWizardKey] = useState('initial')
+  const [discountApplied, setDiscountApplied] = useState(false)
 
   useEffect(() => {
     if (autoOpenUpload) setShowUploadModal(true)
   }, [autoOpenUpload])
+
+  useEffect(() => {
+    if (!partnerCode) return
+    setPartnerCodeCookie(partnerCode).then(() => setDiscountApplied(true))
+  }, [partnerCode])
 
   function handleUploadComplete(result: { extractedData: Record<string, unknown>; extractedFields: string[] }) {
     const base = serverFormData.willId ? serverFormData : { ...EMPTY_WILL_FORM_DATA }
@@ -138,6 +146,23 @@ export default function StartPageClient({ serverFormData, isAuthenticated, hasWi
 
   return (
     <>
+      {/* Partner discount banner */}
+      {discountApplied && (
+        <div style={{
+          background: 'var(--teal-pale, #e6f7f5)',
+          border: '1px solid var(--teal-mid, #5bbfb5)',
+          borderRadius: 8,
+          padding: '.75rem 1.25rem',
+          marginBottom: '1.5rem',
+          textAlign: 'center',
+          fontSize: '.9rem',
+          color: 'var(--teal-deep)',
+          fontWeight: 500,
+        }}>
+          Your partner discount has been applied. You'll save $40 at checkout.
+        </div>
+      )}
+
       {/* Mode choice — only shown when no existing Will data and not yet in upload mode */}
       {!uploadMode && !serverFormData.willId && (
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>

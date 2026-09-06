@@ -6,7 +6,7 @@ import { loadWillFormData, loadAnonSessionFormData, EMPTY_WILL_FORM_DATA } from 
 import StartPageClient from './_components/StartPageClient'
 import { hasWillAccess as profileHasWillAccess } from '@/src/lib/entitlements'
 
-export default async function StartPage({ searchParams }: { searchParams: Promise<{ path?: string; mode?: string }> }) {
+export default async function StartPage({ searchParams }: { searchParams: Promise<{ path?: string; mode?: string; partner?: string }> }) {
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   const params = await searchParams
@@ -54,6 +54,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
             isAuthenticated={!!user}
             hasWillAccess={hasWillAccess}
             autoOpenUpload={params.mode === 'upload'}
+            partnerCode={params.partner ?? null}
           />
 
           {/* Trust footnote */}

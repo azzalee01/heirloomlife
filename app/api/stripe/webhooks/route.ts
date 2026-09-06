@@ -6,6 +6,58 @@ import { addThreeMonths } from '@/src/lib/entitlements'
 
 export const dynamic = 'force-dynamic'
 
+const COUPLE_CODE_EXPIRY_DAYS = 60
+const COUPLE_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+
+function generateCoupleCode(): string {
+  let suffix = ''
+  for (let i = 0; i < 6; i++) {
+    suffix += COUPLE_CODE_CHARS[Math.floor(Math.random() * COUPLE_CODE_CHARS.length)]
+  }
+  return `HMPL-${suffix}`
+}
+
+async function createCoupleDiscountCode(userId: string, product: 'will' | 'vault') {
+  const couponId = product === 'will'
+    ? process.env.STRIPE_COUPON_WILL_PARTNER
+    : process.env.STRIPE_COUPON_VAULT_PARTNER
+  if (!couponId) return
+
+  const discountCents = product === 'will' ? 4000 : 2000
+  const expiresAt = new Date()
+  expiresAt.setDate(expiresAt.getDate() + COUPLE_CODE_EXPIRY_DAYS)
+
+  // Generate a unique code, retrying on collision (astronomically unlikely)
+  let code = generateCoupleCode()
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const { data: existing } = await supabaseAdmin
+      .from('couple_discount_codes')
+      .select('id')
+      .eq('code', code)
+      .maybeSingle()
+    if (!existing) break
+    code = generateCoupleCode()
+  }
+
+  const stripe = getStripe()
+  const promoCode = await stripe.promotionCodes.create({
+    promotion: { type: 'coupon', coupon: couponId },
+    code,
+    max_redemptions: 1,
+    expires_at: Math.floor(expiresAt.getTime() / 1000),
+    metadata: { generator_user_id: userId, product },
+  })
+
+  await supabaseAdmin.from('couple_discount_codes').insert({
+    code,
+    generator_id: userId,
+    stripe_promo_id: promoCode.id,
+    product,
+    discount_cents: discountCents,
+    expires_at: expiresAt.toISOString(),
+  })
+}
+
 async function updateByCustomer(customerId: string, updates: Record<string, unknown>) {
   await supabaseAdmin
     .from('profiles')
@@ -45,7 +97,7 @@ export async function POST(request: NextRequest) {
       }
       await supabaseAdmin.from('profiles').update(updates).eq('id', userId)
 
-      // Record partner referral if this Will was attributed to a charity partner
+      // Record charity partner referral if attributed
       if (product === 'will') {
         const partnerCode = session.metadata?.partner_code
         const willId = session.metadata?.will_id
@@ -65,6 +117,35 @@ export async function POST(request: NextRequest) {
           }
         }
       }
+
+      // Mark couple discount code as used if one was applied at checkout
+      const usedCoupleCode = session.metadata?.couple_code
+      if (usedCoupleCode) {
+        await supabaseAdmin
+          .from('couple_discount_codes')
+          .update({ used_at: new Date().toISOString(), used_by_id: userId })
+          .eq('code', usedCoupleCode)
+          .is('used_at', null)
+      }
+
+      // Generate couple discount code for the purchaser (best-effort, non-blocking)
+      try {
+        // Only generate if one doesn't already exist for this user + product
+        const { data: existing } = await supabaseAdmin
+          .from('couple_discount_codes')
+          .select('id')
+          .eq('generator_id', userId)
+          .eq('product', product)
+          .is('used_at', null)
+          .gt('expires_at', new Date().toISOString())
+          .maybeSingle()
+        if (!existing) {
+          await createCoupleDiscountCode(userId, product)
+        }
+      } catch {
+        // Non-fatal — user can still complete purchase without a couple code
+      }
+
       break
     }
 
