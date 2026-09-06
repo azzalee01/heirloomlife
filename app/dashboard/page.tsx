@@ -44,6 +44,16 @@ type ExecutorRow = {
   is_primary: boolean
 }
 
+type ConnectedAccountRow = {
+  id: string
+  institution_name: string | null
+  account_name: string | null
+  account_type: string | null
+  balance: number | null
+  currency: string
+  last_synced_at: string | null
+}
+
 // ─── Asset config ─────────────────────────────────────────────────────────────
 const ASSET_CFG: Record<string, { typeLabel: string; color: string; bg: string; d: string }> = {
   real_estate:    { typeLabel: 'Real Estate',    color: 'var(--teal)',     bg: 'var(--paper-warm)', d: 'M3 12l9-8 9 8v8a1 1 0 01-1 1H4a1 1 0 01-1-1v-8zM9 21V12h6v9' },
@@ -118,6 +128,8 @@ export default async function DashboardPage({
 
   const sp = await searchParams;
   const paymentSuccess = sp.payment === 'success';
+  const bankConnected = sp.bank_connected === 'true';
+  const bankError = typeof sp.bank_error === 'string' ? sp.bank_error : null;
 
   const firstName = user.user_metadata?.full_name?.split(' ')[0] ?? user.email?.split('@')[0] ?? 'there';
 
@@ -139,6 +151,13 @@ export default async function DashboardPage({
   const vaultAccessUntil = profileRow?.vault_access_until
     ? new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(profileRow.vault_access_until as string))
     : null;
+
+  const { data: connectedAccountsData } = await supabaseAdmin
+    .from('connected_accounts')
+    .select('id, institution_name, account_name, account_type, balance, currency, last_synced_at')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: true })
+  const connectedAccounts: ConnectedAccountRow[] = (connectedAccountsData ?? []) as ConnectedAccountRow[]
 
   let assets: AssetRow[] = [];
   let beneficiaries: BeneficiaryRow[] = [];
@@ -243,6 +262,26 @@ export default async function DashboardPage({
                 If it doesn&apos;t appear, refresh the page in a moment.
               </p>
             </div>
+          </div>
+        )}
+
+        {/* ── Bank connection success / error banners ───────────────────────── */}
+        {bankConnected && (
+          <div className="rounded-lg border px-5 py-4 flex items-start gap-3" style={{ borderColor: '#bbf7d0', background: '#f0fdf4' }}>
+            <svg className="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
+            </svg>
+            <p className="text-sm font-medium" style={{ color: '#166534' }}>Bank account connected successfully.</p>
+          </div>
+        )}
+        {bankError && (
+          <div className="rounded-lg border px-5 py-4 flex items-start gap-3" style={{ borderColor: '#fca5a5', background: '#fef2f2' }}>
+            <svg className="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b91c1c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01" />
+            </svg>
+            <p className="text-sm font-medium" style={{ color: '#991b1b' }}>
+              {bankError === 'sync_failed' ? 'Account connected but balance sync failed — try again shortly.' : 'Could not complete bank connection. Please try again.'}
+            </p>
           </div>
         )}
 
@@ -392,6 +431,87 @@ export default async function DashboardPage({
               </Link>
             </div>
           </div>
+        )}
+
+        {/* ── Connected accounts ────────────────────────────────────────────── */}
+        {will && (
+          <section>
+            <div className="mb-2 flex items-center justify-between px-0.5">
+              <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>
+                Connected accounts
+              </p>
+              {connectedAccounts.length > 0 && (
+                <Link href="/dashboard/bank-connect" className="text-xs font-medium" style={{ color: 'var(--teal)' }}>
+                  + Add account
+                </Link>
+              )}
+            </div>
+
+            <div className="rounded-lg border overflow-hidden" style={{ borderColor: 'var(--line)', background: 'white' }}>
+              {/* Bank accounts row */}
+              <div className="px-4 py-3.5 flex items-start gap-3" style={{ borderBottom: '1px solid var(--line)' }}>
+                <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md" style={{ background: '#f0fdf4' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M3 10h18M3 14h18M5 6l7-3 7 3M4 10v10M20 10v10M8 10v10M12 10v10M16 10v10" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Bank accounts</p>
+                  {connectedAccounts.length === 0 ? (
+                    <p className="mt-0.5 text-xs" style={{ color: 'var(--neutral)' }}>No accounts connected yet.</p>
+                  ) : (
+                    <ul className="mt-1.5 space-y-1.5">
+                      {connectedAccounts.map((a) => (
+                        <li key={a.id} className="flex items-center justify-between gap-4">
+                          <span className="text-xs truncate" style={{ color: 'var(--neutral)' }}>
+                            {a.account_name ?? 'Account'}
+                            {a.account_type && <span className="ml-1.5 capitalize" style={{ color: 'var(--neutral)', opacity: 0.6 }}>· {a.account_type}</span>}
+                          </span>
+                          {a.balance != null && (
+                            <span className="text-xs font-semibold shrink-0" style={{ color: 'var(--ink)' }}>
+                              ${a.balance.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </span>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                {connectedAccounts.length === 0 && (
+                  <Link
+                    href="/dashboard/bank-connect"
+                    className="shrink-0 self-center text-xs font-semibold"
+                    style={{ color: 'var(--teal)' }}
+                  >
+                    Connect →
+                  </Link>
+                )}
+              </div>
+
+              {/* Superannuation — coming soon */}
+              <div className="px-4 py-3.5 flex items-start gap-3" style={{ opacity: 0.55 }}>
+                <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md" style={{ background: '#fffbeb' }}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Superannuation</p>
+                    <span
+                      className="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                      style={{ background: 'var(--paper-warm)', color: 'var(--neutral)' }}
+                    >
+                      Coming soon
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-xs leading-relaxed" style={{ color: 'var(--neutral)' }}>
+                    Live balance linking coming soon. Add your fund manually in your estate register in the meantime.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
         )}
 
         {/* ── Estate + people: mirrors the landing-page platform preview ───── */}
