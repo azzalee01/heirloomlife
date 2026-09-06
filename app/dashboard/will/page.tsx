@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
+import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from '@/app/will/new/_data'
 import { renderWillText } from '@/app/will/new/_render'
 import AiChat from '@/app/dashboard/_components/AiChat'
@@ -14,6 +15,16 @@ export default async function TheWillPage() {
     data: { user },
   } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
+
+  // Gate: user must have purchased a Will or Vault plan (any status — cancelled users
+  // retain access to the Will they paid for, matching the marketing promise)
+  const { data: profile } = await supabaseAdmin
+    .from('profiles')
+    .select('plan, plan_status')
+    .eq('id', user.id)
+    .single()
+  const hasPaidForWill = profile?.plan === 'will' || profile?.plan === 'vault'
+  if (!hasPaidForWill) redirect('/will/new?step=review')
 
   const { data: willRows } = await supabase
     .from('wills')

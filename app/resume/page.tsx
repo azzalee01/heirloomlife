@@ -12,9 +12,11 @@ export default async function ResumePage({
   if (session) {
     const cookieStore = await cookies()
     cookieStore.set('hl_anon_session', session, {
-      maxAge: 60 * 60 * 24 * 30, // 30 days
+      maxAge: 60 * 60 * 24 * 30,
       path: '/',
       sameSite: 'lax',
+      secure: true,
+      httpOnly: true,
     })
   }
 

@@ -55,12 +55,12 @@ export async function getVersionSnapshotText(versionId: string): Promise<{ text:
   } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
 
-  // Row-level security on will_versions already restricts this to versions
-  // belonging to a will the current user owns.
+  // Explicit ownership check: join through wills to confirm version belongs to this user.
   const { data, error } = await supabase
     .from('will_versions')
-    .select('snapshot, created_at, change_summary')
+    .select('snapshot, created_at, change_summary, wills!inner(user_id)')
     .eq('id', versionId)
+    .eq('wills.user_id', user.id)
     .single()
   if (error || !data) throw new Error('Version not found')
 

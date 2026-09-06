@@ -220,7 +220,7 @@ export default async function DashboardPage({
   const visibleExecutors = executors.slice(0, 2)
 
   const bdbnNudges = assets.filter(
-    a => (a.asset_type === 'superannuation' || a.asset_type === 'life_insurance') && !a.has_death_benefit_nomination
+    a => (a.asset_type === 'superannuation' || a.asset_type === 'life_insurance') && a.has_death_benefit_nomination === false
   )
 
   return (

@@ -8,7 +8,7 @@ const LABEL: React.CSSProperties = {
 }
 
 export const metadata = {
-  title: 'For Charities -- Grow your bequest program with Heirloom Life',
+  title: 'For Charities - Grow your bequest program with Heirloom Life',
   description: 'Partner with Heirloom Life to reach Australians who are actively planning their estate. Grow your gifts-in-Wills program at exactly the right moment.',
 }
 
@@ -19,7 +19,7 @@ const STATS = [
 ]
 
 const VALUE_PROPS = [
-  ['Present at the right moment', 'Your cause appears to supporters while they are actively drafting their estate plan -- not through a cold campaign weeks later.'],
+  ['Present at the right moment', 'Your cause appears to supporters while they are actively drafting their estate plan - not through a cold campaign weeks later.'],
   ['No disruption to your existing program', 'We work alongside your bequest team, not instead of it. Supporters can still speak directly to your staff.'],
   ['Built for Australian charities', 'We understand DGR requirements, the regulatory environment, and the sensitivities that come with bequest fundraising.'],
   ['Full attribution and reporting', 'Know exactly how many people have named your organisation, and track your program over time with transparent data.'],
@@ -28,7 +28,7 @@ const VALUE_PROPS = [
 const HOW_IT_WORKS = [
   ['Register your charity', 'Tell us about your organisation using the form below. We review all partners to ensure a good fit for our users.'],
   ['We surface your cause', 'During the Will drafting process, users are given the option to name a charity as a beneficiary. Registered partners appear in that selection.'],
-  ['Supporters act in the moment', 'Someone who already cares about your cause can add you as a beneficiary in seconds -- while the Will is open in front of them.'],
+  ['Supporters act in the moment', 'Someone who already cares about your cause can add you as a beneficiary in seconds - while the Will is open in front of them.'],
 ]
 
 export default function ForCharitiesPage() {
@@ -50,7 +50,7 @@ export default function ForCharitiesPage() {
             <em style={{ color: 'var(--teal-deep)', fontWeight: 400 }}>legacy</em>.
           </h1>
           <p style={{ margin: '1.5rem 0 0', maxWidth: '38rem', fontSize: '1.05rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
-            Gifts in Wills are one of the most valuable income streams available to Australian charities. Heirloom puts your cause in front of supporters at exactly the right moment -- when they are writing their Will.
+            Gifts in Wills are one of the most valuable income streams available to Australian charities. Heirloom puts your cause in front of supporters at exactly the right moment - when they are writing their Will.
           </p>
           <div style={{ marginTop: '2.25rem' }}>
             <a href="#enquire" className="mkt-btn-ink-l">Register your charity</a>
@@ -89,7 +89,7 @@ export default function ForCharitiesPage() {
               Traditional bequest marketing tends to reach people years after they have made their Will, or not at all. By then, the conversation is harder and the Will is already signed.
             </p>
             <p style={{ margin: 0, fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
-              Heirloom is different. We are present at the exact moment of decision -- when someone is actively drafting their estate plan and choosing who to include. That is the highest-intent moment in bequest fundraising, and it has historically been out of reach for most charities.
+              Heirloom is different. We are present at the exact moment of decision - when someone is actively drafting their estate plan and choosing who to include. That is the highest-intent moment in bequest fundraising, and it has historically been out of reach for most charities.
             </p>
           </div>
           <div style={{ background: '#fff', border: '1px solid var(--mkt-line)', borderRadius: 14, padding: '2.25rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>

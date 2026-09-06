@@ -1,4 +1,5 @@
 import { NextRequest } from 'next/server'
+import { cookies } from 'next/headers'
 import Anthropic from '@anthropic-ai/sdk'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
@@ -87,6 +88,14 @@ function collectExtractedFields(obj: Record<string, unknown>, prefix: string, ac
 export async function POST(request: NextRequest) {
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
+
+  // Require either an authenticated session or a valid anon will session to prevent
+  // unauthenticated bots from exhausting the Anthropic API budget
+  if (!user) {
+    const cookieStore = await cookies()
+    const anonSession = cookieStore.get('hl_anon_session')?.value
+    if (!anonSession) return Response.json({ success: false, reason: 'unauthorized' }, { status: 401 })
+  }
 
   const formData = await request.formData()
   const file = formData.get('file') as File | null

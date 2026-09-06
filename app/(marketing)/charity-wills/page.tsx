@@ -47,8 +47,8 @@ export default function CharityWillsPage() {
         <div className="md:px-10 md:grid-cols-3" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
           {[
             ['1', 'Draft your Will', 'Work through the guided questions at your own pace. Cover your executors, guardians, specific gifts, and the people who matter most.'],
-            ['2', 'Add a charitable beneficiary', 'In the residuary estate step, name a registered charity alongside your family. Set the share that feels right to you -- you stay in control.'],
-            ['3', 'Download when ready', 'Pay once to receive your solicitor-reviewed, signed-ready Will. Your charitable gift is part of it -- no separate process required.'],
+            ['2', 'Add a charitable beneficiary', 'In the residuary estate step, name a registered charity alongside your family. Set the share that feels right to you - you stay in control.'],
+            ['3', 'Download when ready', 'Pay once to receive your solicitor-reviewed, signed-ready Will. Your charitable gift is part of it - no separate process required.'],
           ].map(([number, title, body]) => (
             <div key={number} style={{ border: '1px solid var(--mkt-line)', borderRadius: 12, padding: '1.75rem', background: 'var(--mkt-surface)' }}>
               <span style={{ display: 'flex', width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 7, background: 'var(--teal)', color: '#fff', fontSize: '.75rem', fontWeight: 700 }}>{number}</span>
@@ -68,7 +68,7 @@ export default function CharityWillsPage() {
               A final act that reflects what you stood for.
             </h2>
             <p style={{ margin: '1.25rem 0 0', fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', maxWidth: '32rem' }}>
-              Many people find that writing a Will prompts them to think seriously about what they want to leave behind -- not just for family, but for the world. A gift to a cause you care about is a way of making that intention permanent.
+              Many people find that writing a Will prompts them to think seriously about what they want to leave behind - not just for family, but for the world. A gift to a cause you care about is a way of making that intention permanent.
             </p>
             <p style={{ margin: '1rem 0 0', fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', maxWidth: '32rem' }}>
               It doesn&apos;t need to be large. A small percentage of an estate, multiplied across many Wills, can have a meaningful impact on the organisations that depend on bequest income.
@@ -77,7 +77,7 @@ export default function CharityWillsPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {[
               ['Your choices remain yours', 'Heirloom does not select a charity or suggest a share. You name the cause and set the percentage that feels right.'],
-              ['It sits alongside your family', 'A charitable gift is a share of your residuary estate. Your family beneficiaries are named in the same clause -- there is no conflict.'],
+              ['It sits alongside your family', 'A charitable gift is a share of your residuary estate. Your family beneficiaries are named in the same clause - there is no conflict.'],
               ['It is legally recognised', 'A bequest to a registered charity is a standard testamentary gift, treated the same way as any other beneficiary gift under Australian law.'],
             ].map(([title, body]) => (
               <div key={title} style={{ borderLeft: '2px solid var(--teal)', paddingLeft: '1.25rem' }}>
@@ -96,7 +96,7 @@ export default function CharityWillsPage() {
             Start for free. Add a charity when you&apos;re ready.
           </h2>
           <p style={{ margin: '1.25rem 0 2rem', fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
-            Draft your complete Will at your own pace. The charitable beneficiary step is part of the standard guided process -- no separate form, no extra cost.
+            Draft your complete Will at your own pace. The charitable beneficiary step is part of the standard guided process - no separate form, no extra cost.
           </p>
           <Link href="/start" className="mkt-btn-ink-l">Start your Will</Link>
           <p style={{ marginTop: '1.1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)' }}>

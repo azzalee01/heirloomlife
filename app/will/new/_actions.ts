@@ -38,7 +38,7 @@ async function saveToAnonSession(formData: WillFormData): Promise<string> {
     .single()
   if (error) throw new Error(error.message)
   const id = data.id as string
-  store.set(ANON_COOKIE, id, { maxAge: 30 * 24 * 60 * 60, path: '/', sameSite: 'lax', secure: true })
+  store.set(ANON_COOKIE, id, { maxAge: 30 * 24 * 60 * 60, path: '/', sameSite: 'lax', secure: true, httpOnly: true })
   return id
 }
 
@@ -480,7 +480,7 @@ export async function completeWill(willId: string): Promise<void> {
   try {
     const { formData } = await loadWillFormData(supabase, user.id, willId)
     const documentText = await generateWillDocumentText(formData)
-    await supabase.from('wills').update({ document_text: documentText }).eq('id', willId)
+    await supabase.from('wills').update({ document_text: documentText }).eq('id', willId).eq('user_id', user.id)
 
     // Run the AI legal review exactly once here, now that all 7 steps are
     // in and the full picture is available  -  not on every step along the way.

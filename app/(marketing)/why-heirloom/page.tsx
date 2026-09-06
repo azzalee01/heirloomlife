@@ -9,7 +9,7 @@ export const metadata = {
 const W: React.CSSProperties = { maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }
 
 const TOOLTIP_TEXT =
-  'Covers standard solicitor review on every Will, ongoing platform security and maintenance, and Heirloom\'s witnessing coordination for NSW -- so your Will stays current and your data stays protected, not just stored.'
+  'Covers standard solicitor review on every Will, ongoing platform security and maintenance, and Heirloom\'s witnessing coordination for NSW - so your Will stays current and your data stays protected, not just stored.'
 
 const PUBLISH_DATE = 'September 2026'
 
@@ -107,7 +107,7 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
   },
   {
     label: 'Dedicated witnessing team (NSW only)',
-    heirloom: { kind: 'yes', tooltip: 'Our dedicated NSW witnessing team guides you through the entire signing and witnessing process -- no need to find, coordinate, or explain the process to your own witnesses. We know the requirements and make sure it\'s done correctly, every time.' },
+    heirloom: { kind: 'yes', tooltip: 'Our dedicated NSW witnessing team guides you through the entire signing and witnessing process - no need to find, coordinate, or explain the process to your own witnesses. We know the requirements and make sure it\'s done correctly, every time.' },
     safewill: { kind: 'no' },
     willed:   { kind: 'dash' },
   },

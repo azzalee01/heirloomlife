@@ -49,7 +49,6 @@ const TABS: NavTab[] = [
         items: [
           { label: 'After a death', href: '/passing' },
           { label: 'Estate administration', href: '/passing/estate-administration' },
-          { label: 'Guidance notes', href: '/guidance-notes' },
         ],
       },
     ],

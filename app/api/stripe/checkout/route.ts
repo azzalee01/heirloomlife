@@ -91,32 +91,37 @@ export async function POST(request: NextRequest) {
 
   const discounts = stripePromoId ? [{ promotion_code: stripePromoId }] : undefined
 
-  if (embedded) {
+  try {
+    if (embedded) {
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        line_items: [{ price, quantity: 1 }],
+        mode: isSubscriptionProduct(product) ? 'subscription' : 'payment',
+        ui_mode: 'embedded_page' as const,
+        return_url: `${baseUrl}/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+        metadata,
+        ...(discounts ? { discounts } : {}),
+      })
+      return Response.json({ clientSecret: session.client_secret })
+    }
+
+    const returnToWill = product === 'will' || body.returnToWill === true
+    const successPath = returnToWill ? '/will/new?payment=success&step=review' : '/dashboard?payment=success'
+    const cancelPath = returnToWill ? '/will/new?step=review' : '/dashboard'
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       line_items: [{ price, quantity: 1 }],
       mode: isSubscriptionProduct(product) ? 'subscription' : 'payment',
-      ui_mode: 'embedded_page' as const,
-      return_url: `${baseUrl}/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${baseUrl}${successPath}`,
+      cancel_url: `${baseUrl}${cancelPath}`,
       metadata,
       ...(discounts ? { discounts } : {}),
     })
-    return Response.json({ clientSecret: session.client_secret })
+
+    return Response.json({ url: session.url })
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Failed to create checkout session'
+    return Response.json({ error: message }, { status: 500 })
   }
-
-  const returnToWill = product === 'will' || body.returnToWill === true
-  const successPath = returnToWill ? '/will/new?payment=success&step=review' : '/dashboard?payment=success'
-  const cancelPath = returnToWill ? '/will/new?step=review' : '/dashboard'
-
-  const session = await stripe.checkout.sessions.create({
-    customer: customerId,
-    line_items: [{ price, quantity: 1 }],
-    mode: isSubscriptionProduct(product) ? 'subscription' : 'payment',
-    success_url: `${baseUrl}${successPath}`,
-    cancel_url: `${baseUrl}${cancelPath}`,
-    metadata,
-    ...(discounts ? { discounts } : {}),
-  })
-
-  return Response.json({ url: session.url })
 }

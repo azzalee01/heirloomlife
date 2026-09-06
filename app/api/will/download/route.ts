@@ -15,9 +15,9 @@ export async function GET(_request: NextRequest) {
     .eq('id', user.id)
     .single()
 
-  const hasPaid =
-    (profile?.plan === 'will' && profile?.plan_status === 'active') ||
-    (profile?.plan === 'vault' && profile?.plan_status === 'active')
+  // One-off Will purchasers retain download access permanently (matching marketing copy).
+  // Vault subscribers retain Will access while active or after cancellation.
+  const hasPaid = profile?.plan === 'will' || profile?.plan === 'vault'
 
   if (!hasPaid) return new Response('Payment required', { status: 402 })
 

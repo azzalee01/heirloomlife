@@ -29,7 +29,7 @@ const ITEMS = [
   },
   {
     title: 'Executor access controls',
-    body: 'Your executor cannot access your Vault during your lifetime. Access is gated behind a verified death certificate lodgement and identity verification step. The exact verification process is documented in your Vault.',
+    body: 'Executor access controls are on our build roadmap. Today, your Vault is accessible only to you with your account credentials. We will publish details of the executor access model before it is released.',
   },
   {
     title: 'Solicitor review independence',

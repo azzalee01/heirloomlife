@@ -6,12 +6,12 @@ import PricingVaultCTA from './_components/PricingVaultCTA'
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
-  fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block',
+  fontWeight: 600, color: 'var( -teal-deep)', marginBottom: '1.1rem', display: 'block',
 }
 
 function Check() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: '.15rem', color: 'var(--teal-deep)' }} aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, marginTop: '.15rem', color: 'var( -teal-deep)' }} aria-hidden="true">
       <path d="M3 8.5l3 3 7-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
     </svg>
   )
@@ -23,38 +23,38 @@ export default function PricingPage() {
       <MarketingNav />
 
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section style={{ paddingTop: '8rem', paddingBottom: '4rem', background: 'var(--mkt-surface)' }}>
+      <section style={{ paddingTop: '8rem', paddingBottom: '4rem', background: 'var( -mkt-surface)' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <span style={SECTION_LABEL}>Pricing</span>
           <h1 style={{
-            fontFamily: "var(--font-body)",
+            fontFamily: "var( -font-body)",
             fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
             letterSpacing: '-.02em', fontWeight: 500,
-            color: 'var(--mkt-ink-text)', margin: 0,
+            color: 'var( -mkt-ink-text)', margin: 0,
           }}>
             Pay once, or keep your estate plan{' '}
-            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>ready for life</em>.
+            <em style={{ fontFamily: "var( -font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var( -teal-deep)' }}>ready for life</em>.
           </h1>
-          <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
-            Free to start. Draft your whole Will at your own pace, then pay $129 to download your reviewed, signed-ready document -- or join for $99 a year with your Will and continuing membership included.
+          <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var( -mkt-stone)', maxWidth: '34rem' }}>
+            Free to start. Draft your whole Will at your own pace, then pay $129 to download your reviewed, signed-ready document  - or join for $99 a year with your Will and continuing membership included.
           </p>
         </div>
       </section>
 
       {/* ── Pricing tiers ────────────────────────────────────────────────────── */}
-      <section style={{ paddingBlock: '4rem 5rem', background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)' }}>
+      <section style={{ paddingBlock: '4rem 5rem', background: 'var( -mkt-surface-2)', borderTop: '1px solid var( -mkt-line)' }}>
         <div className="md:px-10" style={W}>
           <div className="md:grid-cols-2" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.25rem', alignItems: 'start' }}>
 
             {/* ── The Will ── */}
-            <div style={{ borderRadius: 16, border: '1px solid var(--mkt-line)', background: '#fff', padding: '2.25rem', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ borderRadius: 16, border: '1px solid var( -mkt-line)', background: '#fff', padding: '2.25rem', display: 'flex', flexDirection: 'column' }}>
               <span style={SECTION_LABEL}>The Will</span>
-              <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3rem, 5vw, 4.5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
+              <p style={{ fontFamily: "var( -font-display)", fontSize: 'clamp(3rem, 5vw, 4.5rem)', color: 'var( -mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
                 $0
               </p>
-              <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>Free to draft. No account required to start.</p>
-              <p style={{ fontSize: '.85rem', color: 'var(--teal-deep)', fontWeight: 600, marginBottom: '.3rem' }}>Pay $129 to download -- solicitor review included.</p>
-              <p style={{ fontSize: '.8rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount: $89 when your partner shares their link with you.</p>
+              <p style={{ fontSize: '.95rem', color: 'var( -mkt-stone)', marginBottom: '.3rem' }}>Free to draft. No account required to start.</p>
+              <p style={{ fontSize: '.85rem', color: 'var( -teal-deep)', fontWeight: 600, marginBottom: '.3rem' }}>Pay $129 to download  - solicitor review included.</p>
+              <p style={{ fontSize: '.8rem', color: 'var( -mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount: $89 when your partner shares their link with you.</p>
 
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
                 {[
@@ -65,7 +65,7 @@ export default function PricingPage() {
                   '3 months Living Vault membership included',
                   'Witnessing guidance and remote witness scheduling',
                 ].map((f) => (
-                  <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.875rem', color: 'var(--mkt-stone)' }}>
+                  <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.875rem', color: 'var( -mkt-stone)' }}>
                     <Check />
                     {f}
                   </li>
@@ -80,19 +80,19 @@ export default function PricingPage() {
                   Upload existing Will
                 </Link>
               </div>
-              <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
+              <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var( -mkt-stone-soft)', lineHeight: 1.5 }}>
                 No payment required to begin. Available across all Australian states and territories.
               </p>
             </div>
 
             {/* ── Living Vault ── */}
-            <div id="living-vault" style={{ borderRadius: 16, border: '2px solid var(--teal-deep)', background: '#fff', padding: '2.25rem', display: 'flex', flexDirection: 'column' }}>
+            <div id="living-vault" style={{ borderRadius: 16, border: '2px solid var( -teal-deep)', background: '#fff', padding: '2.25rem', display: 'flex', flexDirection: 'column' }}>
               <span style={SECTION_LABEL}>Living Vault</span>
-              <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3rem, 5vw, 4.5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
+              <p style={{ fontFamily: "var( -font-display)", fontSize: 'clamp(3rem, 5vw, 4.5rem)', color: 'var( -mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
                 $99
               </p>
-              <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>per year. Your Will is included.</p>
-              <p style={{ fontSize: '.8rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount: $79/year when your partner shares their link with you.</p>
+              <p style={{ fontSize: '.95rem', color: 'var( -mkt-stone)', marginBottom: '.3rem' }}>per year. Your Will is included.</p>
+              <p style={{ fontSize: '.8rem', color: 'var( -mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount: $79/year when your partner shares their link with you.</p>
 
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
                 {[
@@ -104,7 +104,7 @@ export default function PricingPage() {
                   'NSW members only: access to Heirloom\'s team AV witness pool for remote execution',
                   'Direct access to partner lawyers through the platform for complex or bespoke situations',
                 ].map((f) => (
-                  <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.875rem', color: 'var(--mkt-stone)' }}>
+                  <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.875rem', color: 'var( -mkt-stone)' }}>
                     <Check />
                     {f}
                   </li>
@@ -114,7 +114,7 @@ export default function PricingPage() {
               <div style={{ marginTop: 'auto' }}>
                 <PricingVaultCTA />
               </div>
-              <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
+              <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var( -mkt-stone-soft)', lineHeight: 1.5 }}>
                 Renews annually until cancelled. You can download and retain your completed Will if you later leave.
               </p>
             </div>
@@ -126,19 +126,19 @@ export default function PricingPage() {
       {/* ── Complex situation ─────────────────────────────────────────────────── */}
       <section
         id="complex-situation"
-        style={{ paddingBlock: '4rem 5rem', background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)' }}
+        style={{ paddingBlock: '4rem 5rem', background: 'var( -mkt-surface-2)', borderTop: '1px solid var( -mkt-line)' }}
       >
         <div className="md:px-10" style={{ ...W, maxWidth: 800 }}>
           <span style={SECTION_LABEL}>Complex situation?</span>
           <h2 style={{
-            fontFamily: "var(--font-body)",
+            fontFamily: "var( -font-body)",
             fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', lineHeight: 1.1,
             letterSpacing: '-.02em', fontWeight: 500,
-            color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem',
+            color: 'var( -mkt-ink-text)', margin: '0 0 1.25rem',
           }}>
             Complete your Will  -  we&apos;ll flag what needs a closer look.
           </h2>
-          <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', maxWidth: '36rem', marginBottom: '2rem' }}>
+          <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var( -mkt-stone)', maxWidth: '36rem', marginBottom: '2rem' }}>
             If your estate involves overseas assets, a business, a blended family, or a beneficiary with special needs, complete the questionnaire and your Vault will flag the specific areas of concern. From there you can communicate directly with our partner lawyers through your Vault  -  without starting over.
           </p>
           <a href="/start?path=retail" className="mkt-btn-ghost-m">Start your Will</a>
@@ -146,15 +146,15 @@ export default function PricingPage() {
       </section>
 
       {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
-      <section style={{ paddingBlock: '5.5rem', background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
+      <section style={{ paddingBlock: '5.5rem', background: '#fff', borderTop: '1px solid var( -mkt-line)' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
-          <h2 style={{ fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 2.5rem' }}>
+          <h2 style={{ fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var( -mkt-ink-text)', margin: '0 0 2.5rem' }}>
             Common questions
           </h2>
           {[
             {
               q: 'Is it really free to start?',
-              a: 'Yes. You can draft your complete Will -- every step, every clause -- without paying anything. You pay $129 when you\'re ready to download your solicitor-reviewed, signed-ready document. Annual Vault membership ($99/year) includes your Will and ongoing updates.',
+              a: 'Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $129 when you\'re ready to download your solicitor-reviewed, signed-ready document. Annual Vault membership ($99/year) includes your Will and ongoing updates.',
             },
             {
               q: 'Which states are supported?',
@@ -175,25 +175,25 @@ export default function PricingPage() {
           ].map((item) => (
             <details
               key={item.q}
-              style={{ borderTop: '1px solid var(--mkt-line)', paddingBlock: '1.25rem' }}
+              style={{ borderTop: '1px solid var( -mkt-line)', paddingBlock: '1.25rem' }}
             >
-              <summary style={{ cursor: 'pointer', fontWeight: 600, fontSize: '.95rem', color: 'var(--mkt-ink-text)', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
+              <summary style={{ cursor: 'pointer', fontWeight: 600, fontSize: '.95rem', color: 'var( -mkt-ink-text)', listStyle: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem' }}>
                 {item.q}
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, color: 'var(--mkt-stone)' }} aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0, color: 'var( -mkt-stone)' }} aria-hidden="true">
                   <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                 </svg>
               </summary>
-              <p style={{ marginTop: '.75rem', fontSize: '.92rem', lineHeight: 1.65, color: 'var(--mkt-stone)', paddingRight: '2rem' }}>{item.a}</p>
+              <p style={{ marginTop: '.75rem', fontSize: '.92rem', lineHeight: 1.65, color: 'var( -mkt-stone)', paddingRight: '2rem' }}>{item.a}</p>
             </details>
           ))}
-          <div style={{ borderTop: '1px solid var(--mkt-line)', paddingTop: '1.25rem' }}/>
+          <div style={{ borderTop: '1px solid var( -mkt-line)', paddingTop: '1.25rem' }}/>
         </div>
       </section>
 
       {/* ── Disclaimer ───────────────────────────────────────────────────────── */}
-      <section style={{ paddingBlock: '3rem', background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)' }}>
+      <section style={{ paddingBlock: '3rem', background: 'var( -mkt-surface)', borderTop: '1px solid var( -mkt-line)' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
-          <p style={{ fontSize: '.78rem', lineHeight: 1.7, color: 'var(--mkt-stone-soft)' }}>
+          <p style={{ fontSize: '.78rem', lineHeight: 1.7, color: 'var( -mkt-stone-soft)' }}>
             Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. Our platform is built using established estate planning drafting standards, but we do not review your individual Will or take responsibility for its legal validity or its suitability for your personal circumstances. If your situation involves factors like overseas assets, business ownership, or a blended family, we strongly recommend a bespoke Will prepared by a solicitor.
           </p>
         </div>
