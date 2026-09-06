@@ -131,7 +131,7 @@ export default function HomePage() {
         <div className="md:px-10" style={W}>
           <div style={{ maxWidth: '42rem' }}>
             <span style={SECTION_LABEL}>Built around real life</span>
-            <H2>Every new chapter can change<br/>what your estate plan needs to <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>protect</em>.</H2>
+            <H2>Every new chapter can change what your estate plan needs to <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>protect</em>.</H2>
             <Sub>Tell Heirloom what changed. We&#8217;ll help you review the people, assets and wishes that may need attention  -  and prepare supported updates for your approval.</Sub>
           </div>
           <div style={{ marginTop: '2.25rem', display: 'flex', flexWrap: 'wrap', gap: '.65rem' }}>
