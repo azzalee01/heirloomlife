@@ -648,7 +648,7 @@ export default function PlatformPreview() {
         </div>
       </div>
 
-      {/* ── MOBILE phone mockup (below sm) ─────────────────────────────────── */}
+      {/* ── MOBILE (below sm) ───────────────────────────────────────────────── */}
       <div className="sm:hidden">
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
           <span style={{ fontSize: '.72rem', letterSpacing: '.14em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--mkt-stone)' }}>
@@ -667,179 +667,151 @@ export default function PlatformPreview() {
           )}
         </div>
 
-        {/* Phone outer frame */}
+        {/* App UI — no phone frame */}
         <div style={{
-          maxWidth: 300, marginInline: 'auto', position: 'relative',
-          background: '#111', borderRadius: 44,
-          padding: '10px 6px 6px',
-          boxShadow: '0 0 0 1px #2a2a2a, 0 32px 64px rgba(0,0,0,.45), inset 0 0 0 1px #1a1a1a',
+          borderRadius: 12, overflow: 'hidden',
+          border: '1px solid var(--line)',
+          boxShadow: '0 24px 60px rgba(10,20,18,.12), 0 4px 16px rgba(10,20,18,.06)',
+          background: 'var(--paper)',
+          display: 'flex',
+          flexDirection: 'column',
+          height: 520,
         }}>
-          {/* Side buttons */}
-          <div style={{ position: 'absolute', left: -3, top: 88,  width: 3, height: 26, background: '#2a2a2a', borderRadius: '2px 0 0 2px' }}/>
-          <div style={{ position: 'absolute', left: -3, top: 122, width: 3, height: 26, background: '#2a2a2a', borderRadius: '2px 0 0 2px' }}/>
-          <div style={{ position: 'absolute', right: -3, top: 108, width: 3, height: 42, background: '#2a2a2a', borderRadius: '0 2px 2px 0' }}/>
 
-          {/* Screen */}
-          <div style={{
-            borderRadius: 36,
-            background: 'var(--paper)',
-            overflow: 'hidden',
-            height: 560,
-            display: 'flex',
-            flexDirection: 'column',
-          }}>
-
-            {/* Status bar */}
-            <div style={{ background: '#fff', padding: '14px 20px 6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0, position: 'relative' }}>
-              <span style={{ fontSize: 11, fontWeight: 600, color: '#111', zIndex: 1 }}>9:41</span>
-              {/* Dynamic island */}
-              <div style={{ position: 'absolute', top: 10, left: '50%', transform: 'translateX(-50%)', width: 88, height: 22, background: '#111', borderRadius: 11 }}/>
-              <div style={{ display: 'flex', gap: 4, alignItems: 'center', zIndex: 1 }}>
-                <svg width="14" height="10" viewBox="0 0 16 12" fill="#111"><rect x="0" y="7" width="3" height="5" rx="0.5"/><rect x="4.5" y="5" width="3" height="7" rx="0.5"/><rect x="9" y="3" width="3" height="9" rx="0.5"/><rect x="13.5" y="1" width="2.5" height="11" rx="0.5"/></svg>
-                <svg width="20" height="10" viewBox="0 0 22 12" fill="none"><rect x="0.5" y="0.5" width="18" height="11" rx="2.5" stroke="#111" strokeWidth="1"/><rect x="19" y="4" width="2.5" height="4" rx="1" fill="#111"/><rect x="2" y="2" width="13" height="8" rx="1.5" fill="#111"/></svg>
-              </div>
+          {/* App header */}
+          <div style={{ background: '#fff', padding: '12px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--line)', flexShrink: 0 }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '1rem', color: 'var(--teal)' }}>Heirloom</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ fontSize: 11, color: 'var(--neutral)' }}>Aaron Lee</span>
+              <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, fontWeight: 700, color: '#fff' }}>AL</div>
             </div>
+          </div>
 
-            {/* App header */}
-            <div style={{ background: '#fff', padding: '2px 16px 10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--line)', flexShrink: 0 }}>
-              <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '.95rem', color: 'var(--teal)' }}>Heirloom</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 10, color: 'var(--neutral)' }}>Aaron Lee</span>
-                <div style={{ width: 26, height: 26, borderRadius: '50%', background: 'var(--teal)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9.5, fontWeight: 700, color: '#fff' }}>AL</div>
-              </div>
-            </div>
+          {/* Scrollable content */}
+          <div ref={mobileScrollRef} onClick={handleMobilePreviewClick} style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
 
-            {/* Scrollable content */}
-            <div ref={mobileScrollRef} onClick={handleMobilePreviewClick} style={{ flex: 1, overflowY: 'auto', minHeight: 0 }}>
+            {/* Dashboard */}
+            <div style={{ padding: '12px 14px 0' }}>
 
-              {/* Dashboard */}
-              <div style={{ padding: '10px 12px 0' }}>
-
-                {/* Will status */}
-                <div style={{ borderRadius: 9, border: `1px solid ${willStatus === 'pending' ? 'var(--teal)' : 'var(--line)'}`, background: '#fff', overflow: 'hidden', marginBottom: 10, transition: 'border-color .5s ease' }}>
-                  <div style={{ height: 2, background: 'var(--teal)' }}/>
-                  <div style={{ padding: '8px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                        <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink)' }}>Your Will</span>
-                        <span style={{ fontSize: 9, fontWeight: 700, padding: '1px 6px', borderRadius: 4, background: willStatus === 'pending' ? '#fef3c7' : '#ecfdf5', color: willStatus === 'pending' ? '#92400e' : '#065f46', transition: 'all .5s ease' }}>
-                          {willStatus === 'pending' ? 'Pending review' : 'Approved'}
-                        </span>
-                      </div>
-                      <div style={{ fontSize: 9, color: 'var(--neutral)', marginTop: 1 }}>Version {willVersion} · Solicitor reviewed</div>
-                    </div>
-                    <Icon d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" color="var(--teal)" size={18}/>
-                  </div>
-                </div>
-
-                {/* Beneficiaries */}
-                <div style={{ marginBottom: 10 }}>
-                  <span style={{ fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.1em', color: 'var(--neutral)', display: 'block', marginBottom: 5 }}>Your People</span>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                    {beneficiaries.map(b => <BeneficiaryRow key={b.name} b={b}/>)}
-                    <div style={{ borderRadius: 6, border: '1px solid var(--line)', background: '#fff', padding: '5px 8px', display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <div style={{ width: 20, height: 20, borderRadius: '50%', background: 'var(--teal-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 7.5, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{EXECUTOR.initials}</div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--ink)' }}>{EXECUTOR.name}</div>
-                        <div style={{ fontSize: 8.5, color: 'var(--neutral)' }}>Executor</div>
-                      </div>
-                      <div style={{ fontSize: 8.5, fontWeight: 700, color: 'var(--teal-deep)', background: 'rgba(42,180,174,.1)', border: '1px solid var(--teal)', padding: '1px 5px', borderRadius: 4 }}>Primary</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Divider + Estate Assistant */}
-              <div style={{ borderTop: '1px solid var(--line)', margin: '0 12px', paddingTop: 10 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8, padding: '0 0 8px', borderBottom: '1px solid var(--line-soft)' }}>
-                  <div style={{ width: 22, height: 22, borderRadius: 6, background: 'var(--paper-warm)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <Icon d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" color="var(--teal)" size={12}/>
-                  </div>
+              {/* Will status */}
+              <div style={{ borderRadius: 9, border: `1px solid ${willStatus === 'pending' ? 'var(--teal)' : 'var(--line)'}`, background: '#fff', overflow: 'hidden', marginBottom: 12, transition: 'border-color .5s ease' }}>
+                <div style={{ height: 2, background: 'var(--teal)' }}/>
+                <div style={{ padding: '9px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
                   <div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink)' }}>Estate Assistant</div>
-                    <div style={{ fontSize: 8.5, color: 'var(--neutral)' }}>Ask about your Will or share a life change</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>Your Will</span>
+                      <span style={{ fontSize: 10, fontWeight: 700, padding: '1px 7px', borderRadius: 4, background: willStatus === 'pending' ? '#fef3c7' : '#ecfdf5', color: willStatus === 'pending' ? '#92400e' : '#065f46', transition: 'all .5s ease' }}>
+                        {willStatus === 'pending' ? 'Pending review' : 'Approved'}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: 10, color: 'var(--neutral)', marginTop: 1 }}>Version {willVersion} · Solicitor reviewed</div>
+                  </div>
+                  <Icon d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" color="var(--teal)" size={20}/>
+                </div>
+              </div>
+
+              {/* Beneficiaries */}
+              <div style={{ marginBottom: 12 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.1em', color: 'var(--neutral)', display: 'block', marginBottom: 6 }}>Your People</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                  {beneficiaries.map(b => <BeneficiaryRow key={b.name} b={b}/>)}
+                  <div style={{ borderRadius: 6, border: '1px solid var(--line)', background: '#fff', padding: '6px 9px', display: 'flex', alignItems: 'center', gap: 7 }}>
+                    <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--teal-deep)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 700, color: '#fff', flexShrink: 0 }}>{EXECUTOR.initials}</div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--ink)' }}>{EXECUTOR.name}</div>
+                      <div style={{ fontSize: 9, color: 'var(--neutral)' }}>Executor</div>
+                    </div>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--teal-deep)', background: 'rgba(42,180,174,.1)', border: '1px solid var(--teal)', padding: '1px 6px', borderRadius: 4 }}>Primary</div>
                   </div>
                 </div>
+              </div>
+            </div>
 
-                {/* Chat messages */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, paddingBottom: 10 }}>
-                  {displayMsgs.length === 0 && !isThinking && (
-                    <div style={{ textAlign: 'center', padding: '10px 0' }}>
-                      <div style={{ fontSize: 9.5, color: 'var(--neutral)' }}>What has changed in your life?</div>
-                    </div>
-                  )}
-                  {displayMsgs.map((m, i) => (
-                    <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
-                      <div style={{ maxWidth: '86%', padding: '6px 9px', borderRadius: 10, fontSize: 10, lineHeight: 1.5, background: m.role === 'user' ? 'var(--teal)' : 'var(--paper-warm)', color: m.role === 'user' ? '#fff' : 'var(--ink)' }}>
-                        {m.text}
-                        {m.role === 'assistant' && userMode && (
-                          <Link href="/auth/signup" onClick={e => e.stopPropagation()} style={{ display: 'block', marginTop: 4, fontSize: 9, fontWeight: 700, color: 'var(--teal-deep)', textDecoration: 'underline' }}>
-                            Create a free account →
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  {isThinking && (
-                    <div style={{ display: 'flex' }}>
-                      <div style={{ padding: '6px 10px', borderRadius: 10, background: 'var(--paper-warm)', display: 'flex', gap: 3, alignItems: 'center' }}>
-                        {[0, 150, 300].map(d => (
-                          <span key={d} style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--neutral)', display: 'inline-block', animation: 'bounce 1s infinite', animationDelay: `${d}ms`, opacity: 0.7 }}/>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {showAmendments && !userMode && (
-                    <div style={{ marginTop: 2 }}>
-                      <AmendmentPanel compact />
-                    </div>
-                  )}
-                  <div ref={mobileChatEndRef}/>
+            {/* Estate Assistant */}
+            <div style={{ borderTop: '1px solid var(--line)', margin: '0 14px', paddingTop: 12 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 10, paddingBottom: 10, borderBottom: '1px solid var(--line-soft)' }}>
+                <div style={{ width: 24, height: 24, borderRadius: 6, background: 'var(--paper-warm)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Icon d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" color="var(--teal)" size={13}/>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>Estate Assistant</div>
+                  <div style={{ fontSize: 9.5, color: 'var(--neutral)' }}>Ask about your Will or share a life change</div>
                 </div>
               </div>
 
-            </div>
-
-            {/* Sticky input */}
-            <div onClick={e => e.stopPropagation()} style={{ padding: '8px 12px 10px', borderTop: '1px solid var(--line)', background: '#fff', flexShrink: 0 }}>
-              <div style={{ display: 'flex', gap: 6 }}>
-                <input
-                  type="text"
-                  value={displayInput}
-                  readOnly={!userMode}
-                  onChange={e => { if (userMode) setChatInput(e.target.value) }}
-                  onFocus={() => {
-                    if (!userTookOver.current) {
-                      userTookOver.current = true
-                      setUserMode(true)
-                      clearTimers()
-                      setTypedText('')
-                      setPhase('idle')
-                      setShowAmendments(false)
-                      setDemoMsgs([])
-                    }
-                  }}
-                  onKeyDown={e => { if (e.key === 'Enter') sendChat() }}
-                  placeholder="Ask about your estate plan…"
-                  style={{ flex: 1, minWidth: 0, padding: '7px 12px', border: '1px solid var(--line)', borderRadius: 20, fontSize: 10.5, color: 'var(--ink)', background: 'var(--paper-warm)', outline: 'none', fontFamily: 'inherit' }}
-                />
-                <button
-                  onClick={sendChat}
-                  disabled={!userMode || !chatInput.trim() || chatLoading}
-                  style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--teal)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: (!userMode || !chatInput.trim() || chatLoading) ? 0.35 : 1, transition: 'opacity .15s' }}
-                  aria-label="Send"
-                >
-                  <Icon d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" color="#fff" size={12}/>
-                </button>
+              {/* Chat messages */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 7, paddingBottom: 12 }}>
+                {displayMsgs.length === 0 && !isThinking && (
+                  <div style={{ textAlign: 'center', padding: '12px 0' }}>
+                    <div style={{ fontSize: 10, color: 'var(--neutral)' }}>What has changed in your life?</div>
+                  </div>
+                )}
+                {displayMsgs.map((m, i) => (
+                  <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
+                    <div style={{ maxWidth: '86%', padding: '7px 10px', borderRadius: 10, fontSize: 11, lineHeight: 1.5, background: m.role === 'user' ? 'var(--teal)' : 'var(--paper-warm)', color: m.role === 'user' ? '#fff' : 'var(--ink)' }}>
+                      {m.text}
+                      {m.role === 'assistant' && userMode && (
+                        <Link href="/auth/signup" onClick={e => e.stopPropagation()} style={{ display: 'block', marginTop: 4, fontSize: 10, fontWeight: 700, color: 'var(--teal-deep)', textDecoration: 'underline' }}>
+                          Create a free account →
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                {isThinking && (
+                  <div style={{ display: 'flex' }}>
+                    <div style={{ padding: '7px 10px', borderRadius: 10, background: 'var(--paper-warm)', display: 'flex', gap: 4, alignItems: 'center' }}>
+                      {[0, 150, 300].map(d => (
+                        <span key={d} style={{ width: 4, height: 4, borderRadius: '50%', background: 'var(--neutral)', display: 'inline-block', animation: 'bounce 1s infinite', animationDelay: `${d}ms`, opacity: 0.7 }}/>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {showAmendments && !userMode && (
+                  <div style={{ marginTop: 2 }}>
+                    <AmendmentPanel compact />
+                  </div>
+                )}
+                <div ref={mobileChatEndRef}/>
               </div>
-            </div>
-
-            {/* Home indicator */}
-            <div style={{ background: '#fff', display: 'flex', justifyContent: 'center', paddingBottom: 8 }}>
-              <div style={{ width: 100, height: 4, background: '#111', borderRadius: 2, opacity: 0.15 }}/>
             </div>
 
           </div>
+
+          {/* Sticky input */}
+          <div onClick={e => e.stopPropagation()} style={{ padding: '10px 14px 12px', borderTop: '1px solid var(--line)', background: '#fff', flexShrink: 0 }}>
+            <div style={{ display: 'flex', gap: 7 }}>
+              <input
+                type="text"
+                value={displayInput}
+                readOnly={!userMode}
+                onChange={e => { if (userMode) setChatInput(e.target.value) }}
+                onFocus={() => {
+                  if (!userTookOver.current) {
+                    userTookOver.current = true
+                    setUserMode(true)
+                    clearTimers()
+                    setTypedText('')
+                    setPhase('idle')
+                    setShowAmendments(false)
+                    setDemoMsgs([])
+                  }
+                }}
+                onKeyDown={e => { if (e.key === 'Enter') sendChat() }}
+                placeholder="Ask about your estate plan…"
+                style={{ flex: 1, minWidth: 0, padding: '8px 12px', border: '1px solid var(--line)', borderRadius: 20, fontSize: 12, color: 'var(--ink)', background: 'var(--paper-warm)', outline: 'none', fontFamily: 'inherit' }}
+              />
+              <button
+                onClick={sendChat}
+                disabled={!userMode || !chatInput.trim() || chatLoading}
+                style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--teal)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: (!userMode || !chatInput.trim() || chatLoading) ? 0.35 : 1, transition: 'opacity .15s' }}
+                aria-label="Send"
+              >
+                <Icon d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" color="#fff" size={13}/>
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 
