@@ -405,11 +405,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
         )}
       </div>
 
-      {/* Progress — mobile: back arrow + inline track; desktop: full ProgressBar */}
-      <div className="shrink-0" style={{ background: 'var(--paper)', borderBottom: '1px solid var(--line)' }}>
-
-        {/* Mobile progress row */}
-        <div className="sm:hidden px-4 pt-3 pb-3">
+      {/* Mobile progress row — pinned below the viewport header */}
+      <div className="sm:hidden shrink-0 px-4 pt-3 pb-3" style={{ background: 'var(--paper)', borderBottom: '1px solid var(--line)' }}>
           <div className="flex items-center gap-3">
             <Link
               href={isAuthenticated ? '/dashboard' : '/'}
@@ -436,11 +433,13 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
           <p className="text-sm font-semibold mt-2 ml-1" style={{ color: 'var(--ink)' }}>
             {progressSteps[Math.max(0, progressIndex)]}
           </p>
-        </div>
+      </div>
 
-        {/* Desktop progress bar */}
-        <div className="hidden sm:block px-6 py-4">
-          <div className="max-w-5xl mx-auto">
+      {/* Scrollable step content */}
+      <div ref={contentScrollRef} className="flex-1 overflow-y-auto" style={{ background: 'var(--paper-warm)' }}>
+        <div className="max-w-5xl mx-auto sm:px-6 sm:py-7">
+          {/* Desktop progress returns to the natural page flow. */}
+          <div className="hidden sm:block">
             <ProgressBar
               steps={progressSteps}
               currentIndex={Math.max(0, progressIndex)}
@@ -453,13 +452,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
               }}
             />
           </div>
-        </div>
-      </div>
 
-      {/* Scrollable step content */}
-      <div ref={contentScrollRef} className="flex-1 overflow-y-auto" style={{ background: 'var(--paper-warm)' }}>
-        <div className="max-w-5xl mx-auto sm:px-6 sm:py-7">
-          <div className="flex gap-8 items-start">
+          <div className="flex gap-8 items-start sm:mt-6">
             <div className="flex-1 min-w-0">
 
               {error && (
@@ -694,6 +688,28 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     )}
                   </div>
                 )}
+
+                {/* Desktop navigation stays within the form card. */}
+                {!showDownloadGate && !showCompletion && (
+                  <div className="hidden sm:flex items-center justify-between pt-6 mt-8 border-t border-[var(--line)]">
+                    <button
+                      type="button"
+                      onClick={handleBack}
+                      disabled={isFirst || saving}
+                      className="btn btn-secondary disabled:opacity-40"
+                    >
+                      Back
+                    </button>
+                    <button
+                      type="button"
+                      onClick={isLast ? handleComplete : handleNext}
+                      disabled={saving || !canAdvance}
+                      className="btn btn-primary disabled:opacity-60"
+                    >
+                      {saveLabel}
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Personal Wishes add-on — shown after review */}
@@ -716,10 +732,10 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
         </div>
       </div>
 
-      {/* Nav buttons — pinned at bottom */}
+      {/* Mobile navigation remains pinned at the bottom. */}
       {!showDownloadGate && !showCompletion && (
         <div
-          className="shrink-0 border-t border-[var(--line)] px-5 sm:px-8 py-3 flex items-center justify-between"
+          className="sm:hidden shrink-0 border-t border-[var(--line)] px-5 py-3 flex items-center justify-between"
           style={{ background: 'var(--paper)' }}
         >
           <button

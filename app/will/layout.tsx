@@ -14,7 +14,7 @@ export default async function WillLayout({ children }: { children: React.ReactNo
     'there';
 
   return (
-    <div className="flex h-dvh overflow-hidden" style={{ background: 'var(--paper)' }}>
+    <div className="flex h-dvh overflow-hidden md:h-screen" style={{ background: 'var(--paper)' }}>
       <SideNavWrapper userName={fullName} />
       <main className="h-full min-w-0 flex-1 overflow-hidden bg-[var(--paper-warm)]">
         {children}

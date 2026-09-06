@@ -27,7 +27,7 @@ export default async function DashboardLayout({
     user.user_metadata?.full_name ?? firstName;
 
   return (
-    <div className="flex h-dvh overflow-hidden" style={{ background: 'var(--paper)' }}>
+    <div className="flex h-dvh overflow-hidden md:h-screen" style={{ background: 'var(--paper)' }}>
       <SideNavWrapper userName={fullName} />
       <DashboardWorkspace>
         {children}
