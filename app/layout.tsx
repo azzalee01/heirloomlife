@@ -25,8 +25,8 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${instrumentSerif.variable} h-full antialiased`}>
-      <body className="h-full">
+    <html lang="en" className={`${dmSans.variable} ${instrumentSerif.variable} antialiased`}>
+      <body>
         {children}
       </body>
     </html>
