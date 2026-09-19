@@ -9,7 +9,7 @@ interface HelpItem {
 const HELP: Partial<Record<string, HelpItem[]>> = {
   eligibility: [
     { type: 'guide', title: 'Why state matters', body: 'Will law is state-based in Australia. Each state has its own requirements for valid execution  -  we localise your document to the rules that apply to you.' },
-    { type: 'tip', title: 'Available Australia-wide', body: 'Heirloom Wills are available in all Australian states and territories. NSW members can use remote AV witnessing  -  other states complete with a simple print-and-sign process.' },
+    { type: 'tip', title: 'Available in NSW & VIC', body: 'Heirloom Wills are currently available in NSW and VIC. NSW members can use remote AV witnessing  -  VIC members complete with a simple print-and-sign process.' },
   ],
   personal: [
     { type: 'definition', title: 'Testator', body: "That's you  -  the person making the Will. The Will speaks from your perspective and is legally yours alone." },

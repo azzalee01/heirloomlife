@@ -96,7 +96,7 @@ export default function HomePage() {
             {[
               {
                 d: <><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z" stroke="currentColor" strokeWidth="1.4"/><path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
-                t: 'Available across Australia  -  drafted to your state\'s legal requirements',
+                t: 'Currently available in NSW and VIC  -  drafted to your state\'s legal requirements',
               },
               {
                 d: <><path d="M4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z" stroke="currentColor" strokeWidth="1.4"/><path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,

@@ -47,7 +47,7 @@ export default function StepEligibility({ state, dateOfBirth, onStateChange, onD
           Before we begin
         </h2>
         <p className="text-sm mt-1" style={{ color: 'var(--neutral)' }}>
-          Heirloom Wills are available across Australia. Let&apos;s confirm a couple of details first.
+          Heirloom Wills are currently available in NSW and VIC. Let&apos;s confirm a couple of details first.
         </p>
       </div>
 
