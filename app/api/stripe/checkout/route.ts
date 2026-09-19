@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { getStripe, priceId, isProduct, isSubscriptionProduct } from '@/src/lib/stripe'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
+import { isLiveState } from '@/src/lib/availability'
 
 export const dynamic = 'force-dynamic'
 
@@ -60,6 +61,29 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('[checkout] profile lookup failed', { userId: user.id, error: (err as Error).message })
     return Response.json({ error: 'Unable to load your profile. Please try again.' }, { status: 500 })
+  }
+
+  // State availability gate — check testator state on user's latest will
+  const { data: latestWill } = await supabaseAdmin
+    .from('wills')
+    .select('id')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  if (latestWill) {
+    const { data: testator } = await supabaseAdmin
+      .from('testators')
+      .select('state')
+      .eq('will_id', (latestWill as { id: string }).id)
+      .not('state', 'is', null)
+      .limit(1)
+      .maybeSingle()
+    const userState = (testator as { state: string } | null)?.state ?? null
+    if (userState && !isLiveState(userState)) {
+      console.error('[checkout] state not live', { userId: user.id, userState })
+      return Response.json({ error: 'Heirloom Life is not yet available in your state.' }, { status: 403 })
+    }
   }
 
   let customerId = (profile?.stripe_customer_id as string | null) ?? null

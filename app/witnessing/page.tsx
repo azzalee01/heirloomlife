@@ -53,7 +53,9 @@ export default async function WitnessingPage() {
   if (!isActiveMember || !isNSW) {
     const reason = !isActiveMember
       ? { heading: 'Active Vault benefits required', body: 'AV witness scheduling is available during the included three-month benefits period and with annual membership, alongside supported amendments and ongoing estate-plan access.' }
-      : { heading: 'NSW only', body: 'Remote AV witnessing is currently available for NSW addresses only, consistent with NSW\'s statutory AV witnessing scheme. Your address on file is ' + (userState ?? 'not set') + '.' }
+      : userState === 'VIC'
+        ? { heading: 'Remote witnessing coming to VIC', body: 'Remote witnessing isn\'t available in Victoria yet. We\'re completing the qualifications required to offer it here. Join the Victorian waitlist and we\'ll let you know as soon as it opens.' }
+        : { heading: 'NSW only', body: 'Remote AV witnessing is currently available for NSW addresses only, consistent with NSW\'s statutory AV witnessing scheme. Your address on file is ' + (userState ?? 'not set') + '.' }
     return (
       <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
         <header className="sticky top-0 z-20 border-b px-6 h-14 flex items-center" style={{ background: 'var(--paper)', borderColor: 'var(--line)' }}>
@@ -72,6 +74,11 @@ export default async function WitnessingPage() {
             {!isActiveMember && (
               <Link href="/pricing" className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
                 See Heirloom Membership  -  $99/year
+              </Link>
+            )}
+            {isActiveMember && userState === 'VIC' && (
+              <Link href="/waitlist" className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold underline" style={{ color: 'var(--teal-deep)' }}>
+                Join the Victorian waitlist →
               </Link>
             )}
           </div>
