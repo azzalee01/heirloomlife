@@ -76,6 +76,72 @@ export async function sendCharityEnquiryEmail(params: {
   })
 }
 
+export async function sendPurchaseConfirmationEmail(params: {
+  to: string
+  name: string | null
+  product: 'will' | 'vault'
+}) {
+  const { to, name, product } = params
+  const dashboardUrl = `${APP_URL}/dashboard`
+  const firstName = name ? name.split(' ')[0] : null
+  const greeting = firstName ? `Hi ${firstName},` : 'Hi,'
+
+  const subject = product === 'vault'
+    ? 'Welcome to Heirloom Membership'
+    : 'Your Heirloom Will is ready'
+
+  const html = product === 'vault'
+    ? `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 16px;">${greeting}</h1>
+      <p style="margin:0 0 16px;color:#0E1310;font-size:14px;line-height:1.6;">
+        Your annual Heirloom Membership is now active. Your Will is included  -  complete it through your Vault whenever you're ready.
+      </p>
+      <p style="margin:0 0 8px;color:#0E1310;font-size:13px;font-weight:600;">What's included:</p>
+      <ul style="margin:0 0 24px;padding-left:20px;color:#0E1310;font-size:14px;line-height:1.8;">
+        <li>Your signing-ready Will, included and permanently downloadable</li>
+        <li>Supported amendments as life changes</li>
+        <li>Remote witness scheduling for NSW members</li>
+        <li>Direct access to partner lawyers for complex situations</li>
+      </ul>
+      <a href="${dashboardUrl}" style="display:inline-block;padding:12px 24px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:14px;font-weight:600;text-decoration:none;">
+        Go to Vault
+      </a>
+      <p style="margin:24px 0 0;color:#8A8D87;font-size:12px;">
+        Your membership renews annually. You can cancel at any time  -  your completed Will remains yours to keep.
+      </p>
+      <p style="margin:16px 0 0;color:#8A8D87;font-size:11px;line-height:1.5;">
+        Heirloom Life is not a law firm and this is not legal advice. Your Will is a template document and must be signed and witnessed to be legally valid.
+      </p>
+    </div>
+  `
+    : `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 16px;">${greeting} your Will is ready.</h1>
+      <p style="margin:0 0 20px;color:#0E1310;font-size:14px;line-height:1.6;">
+        Your solicitor-reviewed, signed-ready Will is available to download from your Vault. Your three-month Living Vault membership is also now active.
+      </p>
+      <a href="${dashboardUrl}" style="display:inline-block;padding:12px 24px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:14px;font-weight:600;text-decoration:none;">
+        Go to Vault
+      </a>
+      <p style="margin:24px 0 0;color:#8A8D87;font-size:12px;">
+        Sign and date your Will in front of two witnesses to make it legally valid. Your Vault has step-by-step guidance on what to do next.
+      </p>
+      <p style="margin:16px 0 0;color:#8A8D87;font-size:11px;line-height:1.5;">
+        Heirloom Life is not a law firm and this is not legal advice. Your Will is a template document and must be signed and witnessed to be legally valid.
+      </p>
+    </div>
+  `
+
+  try {
+    await resend.emails.send({ from: FROM_ADDRESS, to, subject, html })
+  } catch (err) {
+    console.error(`Failed to send purchase confirmation to ${to}:`, err)
+  }
+}
+
 export async function sendWitnessInviteEmail(params: {
   to: string
   witnessName: string

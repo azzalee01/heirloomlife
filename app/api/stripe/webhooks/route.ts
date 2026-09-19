@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { getStripe, planName, isProduct, isSubscriptionProduct } from '@/src/lib/stripe'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { addThreeMonths } from '@/src/lib/entitlements'
+import { sendPurchaseConfirmationEmail } from '@/src/lib/email'
 
 export const dynamic = 'force-dynamic'
 
@@ -173,6 +174,23 @@ export async function POST(request: NextRequest) {
         }
       } catch {
         console.error('[webhook] couple code generation failed (non-fatal)', { eventId: event.id, userId })
+      }
+
+      // Send purchase confirmation email (best-effort, non-blocking)
+      const emailAddress = (session.customer_details as { email?: string | null } | null)?.email ?? null
+      if (emailAddress) {
+        const { data: profileForEmail } = await supabaseAdmin
+          .from('profiles')
+          .select('full_name')
+          .eq('id', userId)
+          .maybeSingle()
+        sendPurchaseConfirmationEmail({
+          to: emailAddress,
+          name: (profileForEmail?.full_name as string | null) ?? null,
+          product,
+        }).catch((err: unknown) => {
+          console.error('[webhook] purchase confirmation email failed (non-fatal)', { eventId: event.id, userId, error: (err as Error).message })
+        })
       }
 
       break
