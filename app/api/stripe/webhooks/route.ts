@@ -59,10 +59,11 @@ async function createCoupleDiscountCode(userId: string, product: 'will' | 'vault
 }
 
 async function updateByCustomer(customerId: string, updates: Record<string, unknown>) {
-  await supabaseAdmin
+  const { error } = await supabaseAdmin
     .from('profiles')
     .update(updates)
     .eq('stripe_customer_id', customerId)
+  if (error) throw error
 }
 
 export async function POST(request: NextRequest) {
@@ -77,6 +78,16 @@ export async function POST(request: NextRequest) {
     event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!)
   } catch (err) {
     return new Response(`Webhook signature error: ${(err as Error).message}`, { status: 400 })
+  }
+
+  // Idempotency: atomically claim this event before processing.
+  // 23505 = unique_violation means it was already processed — safe to ack.
+  const { error: claimErr } = await supabaseAdmin
+    .from('processed_webhook_events')
+    .insert({ stripe_event_id: event.id })
+  if (claimErr) {
+    if (claimErr.code === '23505') return new Response('ok', { status: 200 })
+    console.error('[webhook] idempotency claim failed (continuing)', { eventId: event.id, error: claimErr.message })
   }
 
   switch (event.type) {
@@ -95,7 +106,14 @@ export async function POST(request: NextRequest) {
       if (isSubscriptionProduct(product) && session.subscription) {
         updates.stripe_subscription_id = session.subscription as string
       }
-      await supabaseAdmin.from('profiles').update(updates).eq('id', userId)
+
+      const { error: profileErr } = await supabaseAdmin.from('profiles').update(updates).eq('id', userId)
+      if (profileErr) {
+        console.error('[webhook] profiles.update failed', {
+          eventId: event.id, userId, customerId: session.customer, error: profileErr.message,
+        })
+        return new Response('DB error', { status: 500 })
+      }
 
       // Record charity partner referral if attributed
       if (product === 'will') {
@@ -109,11 +127,17 @@ export async function POST(request: NextRequest) {
             .eq('active', true)
             .single()
           if (partner) {
-            await supabaseAdmin.from('partner_referrals').insert({
+            const { error: referralErr } = await supabaseAdmin.from('partner_referrals').insert({
               partner_id: partner.id,
               will_id: willId,
               user_id: userId,
             })
+            if (referralErr) {
+              console.error('[webhook] partner_referrals.insert failed', {
+                eventId: event.id, userId, error: referralErr.message,
+              })
+              return new Response('DB error', { status: 500 })
+            }
           }
         }
       }
@@ -121,11 +145,16 @@ export async function POST(request: NextRequest) {
       // Mark couple discount code as used if one was applied at checkout
       const usedCoupleCode = session.metadata?.couple_code
       if (usedCoupleCode) {
-        await supabaseAdmin
+        const { error: coupleMarkErr } = await supabaseAdmin
           .from('couple_discount_codes')
           .update({ used_at: new Date().toISOString(), used_by_id: userId })
           .eq('code', usedCoupleCode)
           .is('used_at', null)
+        if (coupleMarkErr) {
+          console.error('[webhook] couple_discount_codes.update failed (non-fatal)', {
+            eventId: event.id, userId, error: coupleMarkErr.message,
+          })
+        }
       }
 
       // Generate couple discount code for the purchaser (best-effort, non-blocking)
@@ -143,7 +172,7 @@ export async function POST(request: NextRequest) {
           await createCoupleDiscountCode(userId, product)
         }
       } catch {
-        // Non-fatal — user can still complete purchase without a couple code
+        console.error('[webhook] couple code generation failed (non-fatal)', { eventId: event.id, userId })
       }
 
       break
@@ -151,26 +180,47 @@ export async function POST(request: NextRequest) {
 
     case 'customer.subscription.updated': {
       const sub = event.data.object as Stripe.Subscription
-      await updateByCustomer(sub.customer as string, {
-        stripe_subscription_id: sub.id,
-        plan_status: sub.status,
-      })
+      try {
+        await updateByCustomer(sub.customer as string, {
+          stripe_subscription_id: sub.id,
+          plan_status: sub.status,
+        })
+      } catch (err) {
+        console.error('[webhook] subscription.updated write failed', {
+          eventId: event.id, customerId: sub.customer, error: (err as Error).message,
+        })
+        return new Response('DB error', { status: 500 })
+      }
       break
     }
 
     case 'customer.subscription.deleted': {
       const sub = event.data.object as Stripe.Subscription
-      await updateByCustomer(sub.customer as string, {
-        stripe_subscription_id: null,
-        plan_status: 'cancelled',
-      })
+      try {
+        await updateByCustomer(sub.customer as string, {
+          stripe_subscription_id: null,
+          plan_status: 'cancelled',
+        })
+      } catch (err) {
+        console.error('[webhook] subscription.deleted write failed', {
+          eventId: event.id, customerId: sub.customer, error: (err as Error).message,
+        })
+        return new Response('DB error', { status: 500 })
+      }
       break
     }
 
     case 'invoice.payment_succeeded': {
       const invoice = event.data.object as Stripe.Invoice
       if (invoice.parent?.subscription_details) {
-        await updateByCustomer(invoice.customer as string, { plan_status: 'active' })
+        try {
+          await updateByCustomer(invoice.customer as string, { plan_status: 'active' })
+        } catch (err) {
+          console.error('[webhook] invoice.payment_succeeded write failed', {
+            eventId: event.id, customerId: invoice.customer, error: (err as Error).message,
+          })
+          return new Response('DB error', { status: 500 })
+        }
       }
       break
     }
@@ -178,7 +228,14 @@ export async function POST(request: NextRequest) {
     case 'invoice.payment_failed': {
       const invoice = event.data.object as Stripe.Invoice
       if (invoice.parent?.subscription_details) {
-        await updateByCustomer(invoice.customer as string, { plan_status: 'past_due' })
+        try {
+          await updateByCustomer(invoice.customer as string, { plan_status: 'past_due' })
+        } catch (err) {
+          console.error('[webhook] invoice.payment_failed write failed', {
+            eventId: event.id, customerId: invoice.customer, error: (err as Error).message,
+          })
+          return new Response('DB error', { status: 500 })
+        }
       }
       break
     }
