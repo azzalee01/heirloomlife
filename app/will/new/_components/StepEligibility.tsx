@@ -1,5 +1,7 @@
 'use client'
 
+import { isLiveState, AV_WITNESSING_STATES } from '@/src/lib/availability'
+
 const AU_STATES = [
   { value: 'NSW', label: 'New South Wales' },
   { value: 'VIC', label: 'Victoria' },
@@ -11,8 +13,6 @@ const AU_STATES = [
   { value: 'NT', label: 'Northern Territory' },
 ]
 
-// NSW supports remote AV witnessing; all other states complete via print-and-sign.
-const AV_STATES = ['NSW']
 
 function ageFromDob(dob: string): number {
   if (!dob) return 0
@@ -37,8 +37,9 @@ export default function StepEligibility({ state, dateOfBirth, onStateChange, onD
 
   const age = ageFromDob(dateOfBirth)
   const isEligibleAge = dateOfBirth ? age >= 18 : null
-  const isAVState = state ? AV_STATES.includes(state) : null
-  const ready = state && isEligibleAge === true
+  const isAVState = state ? (AV_WITNESSING_STATES as readonly string[]).includes(state) : null
+  const stateIsLive = state ? isLiveState(state) : null
+  const ready = state && isEligibleAge === true && stateIsLive === true
 
   return (
     <div className="space-y-6">
@@ -47,7 +48,7 @@ export default function StepEligibility({ state, dateOfBirth, onStateChange, onD
           Before we begin
         </h2>
         <p className="text-sm mt-1" style={{ color: 'var(--neutral)' }}>
-          Heirloom Wills are available across Australia. Let&apos;s confirm a couple of details first.
+          Heirloom Wills are currently available in NSW and VIC. Let&apos;s confirm a couple of details first.
         </p>
       </div>
 
@@ -82,6 +83,23 @@ export default function StepEligibility({ state, dateOfBirth, onStateChange, onD
           </p>
         </div>
       </div>
+
+      {/* Not available in state */}
+      {state && stateIsLive === false && (
+        <div className="border border-amber-200 bg-amber-50 px-5 py-4 space-y-2">
+          <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>
+            Not available in your state yet
+          </p>
+          <p className="text-sm" style={{ color: 'var(--neutral)' }}>
+            Heirloom Life is currently available in NSW and VIC. Join our waitlist and
+            we&apos;ll let you know when we open in your state.
+          </p>
+          <a href="/waitlist" className="text-sm font-semibold underline"
+             style={{ color: 'var(--teal-deep)' }}>
+            Join the waitlist →
+          </a>
+        </div>
+      )}
 
       {/* Under 18 block */}
       {dateOfBirth && isEligibleAge === false && (

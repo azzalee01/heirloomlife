@@ -48,7 +48,7 @@ const FAQS = [
   },
   {
     q: 'What states do you support?',
-    a: "Heirloom Life is available across all Australian states and territories. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing  -  members in all other states complete the signing process in person with two witnesses, which we walk you through step by step.",
+    a: "Heirloom Life is currently available in NSW and VIC. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing  -  VIC members complete with a straightforward print-and-sign process we walk you through.",
   },
 ]
 
@@ -107,7 +107,7 @@ export default function FaqPage() {
             Didn&#8217;t find what you were looking for?
           </h2>
           <p style={{ fontSize: '.95rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: '0 0 1.5rem' }}>
-            Read our <Link href="/guidance-notes" style={{ color: 'var(--teal-deep)', textDecoration: 'underline' }}>Guidance Notes</Link> for a deeper look at how the legal side works, or get in touch directly.
+            Get in touch directly.
           </p>
           <a
             href="mailto:hello@heirloomlife.com.au"

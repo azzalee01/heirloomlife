@@ -4,7 +4,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 const FROM_ADDRESS = process.env.RESEND_FROM_ADDRESS ?? 'Heirloom Life <onboarding@resend.dev>'
 
-const APP_URL = (process.env.APP_URL ?? 'http://localhost:3000').replace(/\/$/, '')
+const APP_URL = (process.env.NEXT_PUBLIC_APP_URL ?? process.env.APP_URL ?? 'http://localhost:3000').replace(/\/$/, '')
 
 export async function sendResumeEmail(params: { to: string; sessionId: string }) {
   const { to, sessionId } = params

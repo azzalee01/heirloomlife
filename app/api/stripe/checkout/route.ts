@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server'
 import { getStripe, priceId, isProduct, isSubscriptionProduct } from '@/src/lib/stripe'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
+import { isLiveState } from '@/src/lib/availability'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,31 +41,69 @@ export async function POST(request: NextRequest) {
   try {
     price = priceId(product)
   } catch (err) {
-    return Response.json({ error: (err as Error).message }, { status: 500 })
+    const msg = (err as Error).message
+    console.error('[checkout] missing price env var', { product, userId: user.id, error: msg })
+    return Response.json({ error: 'Checkout is not available right now. Please contact support.' }, { status: 500 })
   }
 
   const stripe = getStripe()
 
   // Get or create a Stripe customer, storing the ID on the profile
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('stripe_customer_id, email, full_name')
-    .eq('id', user.id)
-    .single()
+  let profile: { stripe_customer_id: unknown; email: unknown; full_name: unknown } | null
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('profiles')
+      .select('stripe_customer_id, email, full_name')
+      .eq('id', user.id)
+      .single()
+    if (error) throw error
+    profile = data
+  } catch (err) {
+    console.error('[checkout] profile lookup failed', { userId: user.id, error: (err as Error).message })
+    return Response.json({ error: 'Unable to load your profile. Please try again.' }, { status: 500 })
+  }
+
+  // State availability gate — check testator state on user's latest will
+  const { data: latestWill } = await supabaseAdmin
+    .from('wills')
+    .select('id')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  if (latestWill) {
+    const { data: testator } = await supabaseAdmin
+      .from('testators')
+      .select('state')
+      .eq('will_id', (latestWill as { id: string }).id)
+      .not('state', 'is', null)
+      .limit(1)
+      .maybeSingle()
+    const userState = (testator as { state: string } | null)?.state ?? null
+    if (userState && !isLiveState(userState)) {
+      console.error('[checkout] state not live', { userId: user.id, userState })
+      return Response.json({ error: 'Heirloom Life is not yet available in your state.' }, { status: 403 })
+    }
+  }
 
   let customerId = (profile?.stripe_customer_id as string | null) ?? null
 
   if (!customerId) {
-    const customer = await stripe.customers.create({
-      email: profile?.email ?? user.email ?? undefined,
-      name: (profile?.full_name as string) ?? undefined,
-      metadata: { userId: user.id },
-    })
-    customerId = customer.id
-    await supabaseAdmin
-      .from('profiles')
-      .update({ stripe_customer_id: customerId })
-      .eq('id', user.id)
+    try {
+      const customer = await stripe.customers.create({
+        email: (profile?.email as string | null) ?? user.email ?? undefined,
+        name: (profile?.full_name as string) ?? undefined,
+        metadata: { userId: user.id },
+      })
+      customerId = customer.id
+      await supabaseAdmin
+        .from('profiles')
+        .update({ stripe_customer_id: customerId })
+        .eq('id', user.id)
+    } catch (err) {
+      console.error('[checkout] Stripe customer creation failed', { userId: user.id, error: (err as Error).message })
+      return Response.json({ error: 'Unable to set up your payment profile. Please try again.' }, { status: 500 })
+    }
   }
 
   // For Will purchases, carry will_id and charity referral code into Stripe metadata
@@ -122,6 +161,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ url: session.url })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Failed to create checkout session'
+    console.error('[checkout] Stripe session creation failed', { userId: user.id, product, error: message })
     return Response.json({ error: message }, { status: 500 })
   }
 }
