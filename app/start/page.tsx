@@ -62,7 +62,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
           />
 
           <p className="hidden sm:block text-center mt-6 text-xs" style={{ color: 'var(--mkt-stone-soft)' }}>
-            Your answers are saved automatically. Currently available in NSW and VIC.
+            Your answers are saved automatically. Available in all Australian states and territories.
           </p>
         </div>
       </div>

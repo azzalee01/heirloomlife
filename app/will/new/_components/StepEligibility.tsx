@@ -48,7 +48,7 @@ export default function StepEligibility({ state, dateOfBirth, onStateChange, onD
           Before we begin
         </h2>
         <p className="text-sm mt-1" style={{ color: 'var(--neutral)' }}>
-          Heirloom Wills are currently available in NSW and VIC. Let&apos;s confirm a couple of details first.
+          Heirloom Wills are available across all Australian states and territories. Let&apos;s confirm a couple of details first.
         </p>
       </div>
 
@@ -91,8 +91,8 @@ export default function StepEligibility({ state, dateOfBirth, onStateChange, onD
             Not available in your state yet
           </p>
           <p className="text-sm" style={{ color: 'var(--neutral)' }}>
-            Heirloom Life is currently available in NSW and VIC. Join our waitlist and
-            we&apos;ll let you know when we open in your state.
+            Heirloom Life is available in all Australian states and territories. If you&apos;re
+            seeing this, please refresh and try again.
           </p>
           <a href="/waitlist" className="text-sm font-semibold underline"
              style={{ color: 'var(--teal-deep)' }}>

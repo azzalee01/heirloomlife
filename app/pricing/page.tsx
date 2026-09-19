@@ -59,11 +59,11 @@ export default function PricingPage() {
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
                 {[
                   'Seven-step guided questionnaire',
-                  'State-specific legal compliance for NSW and VIC',
+                  'State-specific legal compliance for all Australian states and territories',
                   'Standard solicitor quality review before your Will is issued',
                   'Your Will, permanently downloadable',
                   '3 months Living Vault membership included',
-                  'Witnessing guidance (remote AV witnessing for NSW — print-and-sign for VIC)',
+                  'Witnessing guidance (remote AV witnessing in NSW — print-and-sign in all other states)',
                 ].map((f) => (
                   <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.875rem', color: 'var(--mkt-stone)' }}>
                     <Check />
@@ -81,7 +81,7 @@ export default function PricingPage() {
                 </Link>
               </div>
               <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-                No payment required to begin. Currently available in NSW and VIC.
+                No payment required to begin. Available in all Australian states and territories.
               </p>
             </div>
 
@@ -158,7 +158,7 @@ export default function PricingPage() {
             },
             {
               q: 'Which states are supported?',
-              a: 'NSW and VIC. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing  -  VIC members complete with a straightforward print-and-sign process we walk you through.',
+              a: 'All Australian states and territories. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing  -  all other states complete with a straightforward print-and-sign process we walk you through.',
             },
             {
               q: 'Can I upload my existing Will?',
