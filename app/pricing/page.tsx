@@ -63,7 +63,7 @@ export default function PricingPage() {
                   'Standard solicitor quality review before your Will is issued',
                   'Your Will, permanently downloadable',
                   '3 months Living Vault membership included',
-                  'Witnessing guidance and remote witness scheduling',
+                  'Witnessing guidance (remote AV witnessing for NSW — print-and-sign for VIC)',
                 ].map((f) => (
                   <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.875rem', color: 'var(--mkt-stone)' }}>
                     <Check />
@@ -194,7 +194,7 @@ export default function PricingPage() {
       <section style={{ paddingBlock: '3rem', background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <p style={{ fontSize: '.78rem', lineHeight: 1.7, color: 'var(--mkt-stone-soft)' }}>
-            Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. Our platform is built using established estate planning drafting standards, but we do not review your individual Will or take responsibility for its legal validity or its suitability for your personal circumstances. If your situation involves factors like overseas assets, business ownership, or a blended family, we strongly recommend a bespoke Will prepared by a solicitor.
+            Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. All Wills receive a standard solicitor quality review before being issued — this review checks for document compliance and drafting standards, not the suitability of your instructions for your individual circumstances. If your situation involves factors like overseas assets, business ownership, or a blended family, we strongly recommend a bespoke Will prepared by a solicitor.
           </p>
         </div>
       </section>

@@ -315,6 +315,14 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       setShowDownloadGate(true)
       return
     }
+    // Authenticated but unpaid: show the payment options screen.
+    // completeWill() (which marks the will pending_review) runs only after
+    // the user pays and returns to the wizard with hasWillAccess=true.
+    if (!hasWillAccess) {
+      setShowCompletion(true)
+      scrollContentToTop()
+      return
+    }
     if (!form.willId) return
     setSaving(true)
     setError(null)

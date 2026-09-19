@@ -276,7 +276,7 @@ export default function HomePage() {
           <div className="md:grid-cols-3" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', borderTop: '1px solid var(--mkt-line)', borderLeft: '1px solid var(--mkt-line)' }}>
             {[
               { num: '7', label: 'Guided steps from first login to a complete, structured Will' },
-              { num: '8', label: 'States and territories covered  -  your Will is drafted to the legal requirements of wherever you live' },
+              { num: '2', label: 'Australian states live (NSW and VIC)  -  your Will is drafted to the specific legal requirements of your state' },
               { num: '1', label: "Place your Will, your Vault, and your executor's instructions all live" },
             ].map(stat => (
               <div key={stat.num} style={{ borderRight: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)', padding: '2.4rem 2rem' }}>

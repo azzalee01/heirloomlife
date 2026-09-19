@@ -43,7 +43,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          <p style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--mkt-line)', fontSize: '.85rem', color: 'var(--mkt-stone)' }}>Heirloom Life Pty Ltd · Sydney, NSW · Built for Australians in every state and territory.</p>
+          <p style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--mkt-line)', fontSize: '.85rem', color: 'var(--mkt-stone)' }}>Heirloom Life Pty Ltd · Sydney, NSW · Currently available in NSW and VIC.</p>
         </div>
       </section>
 
