@@ -107,7 +107,7 @@ export default function FaqPage() {
             Didn&#8217;t find what you were looking for?
           </h2>
           <p style={{ fontSize: '.95rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: '0 0 1.5rem' }}>
-            Read our <Link href="/guidance-notes" style={{ color: 'var(--teal-deep)', textDecoration: 'underline' }}>Guidance Notes</Link> for a deeper look at how the legal side works, or get in touch directly.
+            Get in touch directly.
           </p>
           <a
             href="mailto:hello@heirloomlife.com.au"
