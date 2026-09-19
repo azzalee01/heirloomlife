@@ -100,12 +100,6 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
     willed:   { kind: 'dash' },
   },
   {
-    label: 'Opt-in renewal (no silent auto-charge)',
-    heirloom: { kind: 'yes' },
-    safewill: { kind: 'no' },
-    willed:   { kind: 'dash' },
-  },
-  {
     label: 'Dedicated witnessing team (NSW only)',
     heirloom: { kind: 'yes', tooltip: 'Our dedicated NSW witnessing team guides you through the entire signing and witnessing process - no need to find, coordinate, or explain the process to your own witnesses. We know the requirements and make sure it\'s done correctly, every time.' },
     safewill: { kind: 'no' },
