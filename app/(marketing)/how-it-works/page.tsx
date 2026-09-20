@@ -18,16 +18,11 @@ const STEPS = [
   },
   {
     num: '03',
-    title: 'Download and sign your Will',
-    body: 'Download your completed Will and sign it in the presence of two independent witnesses. Complex situations  -  business succession, blended families, overseas assets  -  are flagged in your Vault, where you can reach our partner lawyers directly.',
+    title: 'Download, sign and witness',
+    body: 'Pay $129 to download your solicitor-reviewed Will. Sign it in the presence of two independent witnesses  -  NSW members can use remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Complex situations are flagged in your Vault, where you can reach our partner lawyers directly.',
   },
   {
     num: '04',
-    title: 'Sign and witness',
-    body: 'Your Will is only valid once signed in the presence of two independent witnesses. We walk you through exactly what this requires in your state  -  remote AV witnessing is available for NSW members, all other states complete with a straightforward print-and-sign process.',
-  },
-  {
-    num: '05',
     title: 'Store and update',
     body: 'Your signed Will lives in your Vault alongside your asset register. Connect your bank accounts to see live balances alongside your manually entered assets  -  giving you a single, complete view of your estate. Every time your life changes, update your Will from the same place.',
   },
@@ -52,7 +47,7 @@ export default function HowItWorksPage() {
                -  what happens and when.
             </h1>
             <p style={{ marginTop: '1.1rem', maxWidth: '34rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              We&#8217;ve broken the process into five stages. Most people complete the first three in a single session.
+              We&#8217;ve broken the process into four stages. Most people draft their Will in a single session.
             </p>
           </div>
         </div>
