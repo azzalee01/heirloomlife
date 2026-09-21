@@ -20,7 +20,7 @@ const FAQS = [
   },
   {
     q: 'How long does it take to complete a Will?',
-    a: "Most people complete the guided questionnaire in 30-60 minutes.",
+    a: "Most people complete the guided questionnaire in about 15 minutes.",
   },
   {
     q: 'Can I update my Will after signing it?',
