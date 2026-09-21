@@ -60,7 +60,7 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
   {
     label: 'Upfront price',
     heirloom: { kind: 'text', lines: ['$129', 'includes solicitor review'] },
-    safewill: { kind: 'text', lines: ['$160'] },
+    safewill: { kind: 'text', lines: ['$160', 'standard price; excl. promotions'] },
     willed:   { kind: 'text', lines: ['$159'] },
   },
   {
@@ -72,7 +72,7 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
   {
     label: 'Solicitor review',
     heirloom: { kind: 'text', lines: ['Standard, included'] },
-    safewill: { kind: 'text', lines: ['Standard, included'] },
+    safewill: { kind: 'text', lines: ['Included', '(affiliate law firm review)'] },
     willed:   { kind: 'text', lines: ['"Vetted" by legal team'] },
   },
   {
