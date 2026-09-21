@@ -664,8 +664,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                           <div className="border p-5 space-y-4 flex flex-col" style={{ borderColor: 'var(--line)' }}>
                             <div>
                               <p className="text-xs font-semibold uppercase" style={{ color: 'var(--teal-deep)', letterSpacing: '.1em' }}>Living Vault</p>
-                              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$99</p>
-                              <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>per year · Will included</p>
+                              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$12</p>
+                              <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>per month · billed annually · Will included</p>
                             </div>
                             <ul className="space-y-1.5 flex-1">
                               {['Will included and downloadable', 'Supported updates as life changes', 'Full platform access, renews annually'].map((f) => (
@@ -676,7 +676,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                               ))}
                             </ul>
                             <button type="button" onClick={handleVaultCheckout} className="w-full py-2.5 text-sm font-semibold transition-opacity" style={{ border: '1.5px solid var(--teal-deep)', color: 'var(--teal-deep)', background: 'transparent' }}>
-                              Join for $99 / year
+                              Join · $12/month
                             </button>
                           </div>
                         </div>
