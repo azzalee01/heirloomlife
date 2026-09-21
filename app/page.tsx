@@ -104,7 +104,7 @@ export default function HomePage() {
               },
               {
                 d: <><rect x="4" y="10" width="16" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.4"/></>,
-                t: 'Solicitor reviewed, encrypted, securely stored',
+                t: 'Solicitor reviewed, securely stored',
               },
               {
                 d: <><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
