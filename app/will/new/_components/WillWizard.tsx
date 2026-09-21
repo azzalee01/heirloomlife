@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
 import { renderWillText } from '../_render'
@@ -178,6 +179,7 @@ interface Props {
 }
 
 export default function WillWizard({ initialData, initialStep, isAuthenticated, hasWillAccess = false, extractedFields }: Props) {
+  const router = useRouter()
   const [form, setForm] = useState<WillFormData>(initialData)
   const [wizardSteps, setWizardSteps] = useState<WizardStepId[]>(() =>
     buildWizardSteps(initialData)
@@ -330,8 +332,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       // Ensure any in-flight background save finishes before we finalise
       if (pendingSaveRef.current) await pendingSaveRef.current
       await completeWill(form.willId)
-      setShowCompletion(true)
-      scrollContentToTop()
+      router.push('/dashboard/will')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to complete will. Please try again.')
     } finally {
@@ -582,8 +583,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                 {currentStaticStep === 'review' && !showDownloadGate && !showCompletion && (
                   <StepReview
                     formData={form}
-                    activeSteps={baseStepsFor(form.personalDetails.maritalStatus).filter(s => s !== 'eligibility')}
-                    onJumpToStep={jumpToStep}
+                    onViewWill={handleComplete}
+                    saving={saving}
                   />
                 )}
                 {showDownloadGate && <AnonDownloadGate />}
@@ -723,14 +724,16 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     >
                       Back
                     </button>
-                    <button
-                      type="button"
-                      onClick={isLast ? handleComplete : handleNext}
-                      disabled={saving || !canAdvance}
-                      className="btn btn-primary disabled:opacity-60"
-                    >
-                      {saveLabel}
-                    </button>
+                    {!isLast && (
+                      <button
+                        type="button"
+                        onClick={handleNext}
+                        disabled={saving || !canAdvance}
+                        className="btn btn-primary disabled:opacity-60"
+                      >
+                        {saveLabel}
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -769,14 +772,16 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
           >
             Back
           </button>
-          <button
-            type="button"
-            onClick={isLast ? handleComplete : handleNext}
-            disabled={saving || !canAdvance}
-            className="btn btn-primary disabled:opacity-60"
-          >
-            {saveLabel}
-          </button>
+          {!isLast && (
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={saving || !canAdvance}
+              className="btn btn-primary disabled:opacity-60"
+            >
+              {saveLabel}
+            </button>
+          )}
         </div>
       )}
     </div>
