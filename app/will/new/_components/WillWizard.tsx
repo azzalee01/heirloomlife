@@ -320,12 +320,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     setError(null)
     try {
       if (pendingSaveRef.current) await pendingSaveRef.current
-      // completeWill() checks payment server-side and throws if unpaid — only
-      // call it when we know the user has access. Unpaid users navigate straight
-      // to the vault to view their will and pay there.
-      if (hasWillAccess && form.willId) {
-        await completeWill(form.willId)
-      }
       router.push('/dashboard/will')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to complete will. Please try again.')

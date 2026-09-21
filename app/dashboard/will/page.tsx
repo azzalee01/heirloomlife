@@ -9,6 +9,7 @@ import LegalReviewCallout from './_components/LegalReviewCallout'
 import VersionHistory, { type VersionSummary } from './_components/VersionHistory'
 import DownloadWillButton from './_components/DownloadWillButton'
 import UnlockWillBanner from './_components/UnlockWillBanner'
+import { completeWill } from '@/app/will/new/_actions'
 
 export default async function TheWillPage() {
   const supabase = await createSupabaseServerClient()
@@ -26,13 +27,13 @@ export default async function TheWillPage() {
 
   const { data: willRows } = await supabase
     .from('wills')
-    .select('id, needs_review, needs_review_reasons, updated_at, has_downloaded')
+    .select('id, status, needs_review, needs_review_reasons, updated_at, has_downloaded')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
 
   const will = willRows?.[0] as
-    | { id: string; needs_review: boolean; needs_review_reasons: string[] | null; updated_at: string; has_downloaded: boolean }
+    | { id: string; status: string; needs_review: boolean; needs_review_reasons: string[] | null; updated_at: string; has_downloaded: boolean }
     | undefined
 
   if (!will) {
@@ -56,6 +57,12 @@ export default async function TheWillPage() {
         </main>
       </div>
     )
+  }
+
+  // First time a paid user arrives with a draft will — finalise it now.
+  // completeWill sets status to pending_review and kicks off solicitor review.
+  if (hasPaidForWill && will.status === 'draft') {
+    try { await completeWill(will.id) } catch { /* non-blocking */ }
   }
 
   const { formData } = await loadWillFormData(supabase, user.id, will.id)
