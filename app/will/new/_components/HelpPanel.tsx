@@ -53,7 +53,7 @@ const HELP: Partial<Record<string, HelpItem[]>> = {
   review: [
     { type: 'guide', title: 'What happens next', body: 'Download your Will  -  then sign it in the presence of two witnesses (both present at the same time, neither a beneficiary). NSW members can use Heirloom\'s remote AV witness pool. Once signed, store the original somewhere safe and tell your executor where it is.' },
     { type: 'tip', title: 'Review every few years', body: 'Your Will should reflect your current life. Key trigger events: marriage (revokes a previous Will in most states), divorce, new children, significant change in assets, or the death of a named person.' },
-    { type: 'definition', title: 'Pending review', body: 'Your Will\'s status shows "under review" until our legal team confirms the document is coherent and complete. This is a drafting check, not legal advice  -  your solicitor review (if you\'ve added it) is a separate step.' },
+    { type: 'definition', title: 'Pending review', body: 'Your Will\'s status shows "under review" while two checks run: an automated drafting step first confirms your answers produce a coherent document, then the standard solicitor quality review  -  included with every Will  -  verifies the document before it is issued. Neither check is legal advice to you personally.' },
   ],
 }
 
