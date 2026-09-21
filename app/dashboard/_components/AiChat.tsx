@@ -204,7 +204,7 @@ export default function AiChat({
             href="/pricing#living-vault"
             className="text-xs font-semibold text-amber-900 underline hover:no-underline shrink-0"
           >
-            See membership  -  $12/month
+            See membership  -  $99/year
           </a>
         </div>
       )}

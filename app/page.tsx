@@ -304,7 +304,7 @@ export default function HomePage() {
           <div style={{ maxWidth: '34rem' }}>
             <span style={SECTION_LABEL}>Membership</span>
             <H2>Priced like something<br/>worth <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.</H2>
-            <Sub>Choose $129 once with three months of full Vault benefits, or $12/month billed annually for your Will and continuing membership. One clear price—never a Will fee plus a subscription.</Sub>
+            <Sub>Choose $129 once with three months of full Vault benefits, or $99/year for your Will and continuing membership. One clear price—never a Will fee plus a subscription.</Sub>
           </div>
           <div style={{ marginTop: '2rem' }}>
             <Link href="/pricing" className="mkt-btn-ink-m">View pricing</Link>

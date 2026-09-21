@@ -57,29 +57,13 @@ Generated: 2026-09-21 · Branch: copy/site-accuracy-sweep (LR-01–LR-05) / copy
 
 ## LR-05 — Stripe VAULT_ANNUAL price ID
 
-**Status:** Out of scope for copy branch. Flagging for founder.
-
-**Background:** `src/lib/stripe.ts:18` references `process.env.STRIPE_PRICE_VAULT_ANNUAL`. If the Vault has moved to $12/month billing, the Stripe product and price ID may need updating in the Stripe dashboard and in `.env.local` (production) to match. The copy has been updated to show $12/month; the underlying Stripe checkout must match or users will be charged the old rate.
-
-**Action required (founder):** Confirm `STRIPE_PRICE_VAULT_ANNUAL` points to the correct $12/month annual price ID in the Stripe dashboard. This is a billing-critical check — do not enable Vault checkout until confirmed.
+**Status:** Resolved. Founder confirmed annual membership is $99/year. Stripe price object "Living Vault Annual AUD" verified at unit_amount 9900 ($99 AUD). All copy updated to $99/year.
 
 ---
 
-## LR-06 — Terms of Service: $99 → $12/month update
+## LR-06 — Terms of Service: stale product name updated
 
-**Status:** Proposed on copy/trust-sweep. Awaiting founder confirmation before applying.
-
-**Location:** `app/(marketing)/terms/page.tsx` — section "Prices, subscriptions and cancellation"
-
-**Change (proposed):**
-```
-BEFORE: The $99 Heirloom Membership includes the Will and renews annually until cancelled.
-AFTER:  The $12 per month annual membership (billed annually) includes the Will and renews annually until cancelled.
-```
-
-**Scope:** Only the product name and price changed. Renewal, billing frequency, cancellation, and access-continuation language are all accurate and unchanged.
-
-**Action required:** Founder to confirm this wording is approved for the Terms of Service. Legal document — any change needs explicit sign-off.
+**Status:** Applied. "The $99 Heirloom Membership" → "The $99/year annual membership". Price ($99) was already correct; only the product name was stale.
 
 ---
 
@@ -121,17 +105,7 @@ AFTER:  The $12 per month annual membership (billed annually) includes the Will 
 
 ## LR-09 — Pricing page: Will "included in the first year"
 
-**Status:** Not yet changed. Flagging for founder review.
-
-**Location:** `app/pricing/page.tsx:100`
-
-**Current text:** "Your signing-ready Will included in the first year"
-
-**Issue:** The Will is included throughout the annual membership, not only in the first year. This phrasing could be read as implying the Will is an add-on from year two onwards.
-
-**Proposed change:** "Your Will, included and downloadable" or "Will included and downloadable throughout membership"
-
-**Action required (founder):** Confirm intended meaning and approve wording change before applying.
+**Status:** Fixed. Changed to "Your Will included throughout membership".
 
 ---
 
@@ -149,14 +123,6 @@ AFTER:  The $12 per month annual membership (billed annually) includes the Will 
 
 ---
 
-## LR-11 — Annual membership: no annual total stated in copy or Terms
+## LR-11 — Annual membership price confirmed
 
-**Status:** Not yet changed. Flagging for solicitor review.
-
-**Locations:**
-- `app/(marketing)/terms/page.tsx:45` — proposes "$12 per month annual membership (billed annually)" with no total figure
-- `app/pricing/page.tsx:39,94` — states "$12/month (billed annually)" and "per month, billed annually" with no annual total
-
-**Issue:** Marketing copy and the proposed Terms revision both quote only the monthly rate ($12/month). Neither states the total amount charged per billing event. At $12/month billed annually, the total charge per billing period is $144/year — but this has not been verified against the Stripe price object (`STRIPE_PRICE_VAULT_ANNUAL`). It is possible the Stripe price is set to a different annual amount (e.g., a discounted rate such as $129/year).
-
-**Action required (founder):** Confirm the actual annual charge amount that Stripe will debit, and whether copy should state it (e.g., "billed annually at $[X]"). Once confirmed, update Terms and pricing page to include the annual total. This should be resolved before the Terms change (LR-06) is applied.
+**Status:** Resolved. Founder confirmed $99/year. All copy updated. Stripe object verified at $99 AUD/year.

@@ -24,11 +24,11 @@ const FAQS = [
   },
   {
     q: 'Can I update my Will after signing it?',
-    a: "Yes. The $129 one-off Will includes three months of full Vault benefits. The $12/month annual membership keeps those benefits active, including supported updates and life-event prompts. Every changed Will must be signed and witnessed again.",
+    a: "Yes. The $129 one-off Will includes three months of full Vault benefits. The $99/year annual membership keeps those benefits active, including supported updates and life-event prompts. Every changed Will must be signed and witnessed again.",
   },
   {
     q: 'Do I pay for both the Will and membership?',
-    a: "No. Choose either $129 once for the Will plus three months of full Vault benefits, or $12/month billed annually with your Will and continuing membership included. If you cancel membership later, you can still download and retain your completed Will.",
+    a: "No. Choose either $129 once for the Will plus three months of full Vault benefits, or $99/year with your Will and continuing membership included. If you cancel membership later, you can still download and retain your completed Will.",
   },
   {
     q: 'What happens to my Will if I die?',

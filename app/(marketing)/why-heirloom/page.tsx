@@ -65,7 +65,7 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
   },
   {
     label: 'Ongoing cost',
-    heirloom: { kind: 'text', lines: ['$12/month', 'billed annually'], tooltip: TOOLTIP_TEXT },
+    heirloom: { kind: 'text', lines: ['$99', 'per year'], tooltip: TOOLTIP_TEXT },
     safewill: { kind: 'text', lines: ['$15/yr'] },
     willed:   { kind: 'text', lines: ['$15/yr', 'optional (first year free)'] },
   },

@@ -676,7 +676,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                               ))}
                             </ul>
                             <button type="button" onClick={handleVaultCheckout} className="w-full py-2.5 text-sm font-semibold transition-opacity" style={{ border: '1.5px solid var(--teal-deep)', color: 'var(--teal-deep)', background: 'transparent' }}>
-                              Join · $12/month
+                              Join · $99/year
                             </button>
                           </div>
                         </div>
