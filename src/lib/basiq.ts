@@ -1,10 +1,14 @@
 const BASIQ_BASE = 'https://au-api.basiq.io'
 
 export async function getBasiqServerToken(): Promise<string> {
+  const apiKey = process.env.BASIQ_API_KEY
+  if (!apiKey) throw new Error('BASIQ_API_KEY is not configured')
+  // Basiq v3 requires Basic auth with the raw API key base64-encoded as "key:"
+  const encoded = Buffer.from(`${apiKey}:`).toString('base64')
   const resp = await fetch(`${BASIQ_BASE}/token`, {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${process.env.BASIQ_API_KEY}`,
+      'Authorization': `Basic ${encoded}`,
       'basiq-version': '3.0',
       'Content-Type': 'application/x-www-form-urlencoded',
     },
@@ -49,8 +53,10 @@ export async function createBasiqAuthLink(
     cache: 'no-store',
   })
   if (!resp.ok) throw new Error(`Basiq auth_link error ${resp.status}`)
-  const data = await resp.json() as { links: { public: string } }
-  return data.links.public
+  const data = await resp.json() as { links?: { public?: string } }
+  const url = data?.links?.public
+  if (!url) throw new Error('Basiq auth_link response missing links.public')
+  return url
 }
 
 export type BasiqAccountRaw = {
