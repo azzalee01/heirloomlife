@@ -36,7 +36,7 @@ export default function AboutPage() {
               Heirloom Life started with a simple observation: most estate planning tools are built for professionals who use them every day  -  not for the person whose name is on the Will. The result is a product that&#8217;s technically correct but practically unusable. Documents that sit in a drawer. Executors who don&#8217;t know they&#8217;re named. Estates that take years to settle because no one knew where to start.
             </p>
             <p>
-              We&#8217;re building the estate command centre we wish had existed  -  where a Will isn&#8217;t a one-time filing event but a living document that stays in step with your life. Where your executor has a verified path from death certificate to access, not a guess. Where a solicitor is included when the stakes are high, not added as an upsell when you&#8217;ve already signed.
+              We&#8217;re building the estate command centre we wish had existed  -  where a Will isn&#8217;t a one-time filing event but a living document that stays in step with your life. Where a solicitor is included when the stakes are high, not added as an upsell when you&#8217;ve already signed.
             </p>
             <p>
               Heirloom Life is based in Sydney, NSW. We&#8217;re building for Australians  -  available across all states and territories, with each Will drafted to the specific legal requirements of your state.

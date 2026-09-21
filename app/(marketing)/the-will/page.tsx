@@ -21,7 +21,7 @@ function Pill({ children, variant = 'teal' }: { children: React.ReactNode; varia
   )
 }
 
-export const metadata = { title: 'The Will  -  Heirloom Life', description: 'A living Will in plain English, drafted to your state\'s requirements, and versioned every time your life moves forward.' }
+export const metadata = { title: 'The Will  -  Heirloom Life', description: 'A Will in plain English, drafted to your state\'s requirements, and versioned every time your life moves forward.' }
 
 export default function TheWillPage() {
   return (
@@ -121,16 +121,16 @@ export default function TheWillPage() {
           <div style={{ maxWidth: '38rem', marginBottom: '3.5rem' }}>
             <span style={SECTION_LABEL}>How it works</span>
             <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.9rem, 3.2vw, 2.8rem)', lineHeight: 1.1, letterSpacing: '-.02em', fontWeight: 500, color: 'var(--mkt-ink-text)', margin: 0 }}>
-              Seven guided steps. A document that actually stays current.
+              A guided questionnaire. A document that actually stays current.
             </h2>
           </div>
           <div className="lg:grid-cols-2" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.1rem' }}>
             {[
-              { n: '01', title: 'Answer guided questions', body: 'Seven steps covering your assets, beneficiaries, executor, and any guardianship arrangements. Every question has a plain-English explanation.' },
+              { n: '01', title: 'Answer guided questions', body: 'Guided questions covering your assets, beneficiaries, executor, and any guardianship arrangements. Every question has a plain-English explanation.' },
               { n: '02', title: 'Review your draft', body: 'Your answers become a structured Will draft. Review clause by clause. Change your answers and the draft updates immediately.' },
               { n: '03', title: 'Download and sign', body: 'Download your completed Will and sign it with two witnesses. Any complex flags  -  business interests, blended families, overseas assets  -  are highlighted in your Vault.' },
               { n: '04', title: 'Sign and witness', body: 'Your Will is valid only once signed in front of two independent witnesses. We walk you through the exact requirements for your state.' },
-              { n: '05', title: 'Store and update', body: 'Your signed Will lives in your Vault alongside your asset register. Every time your life changes, update your Will from the same place.' },
+              { n: '05', title: 'Store and update', body: 'Your Will PDF lives in your Vault alongside your asset register. Every time your life changes, update your Will from the same place.' },
               { n: '+', title: 'Versioned as your life changes', body: 'Every amendment creates a new version. A change to your family, your assets, or your executors prompts an update  -  not a whole new Will.' },
             ].map(step => (
               <div key={step.n} style={{ background: '#fff', borderRadius: 10, border: '1px solid var(--mkt-line)', padding: '1.75rem' }}>

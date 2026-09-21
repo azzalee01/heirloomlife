@@ -177,7 +177,7 @@ export default function LivingVaultPage() {
           </h2>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <Link href="/dashboard" className="mkt-btn-ink-m">Open your Vault</Link>
-            <Link href="/pricing" className="mkt-btn-ghost-m">Compare $129 once and $99/year</Link>
+            <Link href="/pricing" className="mkt-btn-ghost-m">Compare $129 once and $12/month</Link>
           </div>
         </div>
       </section>

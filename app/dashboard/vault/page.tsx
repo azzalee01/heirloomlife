@@ -65,7 +65,7 @@ export default async function VaultPage() {
           <section className="flex flex-col justify-between gap-4 rounded-xl border bg-[var(--paper-warm)] p-5 sm:flex-row sm:items-center" style={{ borderColor: 'var(--line)' }}>
             <div>
               <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Keep your Vault benefits after {accessUntil}</p>
-              <p className="mt-1 text-xs leading-5" style={{ color: 'var(--neutral)' }}>Join for $99 a year. Your Will is already yours; membership keeps supported updates and continuing benefits active.</p>
+              <p className="mt-1 text-xs leading-5" style={{ color: 'var(--neutral)' }}>Join for $12/month billed annually. Your Will is already yours; membership keeps supported updates and continuing benefits active.</p>
             </div>
             <Link href="/pricing#living-vault" className="btn btn-primary shrink-0 px-5 py-2.5 text-sm font-semibold">View annual membership</Link>
           </section>

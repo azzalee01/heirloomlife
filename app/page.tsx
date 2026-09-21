@@ -104,7 +104,7 @@ export default function HomePage() {
               },
               {
                 d: <><rect x="4" y="10" width="16" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.4"/></>,
-                t: 'Solicitor reviewed, encrypted, executor-ready',
+                t: 'Solicitor reviewed, encrypted, securely stored',
               },
               {
                 d: <><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
@@ -275,7 +275,7 @@ export default function HomePage() {
           </div>
           <div className="md:grid-cols-3" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', borderTop: '1px solid var(--mkt-line)', borderLeft: '1px solid var(--mkt-line)' }}>
             {[
-              { num: '7', label: 'Guided steps from first login to a complete, structured Will' },
+              { num: '10', label: 'Guided steps from first login to a complete, structured Will' },
               { num: '8', label: 'States and territories  -  your Will is drafted to the specific legal requirements of wherever you live' },
               { num: '1', label: "Place your Will, your Vault, and your executor's instructions all live" },
             ].map(stat => (
@@ -304,7 +304,7 @@ export default function HomePage() {
           <div style={{ maxWidth: '34rem' }}>
             <span style={SECTION_LABEL}>Membership</span>
             <H2>Priced like something<br/>worth <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.</H2>
-            <Sub>Choose $129 once with three months of full Vault benefits, or $99 a year for your Will and continuing membership. One clear price—never a Will fee plus a subscription.</Sub>
+            <Sub>Choose $129 once with three months of full Vault benefits, or $12/month billed annually for your Will and continuing membership. One clear price—never a Will fee plus a subscription.</Sub>
           </div>
           <div style={{ marginTop: '2rem' }}>
             <Link href="/pricing" className="mkt-btn-ink-m">View pricing</Link>

@@ -73,7 +73,7 @@ export default async function WitnessingPage() {
             <p className="text-sm leading-relaxed max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>{reason.body}</p>
             {!isActiveMember && (
               <Link href="/pricing" className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
-                See Heirloom Membership  -  $99/year
+                See Heirloom Membership  -  $12/month
               </Link>
             )}
             {isActiveMember && userState === 'VIC' && (

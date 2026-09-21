@@ -65,9 +65,9 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
   },
   {
     label: 'Ongoing cost',
-    heirloom: { kind: 'text', lines: ['$30 first year,', 'then $99/yr'], tooltip: TOOLTIP_TEXT },
+    heirloom: { kind: 'text', lines: ['$12/month', 'billed annually'], tooltip: TOOLTIP_TEXT },
     safewill: { kind: 'text', lines: ['$15/yr'] },
-    willed:   { kind: 'dash' },
+    willed:   { kind: 'text', lines: ['$15/yr', 'optional (first year free)'] },
   },
   {
     label: 'Solicitor review',
@@ -79,7 +79,7 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
     label: 'National coverage',
     heirloom: { kind: 'yes' },
     safewill: { kind: 'yes' },
-    willed:   { kind: 'dash' },
+    willed:   { kind: 'yes' },
   },
   {
     label: 'Digital vault / storage',
