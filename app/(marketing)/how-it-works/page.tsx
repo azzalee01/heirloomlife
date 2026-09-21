@@ -9,7 +9,7 @@ const STEPS = [
   {
     num: '01',
     title: 'Answer guided questions',
-    body: 'A seven-step questionnaire covers the essentials: your assets, your beneficiaries, your executor, and any guardianship arrangements. No legal training required  -  every question comes with a plain-English explanation.',
+    body: 'A guided questionnaire covers the essentials: your assets, your beneficiaries, your executor, and any guardianship arrangements. No legal training required  -  every question comes with a plain-English explanation.',
   },
   {
     num: '02',
@@ -24,7 +24,7 @@ const STEPS = [
   {
     num: '04',
     title: 'Store and update',
-    body: 'Your signed Will lives in your Vault alongside your asset register. Connect your bank accounts to see live balances alongside your manually entered assets  -  giving you a single, complete view of your estate. Every time your life changes, update your Will from the same place.',
+    body: 'Your Will PDF lives in your Vault alongside your asset register. Connect your bank accounts to see live balances alongside your manually entered assets  -  giving you a single, complete view of your estate. Every time your life changes, update your Will from the same place.',
   },
 ]
 

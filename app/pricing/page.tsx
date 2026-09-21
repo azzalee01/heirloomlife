@@ -36,7 +36,7 @@ export default function PricingPage() {
             <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>ready for life</em>.
           </h1>
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
-            Free to start. Draft your whole Will at your own pace, then pay $129 to download your reviewed, signed-ready document  - or join for $99 a year with your Will and continuing membership included.
+            Free to start. Draft your whole Will at your own pace, then pay $129 to download your reviewed, signed-ready document  - or join for $12/month (billed annually) with your Will and continuing membership included.
           </p>
         </div>
       </section>
@@ -58,7 +58,7 @@ export default function PricingPage() {
 
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
                 {[
-                  'Seven-step guided questionnaire',
+                  'Guided questionnaire',
                   'State-specific legal compliance for all Australian states and territories',
                   'Standard solicitor quality review before your Will is issued',
                   'Your Will, permanently downloadable',
@@ -89,10 +89,10 @@ export default function PricingPage() {
             <div id="living-vault" style={{ borderRadius: 16, border: '2px solid var(--teal-deep)', background: '#fff', padding: '2.25rem', display: 'flex', flexDirection: 'column' }}>
               <span style={SECTION_LABEL}>Living Vault</span>
               <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3rem, 5vw, 4.5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
-                $99
+                $12
               </p>
-              <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>per year. Your Will is included.</p>
-              <p style={{ fontSize: '.8rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount: $79/year when your partner shares their link with you.</p>
+              <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>per month, billed annually. Your Will is included.</p>
+              <p style={{ fontSize: '.8rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount available when your partner shares their link with you.</p>
 
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
                 {[
@@ -154,7 +154,7 @@ export default function PricingPage() {
           {[
             {
               q: 'Is it really free to start?',
-              a: 'Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $129 when you\'re ready to download your solicitor-reviewed, signed-ready document. Annual Vault membership ($99/year) includes your Will and ongoing updates.',
+              a: 'Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $129 when you\'re ready to download your solicitor-reviewed, signed-ready document. Annual Vault membership ($12/month) includes your Will and ongoing updates.',
             },
             {
               q: 'Which states are supported?',
@@ -166,7 +166,7 @@ export default function PricingPage() {
             },
             {
               q: 'What is the Living Vault?',
-              a: 'Living Vault is included in the $99 annual Heirloom Membership. It keeps your Will and estate information organised, supports updates as life changes and gives NSW members access to Heirloom\'s AV witness pool. The $129 one-off Will includes the same platform benefits for three months.',
+              a: 'Living Vault is included in the $12/month annual Vault membership. It keeps your Will and estate information organised, supports updates as life changes and gives NSW members access to Heirloom\'s AV witness pool. The $129 one-off Will includes the same platform benefits for three months.',
             },
             {
               q: 'What if my situation is complex?',
