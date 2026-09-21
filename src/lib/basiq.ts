@@ -3,12 +3,11 @@ const BASIQ_BASE = 'https://au-api.basiq.io'
 export async function getBasiqServerToken(): Promise<string> {
   const apiKey = process.env.BASIQ_API_KEY
   if (!apiKey) throw new Error('BASIQ_API_KEY is not configured')
-  // Basiq v3 requires Basic auth with the raw API key base64-encoded as "key:"
-  const encoded = Buffer.from(`${apiKey}:`).toString('base64')
+  // BASIQ_API_KEY is stored pre-encoded (base64 of client_id:secret as issued by Basiq dashboard)
   const resp = await fetch(`${BASIQ_BASE}/token`, {
     method: 'POST',
     headers: {
-      'Authorization': `Basic ${encoded}`,
+      'Authorization': `Basic ${apiKey}`,
       'basiq-version': '3.0',
       'Content-Type': 'application/x-www-form-urlencoded',
     },
