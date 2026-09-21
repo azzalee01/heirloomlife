@@ -194,7 +194,7 @@ export default function IntestacyPage() {
             Your intentions, in writing
           </h2>
           <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', margin: '0 0 2rem' }}>
-            A complete Will takes about twenty minutes. It removes any ambiguity about who gets what and who is responsible.
+            A complete Will takes about 15 minutes. It removes any ambiguity about who gets what and who is responsible.
           </p>
           <Link href="/start" className="mkt-btn-ink-l">
             Start your Will
