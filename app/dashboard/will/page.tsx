@@ -8,6 +8,7 @@ import AiChat from '@/app/dashboard/_components/AiChat'
 import LegalReviewCallout from './_components/LegalReviewCallout'
 import VersionHistory, { type VersionSummary } from './_components/VersionHistory'
 import DownloadWillButton from './_components/DownloadWillButton'
+import UnlockWillBanner from './_components/UnlockWillBanner'
 
 export default async function TheWillPage() {
   const supabase = await createSupabaseServerClient()
@@ -16,15 +17,12 @@ export default async function TheWillPage() {
   } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  // Gate: user must have purchased a Will or Vault plan (any status — cancelled users
-  // retain access to the Will they paid for, matching the marketing promise)
   const { data: profile } = await supabaseAdmin
     .from('profiles')
     .select('plan, plan_status')
     .eq('id', user.id)
     .single()
   const hasPaidForWill = profile?.plan === 'will' || profile?.plan === 'vault'
-  if (!hasPaidForWill) redirect('/will/new?step=review')
 
   const { data: willRows } = await supabase
     .from('wills')
@@ -85,10 +83,13 @@ export default async function TheWillPage() {
           </h1>
           <span
             className="inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-bold tracking-wide"
-            style={{ background: 'rgba(42,180,174,0.1)', color: 'var(--teal-deep)' }}
+            style={{
+              background: hasPaidForWill ? 'rgba(42,180,174,0.1)' : 'rgba(0,0,0,0.05)',
+              color: hasPaidForWill ? 'var(--teal-deep)' : 'var(--neutral)',
+            }}
           >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--teal)' }} />
-            LIVE
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: hasPaidForWill ? 'var(--teal)' : 'var(--neutral)' }} />
+            {hasPaidForWill ? 'LIVE' : 'DRAFT'}
           </span>
         </div>
       </header>
@@ -99,29 +100,36 @@ export default async function TheWillPage() {
           <LegalReviewCallout reasons={will.needs_review_reasons ?? []} />
         )}
 
-        {/* Live document */}
+        {/* Will document */}
         <div className="bg-white border border-[var(--line)] overflow-hidden">
           <div className="h-[3px] w-full" style={{ backgroundColor: 'var(--teal)' }} />
           <div className="px-6 py-6 space-y-5">
-            <DownloadWillButton
-              willId={will.id}
-              documentText={documentText}
-              hasDownloaded={will.has_downloaded ?? false}
-            />
+            {hasPaidForWill && (
+              <DownloadWillButton
+                willId={will.id}
+                documentText={documentText}
+                hasDownloaded={will.has_downloaded ?? false}
+              />
+            )}
             <pre className="whitespace-pre-wrap font-sans text-sm text-[var(--ink)] leading-relaxed">{documentText}</pre>
           </div>
         </div>
 
-        {/* Ask about your will */}
-        <AiChat />
+        {/* Payment CTA for users who haven't yet unlocked */}
+        {!hasPaidForWill && <UnlockWillBanner />}
+
+        {/* Ask about your will — paid users only */}
+        {hasPaidForWill && <AiChat />}
 
         {/* Version history */}
-        <section>
-          <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--neutral)' }}>
-            Version History
-          </p>
-          <VersionHistory versions={versions} />
-        </section>
+        {versions.length > 0 && (
+          <section>
+            <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--neutral)' }}>
+              Version History
+            </p>
+            <VersionHistory versions={versions} />
+          </section>
+        )}
 
       </main>
     </div>

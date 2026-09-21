@@ -312,26 +312,20 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   }
 
   async function handleComplete() {
-    // Anonymous users must create an account before downloading
     if (!isAuthenticated) {
       setShowDownloadGate(true)
       return
     }
-    // Authenticated but unpaid: show the payment options screen.
-    // completeWill() (which marks the will pending_review) runs only after
-    // the user pays and returns to the wizard with hasWillAccess=true.
-    if (!hasWillAccess) {
-      setShowCompletion(true)
-      scrollContentToTop()
-      return
-    }
-    if (!form.willId) return
     setSaving(true)
     setError(null)
     try {
-      // Ensure any in-flight background save finishes before we finalise
       if (pendingSaveRef.current) await pendingSaveRef.current
-      await completeWill(form.willId)
+      // completeWill() checks payment server-side and throws if unpaid — only
+      // call it when we know the user has access. Unpaid users navigate straight
+      // to the vault to view their will and pay there.
+      if (hasWillAccess && form.willId) {
+        await completeWill(form.willId)
+      }
       router.push('/dashboard/will')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Failed to complete will. Please try again.')
