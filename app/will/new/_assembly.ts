@@ -53,17 +53,27 @@ function fullName(first: string, last: string): string {
   return [first, last].filter(Boolean).join(' ')
 }
 
+/** Resolves a substitute sentinel to readable text, naming the beneficiary where needed. */
+function resolveSubForBeneficiary(sentinel: string, beneficiaryName: string): string {
+  if (sentinel === '__their_children__') {
+    return `the children of ${beneficiaryName}, in equal shares`
+  }
+  return resolveSubstituteBeneficiaryText(sentinel)
+}
+
 function buildResidueDispositionText(formData: WillFormData): string {
   const { people, charities } = formData.beneficiariesData
   const all = [
     ...people.map((p) => ({
       label: `${p.name}${p.relationship ? ` (${p.relationship})` : ''}`,
+      name: p.name,
       pct: p.percentage,
       sub: p.substituteBeneficiary,
       isCharity: false,
     })),
     ...charities.map((c) => ({
       label: `${c.name}${c.abn ? ` (ABN ${c.abn})` : ''}`,
+      name: c.name,
       pct: c.percentage,
       sub: c.substituteBeneficiary,
       isCharity: true,
@@ -76,7 +86,7 @@ function buildResidueDispositionText(formData: WillFormData): string {
     const b = all[0]
     let s = `to ${b.label} absolutely`
     if (b.sub) {
-      s += `. If ${b.label} does not survive me by ${formData.survivorshipDays || '30'} days, this share passes instead to ${resolveSubstituteBeneficiaryText(b.sub)}`
+      s += `. If ${b.label} does not survive me by ${formData.survivorshipDays || '30'} days, this share passes instead to ${resolveSubForBeneficiary(b.sub, b.name)}`
     }
     return s
   }
@@ -84,7 +94,7 @@ function buildResidueDispositionText(formData: WillFormData): string {
   const lines = all.map((b) => {
     let line = `  - ${b.pct}% to ${b.label}`
     if (b.sub) {
-      line += `; if ${b.label} does not survive me by ${formData.survivorshipDays || '30'} days, this share passes instead to ${resolveSubstituteBeneficiaryText(b.sub)}`
+      line += `; if ${b.label} does not survive me by ${formData.survivorshipDays || '30'} days, this share passes instead to ${resolveSubForBeneficiary(b.sub, b.name)}`
     }
     return line
   })
@@ -408,10 +418,10 @@ export async function assembleWillDocument(formData: WillFormData): Promise<stri
 
   sections.push(
     'IMPORTANT NOTICE\n\n' +
-      'This Will was prepared using Heirloom Life\'s clause assembly platform and has been subject to a standard solicitor quality review before being issued. ' +
+      'This Will was prepared using Heirloom Life\'s clause assembly platform. ' +
       'It must be signed in the presence of two witnesses to be legally valid. ' +
       'If your circumstances involve overseas assets, business ownership, a blended family, or any other complex matter flagged above, ' +
-      'a bespoke solicitor review is strongly recommended before execution.'
+      'a solicitor review is strongly recommended before execution.'
   )
 
   return sections.join('\n\n')
