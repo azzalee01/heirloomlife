@@ -84,6 +84,7 @@ type BeneficiaryRow = {
   id: string
   beneficiary_type: string
   first_name: string | null
+  last_name: string | null
   organisation_name: string | null
   abn: string | null
   relationship: string | null
@@ -356,7 +357,7 @@ export async function loadWillFormData(
   const beneficiaryRows = (beneficiaryRes.data ?? []) as BeneficiaryRow[]
   const people: PersonBeneficiary[] = beneficiaryRows
     .filter((b) => b.beneficiary_type !== 'organisation')
-    .map((b) => ({ id: b.id, name: str(b.first_name), relationship: str(b.relationship), percentage: numStr(b.share_percentage), substituteBeneficiary: str(b.lapse_fallback) }))
+    .map((b) => ({ id: b.id, name: [b.first_name, b.last_name].filter(Boolean).join(' '), relationship: str(b.relationship), percentage: numStr(b.share_percentage), substituteBeneficiary: str(b.lapse_fallback) }))
   const charities: CharityBeneficiary[] = beneficiaryRows
     .filter((b) => b.beneficiary_type === 'organisation')
     .map((b) => ({ id: b.id, name: str(b.organisation_name), abn: str(b.abn), percentage: numStr(b.share_percentage), substituteBeneficiary: str(b.lapse_fallback) }))
