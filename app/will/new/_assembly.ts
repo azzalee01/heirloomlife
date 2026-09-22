@@ -118,7 +118,6 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   const ed = formData.executorsData
   const cd = formData.childrenData
   const hasDependent = cd.hasChildren === 'yes' && cd.children.some((c) => c.isDependent)
-  const hasTrusts = hasDependent || formData.lifeInterest.enabled
   const survivorshipDays = formData.survivorshipDays || '30'
   const tname = testatorName(formData)
   const primaryExecName = fullName(ed.primary.firstName, ed.primary.lastName)
@@ -262,10 +261,8 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   instances.push({ code: 'EXEC-03', heading: `${++clauseNo}. EXECUTOR POWERS`, vars: {} })
 
   // ── 14. Trustee powers ────────────────────────────────────────────────────
-  if (hasTrusts) {
-    instances.push({ code: 'TRUST-POWERS-01', heading: `${++clauseNo}. TRUSTEE POWERS`, vars: {} })
-    instances.push({ code: 'TRUSTEE-APPOINT-01', heading: `${++clauseNo}. TRUSTEE APPOINTMENT`, vars: {} })
-  }
+  instances.push({ code: 'TRUST-POWERS-01', heading: `${++clauseNo}. TRUSTEE POWERS`, vars: {} })
+  instances.push({ code: 'TRUSTEE-APPOINT-01', heading: `${++clauseNo}. TRUSTEE APPOINTMENT`, vars: {} })
 
   // ── 15. Admin powers ─────────────────────────────────────────────────────
   instances.push({ code: 'APPROPRIATION-01', heading: `${++clauseNo}. APPROPRIATION POWER`, vars: {} })
