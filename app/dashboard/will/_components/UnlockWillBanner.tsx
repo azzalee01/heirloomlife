@@ -65,7 +65,7 @@ export default function UnlockWillBanner() {
                 className="w-full py-2.5 text-sm font-semibold"
                 style={{ border: '1.5px solid var(--teal-deep)', color: 'var(--teal-deep)', background: 'transparent' }}
               >
-                Join · $12/month
+                Join · $99/year
               </button>
             </div>
           </div>

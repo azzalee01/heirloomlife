@@ -4,7 +4,7 @@ import { cookies } from 'next/headers'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from './_data'
-import { generateWillDocumentText } from './_drafting'
+import { assembleWillDocument } from './_assembly'
 import { recordVersion } from './_versioning'
 import { STEP_LABELS, type WillFormData, type StepId, type PersonalWishesData } from './_types'
 import { sendResumeEmail } from '@/src/lib/email'
@@ -469,7 +469,9 @@ export async function completeWill(willId: string): Promise<void> {
     throw new Error('WILL_PAYMENT_REQUIRED')
   }
 
-  const { error } = await supabase
+  // wills_protect_server_columns trigger blocks 'authenticated' role from
+  // writing status/document_text — must use service-role client for these.
+  const { error } = await supabaseAdmin
     .from('wills')
     .update({ status: 'pending_review' })
     .eq('id', willId)
@@ -480,8 +482,8 @@ export async function completeWill(willId: string): Promise<void> {
   // failure shouldn't block submission  -  the solicitor review still covers it.
   try {
     const { formData } = await loadWillFormData(supabase, user.id, willId)
-    const documentText = await generateWillDocumentText(formData)
-    await supabase.from('wills').update({ document_text: documentText }).eq('id', willId).eq('user_id', user.id)
+    const documentText = await assembleWillDocument(formData)
+    await supabaseAdmin.from('wills').update({ document_text: documentText }).eq('id', willId).eq('user_id', user.id)
 
     // Run the AI legal review exactly once here, now that all 7 steps are
     // in and the full picture is available  -  not on every step along the way.

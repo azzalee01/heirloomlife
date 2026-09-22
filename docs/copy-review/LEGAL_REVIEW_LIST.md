@@ -1,13 +1,13 @@
 # Legal Review List
 
 Items requiring founder or legal-practitioner sign-off before copy is finalised.
-Generated: 2026-09-21 · Branch: copy/site-accuracy-sweep
+Generated: 2026-09-21 · Branch: copy/site-accuracy-sweep (LR-01–LR-05) / copy/trust-sweep (LR-06+)
 
 ---
 
 ## LR-01 — Executor access: remaining references
 
-**Status:** Partially fixed on this branch. Requires founder decision on full resolution.
+**Status:** Partially fixed on copy/site-accuracy-sweep. Requires founder decision on full resolution.
 
 **Background:** The security page (`security-trust/page.tsx`) correctly states executor access is on the build roadmap. Three locations previously described it as a live, operational feature. Two have been removed on this branch; one requires legal framing decision:
 
@@ -24,49 +24,105 @@ Generated: 2026-09-21 · Branch: copy/site-accuracy-sweep
 
 ## LR-02 — Vault partner pricing: dollar amount unknown
 
-**Status:** Partially fixed on this branch. Partner rate not specified in locked facts.
+**Status:** Partially fixed on copy/site-accuracy-sweep. Partner rate confirmed at $89 for the Will tier; Vault rate not yet specified.
 
-**Background:** Vault moved from $99/yr (retired) to $12/month billed annually. The previous partner discount was $79/year on the $99/yr plan.
-
-**Changed on this branch:**
-- `app/pricing/page.tsx` — partner discount line changed from "$79/year when your partner shares their link with you" to "Partner discount available when your partner shares their link with you" (dollar amount removed pending confirmation).
+**Background:** Vault moved from $99/yr (retired) to $12/month billed annually. Pricing page shows `$89` for Will partner discount. Vault tier shows "Partner discount available" without a dollar amount.
 
 **Requires founder confirmation:**
 - What is the correct Vault partner discount price at $12/month billing? Once confirmed, update `app/pricing/page.tsx` (partner discount line under the Living Vault tier).
 
 ---
 
-## LR-03 — Charity stats: source citation
+## LR-03 — Charity stats: JBWere verification
 
-**Status:** Unverified on this branch. Figures appear in code but source is not cited on the page.
+**Status:** Updated on copy/trust-sweep. Flagging for record.
 
-**Location:** `app/(marketing)/for-charities/page.tsx:16–18`
+**Previous figures (removed):** "1 in 12", "$2.5B+", "200x" — sourced from FIA and Philanthropy Australia, unverified.
 
-**Figures:** "1 in 12", "$2.5B+", "200x"
+**New figures (applied):** ~6.5% of Australian Wills include a gift to charity; ~$1.3B estimated annual charitable bequests. Source: JBWere Bequest Report, 2024.
 
-**Action required:** Confirm figures against JBWere Australian Bequest Research Report 2024 (URL on file). Add a citation line to the charity page once confirmed. The JBWere PDF could not be parsed during the Stage 1 sweep (no `pdfplumber` installed).
+**Verification note:** JBWere PDF could not be downloaded (URL returned HTML). Figures cross-verified from a 2024 Treasury speech by the Minister for Financial Services explicitly citing JBWere Bequest Report 2024. Third figure (1% of inheritances) could not be confirmed from accessible sources and was dropped per instruction.
+
+**Action required (founder):** Confirm the JBWere PDF is accessible and the two published figures are accurate. If 1% figure is confirmed from the PDF, it may be added as a third stat.
 
 ---
 
-## LR-04 — SafeWill competitor pricing: unverified
+## LR-04 — SafeWill competitor pricing: verified 2026-09-21
 
-**Status:** Cells left unchanged. Live verification was not possible (SafeWill HTML minified/unreadable).
+**Status:** Updated on copy/trust-sweep. SafeWill standard price confirmed at $160 (founder confirmation). Promotion noted.
 
-**Location:** `app/(marketing)/why-heirloom/page.tsx` — SafeWill column
-
-**Cells to verify against live safewill.com:**
-- Upfront price: table shows `$160` — verify
-- Ongoing cost: table shows `$15/yr` — verify
-- Solicitor review: table shows `Standard, included` — verify
-
-If SafeWill pricing has changed, update the relevant ROWS entries. The table footnote correctly uses `—` for unconfirmed features, but explicitly stated prices should be accurate.
+**Evidence logged:** see `docs/competitor-evidence.md`.
 
 ---
 
 ## LR-05 — Stripe VAULT_ANNUAL price ID
 
-**Status:** Out of scope for copy branch. Flagging for founder.
+**Status:** Resolved. Founder confirmed annual membership is $99/year. Stripe price object "Living Vault Annual AUD" verified at unit_amount 9900 ($99 AUD). All copy updated to $99/year.
 
-**Background:** `src/lib/stripe.ts:18` references `process.env.STRIPE_PRICE_VAULT_ANNUAL`. If the Vault has moved to $12/month billing, the Stripe product and price ID may need updating in the Stripe dashboard and in `.env.local` (production) to match. The copy has been updated to show $12/month; the underlying Stripe checkout must match or users will be charged the old rate.
+---
 
-**Action required (founder):** Confirm `STRIPE_PRICE_VAULT_ANNUAL` points to the correct $12/month annual price ID in the Stripe dashboard. This is a billing-critical check — do not enable Vault checkout until confirmed.
+## LR-06 — Terms of Service: stale product name updated
+
+**Status:** Applied. "The $99 Heirloom Membership" → "The $99/year annual membership". Price ($99) was already correct; only the product name was stale.
+
+---
+
+## LR-07 — Statutory references removed from witnessing copy
+
+**Status:** Removed on copy/trust-sweep. Original wording logged here for record.
+
+**Removed from `app/witnessing/page.tsx:129–130`:**
+> "Schedule a remote witnessing session for signing your will over audio-visual link, in line with Part 2B of the Electronic Transactions Act 2000 (NSW). Your witness must see you sign in real time."
+
+**Replaced with:**
+> "Schedule a remote witnessing session for signing your Will over audio-visual link. Your witness must see you sign in real time."
+
+**Removed from `app/witnessing/page.tsx:58`:**
+> "Remote AV witnessing is currently available for NSW addresses only, consistent with NSW's statutory AV witnessing scheme."
+
+**Replaced with:**
+> "Remote AV witnessing is currently available for NSW addresses only."
+
+**Note:** The underlying compliance code (NSW gate, 2-witness enforcement, real-time requirement) is unchanged in `_actions.ts`. These were copy-only changes.
+
+---
+
+## LR-08 — ScheduleSessionForm witnessing requirement callout
+
+**Status:** Changed on copy/trust-sweep. Original wording logged here per instruction.
+
+**Location:** `app/witnessing/_components/ScheduleSessionForm.tsx:88`
+
+**Original wording:**
+> "NSW law requires a minimum of 2 witnesses for a will signing."
+
+**Changed to:**
+> "You'll need two independent witnesses on the call."
+
+**Action required (founder):** Confirm the new wording is acceptable, or supply preferred alternative if the original's legal attribution is preferred.
+
+---
+
+## LR-09 — Pricing page: Will "included in the first year"
+
+**Status:** Fixed. Changed to "Your Will included throughout membership".
+
+---
+
+## LR-10 — Bespoke solicitor review price ~$150
+
+**Status:** Not yet changed. Flagging for founder verification.
+
+**Locations:**
+- `app/will/new/_components/TriageFlag.tsx:10` — "for around $150"
+- `app/dashboard/notifications/page.tsx:119` — "Request solicitor review  -  ~$150"
+
+**Issue:** The ~$150 figure for bespoke partner lawyer review appears in two user-facing locations. Is $150 still the current price for the bespoke engagement via partner lawyers?
+
+**Action required (founder):** Confirm whether $150 is correct, and whether to continue showing a price estimate in these locations or remove the price entirely.
+
+---
+
+## LR-11 — Annual membership price confirmed
+
+**Status:** Resolved. Founder confirmed $99/year. All copy updated. Stripe object verified at $99 AUD/year.

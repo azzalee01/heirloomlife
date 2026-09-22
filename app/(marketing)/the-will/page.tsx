@@ -73,7 +73,7 @@ export default function TheWillPage() {
                     </svg>
                   </div>
                   <div>
-                    <p style={{ fontWeight: 600, fontSize: '.95rem', margin: 0 }}>Sample Last Will &amp; Testament</p>
+                    <p style={{ fontWeight: 600, fontSize: '.95rem', margin: 0 }}>Example Last Will &amp; Testament</p>
                     <p style={{ fontSize: '.75rem', color: 'var(--mkt-stone-soft)', marginTop: '.15rem' }}>Version 4 · Last amended 12 Jun 2026</p>
                   </div>
                 </div>
@@ -128,9 +128,8 @@ export default function TheWillPage() {
             {[
               { n: '01', title: 'Answer guided questions', body: 'Guided questions covering your assets, beneficiaries, executor, and any guardianship arrangements. Every question has a plain-English explanation.' },
               { n: '02', title: 'Review your draft', body: 'Your answers become a structured Will draft. Review clause by clause. Change your answers and the draft updates immediately.' },
-              { n: '03', title: 'Download and sign', body: 'Download your completed Will and sign it with two witnesses. Any complex flags  -  business interests, blended families, overseas assets  -  are highlighted in your Vault.' },
-              { n: '04', title: 'Sign and witness', body: 'Your Will is valid only once signed in front of two independent witnesses. We walk you through the exact requirements for your state.' },
-              { n: '05', title: 'Store and update', body: 'Your Will PDF lives in your Vault alongside your asset register. Every time your life changes, update your Will from the same place.' },
+              { n: '03', title: 'Download, sign and witness', body: 'Pay $129 to download your solicitor-reviewed Will. Sign it in the presence of two independent witnesses  -  NSW members can use remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Complex situations are flagged in your Vault, where you can reach our partner lawyers directly.' },
+              { n: '04', title: 'Store and update', body: 'Your Will PDF lives in your Vault alongside your asset register. Every time your life changes, update your Will from the same place.' },
               { n: '+', title: 'Versioned as your life changes', body: 'Every amendment creates a new version. A change to your family, your assets, or your executors prompts an update  -  not a whole new Will.' },
             ].map(step => (
               <div key={step.n} style={{ background: '#fff', borderRadius: 10, border: '1px solid var(--mkt-line)', padding: '1.75rem' }}>

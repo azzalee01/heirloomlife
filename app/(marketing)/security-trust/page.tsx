@@ -35,6 +35,10 @@ const ITEMS = [
     title: 'Solicitor review independence',
     body: 'Solicitor review is conducted by qualified Australian legal practitioners who are independent of Heirloom Life. Review is triggered by you or by high-severity flags in your Will  -  not automatically shared on document creation.',
   },
+  {
+    title: 'What we are not claiming',
+    body: "We do not hold ISO 27001 certification at this time. We are not claiming specific penetration testing results, specific uptime SLAs, or specific data residency guarantees until these are formally verified and documented. This page will be updated when those confirmations are in place. Where engineering has not yet confirmed specifics, we have noted them here rather than omitting the uncertainty.",
+  },
 ]
 
 export default function SecurityTrustPage() {
@@ -56,6 +60,9 @@ export default function SecurityTrustPage() {
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
             Estate documents are among the most sensitive records you can hold. We have written this page to describe what is actually in place today  -  not to match the length of a competitor&#8217;s security marketing page.
           </p>
+          <div style={{ marginTop: '1.5rem', padding: '1rem 1.25rem', borderRadius: 4, border: '1px solid var(--mkt-line)', background: '#fff', fontSize: '.85rem', color: 'var(--mkt-stone)', lineHeight: 1.5 }}>
+            This page is subject to engineering confirmation. Items pending confirmation are clearly noted. We will update this page as each item is verified rather than publish claims in advance.
+          </div>
         </div>
       </section>
 

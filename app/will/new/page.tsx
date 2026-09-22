@@ -87,7 +87,7 @@ export default async function WillNewPage({
                     href="/pricing"
                     className="btn btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold"
                   >
-                    See Heirloom Membership  -  $12/month
+                    See Heirloom Membership  -  $99/year
                   </Link>
                   <Link
                     href="/dashboard"

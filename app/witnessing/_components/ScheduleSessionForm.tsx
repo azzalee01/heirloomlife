@@ -85,7 +85,7 @@ export default function ScheduleSessionForm() {
         </h2>
 
         <div className="border px-3 py-2 text-xs" style={{ borderColor: 'rgba(42,180,174,0.35)', background: 'rgba(42,180,174,0.06)', color: 'var(--teal-deep)' }}>
-          NSW law requires a minimum of <strong>2 witnesses</strong> for a will signing.
+          You&apos;ll need two independent witnesses on the call.
         </div>
 
         <div>

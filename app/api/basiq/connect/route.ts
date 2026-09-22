@@ -19,10 +19,12 @@ export async function POST(request: NextRequest) {
   }
   if (!mobile) return new Response('mobile is required', { status: 400 })
 
+  let step = 'get_token'
   try {
     const token = await getBasiqServerToken()
 
     // Reuse existing Basiq user if present
+    step = 'lookup_user'
     const { data: existing } = await supabaseAdmin
       .from('basiq_users')
       .select('basiq_user_id')
@@ -33,16 +35,18 @@ export async function POST(request: NextRequest) {
     if (existing?.basiq_user_id) {
       basiqUserId = existing.basiq_user_id
     } else {
+      step = 'create_user'
       basiqUserId = await createBasiqUser(token, user.email ?? '')
       await supabaseAdmin
         .from('basiq_users')
         .insert({ user_id: user.id, basiq_user_id: basiqUserId })
     }
 
+    step = 'create_auth_link'
     const consentUrl = await createBasiqAuthLink(token, basiqUserId, mobile)
     return Response.json({ url: consentUrl })
   } catch (err) {
-    console.error('[basiq/connect]', err)
+    console.error(`[basiq/connect] step=${step}`, err)
     return new Response('Failed to initiate connection', { status: 500 })
   }
 }

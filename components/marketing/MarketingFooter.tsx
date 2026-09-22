@@ -29,6 +29,7 @@ const COLUMNS = [
   {
     title: 'Legal',
     links: [
+      { label: 'Security & Trust', href: '/security-trust' },
       { label: 'Terms of Service', href: '/terms' },
       { label: 'Privacy Policy', href: '/privacy' },
       { label: 'FAQ', href: '/faq' },

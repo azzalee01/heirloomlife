@@ -13,9 +13,8 @@ export const metadata = {
 }
 
 const STATS = [
-  { figure: '1 in 12', label: 'Australians currently include a gift to charity in their Will' },
-  { figure: '$2.5B+', label: 'generated for Australian charities through gifts in Wills each year' },
-  { figure: '200x', label: 'the average bequest compared to a typical cash donation' },
+  { figure: '~6.5%', label: 'of Australian Wills include a gift to charity' },
+  { figure: '~$1.3B', label: 'estimated annual value of charitable bequests to Australian charities' },
 ]
 
 const VALUE_PROPS = [
@@ -60,7 +59,7 @@ export default function ForCharitiesPage() {
 
       {/* ── Stats ──────────────────────────────────────────────────────────── */}
       <section style={{ paddingBlock: '4.5rem', background: '#fff', borderBottom: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10 md:grid-cols-3" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
+        <div className="md:px-10 md:grid-cols-2" style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
           {STATS.map(({ figure, label }) => (
             <div key={figure} style={{ textAlign: 'center', padding: '1.5rem' }}>
               <p style={{ margin: 0, fontFamily: 'var(--font-display)', fontSize: 'clamp(2.4rem, 5vw, 3.6rem)', fontWeight: 400, color: 'var(--teal-deep)', lineHeight: 1 }}>
@@ -73,7 +72,7 @@ export default function ForCharitiesPage() {
           ))}
         </div>
         <p style={{ textAlign: 'center', marginTop: '1rem', fontSize: '.7rem', color: 'var(--mkt-stone-soft)' }}>
-          Sources: Fundraising Institute Australia; Philanthropy Australia. September 2026.
+          Source: JBWere Bequest Report, 2024. Figures are estimates.
         </p>
       </section>
 
