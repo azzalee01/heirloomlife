@@ -17,6 +17,7 @@ const TABS: NavTab[] = [
     items: [
       { label: 'The Will', href: '/the-will' },
       { label: 'Living Vault', href: '/living-vault' },
+      { label: 'The Platform', href: '/the-platform' },
       { label: 'How It Works', href: '/how-it-works' },
       { label: 'Pricing', href: '/pricing' },
     ],

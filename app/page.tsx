@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
-import PlatformPreview from '@/components/marketing/PlatformPreview'
+import LifeStageSnake from '@/components/marketing/LifeStageSnake'
 import Reveal from '@/components/marketing/Reveal'
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
@@ -17,7 +17,7 @@ function H2({ children }: { children: React.ReactNode }) {
     <h2 style={{
       fontSize: 'clamp(1.9rem, 3.2vw, 3.1rem)', lineHeight: 1.08,
       letterSpacing: '-.02em', fontWeight: 500,
-      fontFamily: "var(--font-body)", color: 'var(--mkt-ink-text)', margin: 0,
+      fontFamily: 'var(--font-body)', color: 'var(--mkt-ink-text)', margin: 0,
     }}>
       {children}
     </h2>
@@ -53,104 +53,82 @@ export default function HomePage() {
 
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
       <section style={{ position: 'relative', background: 'var(--mkt-surface)', color: 'var(--mkt-ink-text)', overflow: 'hidden' }}>
-        {/* Hero text  -  constrained */}
-        <div style={{ ...W, paddingTop: '8rem', paddingBottom: '3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ ...W, paddingTop: '8rem', paddingBottom: '0', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ maxWidth: '52rem' }}>
-            <h1 style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(2.7rem, 6.2vw, 5.4rem)', lineHeight: .98, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0 }}>
+            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.7rem, 6.2vw, 5.4rem)', lineHeight: .98, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0 }}>
               Protect what matters,{' '}
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
               Start for free. Complete your whole Will in just 15 minutes and download it when you are ready.
             </p>
-            <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.9rem' }}>
-              <Link href="/start?path=retail" className="mkt-btn-ink-l">
-                Create my Will
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-              <p style={{ margin: 0, fontSize: '.85rem', color: 'var(--mkt-stone)' }}>
-                Already have a Will?{' '}
-                <Link href="/start?mode=upload" style={{ color: 'var(--teal-deep)', fontWeight: 600, textDecoration: 'underline' }}>
-                  Upload it and we&apos;ll take care of you.
-                </Link>
-              </p>
-            </div>
           </div>
         </div>
 
-        {/* Platform preview */}
-        <div style={{ paddingInline: 'clamp(.75rem, 2vw, 2rem)', paddingBottom: '4rem' }}>
-          <div className="w-full sm:w-[72%]" style={{ marginInline: 'auto' }}>
-            <PlatformPreview />
-          </div>
-        </div>
+        {/* Life stage journey — sits between tagline and CTA */}
+        <LifeStageSnake inline />
 
-        {/* Trust bar */}
-        <div style={{ position: 'relative', zIndex: 2, borderTop: '1px solid var(--mkt-line)', background: '#fff' }}>
-          <div
-            className="md:px-10 md:grid-cols-4"
-            style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '1.4rem', paddingBlock: '1.6rem', fontSize: '.8rem', color: 'var(--mkt-stone)' }}
-          >
-            {[
-              {
-                d: <><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z" stroke="currentColor" strokeWidth="1.4"/><path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
-                t: 'Available in all Australian states and territories  -  drafted to your state\'s legal requirements',
-              },
-              {
-                d: <><path d="M4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z" stroke="currentColor" strokeWidth="1.4"/><path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
-                t: 'A living document, amended as your life changes',
-              },
-              {
-                d: <><rect x="4" y="10" width="16" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.4"/></>,
-                t: 'Solicitor reviewed, securely stored',
-              },
-              {
-                d: <><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
-                t: 'Free to start  -  pay only when you download',
-              },
-            ].map((item, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '.65rem' }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0, color: 'var(--teal-deep)' }} aria-hidden="true">{item.d}</svg>
-                {item.t}
-              </div>
-            ))}
-          </div>
+        <div style={{ paddingBottom: '3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.9rem' }}>
+          <Link href="/start?path=retail" className="mkt-btn-ink-l">
+            Create my Will
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </Link>
+          <p style={{ margin: 0, fontSize: '.85rem', color: 'var(--mkt-stone)' }}>
+            Already have a Will?{' '}
+            <Link href="/start?mode=upload" style={{ color: 'var(--teal-deep)', fontWeight: 600, textDecoration: 'underline' }}>
+              Upload it and we&apos;ll take care of you.
+            </Link>
+          </p>
         </div>
       </section>
 
+      {/* ─── TRUST BAR ────────────────────────────────────────────────────── */}
+      <section style={{ borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)', background: '#fff' }}>
+        <div
+          className="md:px-10 md:grid-cols-4"
+          style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '1.4rem', paddingBlock: '1.6rem', fontSize: '.8rem', color: 'var(--mkt-stone)' }}
+        >
+          {[
+            {
+              d: <><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z" stroke="currentColor" strokeWidth="1.4"/><path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
+              t: "Available in all Australian states and territories  -  drafted to your state's legal requirements",
+            },
+            {
+              d: <><path d="M4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z" stroke="currentColor" strokeWidth="1.4"/><path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
+              t: 'A living document, amended as your life changes',
+            },
+            {
+              d: <><rect x="4" y="10" width="16" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.4"/></>,
+              t: 'Solicitor reviewed, securely stored',
+            },
+            {
+              d: <><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
+              t: 'Free to start  -  pay only when you download',
+            },
+          ].map((item, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '.65rem' }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0, color: 'var(--teal-deep)' }} aria-hidden="true">{item.d}</svg>
+              {item.t}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── NO-PAYMENT STRIP ─────────────────────────────────────────────── */}
       <section style={{ background: 'var(--mkt-surface-2)', color: 'var(--mkt-ink-text)', borderBottom: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10" style={{ ...W, paddingBlock: '1.25rem', fontSize: '.875rem', color: 'var(--mkt-stone)', textAlign: 'center' }}>
           No payment to begin. No subscription required to finish.
         </div>
       </section>
 
-      {/* ─── LIFE CHANGES ───────────────────────────────────────────────── */}
-      <section style={{ ...SECTION_PAD, background: '#fff', borderBottom: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10" style={W}>
-          <div style={{ maxWidth: '42rem' }}>
-            <span style={SECTION_LABEL}>Built around real life</span>
-            <H2>Every new chapter can change what your estate plan needs to <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>protect</em>.</H2>
-            <Sub>Tell Heirloom what changed. We&#8217;ll help you review the people, assets and wishes that may need attention  -  and prepare supported updates for your approval.</Sub>
-          </div>
-          <div style={{ marginTop: '2.25rem', display: 'flex', flexWrap: 'wrap', gap: '.65rem' }}>
-            {[
-              ['Marriage', 'getting-married'],
-              ['A new child', 'new-child'],
-              ['Property', 'buying-selling-property'],
-              ['Separation', 'separation-divorce'],
-              ['Business', 'starting-selling-business'],
-              ['Inheritance', 'receiving-inheritance'],
-              ['Moving interstate', 'moving-interstate'],
-              ['Serious illness', 'serious-illness'],
-            ].map(([event, slug]) => (
-              <Link key={event} href={`/life-changes/${slug}`} className="hover:bg-[var(--mkt-surface-2)]" style={{ display: 'inline-flex', alignItems: 'center', gap: '.65rem', padding: '.7rem .9rem', borderRadius: 999, border: '1px solid var(--mkt-line)', background: '#fff', textDecoration: 'none', color: 'var(--mkt-ink-text)', fontSize: '.82rem', fontWeight: 600 }}>
-                {event}<span style={{ color: 'var(--teal-deep)' }}>→</span>
-              </Link>
-            ))}
-          </div>
-          <p style={{ marginTop: '1.25rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)' }}>A life change may affect your estate record, your Will, or both. Rules and effects vary by state and individual circumstances. <Link href="/life-changes" style={{ color: 'var(--teal-deep)', fontWeight: 600 }}>Explore all life changes →</Link></p>
+      {/* ─── START CTA ────────────────────────────────────────────────────── */}
+      <section style={{ background: '#fff', paddingBlock: '3.5rem', borderBottom: '1px solid var(--mkt-line)' }}>
+        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+          <span style={SECTION_LABEL}>Your Will starts here</span>
+          <p style={{ margin: 0, fontSize: '1.05rem', color: 'var(--mkt-stone)' }}>15 minutes. Free to start. Ready when you are.</p>
+          <Link href="/start?path=retail" className="mkt-btn-teal-l" style={{ marginTop: '.5rem' }}>Start for free</Link>
         </div>
       </section>
 
@@ -160,11 +138,10 @@ export default function HomePage() {
           className="md:px-10 lg:grid lg:gap-16 lg:items-center"
           style={{ ...W, gridTemplateColumns: '1fr 1.1fr' }}
         >
-          {/* Left: text + CTAs */}
           <div>
             <span style={SECTION_LABEL}>The Will</span>
-            <H2>Not a document you sign once<br/>and hope you never think about <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>again</em>.</H2>
-            <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault - readable in plain English, versioned every time your life moves forward, with a standard solicitor quality review included before your Will is issued.</Sub>
+            <H2>Not a document you sign once<br/>and hope you never think about <em style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>again</em>.</H2>
+            <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault — readable in plain English, versioned every time your life moves forward, with a standard solicitor quality review included before your Will is issued.</Sub>
             <div style={{ marginTop: '2rem', display: 'flex', gap: '.9rem', flexWrap: 'wrap' }}>
               <Link href="/start" className="mkt-btn-ink-l">
                 Start your Will
@@ -176,9 +153,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Right: Will mockup */}
           <div className="mt-12 lg:mt-0" style={{ borderRadius: 12, background: '#fff', border: '1px solid var(--mkt-line)', boxShadow: '0 30px 80px rgba(15,30,28,0.10)', overflow: 'hidden' }}>
-            {/* Doc header */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--mkt-line)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '.9rem' }}>
                 <div style={{ width: '2.6rem', height: '2.6rem', borderRadius: 8, background: 'var(--mkt-surface-2)', border: '1px solid var(--mkt-line)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -191,7 +166,6 @@ export default function HomePage() {
               </div>
               <Pill>Solicitor reviewed</Pill>
             </div>
-            {/* Tab strip */}
             <div style={{ display: 'flex', gap: '1.6rem', paddingInline: '1.5rem', borderBottom: '1px solid var(--mkt-line)', overflowX: 'auto' }}>
               {['Clauses', 'Beneficiaries', 'Version History', 'Suggested Edits'].map((tab, i) => (
                 <div key={tab} style={{ paddingBlock: '1rem', fontSize: '.78rem', fontWeight: 600, color: i === 0 ? 'var(--mkt-ink-text)' : 'var(--mkt-stone-soft)', whiteSpace: 'nowrap', flexShrink: 0, borderBottom: i === 0 ? '2px solid var(--teal)' : '2px solid transparent' }}>
@@ -199,11 +173,10 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            {/* Clauses */}
             <div style={{ padding: '1.75rem 1.5rem' }}>
               {[
                 { n: '1', title: 'Appointment of Executor', body: "Names who carries out your wishes. Your executor gathers your assets, pays any debts, and distributes what remains as you've set out below.", badge: null },
-                { n: '2', title: 'Guardianship of Minor Children', body: 'Flagged for review - a change to your family situation since your last amendment may affect this clause.', badge: 'Review recommended' },
+                { n: '2', title: 'Guardianship of Minor Children', body: 'Flagged for review — a change to your family situation since your last amendment may affect this clause.', badge: 'Review recommended' },
                 { n: '3', title: 'Distribution of Residuary Estate', body: 'Sets out how everything not otherwise gifted is divided. Last confirmed against your asset register two months ago.', badge: null },
               ].map(clause => (
                 <div key={clause.n} style={{ display: 'flex', gap: '1rem', padding: '1rem 0', borderBottom: '1px solid var(--mkt-line)' }}>
@@ -229,7 +202,7 @@ export default function HomePage() {
         <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>The Command Centre</span>
-            <H2>A single home for everything<br/>your estate needs to <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>keep working</em>.</H2>
+            <H2>A single home for everything<br/>your estate needs to <em style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>keep working</em>.</H2>
             <Sub>Your Will gets your estate plan created. Living Vault keeps it current, together and ready as your life changes.</Sub>
           </div>
           <div className="lg:grid-cols-[1.15fr_1fr] lg:grid-rows-2" style={{ marginTop: '3.5rem', display: 'grid', gap: '1.1rem', gridTemplateColumns: '1fr' }}>
@@ -252,8 +225,8 @@ export default function HomePage() {
               </div>
             </div>
             {[
-              { tag: 'Lawyer Review', h: "Included as standard, with escalation available.", p: 'Every Will is subject to a standard solicitor quality review before being issued. Complex flags  -  business succession, trusts, blended families  -  are surfaced in your Vault, where you can reach our partner lawyers directly.' },
-              { tag: 'Document Storage', h: "Everything in one place, always up to date.", p: "Your Will, asset register, and instructions stored securely in your Vault  -  so nothing is left to find at the worst possible time." },
+              { tag: 'Lawyer Review', h: 'Included as standard, with escalation available.', p: 'Every Will is subject to a standard solicitor quality review before being issued. Complex flags  -  business succession, trusts, blended families  -  are surfaced in your Vault, where you can reach our partner lawyers directly.' },
+              { tag: 'Document Storage', h: 'Everything in one place, always up to date.', p: "Your Will, asset register, and instructions stored securely in your Vault  -  so nothing is left to find at the worst possible time." },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: '#fff', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--teal) 30%, var(--teal) 70%, transparent)', pointerEvents: 'none' }}/>
@@ -271,7 +244,7 @@ export default function HomePage() {
         <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '40rem' }}>
             <span style={SECTION_LABEL}>Why now</span>
-            <H2>Estate planning has been <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>deprioritised</em>,<br/>not because it doesn&#8217;t matter.</H2>
+            <H2>Estate planning has been <em style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>deprioritised</em>,<br/>not because it doesn&#8217;t matter.</H2>
           </div>
           <div className="md:grid-cols-3" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', borderTop: '1px solid var(--mkt-line)', borderLeft: '1px solid var(--mkt-line)' }}>
             {[
@@ -280,7 +253,7 @@ export default function HomePage() {
               { num: '1', label: "Place your Will, your Vault, and your executor's instructions all live" },
             ].map(stat => (
               <div key={stat.num} style={{ borderRight: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)', padding: '2.4rem 2rem' }}>
-                <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3rem, 5vw, 4.6rem)', lineHeight: .9, color: 'var(--mkt-ink-text)', margin: 0 }}>{stat.num}</p>
+                <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 5vw, 4.6rem)', lineHeight: .9, color: 'var(--mkt-ink-text)', margin: 0 }}>{stat.num}</p>
                 <p style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--mkt-line)', fontSize: '.8rem', color: 'var(--mkt-stone)', letterSpacing: '.02em' }}>{stat.label}</p>
               </div>
             ))}
@@ -292,7 +265,7 @@ export default function HomePage() {
       <section style={{ ...SECTION_PAD, background: '#fff', borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)' }}>
         <Reveal className="md:px-10" style={W}>
           <p style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal)', marginBottom: '2rem' }}>Why Heirloom exists</p>
-          <blockquote style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontSize: 'clamp(1.7rem, 2.9vw, 2.6rem)', lineHeight: 1.25, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', maxWidth: '46rem', margin: 0 }}>
+          <blockquote style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'clamp(1.7rem, 2.9vw, 2.6rem)', lineHeight: 1.25, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', maxWidth: '46rem', margin: 0 }}>
             A Will isn&#8217;t paperwork—it&#8217;s the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet.
           </blockquote>
         </Reveal>
@@ -303,7 +276,7 @@ export default function HomePage() {
         <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '34rem' }}>
             <span style={SECTION_LABEL}>Membership</span>
-            <H2>Priced like something<br/>worth <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.</H2>
+            <H2>Priced like something<br/>worth <em style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.</H2>
             <Sub>Choose $129 once with three months of full Vault benefits, or $99/year for your Will and continuing membership. One clear price—never a Will fee plus a subscription.</Sub>
           </div>
           <div style={{ marginTop: '2rem' }}>
