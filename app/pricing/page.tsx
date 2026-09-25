@@ -2,6 +2,7 @@ import Link from 'next/link'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 import PricingVaultCTA from './_components/PricingVaultCTA'
+import { PRICING } from '@/src/lib/pricing'
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_LABEL: React.CSSProperties = {
@@ -36,7 +37,7 @@ export default function PricingPage() {
             <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>ready for life</em>.
           </h1>
           <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
-            Free to start. Draft your whole Will at your own pace, then pay $129 to download your reviewed, signed-ready document  - or join for $99/year with your Will and continuing membership included.
+            Free to start. Draft your whole Will at your own pace, then pay ${PRICING.willAud} to download and sign it. Add unlimited updates for ${PRICING.updatesAudPerYear}/year if you want to keep it current as life changes.
           </p>
         </div>
       </section>
@@ -62,7 +63,7 @@ export default function PricingPage() {
                   'State-specific legal compliance for all Australian states and territories',
                   'Standard solicitor quality review before your Will is issued',
                   'Your Will, permanently downloadable',
-                  '3 months Living Vault membership included',
+                  'One remote signing session included (NSW)',
                   'Witnessing guidance (remote AV witnessing in NSW — print-and-sign in all other states)',
                 ].map((f) => (
                   <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.875rem', color: 'var(--mkt-stone)' }}>
@@ -85,24 +86,21 @@ export default function PricingPage() {
               </p>
             </div>
 
-            {/* ── Living Vault ── */}
-            <div id="living-vault" style={{ borderRadius: 16, border: '2px solid var(--teal-deep)', background: '#fff', padding: '2.25rem', display: 'flex', flexDirection: 'column' }}>
-              <span style={SECTION_LABEL}>Living Vault</span>
+            {/* ── Unlimited updates ── */}
+            <div id="unlimited-updates" style={{ borderRadius: 16, border: '2px solid var(--teal-deep)', background: '#fff', padding: '2.25rem', display: 'flex', flexDirection: 'column' }}>
+              <span style={SECTION_LABEL}>Unlimited updates</span>
               <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3rem, 5vw, 4.5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
-                $99
+                ${PRICING.updatesAudPerYear}
               </p>
-              <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>per year. Your Will is included.</p>
-              <p style={{ fontSize: '.8rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount available when your partner shares their link with you.</p>
+              <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>per year, optional.</p>
+              <p style={{ fontSize: '.8rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount applies to the Will only, not to unlimited updates.</p>
 
-              <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 1.5rem' }}>
                 {[
-                  'Guided life-change check-ins through your Vault',
-                  'Your Will included throughout membership',
-                  'Supported amendments and updated Will documents',
-                  'A maintained register of assets, beneficiaries, gifts, and executors',
-                  'Will status and estate-review guidance',
-                  'NSW members only: access to Heirloom\'s team AV witness pool for remote execution',
-                  'Direct access to partner lawyers through the platform for complex or bespoke situations',
+                  'Change your Will as often as life changes',
+                  'Add or remove beneficiaries, gifts and executors',
+                  'Download every new version',
+                  'Cancel any time',
                 ].map((f) => (
                   <li key={f} style={{ display: 'flex', gap: '.6rem', alignItems: 'flex-start', fontSize: '.875rem', color: 'var(--mkt-stone)' }}>
                     <Check />
@@ -111,11 +109,15 @@ export default function PricingPage() {
                 ))}
               </ul>
 
+              <p style={{ fontSize: '.82rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem', fontStyle: 'italic' }}>
+                Video re-witnessing of updated Wills: coming soon.
+              </p>
+
               <div style={{ marginTop: 'auto' }}>
                 <PricingVaultCTA />
               </div>
               <p style={{ marginTop: '1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-                Renews annually until cancelled. You can download and retain your completed Will if you later leave.
+                Renews annually until cancelled. You keep your completed Will and all versions if you cancel.
               </p>
             </div>
 
@@ -154,7 +156,7 @@ export default function PricingPage() {
           {[
             {
               q: 'Is it really free to start?',
-              a: 'Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $129 when you\'re ready to download your solicitor-reviewed, signed-ready document. Annual Vault membership ($99/year) includes your Will and ongoing updates.',
+              a: 'Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $129 when you\'re ready to download your solicitor-reviewed, signed-ready document. Unlimited updates ($25/year, optional) only matters if you want to change your Will later.',
             },
             {
               q: 'Which states are supported?',
@@ -166,7 +168,7 @@ export default function PricingPage() {
             },
             {
               q: 'What is the Living Vault?',
-              a: 'Living Vault is included in the $99/year annual membership. It keeps your Will and estate information organised, supports updates as life changes and gives NSW members access to Heirloom\'s AV witness pool. The $129 one-off Will includes the same platform benefits for three months.',
+              a: 'Living Vault is where your Will, assets and people live, from the day you buy your Will. Unlimited updates ($25/year, optional) keeps your Will current as life changes.',
             },
             {
               q: 'What if my situation is complex?',
