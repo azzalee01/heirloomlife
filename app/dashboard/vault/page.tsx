@@ -2,14 +2,14 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
-import { hasVaultBenefits } from '@/src/lib/entitlements'
+import { hasUpdatesAccess, hasWillAccess } from '@/src/lib/entitlements'
 import PlanCTA from '../_components/PlanCTA'
 
 const FEATURES = [
   { title: 'Will and version history', body: 'Keep your completed Will accessible and maintain a clear history as your wishes change.', href: '/dashboard/will', action: 'Open Will' },
   { title: 'Life-change reviews', body: 'Record a marriage, separation, new child, property move or other major event and see what needs attention.', href: '/dashboard/life-events', action: 'Review a life change' },
   { title: 'Supported amendments', body: 'Update people, assets and wishes without rebuilding your estate plan from the beginning.', href: '/will/new', action: 'Update Will' },
-  { title: 'Witnessing access', body: 'Use signing guidance and, for eligible NSW members, request remote AV witness scheduling.', href: '/witnessing', action: 'See witnessing' },
+  { title: 'Witnessing access', body: 'Signing guidance and, in NSW, your included remote witnessing session. Re-witnessing updated Wills: coming soon.', href: '/witnessing', action: 'See witnessing' },
 ]
 
 export default async function VaultPage() {
@@ -19,22 +19,22 @@ export default async function VaultPage() {
 
   const { data: profile } = await supabaseAdmin
     .from('profiles')
-    .select('plan, plan_status, vault_access_until')
+    .select('plan, plan_status, updates_status, updates_active_until')
     .eq('id', user.id)
     .single()
 
-  const benefitsActive = hasVaultBenefits(profile)
-  const annualMember = profile?.plan === 'vault' && benefitsActive
-  const accessUntil = profile?.vault_access_until
-    ? new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(profile.vault_access_until))
+  const ownsWill = hasWillAccess(profile)
+  const updatesActive = hasUpdatesAccess(profile)
+  const updatesUntil = profile?.updates_active_until
+    ? new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(profile.updates_active_until))
     : null
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
       <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b px-6" style={{ background: 'rgba(255,255,255,.88)', borderColor: 'var(--line)', backdropFilter: 'blur(16px)' }}>
         <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>Living Vault</h1>
-        <span className="text-xs font-semibold" style={{ color: benefitsActive ? 'var(--teal-deep)' : 'var(--neutral)' }}>
-          {annualMember ? 'Annual membership active' : benefitsActive && accessUntil ? `Benefits active until ${accessUntil}` : 'Benefits period ended'}
+        <span className="text-xs font-semibold" style={{ color: updatesActive ? 'var(--teal-deep)' : 'var(--neutral)' }}>
+          {updatesActive && updatesUntil ? `Unlimited updates active until ${updatesUntil}` : 'Unlimited updates not active'}
         </span>
       </header>
 
@@ -60,16 +60,7 @@ export default async function VaultPage() {
           ))}
         </section>
 
-        {!benefitsActive && <PlanCTA />}
-        {benefitsActive && !annualMember && (
-          <section className="flex flex-col justify-between gap-4 rounded-xl border bg-[var(--paper-warm)] p-5 sm:flex-row sm:items-center" style={{ borderColor: 'var(--line)' }}>
-            <div>
-              <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Keep your Vault benefits after {accessUntil}</p>
-              <p className="mt-1 text-xs leading-5" style={{ color: 'var(--neutral)' }}>Join for $12/month billed annually. Your Will is already yours; membership keeps supported updates and continuing benefits active.</p>
-            </div>
-            <Link href="/pricing#living-vault" className="btn btn-primary shrink-0 px-5 py-2.5 text-sm font-semibold">View annual membership</Link>
-          </section>
-        )}
+        {ownsWill && !updatesActive && <PlanCTA />}
       </main>
     </div>
   )

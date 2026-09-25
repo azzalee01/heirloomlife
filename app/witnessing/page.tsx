@@ -4,7 +4,7 @@ import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import ScheduleSessionForm from './_components/ScheduleSessionForm'
 import SessionList, { type WitnessingSessionSummary } from './_components/SessionList'
-import { hasVaultBenefits } from '@/src/lib/entitlements'
+import { hasWillAccess, hasUsedIncludedSigning } from '@/src/lib/entitlements'
 
 export default async function WitnessingPage() {
   const supabase = await createSupabaseServerClient()
@@ -41,18 +41,18 @@ export default async function WitnessingPage() {
     )
   }
 
-  // AV witnessing requires active Vault benefits AND a NSW address on file.
+  // One AV signing session is included with a paid Will, for NSW addresses. Re-witnessing an updated Will is coming soon.
   const [profileRes, testatorRes] = await Promise.all([
-    supabaseAdmin.from('profiles').select('plan, plan_status, vault_access_until').eq('id', user.id).single(),
+    supabaseAdmin.from('profiles').select('plan, plan_status').eq('id', user.id).single(),
     supabase.from('testators').select('state').eq('will_id', will.id).not('marital_status', 'is', null).limit(1).single(),
   ])
-  const isActiveMember = hasVaultBenefits(profileRes.data)
+  const ownsWill = hasWillAccess(profileRes.data)
   const userState = (testatorRes.data as { state: string | null } | null)?.state ?? null
   const isNSW = userState === 'NSW'
 
-  if (!isActiveMember || !isNSW) {
-    const reason = !isActiveMember
-      ? { heading: 'Active Vault benefits required', body: 'AV witness scheduling is available during the included three-month benefits period and with annual membership, alongside supported amendments and ongoing estate-plan access.' }
+  if (!ownsWill || !isNSW) {
+    const reason = !ownsWill
+      ? { heading: 'Unlock your Will first', body: 'A remote signing session is included when you unlock your Will. Unlock your Will to book it.' }
       : userState === 'VIC'
         ? { heading: 'Remote witnessing coming to VIC', body: 'Remote witnessing isn\'t available in Victoria yet. We\'re completing the qualifications required to offer it here. Join the Victorian waitlist and we\'ll let you know as soon as it opens.' }
         : { heading: 'NSW only', body: 'Remote AV witnessing is currently available for NSW addresses only. Your address on file is ' + (userState ?? 'not set') + '.' }
@@ -71,12 +71,12 @@ export default async function WitnessingPage() {
             </div>
             <h2 className="text-lg font-semibold" style={{ color: 'var(--ink)' }}>{reason.heading}</h2>
             <p className="text-sm leading-relaxed max-w-sm mx-auto" style={{ color: 'var(--neutral)' }}>{reason.body}</p>
-            {!isActiveMember && (
-              <Link href="/pricing" className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
-                See Heirloom Membership  -  $99/year
+            {!ownsWill && (
+              <Link href="/dashboard" className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
+                Go to your dashboard
               </Link>
             )}
-            {isActiveMember && userState === 'VIC' && (
+            {ownsWill && userState === 'VIC' && (
               <Link href="/waitlist" className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold underline" style={{ color: 'var(--teal-deep)' }}>
                 Join the Victorian waitlist →
               </Link>
@@ -92,6 +92,8 @@ export default async function WitnessingPage() {
     .select('id, scheduled_at, status, recording_enabled, recording_status, recording_url, witness_attestations(id, witness_name, attested_at)')
     .eq('will_id', will.id)
     .order('scheduled_at', { ascending: false })
+
+  const includedSigningUsed = hasUsedIncludedSigning((sessionRows ?? []).map((r) => r.status as string))
 
   const sessions: WitnessingSessionSummary[] = (sessionRows ?? []).map((s) => ({
     id: s.id as string,
@@ -129,7 +131,16 @@ export default async function WitnessingPage() {
           Schedule a remote witnessing session for signing your Will over audio-visual link. Your witness must see you sign in real time.
         </p>
 
-        <ScheduleSessionForm />
+        {includedSigningUsed ? (
+          <div className="border border-[var(--line)] bg-white p-6 space-y-2">
+            <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Your included signing session is booked or complete</p>
+            <p className="text-sm leading-relaxed" style={{ color: 'var(--neutral)' }}>
+              Video re-witnessing of updated Wills is coming soon. Until then, print your updated Will and sign it in front of two independent witnesses.
+            </p>
+          </div>
+        ) : (
+          <ScheduleSessionForm />
+        )}
 
         <section>
           <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--neutral)' }}>

@@ -161,7 +161,7 @@ export async function saveStep(
       .from('wills')
       .insert({
         user_id: user.id,
-        status: 'draft',
+        // status is server-managed; the column default ('draft') applies
         ...(partnerRef && { partner_referral_code: partnerRef }),
       })
       .select('id')

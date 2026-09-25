@@ -44,7 +44,7 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
       </button>
       {hasDownloaded && (
         <p className="text-xs" style={{ color: 'var(--neutral)' }}>
-          Your completed Will remains available to download. Amendments require active Vault benefits or annual membership.
+          Your completed Will remains available to download. Changing it requires unlimited updates ($25/year).
         </p>
       )}
     </div>

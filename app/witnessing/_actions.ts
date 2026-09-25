@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { createWitnessingRoom, createMeetingToken, getRoomRecordings, getRecordingAccessLink } from '@/src/lib/daily'
 import { sendWitnessInviteEmail } from '@/src/lib/email'
+import { hasWillAccess, hasUsedIncludedSigning } from '@/src/lib/entitlements'
 
 async function getOwnedWill() {
   const supabase = await createSupabaseServerClient()
@@ -22,6 +23,23 @@ async function getOwnedWill() {
   if (!will) throw new Error('No will found')
 
   return { supabase, user, willId: will.id }
+}
+
+// Server-side rules for booking a remote signing session (creating a room costs money, so the page gate is not enough):
+// a paid Will, an NSW address, and only the one session included with the Will. Re-witnessing updates is coming soon.
+async function assertMayScheduleSigning(userId: string, willId: string): Promise<void> {
+  const [{ data: profile }, { data: testator }, { data: sessions }] = await Promise.all([
+    supabaseAdmin.from('profiles').select('plan, plan_status').eq('id', userId).single(),
+    supabaseAdmin.from('testators').select('state').eq('will_id', willId).not('state', 'is', null).limit(1).maybeSingle(),
+    supabaseAdmin.from('witnessing_sessions').select('status').eq('will_id', willId),
+  ])
+  if (!hasWillAccess(profile)) throw new Error('Unlock your Will to book a signing session.')
+  if ((testator as { state: string | null } | null)?.state !== 'NSW') {
+    throw new Error('Remote witnessing is currently available for NSW addresses only.')
+  }
+  if (hasUsedIncludedSigning(((sessions ?? []) as { status: string }[]).map((r) => r.status))) {
+    throw new Error('Your included signing session has been used. Video re-witnessing of updated Wills is coming soon.')
+  }
 }
 
 export interface WitnessInput {
@@ -43,6 +61,7 @@ export async function scheduleWitnessingSession(input: {
   }
 
   const { supabase, user, willId } = await getOwnedWill()
+  await assertMayScheduleSigning(user.id, willId)
   const recordingEnabled = input.recordSession
   const testatorName = (user.user_metadata?.full_name as string | undefined) ?? user.email ?? 'Your contact'
 

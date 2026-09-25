@@ -1,8 +1,14 @@
 import { NextRequest } from 'next/server'
-import { getStripe, priceId, isProduct, isSubscriptionProduct } from '@/src/lib/stripe'
+import { getStripe, priceId, isProduct } from '@/src/lib/stripe'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { isLiveState } from '@/src/lib/availability'
+import { hasWillAccess, hasUpdatesAccess } from '@/src/lib/entitlements'
+import { PRICING } from '@/src/lib/pricing'
+
+// Shown on the Stripe payment button whenever the annual updates add-on is in the basket (ACL: clear renewal terms).
+const UPDATES_RENEWAL_NOTICE =
+  `Unlimited updates renews every year at $${PRICING.updatesAudPerYear} (GST inclusive) until you cancel. Cancel any time from your dashboard. Your Will stays yours either way.`
 
 export const dynamic = 'force-dynamic'
 
@@ -11,7 +17,7 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const body = await request.json() as { product?: unknown; returnToWill?: boolean; embedded?: boolean }
+  const body = await request.json() as { product?: unknown; addUpdates?: boolean; returnToWill?: boolean; embedded?: boolean }
   const product = body.product
   if (!isProduct(product)) return Response.json({ error: 'Unknown product' }, { status: 400 })
   const embedded = body.embedded === true
@@ -49,11 +55,14 @@ export async function POST(request: NextRequest) {
   const stripe = getStripe()
 
   // Get or create a Stripe customer, storing the ID on the profile
-  let profile: { stripe_customer_id: unknown; email: unknown; full_name: unknown } | null
+  let profile: {
+    stripe_customer_id: unknown; email: unknown; full_name: unknown
+    plan: string | null; plan_status: string | null; updates_status: string | null; updates_active_until: string | null
+  } | null
   try {
     const { data, error } = await supabaseAdmin
       .from('profiles')
-      .select('stripe_customer_id, email, full_name')
+      .select('stripe_customer_id, email, full_name, plan, plan_status, updates_status, updates_active_until')
       .eq('id', user.id)
       .single()
     if (error) throw error
@@ -61,6 +70,16 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('[checkout] profile lookup failed', { userId: user.id, error: (err as Error).message })
     return Response.json({ error: 'Unable to load your profile. Please try again.' }, { status: 500 })
+  }
+
+  // The updates add-on on its own is only for people who already own a Will, and only once.
+  if (product === 'updates') {
+    if (!hasWillAccess(profile)) {
+      return Response.json({ error: 'Unlock your Will first, then add unlimited updates.' }, { status: 403 })
+    }
+    if (hasUpdatesAccess(profile)) {
+      return Response.json({ error: 'Unlimited updates are already active on your account.' }, { status: 409 })
+    }
   }
 
   // State availability gate — check testator state on user's latest will
@@ -123,7 +142,21 @@ export async function POST(request: NextRequest) {
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
 
-  const metadata: Record<string, string> = { userId: user.id, product }
+  // Will + optional updates add-on share one Checkout Session (one-time + recurring line items => subscription mode).
+  const addUpdatesWithWill = product === 'will' && body.addUpdates === true
+  const lineItems: { price: string; quantity: number }[] = [{ price, quantity: 1 }]
+  if (addUpdatesWithWill) {
+    try {
+      lineItems.push({ price: priceId('updates'), quantity: 1 })
+    } catch (err) {
+      console.error('[checkout] missing price env var', { product: 'updates', userId: user.id, error: (err as Error).message })
+      return Response.json({ error: 'Checkout is not available right now. Please contact support.' }, { status: 500 })
+    }
+  }
+  const includesUpdates = addUpdatesWithWill || product === 'updates'
+  const mode: 'payment' | 'subscription' = includesUpdates ? 'subscription' : 'payment'
+
+  const metadata: Record<string, string> = { userId: user.id, product, updates: includesUpdates ? 'true' : 'false' }
   if (willId) metadata.will_id = willId
   if (charityReferralCode) metadata.partner_code = charityReferralCode
   if (coupleCode) metadata.couple_code = coupleCode
@@ -134,11 +167,13 @@ export async function POST(request: NextRequest) {
     if (embedded) {
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
-        line_items: [{ price, quantity: 1 }],
-        mode: isSubscriptionProduct(product) ? 'subscription' : 'payment',
+        line_items: lineItems,
+        mode,
         ui_mode: 'embedded_page' as const,
         return_url: `${baseUrl}/dashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
         metadata,
+        ...(mode === 'subscription' ? { subscription_data: { metadata } } : {}),
+        ...(includesUpdates ? { custom_text: { submit: { message: UPDATES_RENEWAL_NOTICE } } } : {}),
         ...(discounts ? { discounts } : {}),
       })
       return Response.json({ clientSecret: session.client_secret })
@@ -150,11 +185,13 @@ export async function POST(request: NextRequest) {
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      line_items: [{ price, quantity: 1 }],
-      mode: isSubscriptionProduct(product) ? 'subscription' : 'payment',
+      line_items: lineItems,
+      mode,
       success_url: `${baseUrl}${successPath}`,
       cancel_url: `${baseUrl}${cancelPath}`,
       metadata,
+      ...(mode === 'subscription' ? { subscription_data: { metadata } } : {}),
+      ...(includesUpdates ? { custom_text: { submit: { message: UPDATES_RENEWAL_NOTICE } } } : {}),
       ...(discounts ? { discounts } : {}),
     })
 

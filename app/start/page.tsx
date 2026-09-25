@@ -18,7 +18,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
     try {
       const [{ formData: loaded }, { data: profile }] = await Promise.all([
         loadWillFormData(supabase, user.id),
-        supabase.from('profiles').select('plan, plan_status, vault_access_until').eq('id', user.id).single(),
+        supabase.from('profiles').select('plan, plan_status, updates_status, updates_active_until').eq('id', user.id).single(),
       ])
       formData = loaded
       hasWillAccess = profileHasWillAccess(profile)

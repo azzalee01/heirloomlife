@@ -9,8 +9,9 @@ import { supabaseAdmin } from '@/src/lib/supabase-server';
 import LogoutButton from '@/src/components/LogoutButton';
 import IntroAnimationLoader from './_components/IntroAnimationLoader';
 import PlanCTA from './_components/PlanCTA';
+import ManageUpdatesButton from './_components/ManageUpdatesButton';
 import PartnerShareCard from './_components/PartnerShareCard';
-import { hasVaultBenefits } from '@/src/lib/entitlements';
+import { hasUpdatesAccess } from '@/src/lib/entitlements';
 
 // ─── DB row types ─────────────────────────────────────────────────────────────
 type Will = { id: string; status: string; updated_at: string }
@@ -143,7 +144,7 @@ export default async function DashboardPage({
   const [{ data: profileRow }, { data: coupleCodes }] = await Promise.all([
     supabaseAdmin
       .from('profiles')
-      .select('plan, plan_status, vault_access_until')
+      .select('plan, plan_status, updates_status, updates_active_until')
       .eq('id', user.id)
       .single(),
     supabaseAdmin
@@ -155,9 +156,9 @@ export default async function DashboardPage({
 
   const plan = (profileRow?.plan as string) ?? 'free';
   const planStatus = (profileRow?.plan_status as string | null) ?? null;
-  const vaultBenefitsActive = hasVaultBenefits(profileRow);
-  const vaultAccessUntil = profileRow?.vault_access_until
-    ? new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(profileRow.vault_access_until as string))
+  const updatesActive = hasUpdatesAccess(profileRow);
+  const updatesActiveUntil = profileRow?.updates_active_until
+    ? new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(profileRow.updates_active_until as string))
     : null;
 
   const { data: connectedAccountsData } = await supabaseAdmin
@@ -729,15 +730,16 @@ export default async function DashboardPage({
                   {PLAN_STATUS_LABELS[planStatus].label}
                 </span>
               )}
-              {plan === 'will' && vaultBenefitsActive && vaultAccessUntil && (
-                <span className="ml-2 text-xs" style={{ color: 'var(--neutral)' }}>Full Vault benefits until {vaultAccessUntil}</span>
+              {plan === 'will' && updatesActive && updatesActiveUntil && (
+                <span className="ml-2 text-xs" style={{ color: 'var(--neutral)' }}>Unlimited updates active until {updatesActiveUntil}</span>
               )}
             </div>
-            {plan === 'will' && <Link href="/pricing#living-vault" className="shrink-0 text-xs font-semibold" style={{ color: 'var(--teal)' }}>{vaultBenefitsActive ? 'Keep benefits →' : 'Join annually →'}</Link>}
+            {plan === 'will' && !updatesActive && <Link href="#upgrade" className="shrink-0 text-xs font-semibold" style={{ color: 'var(--teal)' }}>Add unlimited updates →</Link>}
+            {plan === 'will' && updatesActive && <ManageUpdatesButton />}
           </div>
         )}
 
-        {will && (plan === 'free' || (plan === 'will' && !vaultBenefitsActive)) && (
+        {will && plan === 'will' && !updatesActive && (
           <div id="upgrade">
             <PlanCTA />
           </div>
