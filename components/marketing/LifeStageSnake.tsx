@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 
 type Event = {
@@ -22,9 +22,9 @@ const EVENTS: Event[] = [
   { n: '08', eyebrow: 'Moving',        title: 'Moving jurisdiction',      slug: 'moving-interstate',         badge: 'Will rules vary by state' },
 ]
 
-// Smooth cubic-bezier sine wave through 8 points
-// viewBox 0 0 900 200 — top nodes at y=50, bottom nodes at y=150
-// x positions: (i + 0.5) / 8 * 900 → 56, 169, 281, 394, 506, 619, 731, 844
+// 8-node smooth cubic-bezier sine wave
+// viewBox 0 0 900 200 — top nodes y=50, bottom nodes y=150
+// x centres: (i + 0.5) / 8 * 900 → 56, 169, 281, 394, 506, 619, 731, 844
 const WAVE_PATH = [
   'M 56 50',
   'C 113 50 113 150 169 150',
@@ -36,22 +36,66 @@ const WAVE_PATH = [
   'C 788 50 788 150 844 150',
 ].join(' ')
 
-const CIRCLE_R = 26  // px — half of 52px diameter
+const CIRCLE_R = 26    // px radius
+const LINE_DUR = 1400  // ms — stroke-dashoffset draw
+const NODE_D0  = 150   // ms — first node entrance delay
+const NODE_GAP = 200   // ms — stagger between nodes
+const DASH     = 4000  // dasharray value, larger than any path length in viewBox coords
 
 export default function LifeStageSnake({ inline = false }: { inline?: boolean }) {
-  const [hovered, setHovered] = useState<number | null>(null)
+  const [hovered,  setHovered]  = useState<number | null>(null)
+  const [reduced] = useState(() =>
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+  const [animated, setAnimated] = useState(reduced)
+  const waveRef = useRef<HTMLDivElement>(null)
 
-  // Inline (hero) mode: extra height so bottom-node badge pills don't overflow into the CTA
+  useEffect(() => {
+    if (reduced) return
+
+    const el = waveRef.current
+    if (!el || typeof IntersectionObserver === 'undefined') {
+      setAnimated(true)
+      return
+    }
+
+    // Trigger once when ≥15% of the desktop wave is visible; never re-triggers
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setAnimated(true)
+        io.disconnect()
+      }
+    }, { threshold: 0.15 })
+
+    io.observe(el)
+    return () => io.disconnect()
+  }, [reduced])
+
   const CONTAINER_H = inline ? 360 : 400
   const SVG_H       = inline ? 180 : 200
   const SVG_TOP     = (CONTAINER_H - SVG_H) / 2
   const TOP_Y_PCT   = ((SVG_TOP + 50  / 200 * SVG_H) / CONTAINER_H * 100).toFixed(2)
   const BOT_Y_PCT   = ((SVG_TOP + 150 / 200 * SVG_H) / CONTAINER_H * 100).toFixed(2)
 
+  // doAnim: true when entrance should play with motion; false for reduced/static
+  const doAnim = animated && !reduced
+
   const inner = (
     <div className="md:px-10" style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }}>
 
-      {/* Header — hidden in inline/hero mode */}
+      <style>{`
+        @keyframes snakeNodeIn {
+          from { opacity: 0; transform: translate(-50%, calc(-50% + 10px)); }
+          to   { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        @keyframes snakeLabelIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+      `}</style>
+
+      {/* Header — standalone mode only */}
       {!inline && (
         <div style={{ maxWidth: '44rem', marginBottom: '3.5rem' }}>
           <span style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block' }}>
@@ -67,23 +111,20 @@ export default function LifeStageSnake({ inline = false }: { inline?: boolean })
         </div>
       )}
 
-      {/* ── DESKTOP horizontal wave (md+) ──────────────────────────────── */}
-      <div className="hidden md:block" style={{ position: 'relative', height: CONTAINER_H }}>
+      {/* ── DESKTOP horizontal wave (md+) ──────────────────────────────────── */}
+      <div ref={waveRef} className="hidden md:block" style={{ position: 'relative', height: CONTAINER_H }}>
 
-        {/* SVG sine wave — centred vertically */}
+        {/* SVG: wave line + ambient glow dot */}
         <svg
           viewBox="0 0 900 200"
           preserveAspectRatio="none"
           aria-hidden="true"
           style={{
-            position: 'absolute',
-            left: 0,
-            top: SVG_TOP,
-            width: '100%',
-            height: SVG_H,
-            pointerEvents: 'none',
+            position: 'absolute', left: 0, top: SVG_TOP,
+            width: '100%', height: SVG_H, pointerEvents: 'none',
           }}
         >
+          {/* Wave line — draws left-to-right via stroke-dashoffset on entrance */}
           <path
             d={WAVE_PATH}
             fill="none"
@@ -92,19 +133,32 @@ export default function LifeStageSnake({ inline = false }: { inline?: boolean })
             strokeOpacity=".22"
             strokeLinecap="round"
             vectorEffect="non-scaling-stroke"
+            style={{
+              strokeDasharray: DASH,
+              strokeDashoffset: (animated || reduced) ? 0 : DASH,
+              transition: doAnim
+                ? `stroke-dashoffset ${LINE_DUR}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`
+                : 'none',
+            }}
           />
+
         </svg>
 
-        {/* Items */}
+        {/* Circles and labels */}
         {EVENTS.map((ev, i) => {
-          const isTop   = i % 2 === 0
-          const active  = hovered === i
-          const leftPct = `${(i + 0.5) / 8 * 100}%`
+          const isTop      = i % 2 === 0
+          const active     = hovered === i
+          const leftPct    = `${(i + 0.5) / 8 * 100}%`
           const circleYPct = isTop ? `${TOP_Y_PCT}%` : `${BOT_Y_PCT}%`
+
+          // Entrance timing: line reaches node i at approximately NODE_D0 + i * NODE_GAP ms
+          const circleDelay = `${NODE_D0 + i * NODE_GAP}ms`
+          const labelDelay  = `${NODE_D0 + i * NODE_GAP + 80}ms`
 
           return (
             <Fragment key={ev.slug}>
-              {/* Circle */}
+
+              {/* Circle — entrance: fade in + rise 10px; hover: colour swap */}
               <Link
                 href={`/life-changes/${ev.slug}`}
                 onMouseEnter={() => setHovered(i)}
@@ -128,12 +182,23 @@ export default function LifeStageSnake({ inline = false }: { inline?: boolean })
                   letterSpacing: '-.01em',
                   color: active ? '#fff' : 'var(--teal)',
                   textDecoration: 'none',
+                  // Hover transition only covers colour properties — not transform/opacity
+                  // so it doesn't fight the entrance keyframe
                   transition: 'background .18s, border-color .18s, color .18s, box-shadow .18s',
                   boxShadow: active
                     ? '0 0 0 6px rgba(42,180,174,.12), 0 4px 16px rgba(42,180,174,.2)'
                     : '0 2px 8px rgba(0,0,0,.07)',
                   zIndex: 2,
                   flexShrink: 0,
+                  // Animation state:
+                  //   doAnim  → play entrance keyframe (fill-mode both handles pre/post opacity)
+                  //   !animated (IO not yet fired) → hide until entrance starts
+                  //   reduced + animated → show immediately, no animation
+                  ...(doAnim
+                    ? { animation: `snakeNodeIn 0.4s ease-out ${circleDelay} both` }
+                    : !animated
+                    ? { opacity: 0 }
+                    : {}),
                 }}
               >
                 {ev.n}
@@ -154,6 +219,11 @@ export default function LifeStageSnake({ inline = false }: { inline?: boolean })
                     top: `calc(${circleYPct} + ${CIRCLE_R + 10}px)`,
                     transform: 'translateX(-50%)',
                   }),
+                  ...(doAnim
+                    ? { animation: `snakeLabelIn 0.35s ease-out ${labelDelay} both` }
+                    : !animated
+                    ? { opacity: 0 }
+                    : {}),
                 }}
               >
                 <p style={{ margin: '0 0 .2rem', fontSize: inline ? '.52rem' : '.58rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: 'var(--mkt-stone-soft)' }}>
@@ -175,12 +245,13 @@ export default function LifeStageSnake({ inline = false }: { inline?: boolean })
                   </span>
                 )}
               </div>
+
             </Fragment>
           )
         })}
       </div>
 
-      {/* ── MOBILE vertical spine (below md) ─────────────────────────── */}
+      {/* ── MOBILE vertical spine — no animation, always visible ─────────── */}
       <div className="md:hidden" style={{ position: 'relative', paddingLeft: '3rem' }}>
         <div aria-hidden="true" style={{ position: 'absolute', left: '.9rem', top: 0, bottom: 0, width: 2, background: 'linear-gradient(to bottom, transparent, var(--teal) 4%, var(--teal) 96%, transparent)', opacity: .2, pointerEvents: 'none' }} />
 

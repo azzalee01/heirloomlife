@@ -8,9 +8,6 @@ export const metadata = {
 
 const W: React.CSSProperties = { maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }
 
-const TOOLTIP_TEXT =
-  'Covers standard solicitor review on every Will, ongoing platform security and maintenance, and Heirloom\'s witnessing coordination for NSW - so your Will stays current and your data stays protected, not just stored.'
-
 const PUBLISH_DATE = 'September 2026'
 
 function Tick() {

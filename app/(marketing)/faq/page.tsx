@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 const SECTION_LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
   fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block',
