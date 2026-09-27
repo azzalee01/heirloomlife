@@ -24,12 +24,84 @@ function Tick() {
   )
 }
 
-/**
- * The single place a Will is sold: A$129 (GST inclusive) with an optional, unticked A$25/year
- * "unlimited updates" add-on. Used by the wizard's payment step and the dashboard unlock banner.
- */
+function UpdatesUpsellModal({
+  onAdd,
+  onSkip,
+}: {
+  onAdd: () => void
+  onSkip: () => void
+}) {
+  return (
+    <div
+      style={{
+        position: 'fixed', inset: 0, zIndex: 300,
+        background: 'rgba(14,21,20,0.55)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: '1.5rem',
+      }}
+      onClick={(e) => { if (e.target === e.currentTarget) onSkip() }}
+    >
+      <div style={{
+        background: '#fff', borderRadius: 12, width: '100%', maxWidth: 420,
+        boxShadow: '0 24px 64px rgba(0,0,0,.18)', overflow: 'hidden',
+      }}>
+        {/* Teal top bar */}
+        <div style={{ height: 4, background: 'linear-gradient(90deg, var(--teal-deep), var(--teal))' }} />
+
+        <div style={{ padding: '1.75rem 1.75rem 1.5rem' }}>
+          <p style={{ fontSize: '.68rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--teal-deep)', marginBottom: '.6rem' }}>
+            One more thing
+          </p>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 500, lineHeight: 1.15, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 .75rem' }}>
+            Keep your Will current as life changes.
+          </h2>
+          <p style={{ fontSize: '.88rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: '0 0 1.25rem' }}>
+            Add <strong>unlimited updates</strong> for just <strong>${UPDATES_PRICE}/year</strong>. Change beneficiaries, executors, gifts — as many times as you need, and download every new version. Cancel any time.
+          </p>
+
+          <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 1.5rem', display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
+            {[
+              'Update your Will whenever life changes',
+              'Download every new version',
+              'Cancel any time — your Will stays yours',
+            ].map((f) => (
+              <li key={f} style={{ display: 'flex', gap: '.5rem', alignItems: 'flex-start', fontSize: '.82rem', color: 'var(--mkt-stone)' }}>
+                <Tick />
+                {f}
+              </li>
+            ))}
+          </ul>
+
+          <button
+            onClick={onAdd}
+            style={{
+              width: '100%', padding: '.75rem', marginBottom: '.6rem',
+              background: 'var(--teal)', color: '#fff', border: 'none',
+              borderRadius: 7, fontSize: '.9rem', fontWeight: 600, cursor: 'pointer',
+            }}
+          >
+            Yes — add unlimited updates (${UPDATES_PRICE}/year)
+          </button>
+          <button
+            onClick={onSkip}
+            style={{
+              width: '100%', padding: '.65rem',
+              background: 'transparent', color: 'var(--mkt-stone)',
+              border: '1.5px solid var(--mkt-line)', borderRadius: 7,
+              fontSize: '.85rem', fontWeight: 500, cursor: 'pointer',
+            }}
+          >
+            No thanks — just the Will (${WILL_PRICE})
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function WillOffer() {
   const [addUpdates, setAddUpdates] = useState(false)
+  const [showUpsell, setShowUpsell] = useState(false)
   const [open, setOpen] = useState(false)
 
   const total = WILL_PRICE + (addUpdates ? UPDATES_PRICE : 0)
@@ -38,6 +110,14 @@ export default function WillOffer() {
     d.setFullYear(d.getFullYear() + 1)
     return new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'long', year: 'numeric' }).format(d)
   }, [])
+
+  function handlePayClick() {
+    if (!addUpdates) {
+      setShowUpsell(true)
+    } else {
+      setOpen(true)
+    }
+  }
 
   return (
     <>
@@ -86,7 +166,7 @@ export default function WillOffer() {
         <div className="space-y-2">
           <button
             type="button"
-            onClick={() => setOpen(true)}
+            onClick={handlePayClick}
             className="w-full py-3 text-sm font-semibold text-white transition-opacity"
             style={{ backgroundColor: 'var(--teal)', border: 'none' }}
           >
@@ -99,6 +179,20 @@ export default function WillOffer() {
           </p>
         </div>
       </div>
+
+      {showUpsell && (
+        <UpdatesUpsellModal
+          onAdd={() => {
+            setAddUpdates(true)
+            setShowUpsell(false)
+            setOpen(true)
+          }}
+          onSkip={() => {
+            setShowUpsell(false)
+            setOpen(true)
+          }}
+        />
+      )}
 
       {open && <CheckoutModal product="will" addUpdates={addUpdates} onClose={() => setOpen(false)} />}
     </>
