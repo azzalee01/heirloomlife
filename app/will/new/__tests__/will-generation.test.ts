@@ -52,7 +52,7 @@ function emptyExecutor() {
   return { firstName: '', lastName: '', relationship: '', phone: '', email: '', address: '' }
 }
 
-function personBeneficiary(name: string, pct: string, rel = 'Spouse'): WillFormData['beneficiariesData']['people'][number] {
+function personBeneficiary(name: string, pct: string, rel = 'Friend'): WillFormData['beneficiariesData']['people'][number] {
   return { id: '1', name, relationship: rel, percentage: pct, substituteBeneficiary: '' }
 }
 
@@ -123,7 +123,7 @@ describe('Case A — Simple Will (1 executor, 1 backup, 100% to one beneficiary)
       alternate: baseExecutor({ firstName: 'Sarah', lastName: 'Jones', relationship: 'Friend' }),
     },
     beneficiariesData: {
-      people: [personBeneficiary('James Smith', '100', 'Spouse')],
+      people: [personBeneficiary('James Smith', '100', 'Friend')],
       charities: [],
     },
   })
@@ -233,7 +233,7 @@ describe('Case D — One active beneficiary + empty slots', () => {
   const formData = baseFormData({
     beneficiariesData: {
       people: [
-        personBeneficiary('James Smith', '100', 'Spouse'),
+        personBeneficiary('James Smith', '100', 'Friend'),
         // Empty slots simulating unfilled rows
         { id: '2', name: '', relationship: '', percentage: '', substituteBeneficiary: '' },
         { id: '3', name: '', relationship: '', percentage: '0', substituteBeneficiary: '' },
@@ -507,7 +507,7 @@ describe('Phase 14 Test 2 — Specific property gift', () => {
     specificGifts: [
       { id: '1', type: 'item', description: 'Gold ring', amount: '', recipientName: 'Alice Brown', recipientRelationship: 'Niece', substituteBeneficiary: '' },
     ],
-    beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Spouse')], charities: [] },
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Friend')], charities: [] },
   })
 
   it('renders the specific gift', () => {
@@ -537,7 +537,7 @@ describe('Phase 14 Test 3 — Pecuniary gift', () => {
     specificGifts: [
       { id: '1', type: 'cash', description: '', amount: '5000', recipientName: 'Bob Brown', recipientRelationship: 'Sibling', substituteBeneficiary: '' },
     ],
-    beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Spouse')], charities: [] },
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Friend')], charities: [] },
   })
 
   it('renders the cash gift with formatted amount', () => {
@@ -918,7 +918,7 @@ describe('Test A — Substitute beneficiary __testator_children__', () => {
   it('renders in Will as "my children, equally"', () => {
     const formData = baseFormData({
       beneficiariesData: {
-        people: [{ ...personBeneficiary('Michael Smith', '100', 'Spouse'), substituteBeneficiary: '__testator_children__' }],
+        people: [{ ...personBeneficiary('Michael Smith', '100', 'Friend'), substituteBeneficiary: '__testator_children__' }],
         charities: [],
       },
     })
@@ -941,7 +941,7 @@ describe('Test B — Substitute beneficiary __their_children__ with name context
   it('renders "Michael Smith\'s children, equally" in Will — not the ambiguous "their children" form', () => {
     const formData = baseFormData({
       beneficiariesData: {
-        people: [{ ...personBeneficiary('Michael Smith', '100', 'Spouse'), substituteBeneficiary: '__their_children__' }],
+        people: [{ ...personBeneficiary('Michael Smith', '100', 'Friend'), substituteBeneficiary: '__their_children__' }],
         charities: [],
       },
     })
@@ -983,7 +983,7 @@ describe('Test D — Custom substitute beneficiary name', () => {
   it('renders custom substitute name in Will body', () => {
     const formData = baseFormData({
       beneficiariesData: {
-        people: [{ ...personBeneficiary('Michael Smith', '100', 'Spouse'), substituteBeneficiary: 'David Smith (Brother)' }],
+        people: [{ ...personBeneficiary('Michael Smith', '100', 'Friend'), substituteBeneficiary: 'David Smith (Brother)' }],
         charities: [],
       },
     })
@@ -1179,5 +1179,338 @@ describe('Test L — Validator catches credential location in Will body', () => 
     const text = 'I give my Executor the authority to access and manage all of my digital assets following my death.'
     const result = validateRenderedText(text)
     expect(result.valid).toBe(true)
+  })
+})
+
+// ── QA Tests 1–12 ─────────────────────────────────────────────────────────────
+
+// QA TEST 1 — Contradictory status: single testator with spouse beneficiary is blocked
+describe('QA Test 1 — Single testator + spouse beneficiary is blocked', () => {
+  it('blocks generation when maritalStatus=single and beneficiary relationship=Spouse', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'single' }),
+      beneficiariesData: {
+        people: [{ id: '1', name: 'James Smith', relationship: 'Spouse', percentage: '100', substituteBeneficiary: '' }],
+        charities: [],
+      },
+    })
+    const result = validateWillForGeneration(formData)
+    expect(result.valid).toBe(false)
+    expect(result.structured?.some((e) => e.code === 'RELATIONSHIP_STATUS_CONFLICT')).toBe(true)
+    expect(result.errors.some((e) => e.includes('James Smith'))).toBe(true)
+  })
+
+  it('error message names the person and explains the contradiction', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'single' }),
+      beneficiariesData: {
+        people: [{ id: '1', name: 'Alice Brown', relationship: 'Wife', percentage: '100', substituteBeneficiary: '' }],
+        charities: [],
+      },
+    })
+    const result = validateWillForGeneration(formData)
+    expect(result.valid).toBe(false)
+    const err = result.structured?.find((e) => e.code === 'RELATIONSHIP_STATUS_CONFLICT')
+    expect(err?.message).toContain('single')
+    expect(err?.message).toContain('Alice Brown')
+    expect(err?.fieldPaths).toContain('personalDetails.maritalStatus')
+  })
+})
+
+// QA TEST 2 — Valid: single testator with non-spousal beneficiary
+describe('QA Test 2 — Single testator + friend beneficiary is valid', () => {
+  it('allows generation when maritalStatus=single and beneficiary relationship=Friend', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'single' }),
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Friend')],
+        charities: [],
+      },
+    })
+    expect(validateWillForGeneration(formData).valid).toBe(true)
+  })
+
+  it('allows generation when maritalStatus=single and beneficiary relationship=Child', () => {
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [personBeneficiary('Tom Smith', '100', 'Child')],
+        charities: [],
+      },
+    })
+    expect(validateWillForGeneration(formData).valid).toBe(true)
+  })
+})
+
+// QA TEST 3 — Valid: married testator with spouse beneficiary
+describe('QA Test 3 — Married testator + spouse beneficiary is valid', () => {
+  it('allows generation when maritalStatus=married and beneficiary relationship=Spouse', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'married' }),
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Spouse')],
+        charities: [],
+      },
+    })
+    expect(validateWillForGeneration(formData).valid).toBe(true)
+  })
+
+  it('allows generation when maritalStatus=domestic_partner and beneficiary relationship=Partner', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'domestic_partner' }),
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Partner')],
+        charities: [],
+      },
+    })
+    expect(validateWillForGeneration(formData).valid).toBe(true)
+  })
+})
+
+// QA TEST 4 — Stale data: divorced testator retains old spouse label
+describe('QA Test 4 — Divorced testator + stale spouse label is blocked', () => {
+  it('blocks generation when maritalStatus=divorced and beneficiary relationship=Spouse', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'divorced' }),
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Spouse')],
+        charities: [],
+      },
+    })
+    const result = validateWillForGeneration(formData)
+    expect(result.valid).toBe(false)
+    expect(result.structured?.some((e) => e.code === 'RELATIONSHIP_STATUS_CONFLICT')).toBe(true)
+  })
+
+  it('blocks generation when maritalStatus=widowed and beneficiary relationship=Husband', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'widowed' }),
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Husband')],
+        charities: [],
+      },
+    })
+    const result = validateWillForGeneration(formData)
+    expect(result.valid).toBe(false)
+    expect(result.structured?.some((e) => e.code === 'RELATIONSHIP_STATUS_CONFLICT')).toBe(true)
+  })
+
+  it('allows separated testator to retain Spouse label (legal marriage still exists)', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'separated' }),
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Spouse')],
+        charities: [],
+      },
+    })
+    expect(validateWillForGeneration(formData).valid).toBe(true)
+  })
+})
+
+// QA TEST 5 — COMMON_GIFT_01 retained as approved universal module
+describe('QA Test 5 — COMMON_GIFT_01 retained as approved universal module', () => {
+  it('includes all four sub-sections even in a simple Will with no explicit class gifts', () => {
+    // COMMON_GIFT_01 is an indivisible solicitor-approved module.
+    // Intentionally retained as a universal clause even when no active class gift is present.
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Friend')],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).toContain('SURVIVORSHIP AND GIFT RULES')
+    expect(text).toContain('Survivorship')
+    expect(text).toContain('Lapse of gifts')
+    expect(text).toContain('Class gifts')
+    expect(text).toContain('Uncertain order of death')
+  })
+})
+
+// QA TEST 6 — "child"/"children" definition omitted when not referenced by any active clause
+describe('QA Test 6 — "child"/"children" definition omitted when not referenced', () => {
+  it('omits child/children definition in simple Will with no dependents and no children-sentinel', () => {
+    // Unique anchor: the Status of Children Act reference only appears in the child/children definition.
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'single' }),
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Friend')],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).not.toContain('Status of Children Act 1996')
+  })
+})
+
+// QA TEST 7 — "child"/"children" definition included when active clause requires it
+describe('QA Test 7 — "child"/"children" definition included when referenced', () => {
+  it('includes child/children definition when Will has dependent children', () => {
+    const formData = baseFormData({
+      childrenData: {
+        hasChildren: 'yes',
+        children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+        guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Sibling', phone: '', email: '' },
+        ageOfVesting: '25',
+      },
+      beneficiariesData: {
+        people: [personBeneficiary('Tom Smith', '100', 'Child')],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('Status of Children Act 1996')
+  })
+
+  it('includes child/children definition when substitute beneficiary uses __testator_children__', () => {
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [{ ...personBeneficiary('James Smith', '100', 'Friend'), substituteBeneficiary: '__testator_children__' }],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('Status of Children Act 1996')
+  })
+
+  it('includes child/children definition when substitute beneficiary uses __their_children__', () => {
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [{ ...personBeneficiary('James Smith', '100', 'Friend'), substituteBeneficiary: '__their_children__' }],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('Status of Children Act 1996')
+  })
+})
+
+// QA TEST 8 — No backup beneficiary is an explicitly valid state
+describe('QA Test 8 — No backup beneficiary is valid', () => {
+  it('generates successfully when substituteBeneficiary is empty', () => {
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Friend')],
+        charities: [],
+      },
+    })
+    const result = validateWillForGeneration(formData)
+    expect(result.valid).toBe(true)
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// QA TEST 9 — Named backup beneficiary renders in Will text
+describe('QA Test 9 — Named backup beneficiary appears in Will fallback wording', () => {
+  it('renders the named backup beneficiary in the residue clause', () => {
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [{
+          ...personBeneficiary('James Smith', '100', 'Friend'),
+          substituteBeneficiary: 'Sarah Brown',
+        }],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('Sarah Brown')
+    expect(validateRenderedText(text).valid).toBe(true)
+  })
+})
+
+// QA TEST 10 — Relationship consistency check covers executors, not just beneficiaries
+describe('QA Test 10 — Relationship consistency check covers executors', () => {
+  it('blocks generation when executor relationship is Spouse and testator is single', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'single' }),
+      executorsData: {
+        primary: baseExecutor({ relationship: 'Spouse' }),
+        hasAlternate: false,
+        alternate: emptyExecutor(),
+      },
+      beneficiariesData: {
+        people: [personBeneficiary('Alice Brown', '100', 'Friend')],
+        charities: [],
+      },
+    })
+    const result = validateWillForGeneration(formData)
+    expect(result.valid).toBe(false)
+    expect(result.structured?.some((e) => e.code === 'RELATIONSHIP_STATUS_CONFLICT')).toBe(true)
+  })
+
+  it('allows generation when executor relationship is Friend and testator is single', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'single' }),
+      executorsData: {
+        primary: baseExecutor({ relationship: 'Friend' }),
+        hasAlternate: false,
+        alternate: emptyExecutor(),
+      },
+      beneficiariesData: {
+        people: [personBeneficiary('Alice Brown', '100', 'Friend')],
+        charities: [],
+      },
+    })
+    expect(validateWillForGeneration(formData).valid).toBe(true)
+  })
+})
+
+// QA TEST 11 — Signing instructions do not instruct drawing a line through unused spaces
+describe('QA Test 11 — "draw a line through unused space" instruction removed', () => {
+  it('rendered Will text does not contain the removed draw-a-line instruction', () => {
+    // The signing recommendation in DownloadWillButton.tsx no longer includes
+    // "(3) do not leave any signature space blank — draw a line through any space you do not use".
+    // Every signature field in the Will is required; there are no unused spaces.
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Friend')],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).not.toMatch(/draw a line through/i)
+    expect(text).not.toMatch(/line through any.*unused.*space/i)
+  })
+})
+
+// QA TEST 12 — Final token QA: rendered Will contains no forbidden tokens
+describe('QA Test 12 — Final token QA: all Will variants pass post-render validation', () => {
+  it('simple single Will (friend beneficiary) passes validateRenderedText', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'single' }),
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Friend')],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    const result = validateRenderedText(text)
+    expect(result.valid).toBe(true)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  it('married Will (spouse beneficiary) passes validateRenderedText and contains correct preamble', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'married' }),
+      beneficiariesData: {
+        people: [personBeneficiary('James Smith', '100', 'Spouse')],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('being married')
+    expect(validateRenderedText(text).valid).toBe(true)
+  })
+
+  it('relationship/status contradiction is caught before render, not after', () => {
+    const formData = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'single' }),
+      beneficiariesData: {
+        people: [{ id: '1', name: 'James Smith', relationship: 'Spouse', percentage: '100', substituteBeneficiary: '' }],
+        charities: [],
+      },
+    })
+    const preResult = validateWillForGeneration(formData)
+    expect(preResult.valid).toBe(false)
+    expect(preResult.structured?.some((e) => e.code === 'RELATIONSHIP_STATUS_CONFLICT')).toBe(true)
   })
 })

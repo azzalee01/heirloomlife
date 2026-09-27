@@ -8,10 +8,18 @@
  */
 
 import type { WillFormData } from './_types'
+import { SPOUSAL_RELATIONSHIP_LABELS, NON_SPOUSAL_STATUSES } from './_types'
+
+export interface ValidationError {
+  code: string
+  message: string
+  fieldPaths?: string[]
+}
 
 export interface ValidationResult {
   valid: boolean
   errors: string[]
+  structured?: ValidationError[]
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
@@ -20,24 +28,90 @@ function pct(v: string): number {
   return parseFloat(v) || 0
 }
 
+const MARITAL_DISPLAY: Partial<Record<string, string>> = {
+  single: 'single',
+  divorced: 'divorced',
+  widowed: 'widowed',
+  separated: 'separated',
+  married: 'married',
+  domestic_partner: 'in a domestic partnership',
+}
+
+// ── Relationship / marital-status consistency check ────────────────────────
+
+export function validatePersonalRelationshipConsistency(formData: WillFormData): ValidationError[] {
+  const errors: ValidationError[] = []
+  const { maritalStatus } = formData.personalDetails
+
+  if (!maritalStatus || !NON_SPOUSAL_STATUSES.has(maritalStatus)) return errors
+
+  const statusDisplay = MARITAL_DISPLAY[maritalStatus] || maritalStatus
+
+  const checkRelationship = (personName: string, relationship: string, fieldPath: string) => {
+    if (!relationship.trim()) return
+    if (SPOUSAL_RELATIONSHIP_LABELS.has(relationship.trim().toLowerCase())) {
+      errors.push({
+        code: 'RELATIONSHIP_STATUS_CONFLICT',
+        message:
+          `Your relationship details do not match. You selected that you are ${statusDisplay}, ` +
+          `but ${personName} is listed as your ${relationship}. ` +
+          `Please review your relationship details before generating your Will.`,
+        fieldPaths: ['personalDetails.maritalStatus', fieldPath],
+      })
+    }
+  }
+
+  for (const p of formData.beneficiariesData.people) {
+    if (p.name.trim()) {
+      checkRelationship(p.name, p.relationship, `beneficiariesData.people[${p.id}].relationship`)
+    }
+  }
+
+  const primary = formData.executorsData.primary
+  const primaryName = [primary.firstName, primary.lastName].filter(Boolean).join(' ')
+  if (primaryName) {
+    checkRelationship(primaryName, primary.relationship, 'executorsData.primary.relationship')
+  }
+
+  if (formData.executorsData.hasAlternate) {
+    const alt = formData.executorsData.alternate
+    const altName = [alt.firstName, alt.lastName].filter(Boolean).join(' ')
+    if (altName) {
+      checkRelationship(altName, alt.relationship, 'executorsData.alternate.relationship')
+    }
+  }
+
+  const g = formData.childrenData.guardian
+  const guardianName = [g.firstName, g.lastName].filter(Boolean).join(' ')
+  if (guardianName) {
+    checkRelationship(guardianName, g.relationship, 'childrenData.guardian.relationship')
+  }
+
+  return errors
+}
+
 // ── Pre-render data validation ─────────────────────────────────────────────
 
 export function validateWillForGeneration(formData: WillFormData): ValidationResult {
-  const errors: string[] = []
+  const structured: ValidationError[] = []
+  const plainErrors: string[] = []
+
+  // Relationship/status consistency
+  structured.push(...validatePersonalRelationshipConsistency(formData))
 
   // ── Executor ──────────────────────────────────────────────────────────────
   if (!formData.executorsData.primary.firstName.trim()) {
-    errors.push('Primary executor: first name is required.')
+    plainErrors.push('Primary executor: first name is required.')
   }
   if (!formData.executorsData.primary.lastName.trim()) {
-    errors.push('Primary executor: last name is required.')
+    plainErrors.push('Primary executor: last name is required.')
   }
   if (
     formData.executorsData.hasAlternate &&
     formData.executorsData.alternate.firstName.trim() &&
     !formData.executorsData.alternate.lastName.trim()
   ) {
-    errors.push('Alternate executor: last name is required when a first name is provided.')
+    plainErrors.push('Alternate executor: last name is required when a first name is provided.')
   }
 
   // ── Beneficiaries ─────────────────────────────────────────────────────────
@@ -49,14 +123,14 @@ export function validateWillForGeneration(formData: WillFormData): ValidationRes
   )
 
   if (activePeople.length + activeCharities.length === 0) {
-    errors.push('At least one named residuary beneficiary with a share > 0% is required.')
+    plainErrors.push('At least one named residuary beneficiary with a share > 0% is required.')
   } else {
     const total = [...activePeople, ...activeCharities].reduce(
       (s, b) => s + pct(b.percentage),
       0
     )
     if (Math.round(total * 10) / 10 !== 100) {
-      errors.push(
+      plainErrors.push(
         `Residuary allocation must total exactly 100% (currently ${total.toFixed(1)}%).`
       )
     }
@@ -65,12 +139,12 @@ export function validateWillForGeneration(formData: WillFormData): ValidationRes
   // Named but zero-share — silently filtered downstream, but flag here too
   for (const p of formData.beneficiariesData.people) {
     if (p.name.trim() && pct(p.percentage) === 0) {
-      errors.push(
+      plainErrors.push(
         `Beneficiary "${p.name}" has a 0% share. Either assign a share or remove this entry.`
       )
     }
     if (pct(p.percentage) > 0 && !p.name.trim()) {
-      errors.push(
+      plainErrors.push(
         `A beneficiary with ${p.percentage}% share has no name. Add a name or remove this entry.`
       )
     }
@@ -78,12 +152,12 @@ export function validateWillForGeneration(formData: WillFormData): ValidationRes
 
   for (const c of formData.beneficiariesData.charities) {
     if (c.name.trim() && pct(c.percentage) === 0) {
-      errors.push(
+      plainErrors.push(
         `Charity "${c.name}" has a 0% share. Either assign a share or remove this entry.`
       )
     }
     if (pct(c.percentage) > 0 && !c.name.trim()) {
-      errors.push(
+      plainErrors.push(
         `A charity with ${c.percentage}% share has no name. Add a name or remove this entry.`
       )
     }
@@ -95,15 +169,15 @@ export function validateWillForGeneration(formData: WillFormData): ValidationRes
       const desc = g.type === 'cash'
         ? `cash gift of $${g.amount || '?'}`
         : `gift "${g.description || 'unnamed item'}"`
-      errors.push(`Specific gift (${desc}) has no recipient name.`)
+      plainErrors.push(`Specific gift (${desc}) has no recipient name.`)
     }
     if (g.type === 'cash' && (!g.amount || pct(g.amount) <= 0)) {
-      errors.push(
+      plainErrors.push(
         `Cash gift to "${g.recipientName || 'unnamed'}" has no valid amount.`
       )
     }
     if (g.type === 'item' && !g.description.trim()) {
-      errors.push(
+      plainErrors.push(
         `Gift to "${g.recipientName || 'unnamed'}" has no item description.`
       )
     }
@@ -111,10 +185,11 @@ export function validateWillForGeneration(formData: WillFormData): ValidationRes
 
   // ── Testator ─────────────────────────────────────────────────────────────
   if (!formData.personalDetails.firstName.trim() && !formData.personalDetails.lastName.trim()) {
-    errors.push('Testator name is required (first name or last name).')
+    plainErrors.push('Testator name is required (first name or last name).')
   }
 
-  return { valid: errors.length === 0, errors }
+  const errors = [...structured.map((e) => e.message), ...plainErrors]
+  return { valid: errors.length === 0, errors, structured }
 }
 
 // ── Post-render text validation ────────────────────────────────────────────

@@ -169,7 +169,7 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
       doc.setFontSize(8.5)
       doc.setTextColor(55, 65, 64)
       const recLines = doc.splitTextToSize(
-        'As a risk-management practice, Heirloom recommends: (1) neither witness should be the spouse or de facto partner of a beneficiary; (2) use a single blue or black ballpoint pen throughout; (3) do not leave any signature space blank — draw a line through any space you do not use.',
+        'As a risk-management practice, Heirloom recommends: (1) neither witness should be the spouse or de facto partner of a beneficiary; (2) use a single blue or black ballpoint pen throughout.',
         pageW - 28
       )
       doc.text(recLines, 14, y)

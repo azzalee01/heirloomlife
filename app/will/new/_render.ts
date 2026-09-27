@@ -62,15 +62,17 @@ const INDEMNITY_01 =
   `(c) any act done or omission made in good faith in reliance on the advice of a barrister, solicitor or other qualified professional.\n\n` +
   `My Executor's right to indemnity under this clause is in addition to, and does not limit, any right of indemnity conferred by law.`
 
-// Dependency-aware definitions. "intestacy rules" is intentionally omitted — no operative
-// clause uses that defined term (operative clauses reference "intestacy provisions" directly).
-// "minor" and "vesting age" are only included when MIN-01/MIN-02 render (requires hasDependent).
-function buildDefinitions(hasDependent: boolean): string {
+// Dependency-aware definitions. "intestacy rules" intentionally omitted — no operative clause uses it.
+// "child"/"children" only when an active clause references child concepts (dependents, children on
+// the will, or substitute sentinels). "minor"/"vesting age" only when MIN-01/MIN-02 render.
+function buildDefinitions(hasDependent: boolean, hasChildrenRef: boolean): string {
   return (
     `In this Will, unless the context otherwise requires:\n\n` +
     `**"my estate"** means all real and personal property of which I am the beneficial owner at the date of my death, including property over which I have a general power of appointment;\n\n` +
     `**"my Executor"** means the executor or executors for the time being of this Will, including any substituted executor, and includes my Executor acting as trustee where the context so requires;\n\n` +
-    `**"child"** and **"children"** include any person recognised as my child under the *Status of Children Act 1996* (NSW) and any child adopted by me, but does not include a stepchild unless expressly stated;\n\n` +
+    (hasChildrenRef
+      ? `**"child"** and **"children"** include any person recognised as my child under the *Status of Children Act 1996* (NSW) and any child adopted by me, but does not include a stepchild unless expressly stated;\n\n`
+      : '') +
     (hasDependent
       ? `**"minor"** means a person who has not yet attained the age of 18 years;\n\n` +
         `**"vesting age"** means the age specified in a trust clause at which a beneficiary becomes absolutely entitled to trust property;\n\n`
@@ -239,6 +241,19 @@ export function renderWillText(formData: WillFormData): string {
     formData.childrenData.children.some((c) => c.isDependent)
   const hasTrust = hasDependent || formData.triageFlags.hasComplexTrusts
   const hasDigitalAssets = formData.assets.some((a) => a.assetType === 'digital_asset')
+  const hasChildrenRef =
+    hasDependent ||
+    formData.childrenData.hasChildren === 'yes' ||
+    formData.beneficiariesData.people.some(
+      (p) =>
+        p.substituteBeneficiary === '__testator_children__' ||
+        p.substituteBeneficiary === '__their_children__'
+    ) ||
+    formData.specificGifts.some(
+      (g) =>
+        g.substituteBeneficiary === '__testator_children__' ||
+        g.substituteBeneficiary === '__their_children__'
+    )
 
   let clauseNo = 0
   const next = () => ++clauseNo
@@ -368,8 +383,8 @@ export function renderWillText(formData: WillFormData): string {
 
   // ── 17. Definitions (DEFN-01 — dependency-aware) ─────────────────────────
   // "intestacy rules" intentionally excluded — no operative clause uses that defined term.
-  // "minor" and "vesting age" only included when MIN-01/MIN-02 render.
-  sections.push(`${next()}. DEFINITIONS\n\n${buildDefinitions(hasDependent)}`)
+  // "child"/"children" only when hasChildrenRef. "minor"/"vesting age" only when MIN-01/MIN-02 render.
+  sections.push(`${next()}. DEFINITIONS\n\n${buildDefinitions(hasDependent, hasChildrenRef)}`)
 
   // ── 18. Interpretation (INTERP-01) — always ──────────────────────────────
   sections.push(`${next()}. INTERPRETATION\n\n${INTERP_01}`)

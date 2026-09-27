@@ -276,3 +276,14 @@ export function formatAmountDigits(amount: string | number): string {
 export function formatCurrency(amount: string | number): string {
     return '$' + formatAmountDigits(amount)
 }
+
+// Relationship labels that indicate a CURRENT spousal/partner relationship.
+// Case-insensitive matching is applied at validation time (toLowerCase before lookup).
+export const SPOUSAL_RELATIONSHIP_LABELS = new Set([
+    'spouse', 'husband', 'wife', 'partner', 'de facto', 'defacto',
+    'de-facto', 'de facto partner', 'de-facto partner',
+])
+
+// Marital statuses where a spousal relationship label is contradictory.
+// 'separated' is intentionally excluded — a separated person retains their legal spouse.
+export const NON_SPOUSAL_STATUSES = new Set<string>(['single', 'divorced', 'widowed'])
