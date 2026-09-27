@@ -7,7 +7,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from '@/app/will/new/_data'
 import { saveStep } from '@/app/will/new/_actions'
 import type { WillFormData } from '@/app/will/new/_types'
-import { hasVaultBenefits } from '@/src/lib/entitlements'
+import { hasUpdatesAccess } from '@/src/lib/entitlements'
 
 const client = new Anthropic()
 
@@ -168,10 +168,10 @@ async function requireAmendmentAccess(userId: string, hasDownloaded: boolean): P
   if (!hasDownloaded) return
   const { data: profile } = await supabaseAdmin
     .from('profiles')
-    .select('plan, plan_status, vault_access_until')
+    .select('plan, plan_status, updates_status, updates_active_until')
     .eq('id', userId)
     .single()
-  if (!hasVaultBenefits(profile)) {
+  if (!hasUpdatesAccess(profile)) {
     throw new Error('MEMBERSHIP_REQUIRED')
   }
 }

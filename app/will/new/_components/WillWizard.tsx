@@ -20,11 +20,10 @@ import {
   STEP_IDS,
   STEP_LABELS,
 } from '../_types'
-import dynamic from 'next/dynamic'
+import WillOffer from '@/components/checkout/WillOffer'
 import ProgressBar from './ProgressBar'
 import HelpPanel from './HelpPanel'
 
-const CheckoutModal = dynamic(() => import('@/components/CheckoutModal'), { ssr: false })
 import StepEligibility from './StepEligibility'
 import StepPersonalDetails from './StepPersonalDetails'
 import StepSpouseDetails from './StepSpouseDetails'
@@ -196,7 +195,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [showDownloadGate, setShowDownloadGate] = useState(false)
   const [showCompletion, setShowCompletion] = useState(false)
-  const [checkoutProduct, setCheckoutProduct] = useState<'will' | 'vault' | null>(null)
   const [stepKey, setStepKey] = useState(0)
   const [slideDir, setSlideDir] = useState<'right' | 'left'>('right')
 
@@ -326,14 +324,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     } finally {
       setSaving(false)
     }
-  }
-
-  function handleWillCheckout() {
-    setCheckoutProduct('will')
-  }
-
-  function handleVaultCheckout() {
-    setCheckoutProduct('vault')
   }
 
   function jumpToIndex(idx: number) {
@@ -638,48 +628,10 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                         </div>
 
                         <p className="text-sm text-center" style={{ color: 'var(--neutral)' }}>
-                          This is your complete Will. Choose how to unlock it.
+                          This is your complete Will. Unlock it to download and sign it.
                         </p>
 
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          <div className="border-2 p-5 space-y-4 flex flex-col" style={{ borderColor: 'var(--teal)' }}>
-                            <div>
-                              <p className="text-xs font-semibold uppercase" style={{ color: 'var(--teal-deep)', letterSpacing: '.1em' }}>The Will</p>
-                              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$129</p>
-                              <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>One payment · no subscription</p>
-                            </div>
-                            <ul className="space-y-1.5 flex-1">
-                              {['Solicitor-reviewed, signed-ready Will', 'Permanently downloadable', '3 months Living Vault included'].map((f) => (
-                                <li key={f} className="flex items-start gap-2 text-xs" style={{ color: 'var(--ink)' }}>
-                                  <svg className="shrink-0 mt-0.5" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M20 6L9 17l-5-5"/></svg>
-                                  {f}
-                                </li>
-                              ))}
-                            </ul>
-                            <button type="button" onClick={handleWillCheckout} className="w-full py-2.5 text-sm font-semibold text-white transition-opacity" style={{ backgroundColor: 'var(--teal)', border: 'none' }}>
-                              Pay $129 · get your Will
-                            </button>
-                          </div>
-
-                          <div className="border p-5 space-y-4 flex flex-col" style={{ borderColor: 'var(--line)' }}>
-                            <div>
-                              <p className="text-xs font-semibold uppercase" style={{ color: 'var(--teal-deep)', letterSpacing: '.1em' }}>Living Vault</p>
-                              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>$12</p>
-                              <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>per month · billed annually · Will included</p>
-                            </div>
-                            <ul className="space-y-1.5 flex-1">
-                              {['Will included and downloadable', 'Supported updates as life changes', 'Full platform access, renews annually'].map((f) => (
-                                <li key={f} className="flex items-start gap-2 text-xs" style={{ color: 'var(--ink)' }}>
-                                  <svg className="shrink-0 mt-0.5" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M20 6L9 17l-5-5"/></svg>
-                                  {f}
-                                </li>
-                              ))}
-                            </ul>
-                            <button type="button" onClick={handleVaultCheckout} className="w-full py-2.5 text-sm font-semibold transition-opacity" style={{ border: '1.5px solid var(--teal-deep)', color: 'var(--teal-deep)', background: 'transparent' }}>
-                              Join · $99/year
-                            </button>
-                          </div>
-                        </div>
+                        <WillOffer />
 
                         <Link
                           href="/dashboard"
@@ -774,9 +726,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       )}
     </div>
 
-    {checkoutProduct && (
-      <CheckoutModal product={checkoutProduct} onClose={() => setCheckoutProduct(null)} />
-    )}
     </>
   )
 }

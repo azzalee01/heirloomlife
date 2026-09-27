@@ -45,7 +45,7 @@ export default function LivingVaultPage() {
               Tell us when life changes. Living Vault helps you review what may be affected, maintain your Will and estate record, and keep everything organised for the people who may one day need it.
             </p>
             <p style={{ marginTop: '1rem', fontSize: '.9rem', lineHeight: 1.6, color: 'var(--mkt-stone)' }}>
-              Included for three months with a $129 one-off Will, or continuously with the $99/year annual membership—which includes your Will.
+              Your Will is in your Vault from day one. Add unlimited updates for $25 a year to change it as life changes.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <Link href="/dashboard" className="mkt-btn-ink-l">
@@ -177,7 +177,7 @@ export default function LivingVaultPage() {
           </h2>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <Link href="/dashboard" className="mkt-btn-ink-m">Open your Vault</Link>
-            <Link href="/pricing" className="mkt-btn-ghost-m">Compare $129 once and $12/month</Link>
+            <Link href="/pricing" className="mkt-btn-ghost-m">Compare pricing</Link>
           </div>
         </div>
       </section>

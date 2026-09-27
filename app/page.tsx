@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
-import LifeStageSnake from '@/components/marketing/LifeStageSnake'
+import JourneyLine from '@/components/marketing/JourneyLine'
+import PlatformPreview from '@/components/marketing/PlatformPreview'
 import Reveal from '@/components/marketing/Reveal'
+import { PRICING } from '@/src/lib/pricing'
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_PAD: React.CSSProperties = { paddingBlock: '5.5rem' }
@@ -53,34 +55,35 @@ export default function HomePage() {
 
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
       <section style={{ position: 'relative', background: 'var(--mkt-surface)', color: 'var(--mkt-ink-text)', overflow: 'hidden' }}>
-        <div style={{ ...W, paddingTop: '8rem', paddingBottom: '0', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ ...W, paddingTop: '8rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ maxWidth: '52rem' }}>
             <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.7rem, 6.2vw, 5.4rem)', lineHeight: .98, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0 }}>
               Protect what matters,{' '}
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Start for free. Complete your whole Will in just 15 minutes and download it when you are ready.
+              Complete your Will in about 15 minutes. ${PRICING.willAud}, once, and you pay only when you download it. Add unlimited updates for ${PRICING.updatesAudPerYear} a year.
+            </p>
+          </div>
+          <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.9rem' }}>
+            <Link href="/start?path=retail" className="mkt-btn-ink-l">
+              Create my Will
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </Link>
+            <p style={{ margin: 0, fontSize: '.85rem', color: 'var(--mkt-stone)' }}>
+              Already have a Will?{' '}
+              <Link href="/start?mode=upload" style={{ color: 'var(--teal-deep)', fontWeight: 600, textDecoration: 'underline' }}>
+                Upload it and we&apos;ll take care of you.
+              </Link>
             </p>
           </div>
         </div>
 
-        {/* Life stage journey — sits between tagline and CTA */}
-        <LifeStageSnake inline />
-
-        <div style={{ paddingBottom: '3.5rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.9rem' }}>
-          <Link href="/start?path=retail" className="mkt-btn-ink-l">
-            Create my Will
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </Link>
-          <p style={{ margin: 0, fontSize: '.85rem', color: 'var(--mkt-stone)' }}>
-            Already have a Will?{' '}
-            <Link href="/start?mode=upload" style={{ color: 'var(--teal-deep)', fontWeight: 600, textDecoration: 'underline' }}>
-              Upload it and we&apos;ll take care of you.
-            </Link>
-          </p>
+        {/* The moments that change a Will: drag the pen line */}
+        <div style={{ paddingTop: '3.5rem', paddingBottom: '4rem' }}>
+          <JourneyLine />
         </div>
       </section>
 
@@ -116,19 +119,20 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── NO-PAYMENT STRIP ─────────────────────────────────────────────── */}
-      <section style={{ background: 'var(--mkt-surface-2)', color: 'var(--mkt-ink-text)', borderBottom: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10" style={{ ...W, paddingBlock: '1.25rem', fontSize: '.875rem', color: 'var(--mkt-stone)', textAlign: 'center' }}>
-          No payment to begin. No subscription required to finish.
+      {/* ─── PLATFORM DEMO ────────────────────────────────────────────────── */}
+      <section id="platform" style={{ background: 'var(--mkt-surface)', paddingBlock: '5.5rem', borderBottom: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10" style={{ ...W, textAlign: 'center' }}>
+          <span style={SECTION_LABEL}>The platform</span>
+          <H2>See your whole estate in one place.</H2>
+          <p style={{ margin: '1.1rem auto 0', maxWidth: '34rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
+            A working preview of the Vault: your Will, assets and people, kept together.
+          </p>
         </div>
-      </section>
-
-      {/* ─── START CTA ────────────────────────────────────────────────────── */}
-      <section style={{ background: '#fff', paddingBlock: '3.5rem', borderBottom: '1px solid var(--mkt-line)' }}>
-        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
-          <span style={SECTION_LABEL}>Your Will starts here</span>
-          <p style={{ margin: 0, fontSize: '1.05rem', color: 'var(--mkt-stone)' }}>15 minutes. Free to start. Ready when you are.</p>
-          <Link href="/start?path=retail" className="mkt-btn-teal-l" style={{ marginTop: '.5rem' }}>Start for free</Link>
+        <div className="md:px-10" style={{ ...W, marginTop: '3rem', paddingInline: 'clamp(.75rem, 2vw, 2rem)' }}>
+          <PlatformPreview />
+        </div>
+        <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+          <Link href="/the-platform" className="mkt-btn-ink-m">Explore the platform</Link>
         </div>
       </section>
 
@@ -140,7 +144,7 @@ export default function HomePage() {
         >
           <div>
             <span style={SECTION_LABEL}>The Will</span>
-            <H2>Not a document you sign once<br/>and hope you never think about <em style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>again</em>.</H2>
+            <H2>Not a document you sign once<br/>and hope you never think about again.</H2>
             <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault — readable in plain English, versioned every time your life moves forward, with a standard solicitor quality review included before your Will is issued.</Sub>
             <div style={{ marginTop: '2rem', display: 'flex', gap: '.9rem', flexWrap: 'wrap' }}>
               <Link href="/start" className="mkt-btn-ink-l">
@@ -202,7 +206,7 @@ export default function HomePage() {
         <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '38rem' }}>
             <span style={SECTION_LABEL}>The Command Centre</span>
-            <H2>A single home for everything<br/>your estate needs to <em style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>keep working</em>.</H2>
+            <H2>A single home for everything<br/>your estate needs to keep working.</H2>
             <Sub>Your Will gets your estate plan created. Living Vault keeps it current, together and ready as your life changes.</Sub>
           </div>
           <div className="lg:grid-cols-[1.15fr_1fr] lg:grid-rows-2" style={{ marginTop: '3.5rem', display: 'grid', gap: '1.1rem', gridTemplateColumns: '1fr' }}>
@@ -244,7 +248,7 @@ export default function HomePage() {
         <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '40rem' }}>
             <span style={SECTION_LABEL}>Why now</span>
-            <H2>Estate planning has been <em style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>deprioritised</em>,<br/>not because it doesn&#8217;t matter.</H2>
+            <H2>Estate planning has been deprioritised,<br/>not because it doesn&#8217;t matter.</H2>
           </div>
           <div className="md:grid-cols-3" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', borderTop: '1px solid var(--mkt-line)', borderLeft: '1px solid var(--mkt-line)' }}>
             {[
@@ -275,9 +279,9 @@ export default function HomePage() {
       <section style={{ ...SECTION_PAD, background: 'var(--mkt-surface-2)' }}>
         <Reveal className="md:px-10" style={W}>
           <div style={{ maxWidth: '34rem' }}>
-            <span style={SECTION_LABEL}>Membership</span>
-            <H2>Priced like something<br/>worth <em style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>getting right</em>.</H2>
-            <Sub>Choose $129 once with three months of full Vault benefits, or $99/year for your Will and continuing membership. One clear price—never a Will fee plus a subscription.</Sub>
+            <span style={SECTION_LABEL}>Pricing</span>
+            <H2>Priced like something<br/>worth getting right.</H2>
+            <Sub>Pay $129 once for your Will. Add unlimited updates for $25 a year to keep it current as life changes. No other fees.</Sub>
           </div>
           <div style={{ marginTop: '2rem' }}>
             <Link href="/pricing" className="mkt-btn-ink-m">View pricing</Link>

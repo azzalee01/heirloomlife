@@ -6,7 +6,7 @@ import { loadWillFormData, loadAnonSessionFormData, EMPTY_WILL_FORM_DATA } from 
 import type { StepId } from './_types'
 import { STEP_IDS } from './_types'
 import WillWizard from './_components/WillWizard'
-import { hasVaultBenefits, hasWillAccess as profileHasWillAccess } from '@/src/lib/entitlements'
+import { hasUpdatesAccess, hasWillAccess as profileHasWillAccess } from '@/src/lib/entitlements'
 
 export default async function WillNewPage({
   searchParams,
@@ -30,7 +30,7 @@ export default async function WillNewPage({
 
     const [{ formData }, { data: profile }] = await Promise.all([
       loadWillFormData(supabase, user.id, willIdParam),
-      supabaseAdmin.from('profiles').select('plan, plan_status, vault_access_until').eq('id', user.id).single(),
+      supabaseAdmin.from('profiles').select('plan, plan_status, updates_status, updates_active_until').eq('id', user.id).single(),
     ])
     const hasWillAccess = profileHasWillAccess(profile)
 
@@ -48,7 +48,7 @@ export default async function WillNewPage({
       }
     }
 
-    // Gate: after download, amendments require included Vault benefits or annual membership.
+    // Gate: after the first download, changing the Will requires the unlimited-updates add-on.
     // block re-entry into the questionnaire for amendments.
     if (formData.willId) {
       const { data: willRow } = await supabase
@@ -60,11 +60,11 @@ export default async function WillNewPage({
       if (willRow?.has_downloaded) {
         const { data: profile } = await supabaseAdmin
           .from('profiles')
-          .select('plan, plan_status, vault_access_until')
+          .select('plan, plan_status, updates_status, updates_active_until')
           .eq('id', user.id)
           .single()
 
-        const hasAmendmentAccess = hasVaultBenefits(profile)
+        const hasAmendmentAccess = hasUpdatesAccess(profile)
 
         if (!hasAmendmentAccess) {
           return (
@@ -77,17 +77,17 @@ export default async function WillNewPage({
                   </svg>
                 </div>
                 <h2 className="text-xl font-semibold" style={{ color: 'var(--ink)' }}>
-                  Your Vault benefits have ended
+                  Unlimited updates are needed to change your Will
                 </h2>
                 <p className="text-sm leading-relaxed" style={{ color: 'var(--neutral)' }}>
-                  Your included three-month benefits period has ended. Join Heirloom annually to make further amendments, add beneficiaries or redraft through the Estate Assistant.
+                  Your Will is complete and yours to keep. To change it, add beneficiaries or redraft it through the Estate Assistant, add unlimited updates for $25 a year.
                 </p>
                 <div className="flex flex-col gap-3">
                   <Link
-                    href="/pricing"
+                    href="/dashboard#upgrade"
                     className="btn btn-primary inline-flex items-center justify-center gap-2 px-6 py-3 text-sm font-semibold"
                   >
-                    See Heirloom Membership  -  $99/year
+                    Add unlimited updates  -  $25/year
                   </Link>
                   <Link
                     href="/dashboard"

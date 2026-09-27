@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 const SECTION_LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
   fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block',
@@ -24,11 +22,15 @@ const FAQS = [
   },
   {
     q: 'Can I update my Will after signing it?',
-    a: "Yes. The $129 one-off Will includes three months of full Vault benefits. The $99/year annual membership keeps those benefits active, including supported updates and life-event prompts. Every changed Will must be signed and witnessed again.",
+    a: "Yes. Add unlimited updates for $25 a year, when you buy your Will or any time after. Every changed Will must be signed and witnessed again. Video re-witnessing of updated Wills is coming soon; until then you print and sign updates.",
   },
   {
-    q: 'Do I pay for both the Will and membership?',
-    a: "No. Choose either $129 once for the Will plus three months of full Vault benefits, or $99/year with your Will and continuing membership included. If you cancel membership later, you can still download and retain your completed Will.",
+    q: 'Do I have to subscribe?',
+    a: "No. The Will is a one-off $129 and it is yours to keep and download. Unlimited updates ($25/year, optional) only matters if you want to change your Will later.",
+  },
+  {
+    q: 'What is the Living Vault?',
+    a: "Living Vault is where your Will, assets and people live, from the day you buy your Will. Unlimited updates keeps your Will current as life changes.",
   },
   {
     q: 'What happens to my Will if I die?',

@@ -6,11 +6,13 @@ import { EmbeddedCheckoutProvider, EmbeddedCheckout } from '@stripe/react-stripe
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 interface Props {
-  product: 'will' | 'vault'
+  product: 'will' | 'updates'
+  /** Buy the annual unlimited-updates add-on in the same checkout as the Will (product='will' only). */
+  addUpdates?: boolean
   onClose: () => void
 }
 
-export default function CheckoutModal({ product, onClose }: Props) {
+export default function CheckoutModal({ product, addUpdates = false, onClose }: Props) {
   // Lock body scroll while open
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -28,7 +30,7 @@ export default function CheckoutModal({ product, onClose }: Props) {
     const res = await fetch('/api/stripe/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product, embedded: true }),
+      body: JSON.stringify({ product, addUpdates, embedded: true }),
     })
     if (res.status === 401) {
       window.location.href = `/auth/signup?next=${encodeURIComponent(window.location.pathname)}`
@@ -37,7 +39,7 @@ export default function CheckoutModal({ product, onClose }: Props) {
     const data = await res.json() as { clientSecret?: string; error?: string }
     if (!data.clientSecret) throw new Error(data.error ?? 'Failed to start checkout')
     return data.clientSecret
-  }, [product])
+  }, [product, addUpdates])
 
   return (
     <div

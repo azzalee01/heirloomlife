@@ -8,9 +8,6 @@ export const metadata = {
 
 const W: React.CSSProperties = { maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }
 
-const TOOLTIP_TEXT =
-  'Covers standard solicitor review on every Will, ongoing platform security and maintenance, and Heirloom\'s witnessing coordination for NSW - so your Will stays current and your data stays protected, not just stored.'
-
 const PUBLISH_DATE = 'September 2026'
 
 function Tick() {
@@ -65,7 +62,7 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
   },
   {
     label: 'Ongoing cost',
-    heirloom: { kind: 'text', lines: ['$99', 'per year'], tooltip: TOOLTIP_TEXT },
+    heirloom: { kind: 'text', lines: ['$25', 'per year, optional'] },
     safewill: { kind: 'text', lines: ['$15/yr'] },
     willed:   { kind: 'text', lines: ['$15/yr', 'optional (first year free)'] },
   },

@@ -1,6 +1,7 @@
 'use server'
 
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
+import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { renderWillText } from '@/app/will/new/_render'
 import type { WillFormData } from '@/app/will/new/_types'
 
@@ -27,7 +28,9 @@ export async function markWillDownloaded(willId: string): Promise<void> {
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
-  await supabase
+  // Service role: has_downloaded gates amendments, so users must not be able to write it directly.
+  // Ownership is enforced by the user_id filter.
+  await supabaseAdmin
     .from('wills')
     .update({ has_downloaded: true })
     .eq('id', willId)
