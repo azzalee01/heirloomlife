@@ -52,21 +52,6 @@ Return ONLY valid JSON matching this exact structure, no markdown fences, no com
   "specificGifts": [{ "type": "item" | "cash", "description": string, "amount": string, "recipientName": string, "recipientRelationship": string }]
 }`
 
-async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  // pdf-parse v2 exports a PDFParse class, not a default function
-  const { PDFParse } = await import('pdf-parse')
-  const parser = new PDFParse({ data: buffer })
-  const result = await parser.getText()
-  await parser.destroy()
-  return result.text ?? ''
-}
-
-async function extractTextFromDocx(buffer: Buffer): Promise<string> {
-  const mammoth = await import('mammoth')
-  const result = await mammoth.extractRawText({ buffer })
-  return result.value ?? ''
-}
-
 // Collect non-null field paths from the extracted object
 function collectExtractedFields(obj: Record<string, unknown>, prefix: string, acc: string[]): void {
   for (const [k, v] of Object.entries(obj)) {
@@ -102,28 +87,43 @@ export async function POST(request: NextRequest) {
 
   const buffer = Buffer.from(await file.arrayBuffer())
 
-  let text: string
-  try {
-    text = isPdf
-      ? await extractTextFromPdf(buffer)
-      : await extractTextFromDocx(buffer)
-  } catch (err) {
-    console.error('[will/upload] Text extraction error:', err)
-    return Response.json({ success: false, reason: 'protected' })
-  }
-
-  if (text.trim().length < MIN_TEXT_LENGTH) {
-    return Response.json({ success: false, reason: 'unreadable' })
+  // For DOCX, extract text with mammoth first (mammoth works fine in serverless).
+  // For PDF, skip local parsing entirely — pdfjs-dist requires DOMMatrix which doesn't
+  // exist in Node.js 18 serverless. Send the PDF bytes directly to Claude instead.
+  let docxText: string | null = null
+  if (isDocx) {
+    try {
+      const mammoth = await import('mammoth')
+      const result = await mammoth.extractRawText({ buffer })
+      docxText = result.value ?? ''
+    } catch (err) {
+      console.error('[will/upload] DOCX extraction error:', err)
+      return Response.json({ success: false, reason: 'protected' })
+    }
+    if (docxText.trim().length < MIN_TEXT_LENGTH) {
+      return Response.json({ success: false, reason: 'unreadable' })
+    }
   }
 
   let extractedData: Record<string, unknown>
   try {
     const anthropic = new Anthropic()
+
+    const userContent: Anthropic.MessageParam['content'] = isPdf
+      ? [
+          {
+            type: 'document',
+            source: { type: 'base64', media_type: 'application/pdf', data: buffer.toString('base64') },
+          },
+          { type: 'text', text: 'Extract the structured data from this Will document.' },
+        ]
+      : docxText!.slice(0, 40000)
+
     const response = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 2000,
       system: EXTRACTION_SYSTEM,
-      messages: [{ role: 'user', content: text.slice(0, 40000) }],
+      messages: [{ role: 'user', content: userContent }],
     })
     const raw = response.content.filter(b => b.type === 'text').map(b => b.text).join('').trim()
     extractedData = JSON.parse(raw)
