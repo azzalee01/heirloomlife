@@ -2,7 +2,6 @@
 
 import type { BeneficiariesData, PersonBeneficiary, CharityBeneficiary, TriageFlags } from '../_types'
 import TriageFlag from './TriageFlag'
-import ExtractedBadge from './ExtractedBadge'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -56,10 +55,7 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
       <div>
         <h2 className="text-xl font-semibold text-[var(--ink)]">Beneficiaries</h2>
         {hasExtracted && (
-          <div className="mb-2 flex items-center gap-2">
-            <ExtractedBadge />
-            <span className="text-xs text-[var(--neutral)]">pre-filled from your uploaded Will — confirm or edit</span>
-          </div>
+          <p className="mt-1.5 text-xs" style={{ color: 'var(--teal-deep)' }}>Pre-filled from your uploaded Will — confirm or edit</p>
         )}
         <p className="text-sm text-[var(--neutral)] mt-1">
           Specify who inherits your estate and the percentage each receives. This forms your{' '}

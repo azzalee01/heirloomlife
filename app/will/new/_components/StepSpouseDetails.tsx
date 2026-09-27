@@ -1,11 +1,11 @@
 'use client'
 
 import type { SpouseDetails, MaritalStatus } from '../_types'
-import ExtractedBadge from './ExtractedBadge'
 
 const AU_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA']
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
+const inpEx = 'w-full px-3 py-2.5 border border-[var(--teal)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
 const eyebrow = 'text-xs font-semibold uppercase tracking-widest text-[var(--neutral)] mb-3'
 
@@ -18,6 +18,7 @@ interface Props {
 
 export default function StepSpouseDetails({ data, onChange, maritalStatus, extractedFields }: Props) {
   function ex(field: string) { return extractedFields?.has(`spouseDetails.${field}`) ?? false }
+  function ic(field: string) { return ex(field) ? inpEx : inp }
   function set(field: keyof SpouseDetails, value: string) {
     onChange({ ...data, [field]: value })
   }
@@ -36,19 +37,16 @@ export default function StepSpouseDetails({ data, onChange, maritalStatus, extra
         <p className={eyebrow}>Full Name</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            {ex('firstName') && <ExtractedBadge />}
             <label className={lbl}>First name <span className="text-red-400">*</span></label>
-            <input required className={inp} value={data.firstName} onChange={(e) => set('firstName', e.target.value)} />
+            <input required className={ic('firstName')} value={data.firstName} onChange={(e) => set('firstName', e.target.value)} />
           </div>
           <div>
-            {ex('middleName') && <ExtractedBadge />}
             <label className={lbl}>Middle name</label>
-            <input className={inp} value={data.middleName} onChange={(e) => set('middleName', e.target.value)} />
+            <input className={ic('middleName')} value={data.middleName} onChange={(e) => set('middleName', e.target.value)} />
           </div>
           <div>
-            {ex('lastName') && <ExtractedBadge />}
             <label className={lbl}>Last name <span className="text-red-400">*</span></label>
-            <input required className={inp} value={data.lastName} onChange={(e) => set('lastName', e.target.value)} />
+            <input required className={ic('lastName')} value={data.lastName} onChange={(e) => set('lastName', e.target.value)} />
           </div>
         </div>
       </section>

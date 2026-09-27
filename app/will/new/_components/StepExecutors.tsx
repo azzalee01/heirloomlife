@@ -1,7 +1,6 @@
 'use client'
 
 import type { ExecutorsData, ExecutorPerson } from '../_types'
-import ExtractedBadge from './ExtractedBadge'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -70,10 +69,7 @@ export default function StepExecutors({ data, onChange, extractedFields }: Props
           An executor administers your estate and carries out the instructions in your will.
         </p>
         {hasExtracted && (
-          <div className="mt-2 flex items-center gap-2">
-            <ExtractedBadge />
-            <span className="text-xs text-[var(--neutral)]">pre-filled from your uploaded Will — confirm or edit</span>
-          </div>
+          <p className="mt-1.5 text-xs" style={{ color: 'var(--teal-deep)' }}>Pre-filled from your uploaded Will — confirm or edit</p>
         )}
       </div>
 
