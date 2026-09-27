@@ -92,7 +92,7 @@ export default function PricingPage() {
               <p style={{ fontFamily: "var(--font-display)", fontSize: 'clamp(3rem, 5vw, 4.5rem)', color: 'var(--mkt-ink-text)', lineHeight: 1, margin: '0 0 .25rem' }}>
                 ${PRICING.updatesAudPerYear}
               </p>
-              <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>per year, optional.</p>
+              <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>per year.</p>
               <p style={{ fontSize: '.8rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount applies to the Will only, not to unlimited updates.</p>
 
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 1.5rem' }}>

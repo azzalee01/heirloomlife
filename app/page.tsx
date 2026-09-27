@@ -61,7 +61,7 @@ export default function HomePage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Complete your Will in about 15 minutes. You pay only when you download it. Add unlimited updates to keep it current as life changes.
+              Complete your Will in about 15 minutes. Add unlimited updates to keep it current as life changes.
             </p>
           </div>
           <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.9rem' }}>
