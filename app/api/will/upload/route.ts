@@ -88,17 +88,23 @@ export async function POST(request: NextRequest) {
   const buffer = Buffer.from(await file.arrayBuffer())
 
   // For DOCX, extract text with mammoth first (mammoth works fine in serverless).
-  // For PDF, skip local parsing entirely — pdfjs-dist requires DOMMatrix which doesn't
-  // exist in Node.js 18 serverless. Send the PDF bytes directly to Claude instead.
+  // For PDF, skip local parsing entirely — send the PDF bytes directly to Claude instead.
   let docxText: string | null = null
   if (isDocx) {
+    // Password-protected DOCX files are OLE/CFB containers (magic: D0 CF 11 E0), not ZIP files.
+    // Detect by magic bytes so we give an accurate error rather than a generic one.
+    const isOleCfb = buffer[0] === 0xD0 && buffer[1] === 0xCF && buffer[2] === 0x11 && buffer[3] === 0xE0
+    if (isOleCfb) {
+      console.log('[will/upload] DOCX is OLE/CFB (password-protected)')
+      return Response.json({ success: false, reason: 'protected' })
+    }
     try {
       const mammoth = await import('mammoth')
       const result = await mammoth.extractRawText({ buffer })
       docxText = result.value ?? ''
     } catch (err) {
       console.error('[will/upload] DOCX extraction error:', err)
-      return Response.json({ success: false, reason: 'protected' })
+      return Response.json({ success: false, reason: 'unreadable' })
     }
     if (docxText.trim().length < MIN_TEXT_LENGTH) {
       return Response.json({ success: false, reason: 'unreadable' })
