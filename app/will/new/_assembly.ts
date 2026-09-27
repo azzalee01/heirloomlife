@@ -1,6 +1,6 @@
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import type { WillFormData } from './_types'
-import { resolveSubstituteBeneficiaryText } from './_types'
+import { resolveSubstituteBeneficiaryText, formatCurrency, formatAmountDigits } from './_types'
 import { validateWillForGeneration, validateRenderedText } from './_validate'
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -54,14 +54,6 @@ function fullName(first: string, last: string): string {
   return [first, last].filter(Boolean).join(' ')
 }
 
-/** Resolves a substitute sentinel to readable text, naming the beneficiary where needed. */
-function resolveSubForBeneficiary(sentinel: string, beneficiaryName: string): string {
-  if (sentinel === '__their_children__') {
-    return `the children of ${beneficiaryName}, in equal shares`
-  }
-  return resolveSubstituteBeneficiaryText(sentinel)
-}
-
 function buildResidueDispositionText(formData: WillFormData): string {
   const { people, charities } = formData.beneficiariesData
 
@@ -97,7 +89,7 @@ function buildResidueDispositionText(formData: WillFormData): string {
     const b = all[0]
     let s = `to ${b.label} absolutely`
     if (b.sub) {
-      s += `. If ${b.label} does not survive me by ${survivorshipDays} days, that share passes instead to ${resolveSubForBeneficiary(b.sub, b.name)}`
+      s += `. If ${b.label} does not survive me by ${survivorshipDays} days, that share passes instead to ${resolveSubstituteBeneficiaryText(b.sub, b.name)}`
     }
     return s
   }
@@ -106,7 +98,7 @@ function buildResidueDispositionText(formData: WillFormData): string {
   const lines = all.map((b) => {
     let line = `  - ${b.pct}% to ${b.label}`
     if (b.sub) {
-      line += `; if ${b.label} does not survive me by ${survivorshipDays} days, that share passes instead to ${resolveSubForBeneficiary(b.sub, b.name)}`
+      line += `; if ${b.label} does not survive me by ${survivorshipDays} days, that share passes instead to ${resolveSubstituteBeneficiaryText(b.sub, b.name)}`
     }
     return line
   })
@@ -117,10 +109,10 @@ function buildGiftLine(
   formData: WillFormData,
   g: WillFormData['specificGifts'][number]
 ): string {
-  const desc = g.type === 'cash' ? `the sum of $${g.amount}` : g.description
+  const desc = g.type === 'cash' ? `the sum of ${formatCurrency(g.amount)}` : g.description
   let line = `${desc} to ${g.recipientName}${g.recipientRelationship ? ` (${g.recipientRelationship})` : ''}`
   if (g.substituteBeneficiary) {
-    line += `. If ${g.recipientName} does not survive me by ${formData.survivorshipDays || '30'} days, this gift passes instead to ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary)}`
+    line += `. If ${g.recipientName} does not survive me by ${formData.survivorshipDays || '30'} days, this gift passes instead to ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary, g.recipientName)}`
   }
   return line
 }
@@ -145,6 +137,7 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   const pd = formData.personalDetails
   const ed = formData.executorsData
   const cd = formData.childrenData
+  const tf = formData.triageFlags
   const hasDependent = cd.hasChildren === 'yes' && cd.children.some((c) => c.isDependent)
   const survivorshipDays = formData.survivorshipDays || '30'
   const tname = testatorName(formData)
@@ -272,25 +265,19 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
         pet_guardian_name: pc.caregiverName,
         pet_description: pc.description,
         pet_name: pc.description,
-        pet_care_amount: pc.careFundAmount || '0',
+        pet_care_amount: formatAmountDigits(pc.careFundAmount || '0'),
       },
     })
   }
 
   // ── 12. Digital assets — only when the testator has digital assets ─────────
+  // Credential/access location must NOT appear in the Will — it belongs in Executor Information only.
   const hasDigital = formData.assets.some((a) => a.assetType === 'digital_asset')
   if (hasDigital) {
-    const digital = formData.assets.find((a) => a.assetType === 'digital_asset')
-    // Build the optional access-note sentence; empty string suppresses it in the clause.
-    const digitalAccessNote = digital?.accessLocation
-      ? `I have recorded the location of my passwords and access credentials in a separate document held at ${digital.accessLocation}, to assist my Executor.`
-      : ''
     instances.push({
       code: 'DIGITAL-01',
       heading: `${++clauseNo}. DIGITAL ASSETS`,
-      vars: {
-        digital_access_note: digitalAccessNote,
-      },
+      vars: { digital_access_note: '' },
     })
   }
 
@@ -329,7 +316,6 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
 
   // ── 18. Escalation clauses ────────────────────────────────────────────────
   // Included with their solicitor-review warning when triage flags are set.
-  const tf = formData.triageFlags
   if (tf.hasBusinessInterest) {
     instances.push({
       code: 'BIZ-01',

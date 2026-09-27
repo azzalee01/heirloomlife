@@ -1,5 +1,5 @@
 import type { WillFormData } from './_types'
-import { resolveSubstituteBeneficiaryText } from './_types'
+import { resolveSubstituteBeneficiaryText, formatCurrency } from './_types'
 
 // ─── Approved clause text library ──────────────────────────────────────────
 // These texts mirror the approved Supabase clause_versions for NSW.
@@ -62,17 +62,22 @@ const INDEMNITY_01 =
   `(c) any act done or omission made in good faith in reliance on the advice of a barrister, solicitor or other qualified professional.\n\n` +
   `My Executor's right to indemnity under this clause is in addition to, and does not limit, any right of indemnity conferred by law.`
 
-// Base definitions — always included. Digital Assets is NOT in DEFN-01; it is
-// defined within DIGITAL-01 itself and only renders when that clause is active.
-const DEFN_01_BASE =
-  `In this Will, unless the context otherwise requires:\n\n` +
-  `**"my estate"** means all real and personal property of which I am the beneficial owner at the date of my death, including property over which I have a general power of appointment;\n\n` +
-  `**"my Executor"** means the executor or executors for the time being of this Will, including any substituted executor, and includes my Executor acting as trustee where the context so requires;\n\n` +
-  `**"child"** and **"children"** include any person recognised as my child under the *Status of Children Act 1996* (NSW) and any child adopted by me, but does not include a stepchild unless expressly stated;\n\n` +
-  `**"minor"** means a person who has not yet attained the age of 18 years;\n\n` +
-  `**"vesting age"** means the age specified in a trust clause at which a beneficiary becomes absolutely entitled to trust property;\n\n` +
-  `**"intestacy rules"** means the rules of intestacy as set out in Chapter 4 of the *Succession Act 2006* (NSW).\n\n` +
-  `Words importing one gender include all genders. Words importing the singular include the plural and vice versa. A reference to a person includes a corporation.`
+// Dependency-aware definitions. "intestacy rules" is intentionally omitted — no operative
+// clause uses that defined term (operative clauses reference "intestacy provisions" directly).
+// "minor" and "vesting age" are only included when MIN-01/MIN-02 render (requires hasDependent).
+function buildDefinitions(hasDependent: boolean): string {
+  return (
+    `In this Will, unless the context otherwise requires:\n\n` +
+    `**"my estate"** means all real and personal property of which I am the beneficial owner at the date of my death, including property over which I have a general power of appointment;\n\n` +
+    `**"my Executor"** means the executor or executors for the time being of this Will, including any substituted executor, and includes my Executor acting as trustee where the context so requires;\n\n` +
+    `**"child"** and **"children"** include any person recognised as my child under the *Status of Children Act 1996* (NSW) and any child adopted by me, but does not include a stepchild unless expressly stated;\n\n` +
+    (hasDependent
+      ? `**"minor"** means a person who has not yet attained the age of 18 years;\n\n` +
+        `**"vesting age"** means the age specified in a trust clause at which a beneficiary becomes absolutely entitled to trust property;\n\n`
+      : '') +
+    `Words importing one gender include all genders. Words importing the singular include the plural and vice versa. A reference to a person includes a corporation.`
+  )
+}
 
 const INTERP_01 =
   `This Will is to be construed in accordance with the law of New South Wales.\n\n` +
@@ -112,16 +117,29 @@ function COMMON_GIFT_01(days: string): string {
   )
 }
 
+// APPROVED_LEGAL_TEXT_REQUIRED — PET_TRANSFER_MECHANICS
+// The current PET-01 wording is internally inconsistent:
+//   "I request (but do not legally require)..." — precatory/non-binding
+//   "I direct my Executor to transfer custody..." — imperative/binding
+// These formulations are in direct conflict. Do NOT rewrite until a replacement
+// is approved by the solicitor review team.
 function PET_01(guardianName: string, petDescription: string, careFundAmount: string): string {
   return (
     `I request (but do not legally require) that ${guardianName} take ownership and ongoing care of my ${petDescription} following my death.\n\n` +
     `I direct my Executor to transfer custody of my pet to ${guardianName} as soon as practicable after my death. If ${guardianName} is unwilling or unable to accept custody, my Executor shall make arrangements for my pet to be placed with a suitable person or reputable animal rescue organisation.\n\n` +
-    `I give the sum of $${careFundAmount} to ${guardianName} to assist with the ongoing cost of caring for my pet. If ${guardianName} does not accept custody of my pet, this sum shall fall into residue.`
+    `I give the sum of ${formatCurrency(careFundAmount)} to ${guardianName} to assist with the ongoing cost of caring for my pet. If ${guardianName} does not accept custody of my pet, this sum shall fall into residue.`
   )
 }
 
-function DIGITAL_01(accessNote: string): string {
-  const noteSection = accessNote.trim() ? `\n\n${accessNote.trim()}` : ''
+// LEGAL REVIEW REQUIRED — DIGITAL_01
+// The following points require solicitor confirmation before this clause is finalised:
+//   1. "online banking" within "digital assets" — potential tension with bank secrecy obligations
+//   2. "I direct any custodian or platform..." — enforceability against third-party platforms
+//   3. Coverage of crypto, NFTs, loyalty points — confirm adequacy under NSW/Cth law
+//   4. Executor access rights — confirm compliance with applicable access/computer laws
+// Do NOT modify the clause text until the legal review is complete.
+// Credential/access location must NOT appear in the signed Will — it belongs in Executor Information only.
+function DIGITAL_01(): string {
   return (
     `I give my Executor the authority, to the fullest extent permitted by law and by the terms of any relevant service, to access, manage and deal with all of my digital assets following my death.\n\n` +
     `"Digital assets" includes, without limitation:\n\n` +
@@ -135,8 +153,7 @@ function DIGITAL_01(accessNote: string): string {
     `(b) access, download and preserve digital content of personal or financial value to my estate;\n\n` +
     `(c) sell, transfer or otherwise realise any digital asset with monetary value; and\n\n` +
     `(d) engage a professional digital estate specialist at the cost of my estate.\n\n` +
-    `I direct any custodian or platform holding my digital assets to cooperate with my Executor on production of a certified copy of the grant of probate and this Will.` +
-    noteSection
+    `I direct any custodian or platform holding my digital assets to cooperate with my Executor on production of a certified copy of the grant of probate and this Will.`
   )
 }
 
@@ -189,7 +206,7 @@ function buildResidueText(formData: WillFormData): string {
     const b = all[0]
     let s = `to ${b.label} absolutely`
     if (b.sub) {
-      s += `. If ${b.label} does not survive me by ${survivorshipDays} days, that share passes instead to ${resolveSubstituteBeneficiaryText(b.sub)}`
+      s += `. If ${b.label} does not survive me by ${survivorshipDays} days, that share passes instead to ${resolveSubstituteBeneficiaryText(b.sub, b.name)}`
     }
     return s
   }
@@ -197,7 +214,7 @@ function buildResidueText(formData: WillFormData): string {
   const lines = all.map((b) => {
     let line = `  - ${b.pct}% to ${b.label}`
     if (b.sub) {
-      line += `; if ${b.label} does not survive me by ${survivorshipDays} days, that share passes instead to ${resolveSubstituteBeneficiaryText(b.sub)}`
+      line += `; if ${b.label} does not survive me by ${survivorshipDays} days, that share passes instead to ${resolveSubstituteBeneficiaryText(b.sub, b.name)}`
     }
     return line
   })
@@ -282,10 +299,10 @@ export function renderWillText(formData: WillFormData): string {
     const gifts = activeGifts
       .map((g) => {
         let line =
-          `- ${g.type === 'cash' ? `The sum of $${g.amount || '0'}` : g.description || 'An item'} ` +
+          `- ${g.type === 'cash' ? `The sum of ${formatCurrency(g.amount || '0')}` : g.description || 'An item'} ` +
           `to ${g.recipientName}${g.recipientRelationship ? ` (${g.recipientRelationship})` : ''}.`
         if (g.substituteBeneficiary) {
-          line += ` If ${g.recipientName} does not survive me by ${survivorshipDays} days, this gift is instead given to ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary)}.`
+          line += ` If ${g.recipientName} does not survive me by ${survivorshipDays} days, this gift is instead given to ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary, g.recipientName)}.`
         }
         return line
       })
@@ -326,12 +343,9 @@ export function renderWillText(formData: WillFormData): string {
   }
 
   // ── 10. Digital Assets (DIGITAL-01) — conditional on asset type ───────────
+  // Access/credential location is NOT included in the Will — it belongs in Executor Information only.
   if (hasDigitalAssets) {
-    const digitalAsset = formData.assets.find((a) => a.assetType === 'digital_asset')
-    const accessNote = digitalAsset?.accessLocation
-      ? `I have recorded the location of my passwords and access credentials in a separate document held at ${digitalAsset.accessLocation}, to assist my Executor.`
-      : ''
-    sections.push(`${next()}. DIGITAL ASSETS\n\n${DIGITAL_01(accessNote)}`)
+    sections.push(`${next()}. DIGITAL ASSETS\n\n${DIGITAL_01()}`)
   }
 
   // ── 11. Executor Powers (EXEC-03) — always ───────────────────────────────
@@ -352,10 +366,10 @@ export function renderWillText(formData: WillFormData): string {
   // ── 16. Executor Indemnity (INDEMNITY-01) — always ───────────────────────
   sections.push(`${next()}. EXECUTOR INDEMNITY\n\n${INDEMNITY_01}`)
 
-  // ── 17. Definitions (DEFN-01 base — dependency-aware) ────────────────────
-  // Digital Assets is defined within DIGITAL-01 itself; omit it here when
-  // the Digital Assets clause is not rendered.
-  sections.push(`${next()}. DEFINITIONS\n\n${DEFN_01_BASE}`)
+  // ── 17. Definitions (DEFN-01 — dependency-aware) ─────────────────────────
+  // "intestacy rules" intentionally excluded — no operative clause uses that defined term.
+  // "minor" and "vesting age" only included when MIN-01/MIN-02 render.
+  sections.push(`${next()}. DEFINITIONS\n\n${buildDefinitions(hasDependent)}`)
 
   // ── 18. Interpretation (INTERP-01) — always ──────────────────────────────
   sections.push(`${next()}. INTERPRETATION\n\n${INTERP_01}`)

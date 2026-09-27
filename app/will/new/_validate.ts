@@ -138,6 +138,8 @@ const POST_RENDER_CHECKS: Array<{ pattern: RegExp | string; message: string }> =
   { pattern: /\[unnamed carer\]/, message: 'Pet guardian name not resolved.' },
   { pattern: /\[unnamed\]/, message: 'Beneficiary or person name not resolved.' },
   { pattern: /\[location not specified\]/, message: 'Location placeholder not resolved.' },
+  // Credential location must never appear in the signed Will document
+  { pattern: /passwords? and access credentials?/, message: 'Credential location sentence must not appear in Will body — move this information to Executor Information.' },
 ]
 
 export function validateRenderedText(text: string): ValidationResult {

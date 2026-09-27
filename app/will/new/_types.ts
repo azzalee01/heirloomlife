@@ -246,14 +246,33 @@ export const STEP_LABELS: Record<StepId, string> = {
 // Sentinel values used by StepBeneficiaryBackup.tsx for the two preset backup options.
 // Any other non-empty value is a literal custom name typed by the user.
 export const SUBSTITUTE_BENEFICIARY_LABELS: Record<string, string> = {
-    '__their_children__': 'their children, equally',
+    '__their_children__': "the beneficiary's children, equally", // fallback — prefer named form
     '__other_beneficiaries__': 'the remaining beneficiaries, in proportion to their existing shares',
+    '__testator_children__': 'my children, equally',
 }
 
 // Resolves a stored substituteBeneficiary value into human-readable text for
 // display in the live preview, the AI drafting prompt, and the final document.
 // Custom names pass through unchanged.
-export function resolveSubstituteBeneficiaryText(value: string | null | undefined): string {
+// Pass primaryBeneficiaryName for __their_children__ to avoid ambiguous "their".
+export function resolveSubstituteBeneficiaryText(value: string | null | undefined, primaryBeneficiaryName?: string): string {
     if (!value) return ''
+    if (value === '__their_children__') {
+        return primaryBeneficiaryName
+            ? `${primaryBeneficiaryName}'s children, equally`
+            : "the beneficiary's children, equally"
+    }
+    if (value === '__testator_children__') return 'my children, equally'
     return SUBSTITUTE_BENEFICIARY_LABELS[value] ?? value
+}
+
+/** Adds comma separators to a whole-dollar amount, e.g. "10000" → "10,000". No $ prefix. */
+export function formatAmountDigits(amount: string | number): string {
+    const n = Math.round(typeof amount === 'string' ? parseFloat(amount) || 0 : amount)
+    return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+/** Formats a dollar amount with leading $ and comma separators, e.g. "10000" → "$10,000". */
+export function formatCurrency(amount: string | number): string {
+    return '$' + formatAmountDigits(amount)
 }

@@ -11,6 +11,7 @@ import { describe, it, expect } from 'vitest'
 import { validateWillForGeneration, validateRenderedText } from '../_validate'
 import { renderWillText } from '../_render'
 import { assessComplexityFlags, maxSeverity } from '../_complexity'
+import { resolveSubstituteBeneficiaryText } from '../_types'
 import type { WillFormData } from '../_types'
 
 // ── Base fixture helpers ──────────────────────────────────────────────────────
@@ -539,9 +540,9 @@ describe('Phase 14 Test 3 — Pecuniary gift', () => {
     beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Spouse')], charities: [] },
   })
 
-  it('renders the cash gift', () => {
+  it('renders the cash gift with formatted amount', () => {
     const text = renderWillText(formData)
-    expect(text).toContain('$5000')
+    expect(text).toContain('$5,000')
     expect(text).toContain('Bob Brown')
   })
 
@@ -603,7 +604,7 @@ describe('Phase 14 Test 5 — Pet with care provision', () => {
   it('renders pet clause with approved mechanism', () => {
     const text = renderWillText(formData)
     expect(text).toContain('Catherine Brown')
-    expect(text).toContain('$2000')
+    expect(text).toContain('$2,000')
   })
 
   it('includes fallback if carer cannot accept', () => {
@@ -662,9 +663,10 @@ describe('Phase 14 Test 7 — Digital assets enabled', () => {
     expect(text.toUpperCase()).toContain('DIGITAL ASSETS')
   })
 
-  it('includes access location note', () => {
+  it('does not include access location in Will body', () => {
     const text = renderWillText(formData)
-    expect(text).toContain('password manager on laptop')
+    expect(text).not.toContain('password manager on laptop')
+    expect(text).not.toContain('passwords and access credentials')
   })
 
   it('passes post-render validation', () => {
@@ -902,5 +904,280 @@ describe('Phase 14 Test 14 — Clause removal renumbers correctly', () => {
   it('passes post-render validation in both cases', () => {
     expect(validateRenderedText(renderWillText(withPets)).valid).toBe(true)
     expect(validateRenderedText(renderWillText(withoutPets)).valid).toBe(true)
+  })
+})
+
+// ── Tests A–L: QA/Fix pass ────────────────────────────────────────────────────
+
+// TEST A — Substitute beneficiary __testator_children__
+describe('Test A — Substitute beneficiary __testator_children__', () => {
+  it('resolves to "my children, equally"', () => {
+    expect(resolveSubstituteBeneficiaryText('__testator_children__')).toBe('my children, equally')
+  })
+
+  it('renders in Will as "my children, equally"', () => {
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [{ ...personBeneficiary('Michael Smith', '100', 'Spouse'), substituteBeneficiary: '__testator_children__' }],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('my children, equally')
+    expect(validateRenderedText(text).valid).toBe(true)
+  })
+})
+
+// TEST B — Substitute beneficiary __their_children__ with name context
+describe('Test B — Substitute beneficiary __their_children__ with name context', () => {
+  it('resolves to named-possessive form when beneficiary name is provided', () => {
+    expect(resolveSubstituteBeneficiaryText('__their_children__', 'Michael Smith')).toBe("Michael Smith's children, equally")
+  })
+
+  it('falls back to generic form when no name is provided', () => {
+    expect(resolveSubstituteBeneficiaryText('__their_children__')).toBe("the beneficiary's children, equally")
+  })
+
+  it('renders "Michael Smith\'s children, equally" in Will — not the ambiguous "their children" form', () => {
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [{ ...personBeneficiary('Michael Smith', '100', 'Spouse'), substituteBeneficiary: '__their_children__' }],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain("Michael Smith's children, equally")
+    expect(text).not.toContain('their children, equally')
+    expect(validateRenderedText(text).valid).toBe(true)
+  })
+})
+
+// TEST C — Substitute beneficiary __other_beneficiaries__
+describe('Test C — Substitute beneficiary __other_beneficiaries__', () => {
+  it('resolves to remaining-beneficiaries text', () => {
+    expect(resolveSubstituteBeneficiaryText('__other_beneficiaries__')).toContain('remaining beneficiaries')
+  })
+
+  it('renders in Will with remaining-beneficiaries wording', () => {
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [
+          { ...personBeneficiary('Alice', '60', 'Child'), substituteBeneficiary: '__other_beneficiaries__' },
+          personBeneficiary('Bob', '40', 'Child'),
+        ],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('remaining beneficiaries')
+    expect(validateRenderedText(text).valid).toBe(true)
+  })
+})
+
+// TEST D — Custom substitute beneficiary name passes through unchanged
+describe('Test D — Custom substitute beneficiary name', () => {
+  it('passes a custom name unchanged', () => {
+    expect(resolveSubstituteBeneficiaryText('David Smith')).toBe('David Smith')
+  })
+
+  it('renders custom substitute name in Will body', () => {
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [{ ...personBeneficiary('Michael Smith', '100', 'Spouse'), substituteBeneficiary: 'David Smith (Brother)' }],
+        charities: [],
+      },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('David Smith (Brother)')
+    expect(validateRenderedText(text).valid).toBe(true)
+  })
+})
+
+// TEST E — Credential/access location must not appear in Will body
+describe('Test E — Credential location removed from Will body', () => {
+  const formData = baseFormData({
+    assets: [{
+      id: '1', assetType: 'digital_asset', ownershipType: 'sole',
+      propertyAddress: '', estimatedValue: '', bankName: '', bsb: '', accountNumber: '',
+      fundName: '', memberNumber: '', companyName: '', numberOfShares: '',
+      insurerName: '', policyNumber: '', coverAmount: '',
+      make: '', model: '', year: '', rego: '',
+      accessLocation: 'password manager on my laptop',
+      description: 'Crypto wallet', otherValue: '',
+      hasDeathBenefitNomination: false, deathBenefitNominees: '', isOverseas: false, overseasCountry: '',
+    }],
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+  })
+
+  it('does not include access location in rendered Will body', () => {
+    const text = renderWillText(formData)
+    expect(text).not.toContain('password manager on my laptop')
+    expect(text).not.toContain('passwords and access credentials')
+  })
+
+  it('digital assets clause still renders', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).toContain('DIGITAL ASSETS')
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST F — "intestacy rules" orphan definition must not appear
+describe('Test F — No orphan "intestacy rules" definition', () => {
+  it('does not include "intestacy rules" in definitions (no operative clause uses this term)', () => {
+    const formData = baseFormData({
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    expect(text).not.toMatch(/["""]intestacy rules["""]/)
+  })
+})
+
+// TEST G — Conditional definitions: vesting age and minor
+describe('Test G — Conditional definitions render only when relevant clauses render', () => {
+  it('includes "vesting age" and "minor" definitions when there are dependent children', () => {
+    const formData = baseFormData({
+      childrenData: {
+        hasChildren: 'yes',
+        children: [{ id: '1', name: 'Tom', dateOfBirth: '2020-01-01', isDependent: true }],
+        guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
+        ageOfVesting: '25',
+      },
+      beneficiariesData: { people: [personBeneficiary('Tom', '100', 'Child')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('"vesting age"')
+    expect(text).toContain('"minor"')
+  })
+
+  it('omits "vesting age" and "minor" definitions when there are no dependent children', () => {
+    const formData = baseFormData({
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    expect(text).not.toContain('"vesting age"')
+    expect(text).not.toContain('"minor"')
+  })
+})
+
+// TEST H — Money formatting with comma separators
+describe('Test H — Money formatting', () => {
+  it('formats $10,000 cash gift with commas', () => {
+    const formData = baseFormData({
+      specificGifts: [{
+        id: '1', type: 'cash', description: '', amount: '10000',
+        recipientName: 'Bob Brown', recipientRelationship: 'Sibling', substituteBeneficiary: '',
+      }],
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('$10,000')
+    expect(text).not.toContain('$10000')
+  })
+
+  it('formats $2,000 pet care fund with commas', () => {
+    const formData = baseFormData({
+      petCare: { hasPets: 'yes', description: 'dog', caregiverName: 'Mary', caregiverRelationship: '', careFundAmount: '2000' },
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('$2,000')
+    expect(text).not.toContain('$2000')
+  })
+
+  it('renders three-digit amounts without spurious commas', () => {
+    const formData = baseFormData({
+      specificGifts: [{
+        id: '1', type: 'cash', description: '', amount: '500',
+        recipientName: 'Bob Brown', recipientRelationship: '', substituteBeneficiary: '',
+      }],
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('$500')
+    expect(text).not.toContain('$500,')
+  })
+})
+
+// TEST I — Guardian relationship label context
+describe('Test I — Guardian relationship label context', () => {
+  it('renders guardian relationship as the testator-relative label', () => {
+    const formData = baseFormData({
+      childrenData: {
+        hasChildren: 'yes',
+        children: [{ id: '1', name: 'Tom', dateOfBirth: '2020-01-01', isDependent: true }],
+        guardian: { firstName: 'Catherine', lastName: 'Brown', relationship: 'Sister', phone: '', email: '' },
+        ageOfVesting: '25',
+      },
+      beneficiariesData: { people: [personBeneficiary('Tom', '100', 'Child')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    expect(text).toContain('Catherine Brown (Sister)')
+  })
+})
+
+// TEST J — Survivorship and trust interaction
+describe('Test J — Survivorship and trust interaction', () => {
+  const formData = baseFormData({
+    childrenData: {
+      hasChildren: 'yes',
+      children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+      guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
+      ageOfVesting: '25',
+    },
+    beneficiariesData: { people: [personBeneficiary('Tom Smith', '100', 'Child')], charities: [] },
+  })
+
+  it('trust clause holds property for minor beneficiary until vesting age', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain("hold that beneficiary's entitlement")
+    expect(text).toContain('until they attain the vesting age')
+  })
+
+  it('survivorship condition also applies to trust beneficiaries', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('survive me by at least 30 days')
+  })
+
+  it('trust clause includes fallback if minor dies before vesting age', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('dies before attaining the vesting age')
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST K — Pet clause internal inconsistency documented
+describe('Test K — Pet clause request/direction inconsistency (pending legal review)', () => {
+  it('current PET-01 contains both precatory request and imperative direction language', () => {
+    const formData = baseFormData({
+      petCare: { hasPets: 'yes', description: 'Golden Retriever', caregiverName: 'Catherine Brown', caregiverRelationship: 'Sister', careFundAmount: '2000' },
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    // Both phrases coexist — known inconsistency flagged APPROVED_LEGAL_TEXT_REQUIRED — PET_TRANSFER_MECHANICS
+    expect(text).toContain('request (but do not legally require)')
+    expect(text).toContain('I direct my Executor to transfer custody')
+  })
+})
+
+// TEST L — Validator blocks credential location in Will body
+describe('Test L — Validator catches credential location in Will body', () => {
+  it('validateRenderedText rejects text containing credential location sentence', () => {
+    const text = 'I have recorded the location of my passwords and access credentials in a separate document held at my safe.'
+    const result = validateRenderedText(text)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some((e) => e.toLowerCase().includes('credential'))).toBe(true)
+  })
+
+  it('validateRenderedText passes Will text that does not contain credential location', () => {
+    const text = 'I give my Executor the authority to access and manage all of my digital assets following my death.'
+    const result = validateRenderedText(text)
+    expect(result.valid).toBe(true)
   })
 })

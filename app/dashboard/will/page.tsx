@@ -138,23 +138,35 @@ export default async function TheWillPage() {
         {!hasPaidForWill && <UnlockWillBanner />}
 
         {/* Executor Information — non-testamentary; does not form part of the Will */}
-        {formData.importantDocumentsLocation && (
-          <div className="border border-[var(--line)] rounded-lg overflow-hidden">
-            <div className="px-4 py-3 border-b border-[var(--line)] flex items-center gap-2" style={{ background: 'var(--paper)' }}>
-              <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>Executor Information</span>
-              <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(0,0,0,0.05)', color: 'var(--neutral)' }}>Not part of the Will</span>
-            </div>
-            <div className="px-4 py-4" style={{ background: 'var(--paper)' }}>
-              <p className="text-xs mb-3" style={{ color: 'var(--neutral)' }}>
-                This information is for your Executor&apos;s reference only. It does not form part of your Will, is not testamentary, and may be updated at any time without re-signing your Will.
-              </p>
-              <div>
-                <p className="text-xs font-medium mb-1" style={{ color: 'var(--ink)' }}>Important document location</p>
-                <p className="text-sm" style={{ color: 'var(--ink)' }}>{formData.importantDocumentsLocation}</p>
+        {(() => {
+          const digitalAccessLocation = formData.assets.find((a) => a.assetType === 'digital_asset')?.accessLocation
+          if (!formData.importantDocumentsLocation && !digitalAccessLocation) return null
+          return (
+            <div className="border border-[var(--line)] rounded-lg overflow-hidden">
+              <div className="px-4 py-3 border-b border-[var(--line)] flex items-center gap-2" style={{ background: 'var(--paper)' }}>
+                <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>Executor Information</span>
+                <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(0,0,0,0.05)', color: 'var(--neutral)' }}>Not part of the Will</span>
+              </div>
+              <div className="px-4 py-4 space-y-3" style={{ background: 'var(--paper)' }}>
+                <p className="text-xs" style={{ color: 'var(--neutral)' }}>
+                  This information is for your Executor&apos;s reference only. It does not form part of your Will, is not testamentary, and may be updated at any time without re-signing your Will.
+                </p>
+                {formData.importantDocumentsLocation && (
+                  <div>
+                    <p className="text-xs font-medium mb-1" style={{ color: 'var(--ink)' }}>Important document location</p>
+                    <p className="text-sm" style={{ color: 'var(--ink)' }}>{formData.importantDocumentsLocation}</p>
+                  </div>
+                )}
+                {digitalAccessLocation && (
+                  <div>
+                    <p className="text-xs font-medium mb-1" style={{ color: 'var(--ink)' }}>Digital credentials location</p>
+                    <p className="text-sm" style={{ color: 'var(--ink)' }}>{digitalAccessLocation}</p>
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
 
         {/* Ask about your will — paid users only */}
         {hasPaidForWill && <AiChat />}
