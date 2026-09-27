@@ -54,12 +54,11 @@ Return ONLY valid JSON matching this exact structure, no markdown fences, no com
 }`
 
 async function extractTextFromPdf(buffer: Buffer): Promise<string> {
-  // Dynamic import avoids pdf-parse's module-level test file read that breaks Next.js
-  // Cast to any: @types/pdf-parse uses `export =` but ESM interop may wrap it in .default
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pdfParseModule = await import('pdf-parse') as any
-  const pdfParse: (buf: Buffer) => Promise<{ text: string }> = pdfParseModule.default ?? pdfParseModule
-  const result = await pdfParse(buffer)
+  // pdf-parse v2 exports a PDFParse class, not a default function
+  const { PDFParse } = await import('pdf-parse')
+  const parser = new PDFParse({ data: buffer })
+  const result = await parser.getText()
+  await parser.destroy()
   return result.text ?? ''
 }
 
@@ -117,7 +116,8 @@ export async function POST(request: NextRequest) {
     text = isPdf
       ? await extractTextFromPdf(buffer)
       : await extractTextFromDocx(buffer)
-  } catch {
+  } catch (err) {
+    console.error('[will/upload] Text extraction error:', err)
     return Response.json({ success: false, reason: 'protected' })
   }
 
@@ -125,9 +125,9 @@ export async function POST(request: NextRequest) {
     return Response.json({ success: false, reason: 'unreadable' })
   }
 
-  const anthropic = new Anthropic()
   let extractedData: Record<string, unknown>
   try {
+    const anthropic = new Anthropic()
     const response = await anthropic.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 2000,
@@ -136,7 +136,8 @@ export async function POST(request: NextRequest) {
     })
     const raw = response.content.filter(b => b.type === 'text').map(b => b.text).join('').trim()
     extractedData = JSON.parse(raw)
-  } catch {
+  } catch (err) {
+    console.error('[will/upload] Anthropic extraction error:', err)
     return Response.json({ success: false, reason: 'parse_error' })
   }
 
