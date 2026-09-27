@@ -111,6 +111,11 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error('[will/upload] ANTHROPIC_API_KEY is not set')
+    return Response.json({ success: false, reason: 'parse_error' })
+  }
+
   let extractedData: Record<string, unknown>
   try {
     const anthropic = new Anthropic()
@@ -131,7 +136,12 @@ export async function POST(request: NextRequest) {
       system: EXTRACTION_SYSTEM,
       messages: [{ role: 'user', content: userContent }],
     })
-    const raw = response.content.filter(b => b.type === 'text').map(b => b.text).join('').trim()
+    let raw = response.content.filter(b => b.type === 'text').map(b => b.text).join('').trim()
+    // Strip markdown fences if Claude wrapped the JSON (e.g. ```json ... ```)
+    if (raw.startsWith('```')) {
+      raw = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
+    }
+    console.log('[will/upload] Claude raw (first 300):', raw.slice(0, 300))
     extractedData = JSON.parse(raw)
   } catch (err) {
     console.error('[will/upload] Anthropic extraction error:', err)
