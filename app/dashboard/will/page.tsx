@@ -126,6 +126,8 @@ export default async function TheWillPage() {
                 willId={will.id}
                 documentText={downloadText}
                 hasDownloaded={will.has_downloaded ?? false}
+                testatorName={[formData.personalDetails.firstName, formData.personalDetails.middleName, formData.personalDetails.lastName].filter(Boolean).join(' ')}
+                funeralWishes={formData.personalWishes}
               />
             )}
             <pre className="whitespace-pre-wrap font-sans text-sm text-[var(--ink)] leading-relaxed">{documentText}</pre>
@@ -134,6 +136,25 @@ export default async function TheWillPage() {
 
         {/* Payment CTA for users who haven't yet unlocked */}
         {!hasPaidForWill && <UnlockWillBanner />}
+
+        {/* Executor Information — non-testamentary; does not form part of the Will */}
+        {formData.importantDocumentsLocation && (
+          <div className="border border-[var(--line)] rounded-lg overflow-hidden">
+            <div className="px-4 py-3 border-b border-[var(--line)] flex items-center gap-2" style={{ background: 'var(--paper)' }}>
+              <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'var(--neutral)' }}>Executor Information</span>
+              <span className="text-xs px-2 py-0.5 rounded" style={{ background: 'rgba(0,0,0,0.05)', color: 'var(--neutral)' }}>Not part of the Will</span>
+            </div>
+            <div className="px-4 py-4" style={{ background: 'var(--paper)' }}>
+              <p className="text-xs mb-3" style={{ color: 'var(--neutral)' }}>
+                This information is for your Executor&apos;s reference only. It does not form part of your Will, is not testamentary, and may be updated at any time without re-signing your Will.
+              </p>
+              <div>
+                <p className="text-xs font-medium mb-1" style={{ color: 'var(--ink)' }}>Important document location</p>
+                <p className="text-sm" style={{ color: 'var(--ink)' }}>{formData.importantDocumentsLocation}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Ask about your will — paid users only */}
         {hasPaidForWill && <AiChat />}

@@ -277,15 +277,19 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
     })
   }
 
-  // ── 12. Digital assets ────────────────────────────────────────────────────
+  // ── 12. Digital assets — only when the testator has digital assets ─────────
   const hasDigital = formData.assets.some((a) => a.assetType === 'digital_asset')
   if (hasDigital) {
     const digital = formData.assets.find((a) => a.assetType === 'digital_asset')
+    // Build the optional access-note sentence; empty string suppresses it in the clause.
+    const digitalAccessNote = digital?.accessLocation
+      ? `I have recorded the location of my passwords and access credentials in a separate document held at ${digital.accessLocation}, to assist my Executor.`
+      : ''
     instances.push({
       code: 'DIGITAL-01',
       heading: `${++clauseNo}. DIGITAL ASSETS`,
       vars: {
-        digital_access_document_location: digital?.accessLocation || '[location not specified]',
+        digital_access_note: digitalAccessNote,
       },
     })
   }
@@ -293,9 +297,14 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   // ── 13. Executor powers ───────────────────────────────────────────────────
   instances.push({ code: 'EXEC-03', heading: `${++clauseNo}. EXECUTOR POWERS`, vars: {} })
 
-  // ── 14. Trustee powers ────────────────────────────────────────────────────
-  instances.push({ code: 'TRUST-POWERS-01', heading: `${++clauseNo}. TRUSTEE POWERS`, vars: {} })
-  instances.push({ code: 'TRUSTEE-APPOINT-01', heading: `${++clauseNo}. TRUSTEE APPOINTMENT`, vars: {} })
+  // ── 14. Trustee powers — only when a trust can arise ─────────────────────
+  // TRUST-POWERS-01 and TRUSTEE-APPOINT-01 are conditional per their metadata:
+  // "Omit if the Will creates no trust and no beneficiary can be under the vesting age."
+  const hasTrust = hasDependent || tf.hasComplexTrusts
+  if (hasTrust) {
+    instances.push({ code: 'TRUST-POWERS-01', heading: `${++clauseNo}. TRUSTEE POWERS`, vars: {} })
+    instances.push({ code: 'TRUSTEE-APPOINT-01', heading: `${++clauseNo}. TRUSTEE APPOINTMENT`, vars: {} })
+  }
 
   // ── 15. Admin powers ─────────────────────────────────────────────────────
   instances.push({ code: 'APPROPRIATION-01', heading: `${++clauseNo}. APPROPRIATION POWER`, vars: {} })

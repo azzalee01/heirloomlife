@@ -3,13 +3,27 @@
 import { useState } from 'react'
 import { markWillDownloaded } from '../_actions'
 
+interface FuneralWishes {
+  funeralType?: string
+  funeralRestingPlace?: string
+  funeralAdditionalWishes?: string
+  hasFuneralPlan?: boolean
+  funeralPlanDetails?: string
+}
+
 interface Props {
   willId: string
   documentText: string
   hasDownloaded: boolean
+  testatorName?: string
+  funeralWishes?: FuneralWishes
 }
 
-export default function DownloadWillButton({ willId, documentText, hasDownloaded }: Props) {
+function toTitleCase(s: string): string {
+  return s.replace(/\w\S*/g, (txt) => txt[0].toUpperCase() + txt.slice(1).toLowerCase())
+}
+
+export default function DownloadWillButton({ willId, documentText, hasDownloaded, testatorName, funeralWishes }: Props) {
   const [downloading, setDownloading] = useState(false)
 
   async function handleDownload() {
@@ -21,196 +35,192 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
       doc.setProperties({ title: 'Last Will and Testament' })
 
-      const pageW = doc.internal.pageSize.getWidth()   // 210
-      const pageH = doc.internal.pageSize.getHeight()  // 297
+      const pageW = doc.internal.pageSize.getWidth()
+      const pageH = doc.internal.pageSize.getHeight()
 
-      // ─────────────────────────────────────────────────────────────────
-      // PAGE 1: Cover sheet
-      // ─────────────────────────────────────────────────────────────────
+      // ─── PAGE 1: Signing Instructions ────────────────────────────────────
 
-      // Teal header band
       doc.setFillColor(42, 180, 174)
       doc.rect(0, 0, pageW, 26, 'F')
 
-      // "H" mark — white serif
       doc.setFont('times', 'bold')
       doc.setFontSize(17)
       doc.setTextColor(255, 255, 255)
       doc.text('H', 14, 18)
 
-      // Wordmark
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(12)
       doc.text('heirloom life', 24, 18)
 
-      // URL right-aligned
       doc.setFontSize(8.5)
       doc.text('heirloomlife.com.au', pageW - 14, 18, { align: 'right' })
 
-      // Title
       doc.setTextColor(14, 21, 20)
       doc.setFont('times', 'bold')
       doc.setFontSize(18)
       doc.text('Instructions for signing your Will', 14, 42)
 
-      // Teal rule
       doc.setDrawColor(42, 180, 174)
       doc.setLineWidth(0.6)
       doc.line(14, 46, pageW - 14, 46)
 
-      // Steps — distinguish required steps from recommended practices
-      const steps: Array<{ title: string; required: string[]; recommended?: string[] }> = [
+      type CoverStep = { title: string; body?: string; bullets?: string[]; note?: string }
+
+      // ── REQUIRED SIGNING STEPS ──
+      const coverSteps: CoverStep[] = [
         {
-          title: 'Print and review',
-          required: [
-            'Print your Will and read every page carefully. Confirm that all names, addresses, gifts and other details are correct.',
-            'If anything needs updating, log in to your Vault at heirloomlife.com.au and make corrections before printing.',
+          title: 'Print and review your Will',
+          body: 'Print your Will and read through it carefully. Make sure all names, addresses, gifts and other details are correct. If anything needs updating, log in to your Vault at heirloomlife.com.au and make changes before printing.',
+        },
+        {
+          title: 'Assemble your Will  —  DO NOT INCLUDE THE FUNERAL WISHES PAGE',
+          bullets: [
+            'Remove this cover sheet and the Funeral Wishes page — they do not form part of your Will.',
+            'Keep all Will pages together in the correct order.',
           ],
         },
         {
-          title: 'Assemble the Will',
-          required: [
-            'Remove this cover sheet — it does not form part of your Will.',
-            'Keep all pages of the Will together in the correct order and securely staple them.',
+          title: 'Find two independent adult witnesses',
+          body: 'Each witness must:',
+          bullets: [
+            'be 18 years of age or older;',
+            'not be a beneficiary under this Will; and',
+            'be capable of witnessing the signing and be present to see you sign.',
           ],
         },
         {
-          title: 'Choose two witnesses',
-          required: [
-            'Your witnesses must be adults (18 or over) who are not beneficiaries under this Will.',
+          title: 'Sign your Will in the presence of both witnesses',
+          body: 'With both witnesses present and watching at the same time:',
+          bullets: [
+            'sign in the space at the bottom of each page of the Will; and',
+            'sign and complete the Execution & Attestation section on the last page.',
           ],
-          recommended: [
-            'Heirloom also recommends that a witness not be the spouse or de facto partner of a beneficiary, to minimise any future challenge to the Will.',
-          ],
+          note: 'Both witnesses must then sign in the same spaces while you are present. Do not sign any page before both witnesses are present.',
         },
         {
-          title: 'Sign your Will',
-          required: [
-            'Both witnesses should be with you when you sign (or acknowledge your existing signature).',
-          ],
-          recommended: [
-            'For Heirloom\'s recommended procedure, all three of you should stay together for the whole signing:',
-            '     •   sign each Will page where indicated',
-            '     •   both witnesses sign each Will page where indicated',
-            '     •   complete the Execution & Attestation section at the end',
-            '     •   use a blue or black pen throughout',
-            '     •   do not sign any page in advance',
-          ],
-        },
-        {
-          title: 'Store the original',
-          required: [
-            'Keep the original signed Will somewhere secure and tell your Executor(s) exactly where it is located.',
-          ],
+          title: 'Store your Will safely',
+          body: 'Keep the original signed Will somewhere secure and tell your Executor(s) exactly where it is located. Keep a copy in a separate safe location.',
         },
       ]
 
-      const bodyWidth = pageW - 27 - 14  // 169mm
-
+      const bW = pageW - 27 - 14
       let y = 54
 
-      for (let i = 0; i < steps.length; i++) {
-        const { title, required, recommended } = steps[i]
+      for (let i = 0; i < coverSteps.length; i++) {
+        const { title, body, bullets, note } = coverSteps[i]
         const num = String(i + 1)
 
-        // Numbered circle
         doc.setFillColor(42, 180, 174)
         doc.circle(18.5, y + 2.5, 4.5, 'F')
         doc.setFont('helvetica', 'bold')
         doc.setFontSize(9)
         doc.setTextColor(255, 255, 255)
-        doc.text(num, 18.5, y + 4.2, { align: 'center' })
+        doc.text(num, 18.5, y + 2.5, { align: 'center', baseline: 'middle' })
 
-        // Step title
         doc.setFont('helvetica', 'bold')
-        doc.setFontSize(10.5)
+        doc.setFontSize(10)
         doc.setTextColor(14, 21, 20)
-        doc.text(`Step ${num} — ${title}`, 27, y + 4.2)
+        const titleLines = doc.splitTextToSize(title, bW)
+        doc.text(titleLines, 27, y + 4.2)
+        y += 4.2 + titleLines.length * 5.5
 
-        y += 11
-
-        // Required lines
-        doc.setFont('helvetica', 'normal')
-        doc.setFontSize(9.5)
-        doc.setTextColor(55, 65, 64)
-        for (const line of required) {
-          const wrapped = doc.splitTextToSize(line, bodyWidth)
-          doc.text(wrapped, 27, y)
-          y += wrapped.length * 5.5
-        }
-
-        // Recommended lines (slightly muted)
-        if (recommended && recommended.length > 0) {
-          y += 2
-          doc.setFont('helvetica', 'italic')
-          doc.setFontSize(9)
-          doc.setTextColor(100, 110, 108)
-          for (const line of recommended) {
-            const wrapped = doc.splitTextToSize(line, bodyWidth)
-            doc.text(wrapped, 27, y)
-            y += wrapped.length * 5.2
-          }
+        if (body) {
           doc.setFont('helvetica', 'normal')
-          doc.setFontSize(9.5)
+          doc.setFontSize(9)
           doc.setTextColor(55, 65, 64)
+          const bodyLines = doc.splitTextToSize(body, bW)
+          doc.text(bodyLines, 27, y)
+          y += bodyLines.length * 5 + 1
         }
 
-        y += 6
+        if (bullets && bullets.length > 0) {
+          doc.setFont('helvetica', 'normal')
+          doc.setFontSize(9)
+          doc.setTextColor(55, 65, 64)
+          for (const bullet of bullets) {
+            const bLines = doc.splitTextToSize(bullet, bW - 7)
+            doc.text('•', 30, y)
+            doc.text(bLines, 36, y)
+            y += bLines.length * 5
+          }
+          y += 1
+        }
+
+        if (note) {
+          doc.setFont('helvetica', 'italic')
+          doc.setFontSize(8.5)
+          doc.setTextColor(100, 110, 108)
+          const nLines = doc.splitTextToSize(note, bW)
+          doc.text(nLines, 27, y)
+          y += nLines.length * 5 + 1
+        }
+
+        y += 5
       }
 
-      // AV witnessing — short note only; full AV procedure is a separate workflow
-      // APPROVED_AVL_EXECUTION_TEXT_REQUIRED — do not inline AV instructions here
-      const avNoteBoxH = 16
-      doc.setFillColor(237, 248, 248)
-      doc.roundedRect(14, y, pageW - 28, avNoteBoxH, 2, 2, 'F')
-      doc.setDrawColor(42, 180, 174)
-      doc.setLineWidth(0.35)
-      doc.roundedRect(14, y, pageW - 28, avNoteBoxH, 2, 2, 'S')
-
+      // ── HEIRLOOM RECOMMENDED PRACTICE ──
+      y += 2
       doc.setFont('helvetica', 'bold')
       doc.setFontSize(9)
-      doc.setTextColor(26, 125, 121)
-      doc.text('Signing remotely?', 20, y + 7)
-
+      doc.setTextColor(42, 180, 174)
+      doc.text('Heirloom recommended practice', 14, y)
+      y += 5
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(8.5)
       doc.setTextColor(55, 65, 64)
-      const avNote = 'Audiovisual witnessing uses a different procedure. Do not use these instructions for a remote signing. Contact Heirloom through your Vault.'
-      doc.text(doc.splitTextToSize(avNote, pageW - 42), 20, y + 13)
+      const recLines = doc.splitTextToSize(
+        'As a risk-management practice, Heirloom recommends: (1) neither witness should be the spouse or de facto partner of a beneficiary; (2) use a single blue or black ballpoint pen throughout; (3) do not leave any signature space blank — draw a line through any space you do not use.',
+        pageW - 28
+      )
+      doc.text(recLines, 14, y)
+      y += recLines.length * 5 + 6
+
+      // AV note
+      const avNote = 'Signing remotely via audiovisual link? Do not use these instructions — contact Heirloom through your Vault for the separate AV witnessing procedure.'
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8.5)
+      const avWrapped = doc.splitTextToSize(avNote, pageW - 38)
+      const avBoxH = 13 + avWrapped.length * 4.5
+      doc.setFillColor(237, 248, 248)
+      doc.roundedRect(14, y, pageW - 28, avBoxH, 2, 2, 'F')
+      doc.setDrawColor(42, 180, 174)
+      doc.setLineWidth(0.35)
+      doc.roundedRect(14, y, pageW - 28, avBoxH, 2, 2, 'S')
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(8.5)
+      doc.setTextColor(26, 125, 121)
+      doc.text('Remote signing?', 20, y + 7)
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8.5)
+      doc.setTextColor(55, 65, 64)
+      doc.text(avWrapped, 20, y + 12)
 
       // Footer bar
       const footerY = pageH - 22
       doc.setFillColor(14, 21, 20)
       doc.rect(0, footerY, pageW, 22, 'F')
-
       doc.setFont('helvetica', 'normal')
       doc.setFontSize(7.5)
       doc.setTextColor(138, 155, 153)
-      const disclaimer =
-        'This Will has been prepared using solicitor-reviewed drafting standards. Heirloom Life Pty Ltd is not a law firm and this document is not legal advice. Contact us through your Vault if your circumstances require bespoke legal advice.'
+      const disclaimer = 'This Will has been prepared using solicitor-reviewed drafting standards. Heirloom Life Pty Ltd is not a law firm and this document does not constitute legal advice.'
       const dLines = doc.splitTextToSize(disclaimer, pageW - 30)
       doc.text(dLines, pageW / 2, footerY + 7, { align: 'center' })
-
       doc.setTextColor(180, 200, 198)
       doc.setFontSize(8)
       doc.text('heirloomlife.com.au', pageW / 2, footerY + 7 + dLines.length * 4.5 + 2, { align: 'center' })
 
-      // ─────────────────────────────────────────────────────────────────
-      // PAGE 2+: Will content
-      // ─────────────────────────────────────────────────────────────────
+      // ─── PAGES 2+: Will content ───────────────────────────────────────────
       doc.addPage()
-
-      // Reset colour to black — cover page footer left it light grey
       doc.setTextColor(0, 0, 0)
 
-      // mB is increased to 52mm to reserve space for the per-page signature block.
-      // ensureSpace() uses this to trigger page breaks before content overruns the footer.
+      // mB reserves space for the per-page signature strip
       const mL = 25, mT = 30, mB = 52
       const cW = pageW - mL - 25
 
-      // Extract testator name from the document header line for the signature block
       const titleLine = documentText.split('\n').find((l) => l.startsWith('LAST WILL AND TESTAMENT OF '))
-      const testatorSigName = titleLine ? titleLine.replace('LAST WILL AND TESTAMENT OF ', '').trim() : 'TESTATOR'
+      const extractedName = titleLine ? titleLine.replace('LAST WILL AND TESTAMENT OF ', '').trim() : ''
+      const testatorSigName = testatorName || toTitleCase(extractedName) || 'Testator'
+
       let willY = mT
       let titleSeen = false
 
@@ -218,17 +228,15 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
         if (willY + h > pageH - mB) { doc.addPage(); willY = mT }
       }
 
-      // Strip inline **bold** and *italic* markers from body text
       function stripInline(text: string): string {
         return text.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*([^*]+?)\*/g, '$1')
       }
 
       for (const raw of documentText.split('\n')) {
         const line = raw.trim()
-
         if (!line) { willY += 4; continue }
+        if (line.startsWith('IN WITNESS WHEREOF')) continue
 
-        // First non-empty line is the document title
         if (!titleSeen) {
           titleSeen = true
           doc.setFont('times', 'bold')
@@ -241,7 +249,6 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
           continue
         }
 
-        // Blockquote warning (escalation clauses: "> ⚠ Solicitor review...")
         if (line.startsWith('> ')) {
           const text = stripInline(line.slice(2))
           doc.setFont('times', 'italic')
@@ -255,7 +262,6 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
           continue
         }
 
-        // Standalone bold heading: **Survivorship**, **Effect of marriage**, etc.
         if (/^\*\*.+\*\*$/.test(line)) {
           const heading = line.replace(/\*\*/g, '')
           doc.setFont('times', 'bold')
@@ -268,7 +274,6 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
           continue
         }
 
-        // Numbered section header: "1. REVOCATION"
         if (/^\d+\.\s/.test(line)) {
           doc.setFont('times', 'bold')
           doc.setFontSize(11)
@@ -280,8 +285,7 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
           continue
         }
 
-        // All-caps standalone heading (e.g. "IMPORTANT NOTICE")
-        if (/^[A-Z][A-Z\s]+$/.test(line)) {
+        if (/^[A-Z][A-Z\s\-—]+$/.test(line)) {
           doc.setFont('times', 'bold')
           doc.setFontSize(11)
           doc.setTextColor(0, 0, 0)
@@ -292,7 +296,6 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
           continue
         }
 
-        // List item
         if (line.startsWith('- ')) {
           doc.setFont('times', 'normal')
           doc.setFontSize(11)
@@ -305,7 +308,18 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
           continue
         }
 
-        // Body paragraph — strip inline markdown markers
+        // Sub-clause items: (a) text, (b) text, etc.
+        if (/^\([a-z]\)\s/.test(line)) {
+          doc.setFont('times', 'normal')
+          doc.setFontSize(11)
+          doc.setTextColor(0, 0, 0)
+          const wrapped = doc.splitTextToSize(stripInline(line), cW - 6)
+          ensureSpace(wrapped.length * 6.5 + 1)
+          doc.text(wrapped, mL + 6, willY)
+          willY += wrapped.length * 6.5 + 1
+          continue
+        }
+
         doc.setFont('times', 'normal')
         doc.setFontSize(11)
         doc.setTextColor(0, 0, 0)
@@ -315,39 +329,123 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
         willY += wrapped.length * 6.5
       }
 
-      // ── Footer pass — runs after all content is rendered ─────────────────
-      // Page 1  = cover/instructions (no Will footer)
-      // Pages 2..N-1 = substantive Will pages (signature block + wordmark)
-      // Page N  = last Will page / execution page (wordmark only — full signing section already there)
-      const totalPages = doc.getNumberOfPages()
-      const totalWillPages = totalPages - 1  // excluding cover
-      const lastWillPage = totalPages         // execution clause lands on last page
+      // ─── Execution & Attestation block ────────────────────────────────────
+      ensureSpace(145)
+      willY += 10
 
-      for (let p = 2; p <= totalPages; p++) {
-        doc.setPage(p)
-        const willPageNo = p - 1  // 1-based Will page number
+      doc.setFont('times', 'bold')
+      doc.setFontSize(13)
+      doc.setTextColor(0, 0, 0)
+      doc.text('Execution & Attestation', mL, willY)
+      willY += 3
+      doc.setDrawColor(42, 180, 174)
+      doc.setLineWidth(0.5)
+      doc.line(mL, willY, mL + cW, willY)
+      willY += 9
 
-        // ── Wordmark + page number (all Will pages) ───────────────────────
+      // Testator name subheading (EverWill style)
+      doc.setFont('times', 'bold')
+      doc.setFontSize(12)
+      doc.setTextColor(0, 0, 0)
+      doc.text(testatorSigName, mL, willY)
+      willY += 10
+
+      // Signature line (full width)
+      doc.setDrawColor(60)
+      doc.setLineWidth(0.4)
+      doc.line(mL, willY, mL + cW, willY)
+      willY += 5
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8)
+      doc.setTextColor(100)
+      doc.text('Signature', mL, willY)
+      willY += 10
+
+      // Date line (full width)
+      doc.setDrawColor(60)
+      doc.setLineWidth(0.4)
+      doc.line(mL, willY, mL + cW, willY)
+      willY += 5
+      doc.setFont('helvetica', 'normal')
+      doc.setFontSize(8)
+      doc.setTextColor(100)
+      doc.text('Date', mL, willY)
+      willY += 12
+
+      // Attestation paragraph
+      const attText = `We the undersigned were both present at the same time and saw the willmaker, ${testatorSigName}, sign this Will and then we signed it ourselves in the willmaker's presence:`
+      doc.setFont('times', 'normal')
+      doc.setFontSize(10)
+      doc.setTextColor(0, 0, 0)
+      const attWrapped = doc.splitTextToSize(attText, cW)
+      doc.text(attWrapped, mL, willY)
+      willY += attWrapped.length * 5.5 + 8
+
+      // Witness column headers
+      const wColW = (cW - 10) / 2
+      const wC = [mL, mL + wColW + 10]
+
+      doc.setFont('helvetica', 'bold')
+      doc.setFontSize(10)
+      doc.setTextColor(0, 0, 0)
+      doc.text('Witness 1', wC[0], willY)
+      doc.text('Witness 2', wC[1], willY)
+      willY += 9
+
+      const witnessFieldLabels = ['Signature', 'Name (Print Name)', 'Address', 'Occupation']
+
+      for (const fieldLabel of witnessFieldLabels) {
+        doc.setDrawColor(60)
+        doc.setLineWidth(0.4)
+        doc.line(wC[0], willY, wC[0] + wColW, willY)
+        doc.line(wC[1], willY, wC[1] + wColW, willY)
+        willY += 5
         doc.setFont('helvetica', 'normal')
-        doc.setFontSize(8.5)
+        doc.setFontSize(8)
+        doc.setTextColor(100)
+        doc.text(`Witness 1 ${fieldLabel}`, wC[0], willY)
+        doc.text(`Witness 2 ${fieldLabel}`, wC[1], willY)
+        doc.setTextColor(0)
+        willY += 13
+      }
+
+      // ─── Footer + header pass (Will pages only) ────────────────────────────
+      const willLastPage = doc.getNumberOfPages()
+      const totalWillPages = willLastPage - 1
+
+      for (let p = 2; p <= willLastPage; p++) {
+        doc.setPage(p)
+        const willPageNo = p - 1
+
+        // Per-page header (drawn in the top margin area)
+        doc.setFont('helvetica', 'normal')
+        doc.setFontSize(8)
+        doc.setTextColor(140)
+        doc.text(`Last Will & Testament of ${testatorSigName}`, mL, 12)
+        doc.text(`Page ${willPageNo} of ${totalWillPages}`, pageW - mL, 12, { align: 'right' })
+        doc.setDrawColor(200)
+        doc.setLineWidth(0.25)
+        doc.line(mL, 15, pageW - mL, 15)
+
+        // Footer wordmark
+        doc.setFont('helvetica', 'normal')
+        doc.setFontSize(8)
         doc.setTextColor(160)
         doc.text('Heirloom Life', mL, pageH - 10)
-        doc.text(`${willPageNo} of ${totalWillPages}`, pageW - mL, pageH - 10, { align: 'right' })
+        doc.text('heirloomlife.com.au', pageW - mL, pageH - 10, { align: 'right' })
 
-        // ── Per-page signature block (intermediate pages only, not execution page) ──
-        if (p < lastWillPage) {
-          const sigTop = pageH - mB + 2      // top of the signature area
-          const lineY = sigTop + 16           // y of the actual signature underlines
-          const slotW = (pageW - mL - 25) / 3 // three equal slots across the content width
+        // Per-page signature strip on intermediate pages (not the last/execution page)
+        if (p < willLastPage) {
+          const sigTop = pageH - mB + 2
+          const lineY = sigTop + 16
+          const slotW = cW / 3
 
-          // Separator line above signature block
           doc.setDrawColor(180)
           doc.setLineWidth(0.25)
           doc.line(mL, sigTop, pageW - 25, sigTop)
 
-          // Column positions (left edge of each slot)
           const cols = [mL, mL + slotW, mL + slotW * 2]
-          const labels = [testatorSigName, 'Witness 1', 'Witness 2']
+          const sigLabels = [`${testatorSigName} Signature`, 'Witness 1 Signature', 'Witness 2 Signature']
 
           doc.setFont('helvetica', 'normal')
           doc.setFontSize(7)
@@ -355,24 +453,118 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
 
           for (let s = 0; s < 3; s++) {
             const x = cols[s]
-            const lineEnd = x + slotW - 6
-
-            // Label
-            doc.text(labels[s], x, sigTop + 6)
-
-            // Signature underline (drawn as a line)
+            doc.text(sigLabels[s], x, sigTop + 6)
             doc.setDrawColor(130)
             doc.setLineWidth(0.3)
-            doc.line(x, lineY, lineEnd, lineY)
+            doc.line(x, lineY, x + slotW - 6, lineY)
           }
 
-          // Separator line below
           doc.setDrawColor(180)
           doc.setLineWidth(0.25)
           doc.line(mL, lineY + 4, pageW - 25, lineY + 4)
         }
 
         doc.setTextColor(0)
+      }
+
+      // ─── Funeral Wishes page (separate — not part of Will) ─────────────────
+      const hasFuneralContent = funeralWishes && (
+        funeralWishes.funeralType ||
+        funeralWishes.funeralRestingPlace ||
+        funeralWishes.funeralAdditionalWishes ||
+        funeralWishes.hasFuneralPlan
+      )
+
+      if (hasFuneralContent && funeralWishes) {
+        doc.addPage()
+
+        doc.setFillColor(42, 180, 174)
+        doc.rect(0, 0, pageW, 22, 'F')
+
+        doc.setFont('times', 'bold')
+        doc.setFontSize(15)
+        doc.setTextColor(255, 255, 255)
+        doc.text('H', 14, 16)
+
+        doc.setFont('helvetica', 'normal')
+        doc.setFontSize(10)
+        doc.text('heirloom life', 23, 16)
+
+        doc.setTextColor(14, 21, 20)
+        doc.setFont('times', 'bold')
+        doc.setFontSize(15)
+        doc.text(`Funeral Wishes of ${testatorSigName}`, 14, 36)
+
+        doc.setDrawColor(42, 180, 174)
+        doc.setLineWidth(0.5)
+        doc.line(14, 39, pageW - 14, 39)
+
+        // Disclaimer box
+        const discl = 'This document is not a testamentary document and does not form part of the Will. It records personal wishes only and is not legally binding on any person.'
+        doc.setFont('helvetica', 'normal')
+        doc.setFontSize(9)
+        const disclWrapped = doc.splitTextToSize(discl, pageW - 36)
+        const disclBoxH = 10 + disclWrapped.length * 5
+        doc.setFillColor(255, 249, 228)
+        doc.roundedRect(14, 44, pageW - 28, disclBoxH, 2, 2, 'F')
+        doc.setDrawColor(200, 160, 60)
+        doc.setLineWidth(0.3)
+        doc.roundedRect(14, 44, pageW - 28, disclBoxH, 2, 2, 'S')
+        doc.setTextColor(90, 70, 20)
+        doc.text(disclWrapped, 20, 51)
+
+        let fy = 44 + disclBoxH + 10
+
+        doc.setFont('times', 'bold')
+        doc.setFontSize(12)
+        doc.setTextColor(0, 0, 0)
+        doc.text('Funeral Wishes', 14, fy)
+        fy += 3
+        doc.setDrawColor(200)
+        doc.setLineWidth(0.3)
+        doc.line(14, fy, pageW - 14, fy)
+        fy += 9
+
+        function funeralRow(label: string, value: string) {
+          if (!value) return
+          doc.setFont('helvetica', 'bold')
+          doc.setFontSize(9)
+          doc.setTextColor(80)
+          doc.text(label, 14, fy)
+          fy += 5
+          doc.setFont('times', 'normal')
+          doc.setFontSize(11)
+          doc.setTextColor(0, 0, 0)
+          const wrapped = doc.splitTextToSize(value, pageW - 28)
+          doc.text(wrapped, 14, fy)
+          fy += wrapped.length * 6 + 7
+        }
+
+        const funeralTypeLabels: Record<string, string> = {
+          burial: 'Burial',
+          cremation: 'Cremation',
+          naturalBurial: 'Natural / green burial',
+          noPreference: 'No preference stated',
+        }
+
+        if (funeralWishes.funeralType) {
+          funeralRow('Type of funeral', funeralTypeLabels[funeralWishes.funeralType] || funeralWishes.funeralType)
+        }
+        if (funeralWishes.funeralRestingPlace) {
+          funeralRow('Preferred resting place', funeralWishes.funeralRestingPlace)
+        }
+        if (funeralWishes.funeralAdditionalWishes) {
+          funeralRow('Additional wishes', funeralWishes.funeralAdditionalWishes)
+        }
+        if (funeralWishes.hasFuneralPlan) {
+          funeralRow('Pre-paid funeral plan', funeralWishes.funeralPlanDetails || 'A pre-paid funeral plan has been arranged. Please contact the funeral director for details.')
+        }
+
+        doc.setFont('helvetica', 'normal')
+        doc.setFontSize(8)
+        doc.setTextColor(160)
+        doc.text('Heirloom Life', 14, pageH - 10)
+        doc.text('heirloomlife.com.au', pageW - 14, pageH - 10, { align: 'right' })
       }
 
       const blob = doc.output('blob')

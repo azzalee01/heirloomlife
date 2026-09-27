@@ -193,9 +193,14 @@ describe('Case B — Multiple beneficiaries (40/30/30)', () => {
     expect(text).toContain('30%')
   })
 
-  it('does not render natural-language single-beneficiary form', () => {
+  it('renders a percentage list (not name-only natural language) for multiple beneficiaries', () => {
     const text = renderWillText(formData)
-    expect(text).not.toContain('I give the whole of the rest and residue')
+    // Multiple beneficiaries produce a percentage list
+    expect(text).toContain('40%')
+    expect(text).toContain('30%')
+    // Single-beneficiary natural-language branch uses "absolutely" without a list
+    // — for multiple beneficiaries the text should NOT have "to Alice Brown absolutely"
+    expect(text).not.toContain('to Alice Brown absolutely')
   })
 })
 
@@ -446,5 +451,456 @@ describe('Complexity — blended family flag', () => {
     const flag = flags.find((f) => f.code === 'BLENDED_FAMILY')
     expect(flag?.severity).toBe('REVIEW_RECOMMENDED')
     expect(maxSeverity(flags)).toBe('REVIEW_RECOMMENDED')
+  })
+})
+
+// ── Phase 14 test cases ───────────────────────────────────────────────────────
+
+// TEST 1 — Basic single beneficiary
+describe('Phase 14 Test 1 — Basic single beneficiary', () => {
+  const formData = baseFormData({
+    personalDetails: basePerson({ maritalStatus: 'married' }),
+    executorsData: {
+      primary: baseExecutor(),
+      hasAlternate: true,
+      alternate: baseExecutor({ firstName: 'Sarah', lastName: 'Jones', relationship: 'Friend' }),
+    },
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Spouse')], charities: [] },
+  })
+
+  it('passes validation', () => {
+    expect(validateWillForGeneration(formData).valid).toBe(true)
+  })
+
+  it('renders natural language residue (no percentage list)', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('I give the whole of the rest and residue')
+    expect(text).not.toMatch(/100% to/)
+  })
+
+  it('includes executor powers', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).toContain('EXECUTOR POWERS')
+  })
+
+  it('does not render trustee powers when no trust arises', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).not.toContain('TRUSTEE POWERS')
+    expect(text.toUpperCase()).not.toContain('TRUSTEE APPOINTMENT')
+  })
+
+  it('does not render digital assets definition when no digital assets', () => {
+    const text = renderWillText(formData)
+    // Approved DEFN-01 does not include "Digital Assets" definition
+    expect(text).not.toMatch(/Digital Assets.*means/)
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 2 — Specific property gift
+describe('Phase 14 Test 2 — Specific property gift', () => {
+  const formData = baseFormData({
+    specificGifts: [
+      { id: '1', type: 'item', description: 'Gold ring', amount: '', recipientName: 'Alice Brown', recipientRelationship: 'Niece', substituteBeneficiary: '' },
+    ],
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Spouse')], charities: [] },
+  })
+
+  it('renders the specific gift', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('Gold ring')
+    expect(text).toContain('Alice Brown')
+  })
+
+  it('includes common gift/survivorship clause', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).toContain('SURVIVORSHIP AND GIFT RULES')
+  })
+
+  it('lapsed gifts fall into residue per common gift rules', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('lapsed gift shall fall into the residue')
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 3 — Pecuniary gift
+describe('Phase 14 Test 3 — Pecuniary gift', () => {
+  const formData = baseFormData({
+    specificGifts: [
+      { id: '1', type: 'cash', description: '', amount: '5000', recipientName: 'Bob Brown', recipientRelationship: 'Sibling', substituteBeneficiary: '' },
+    ],
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Spouse')], charities: [] },
+  })
+
+  it('renders the cash gift', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('$5000')
+    expect(text).toContain('Bob Brown')
+  })
+
+  it('includes common gift provisions', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).toContain('SURVIVORSHIP AND GIFT RULES')
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 4 — Minor beneficiary / age 25 trust
+describe('Phase 14 Test 4 — Minor beneficiary / vesting age 25', () => {
+  const formData = baseFormData({
+    childrenData: {
+      hasChildren: 'yes',
+      children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+      guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
+      ageOfVesting: '25',
+    },
+    beneficiariesData: { people: [personBeneficiary('Tom Smith', '100', 'Child')], charities: [] },
+  })
+
+  it('renders testamentary trust', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).toContain('MINOR BENEFICIARY TRUST')
+  })
+
+  it('renders advancement powers', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).toContain('ADVANCEMENT POWERS')
+  })
+
+  it('renders trustee powers when trust arises', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).toContain('TRUSTEE POWERS')
+    expect(text.toUpperCase()).toContain('TRUSTEE APPOINTMENT')
+  })
+
+  it('trust clause includes vesting-age failure path', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('dies before attaining the vesting age')
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 5 — Pet with care provision
+describe('Phase 14 Test 5 — Pet with care provision', () => {
+  const formData = baseFormData({
+    petCare: { hasPets: 'yes', description: 'Golden Retriever', caregiverName: 'Catherine Brown', caregiverRelationship: 'Sister', careFundAmount: '2000' },
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+  })
+
+  it('renders pet clause with approved mechanism', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('Catherine Brown')
+    expect(text).toContain('$2000')
+  })
+
+  it('includes fallback if carer cannot accept', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('unwilling or unable to accept custody')
+  })
+
+  it('does not use ambiguous "set aside" language without mechanism', () => {
+    const text = renderWillText(formData)
+    // The approved PET-01 gives money directly to carer, not "sets it aside"
+    expect(text).not.toMatch(/set aside.*for.*care/i)
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 6 — No pet
+describe('Phase 14 Test 6 — No pet', () => {
+  const formData = baseFormData({
+    petCare: { hasPets: 'no', description: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+  })
+
+  it('renders no pet clause', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).not.toContain('CARE OF PETS')
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 7 — Digital assets enabled
+describe('Phase 14 Test 7 — Digital assets enabled', () => {
+  const formData = baseFormData({
+    assets: [
+      {
+        id: '1', assetType: 'digital_asset', ownershipType: 'sole',
+        propertyAddress: '', estimatedValue: '', bankName: '', bsb: '', accountNumber: '',
+        fundName: '', memberNumber: '', companyName: '', numberOfShares: '',
+        insurerName: '', policyNumber: '', coverAmount: '',
+        make: '', model: '', year: '', rego: '',
+        accessLocation: 'password manager on laptop',
+        description: 'Crypto wallet', otherValue: '',
+        hasDeathBenefitNomination: false, deathBenefitNominees: '', isOverseas: false, overseasCountry: '',
+      },
+    ],
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+  })
+
+  it('renders digital assets clause', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).toContain('DIGITAL ASSETS')
+  })
+
+  it('includes access location note', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('password manager on laptop')
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 8 — Digital assets not enabled
+describe('Phase 14 Test 8 — Digital assets not enabled', () => {
+  const formData = baseFormData({
+    assets: [],
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+  })
+
+  it('does not render digital assets clause', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).not.toContain('DIGITAL ASSETS')
+  })
+
+  it('does not render digital assets definition', () => {
+    const text = renderWillText(formData)
+    // Approved DEFN-01 does not include a "Digital Assets" definition
+    expect(text).not.toMatch(/[""]Digital [Aa]ssets[""].*means/)
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 9 — Important document location NOT in Will body
+describe('Phase 14 Test 9 — Important documents not in Will', () => {
+  const formData = baseFormData({
+    importantDocumentsLocation: 'Safe at home, Mosman',
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+  })
+
+  it('does not render important documents as a Will clause', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).not.toContain('IMPORTANT DOCUMENTS')
+    expect(text).not.toContain('Safe at home')
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 10 — Multiple residuary beneficiaries (40/30/30)
+describe('Phase 14 Test 10 — Multiple residuary beneficiaries', () => {
+  const formData = baseFormData({
+    beneficiariesData: {
+      people: [
+        personBeneficiary('Alice Brown', '40', 'Child'),
+        personBeneficiary('Bob Brown', '30', 'Child'),
+        personBeneficiary('Carol Brown', '30', 'Child'),
+      ],
+      charities: [],
+    },
+  })
+
+  it('passes validation', () => {
+    expect(validateWillForGeneration(formData).valid).toBe(true)
+  })
+
+  it('renders all three beneficiaries', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('Alice Brown')
+    expect(text).toContain('Bob Brown')
+    expect(text).toContain('Carol Brown')
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 11 — Failed residuary total (40/30/20 = 90%)
+describe('Phase 14 Test 11 — Failed residuary total', () => {
+  it('blocks generation when total is 90%', () => {
+    const formData = baseFormData({
+      beneficiariesData: {
+        people: [
+          personBeneficiary('Alice', '40'),
+          personBeneficiary('Bob', '30'),
+          personBeneficiary('Carol', '20'),
+        ],
+        charities: [],
+      },
+    })
+    const result = validateWillForGeneration(formData)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some((e) => e.includes('90.0%'))).toBe(true)
+  })
+})
+
+// TEST 12 — Complexity flag for overseas assets
+describe('Phase 14 Test 12 — Complexity flag (overseas)', () => {
+  it('generates OVERSEAS_ASSETS at SOLICITOR_REQUIRED', () => {
+    const formData = baseFormData({
+      assetsOutsideAustralia: true,
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const flags = assessComplexityFlags(formData)
+    expect(flags.find((f) => f.code === 'OVERSEAS_ASSETS')?.severity).toBe('SOLICITOR_REQUIRED')
+  })
+})
+
+// TEST 13 — Long / full-feature Will
+describe('Phase 14 Test 13 — Long full-feature Will', () => {
+  const formData = baseFormData({
+    personalDetails: basePerson({ maritalStatus: 'married' }),
+    spouseDetails: {
+      firstName: 'Sarah', middleName: '', lastName: 'Smith', dateOfBirth: '',
+      addressLine1: '', suburb: '', state: '', postcode: '',
+      phoneMobile: '', email: '', occupation: '', previousWill: '', previousWillLocation: '',
+    },
+    childrenData: {
+      hasChildren: 'yes',
+      children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+      guardian: { firstName: 'Helen', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
+      ageOfVesting: '25',
+    },
+    executorsData: {
+      primary: baseExecutor(),
+      hasAlternate: true,
+      alternate: baseExecutor({ firstName: 'Sarah', lastName: 'Jones', relationship: 'Friend' }),
+    },
+    specificGifts: [
+      { id: '1', type: 'item', description: 'Gold watch', amount: '', recipientName: 'Alice Brown', recipientRelationship: 'Niece', substituteBeneficiary: '' },
+      { id: '2', type: 'cash', description: '', amount: '10000', recipientName: 'Bob Brown', recipientRelationship: 'Brother', substituteBeneficiary: '' },
+    ],
+    beneficiariesData: {
+      people: [personBeneficiary('Tom Smith', '100', 'Child')],
+      charities: [],
+    },
+    petCare: { hasPets: 'yes', description: 'cat', caregiverName: 'Helen Jones', caregiverRelationship: 'Aunt', careFundAmount: '1000' },
+    assets: [
+      {
+        id: '1', assetType: 'digital_asset', ownershipType: 'sole',
+        propertyAddress: '', estimatedValue: '', bankName: '', bsb: '', accountNumber: '',
+        fundName: '', memberNumber: '', companyName: '', numberOfShares: '',
+        insurerName: '', policyNumber: '', coverAmount: '',
+        make: '', model: '', year: '', rego: '',
+        accessLocation: 'password manager',
+        description: 'Bitcoin wallet', otherValue: '',
+        hasDeathBenefitNomination: false, deathBenefitNominees: '', isOverseas: false, overseasCountry: '',
+      },
+    ],
+    survivorshipDays: '30',
+  })
+
+  it('passes validation', () => {
+    expect(validateWillForGeneration(formData).valid).toBe(true)
+  })
+
+  it('includes all expected clauses', () => {
+    const text = renderWillText(formData)
+    expect(text.toUpperCase()).toContain('SPOUSE / PARTNER')
+    expect(text.toUpperCase()).toContain('EXECUTORS')
+    expect(text.toUpperCase()).toContain('CHILDREN')
+    expect(text.toUpperCase()).toContain('DEBTS AND EXPENSES')
+    expect(text.toUpperCase()).toContain('SPECIFIC GIFTS')
+    expect(text.toUpperCase()).toContain('RESIDUARY ESTATE')
+    expect(text.toUpperCase()).toContain('SURVIVORSHIP AND GIFT RULES')
+    expect(text.toUpperCase()).toContain('MINOR BENEFICIARY TRUST')
+    expect(text.toUpperCase()).toContain('ADVANCEMENT POWERS')
+    expect(text.toUpperCase()).toContain('CARE OF PETS')
+    expect(text.toUpperCase()).toContain('DIGITAL ASSETS')
+    expect(text.toUpperCase()).toContain('EXECUTOR POWERS')
+    expect(text.toUpperCase()).toContain('TRUSTEE POWERS')
+    expect(text.toUpperCase()).toContain('TRUSTEE APPOINTMENT')
+    expect(text.toUpperCase()).toContain('APPROPRIATION POWER')
+    expect(text.toUpperCase()).toContain('DELEGATION POWER')
+    expect(text.toUpperCase()).toContain('EXECUTOR INDEMNITY')
+    expect(text.toUpperCase()).toContain('DEFINITIONS')
+    expect(text.toUpperCase()).toContain('INTERPRETATION')
+  })
+
+  it('dynamic numbering produces no duplicate clause numbers', () => {
+    const text = renderWillText(formData)
+    const clauseNums = [...text.matchAll(/^(\d+)\. [A-Z]/gm)].map((m) => parseInt(m[1]))
+    const unique = new Set(clauseNums)
+    expect(clauseNums.length).toBe(unique.size)
+  })
+
+  it('clause numbers are sequential with no gaps', () => {
+    const text = renderWillText(formData)
+    const clauseNums = [...text.matchAll(/^(\d+)\. [A-Z]/gm)].map((m) => parseInt(m[1]))
+    for (let i = 1; i < clauseNums.length; i++) {
+      expect(clauseNums[i]).toBe(clauseNums[i - 1] + 1)
+    }
+  })
+
+  it('passes post-render validation', () => {
+    expect(validateRenderedText(renderWillText(formData)).valid).toBe(true)
+  })
+})
+
+// TEST 14 — Clause removal closes numbering gaps
+describe('Phase 14 Test 14 — Clause removal renumbers correctly', () => {
+  const withPets = baseFormData({
+    petCare: { hasPets: 'yes', description: 'dog', caregiverName: 'Mary', caregiverRelationship: '', careFundAmount: '500' },
+    beneficiariesData: { people: [personBeneficiary('James', '100')], charities: [] },
+  })
+  const withoutPets = baseFormData({
+    petCare: { hasPets: 'no', description: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
+    beneficiariesData: { people: [personBeneficiary('James', '100')], charities: [] },
+  })
+
+  it('without pets: no gaps in clause numbering', () => {
+    const text = renderWillText(withoutPets)
+    const nums = [...text.matchAll(/^(\d+)\. [A-Z]/gm)].map((m) => parseInt(m[1]))
+    for (let i = 1; i < nums.length; i++) {
+      expect(nums[i]).toBe(nums[i - 1] + 1)
+    }
+  })
+
+  it('with pets: no gaps in clause numbering', () => {
+    const text = renderWillText(withPets)
+    const nums = [...text.matchAll(/^(\d+)\. [A-Z]/gm)].map((m) => parseInt(m[1]))
+    for (let i = 1; i < nums.length; i++) {
+      expect(nums[i]).toBe(nums[i - 1] + 1)
+    }
+  })
+
+  it('pet clause adds exactly one extra numbered clause', () => {
+    const withText = renderWillText(withPets)
+    const withoutText = renderWillText(withoutPets)
+    const withNums = [...withText.matchAll(/^(\d+)\. [A-Z]/gm)]
+    const withoutNums = [...withoutText.matchAll(/^(\d+)\. [A-Z]/gm)]
+    expect(withNums.length).toBe(withoutNums.length + 1)
+  })
+
+  it('passes post-render validation in both cases', () => {
+    expect(validateRenderedText(renderWillText(withPets)).valid).toBe(true)
+    expect(validateRenderedText(renderWillText(withoutPets)).valid).toBe(true)
   })
 })

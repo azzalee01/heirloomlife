@@ -131,6 +131,13 @@ const POST_RENDER_CHECKS: Array<{ pattern: RegExp | string; message: string }> =
   { pattern: /\[No executor/, message: 'Missing executor placeholder found.' },
   { pattern: / to \.$/, message: 'Beneficiary line with empty name found.' },
   { pattern: /% to \.$/, message: 'Beneficiary percentage with empty name found.' },
+  // Legal placeholder checks — must not reach production output
+  { pattern: /APPROVED_LEGAL_TEXT_REQUIRED/, message: 'Unresolved legal text placeholder "APPROVED_LEGAL_TEXT_REQUIRED" found.' },
+  { pattern: /solicitor to (insert|complete)\]/, message: 'Unresolved solicitor placeholder found in rendered text.' },
+  // Sentinel values that indicate data did not resolve
+  { pattern: /\[unnamed carer\]/, message: 'Pet guardian name not resolved.' },
+  { pattern: /\[unnamed\]/, message: 'Beneficiary or person name not resolved.' },
+  { pattern: /\[location not specified\]/, message: 'Location placeholder not resolved.' },
 ]
 
 export function validateRenderedText(text: string): ValidationResult {
