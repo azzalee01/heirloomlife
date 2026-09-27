@@ -23,7 +23,6 @@ const REASONS: Record<string, string> = {
   unsupported_type: 'Only PDF and DOCX files are supported.',
   too_large: 'File is too large. Please upload a file under 10 MB.',
   no_file: 'No file was received. Please try again.',
-  unauthorized: 'Please sign in to upload your existing Will, or start the form below and we\'ll guide you through it.',
 }
 
 const STEPS = [
