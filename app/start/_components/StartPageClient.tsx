@@ -112,12 +112,11 @@ function mergeExtracted(
 interface Props {
   serverFormData: WillFormData
   isAuthenticated: boolean
-  hasWillAccess: boolean
   autoOpenUpload?: boolean
   partnerCode?: string | null
 }
 
-export default function StartPageClient({ serverFormData, isAuthenticated, hasWillAccess, autoOpenUpload, partnerCode }: Props) {
+export default function StartPageClient({ serverFormData, isAuthenticated, autoOpenUpload, partnerCode }: Props) {
   const [showUploadModal, setShowUploadModal] = useState(autoOpenUpload ?? false)
   const [uploadMode, setUploadMode] = useState(false)
   const [formData, setFormData] = useState<WillFormData>(serverFormData)
@@ -227,7 +226,6 @@ export default function StartPageClient({ serverFormData, isAuthenticated, hasWi
           key={wizardKey}
           initialData={formData}
           isAuthenticated={isAuthenticated}
-          hasWillAccess={hasWillAccess}
           extractedFields={extractedFields.size > 0 ? extractedFields : undefined}
         />
       </div>

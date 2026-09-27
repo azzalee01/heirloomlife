@@ -2,6 +2,7 @@
 
 import type { BeneficiariesData, PersonBeneficiary, CharityBeneficiary, TriageFlags } from '../_types'
 import TriageFlag from './TriageFlag'
+import TermDef from './TermDef'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -59,9 +60,11 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
         )}
         <p className="text-sm text-[var(--neutral)] mt-1">
           Specify who inherits your estate and the percentage each receives. This forms your{' '}
-          <strong>residuary clause</strong>  -  it covers everything not given away as a specific gift, so it&apos;s
-          the most important section of your will. Missing it means part of your estate could be distributed
-          under intestacy rules instead of your wishes.
+          <strong><TermDef term="Residuary clause" definition="The clause that distributes everything remaining after debts, expenses, and specific gifts have been paid. Without it, the leftover assets fall outside your Will entirely." /></strong>
+          {' '}— it covers everything not given away as a specific gift, so it&apos;s the most important section of your Will.
+          Missing it means part of your estate could be distributed under{' '}
+          <TermDef term="Intestacy rules" definition="The default NSW laws that apply when someone dies without a valid Will, or when a Will doesn't cover all their assets. The outcome is fixed by statute and may not reflect your wishes — only spouses, children, and certain relatives benefit." />
+          {' '}instead of your wishes.
         </p>
       </div>
 

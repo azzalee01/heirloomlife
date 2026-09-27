@@ -6,7 +6,7 @@ import { loadWillFormData, loadAnonSessionFormData, EMPTY_WILL_FORM_DATA } from 
 import type { StepId } from './_types'
 import { STEP_IDS } from './_types'
 import WillWizard from './_components/WillWizard'
-import { hasUpdatesAccess, hasWillAccess as profileHasWillAccess } from '@/src/lib/entitlements'
+import { hasUpdatesAccess } from '@/src/lib/entitlements'
 
 export default async function WillNewPage({
   searchParams,
@@ -28,11 +28,7 @@ export default async function WillNewPage({
     const cookieStore = await cookies()
     const anonSessionId = cookieStore.get('hl_anon_session')?.value
 
-    const [{ formData }, { data: profile }] = await Promise.all([
-      loadWillFormData(supabase, user.id, willIdParam),
-      supabaseAdmin.from('profiles').select('plan, plan_status, updates_status, updates_active_until').eq('id', user.id).single(),
-    ])
-    const hasWillAccess = profileHasWillAccess(profile)
+    const { formData } = await loadWillFormData(supabase, user.id, willIdParam)
 
     // Pre-populate wizard from an anonymous session when the user has no existing will.
     // The anon data becomes the initial state; real DB records are created on first step save.
@@ -44,7 +40,7 @@ export default async function WillNewPage({
         // Stale session  -  fall through to empty form
       }
       if (anonData) {
-        return <WillWizard initialData={{ ...anonData, willId: null }} initialStep={initialStep} isAuthenticated={true} hasWillAccess={hasWillAccess} />
+        return <WillWizard initialData={{ ...anonData, willId: null }} initialStep={initialStep} isAuthenticated={true} />
       }
     }
 
@@ -103,7 +99,7 @@ export default async function WillNewPage({
       }
     }
 
-    return <WillWizard initialData={formData} initialStep={initialStep} isAuthenticated={true} hasWillAccess={hasWillAccess} />
+    return <WillWizard initialData={formData} initialStep={initialStep} isAuthenticated={true} />
   }
 
   // ── Anonymous path ─────────────────────────────────────────────────────────
@@ -119,5 +115,5 @@ export default async function WillNewPage({
     }
   }
 
-  return <WillWizard initialData={anonFormData} initialStep={initialStep} isAuthenticated={false} hasWillAccess={false} />
+  return <WillWizard initialData={anonFormData} initialStep={initialStep} isAuthenticated={false} />
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import type { ExecutorsData, ExecutorPerson } from '../_types'
+import TermDef from './TermDef'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -64,9 +65,18 @@ export default function StepExecutors({ data, onChange, extractedFields }: Props
   return (
     <div className="space-y-7">
       <div>
-        <h2 className="text-xl font-semibold text-[var(--ink)]">Executors</h2>
+        <h2 className="text-xl font-semibold text-[var(--ink)]">
+          Executors
+          <TermDef
+            term="Executor"
+            definition="The person legally responsible for carrying out your Will — collecting assets, paying debts, applying for probate, and distributing what remains to your beneficiaries. No legal qualification is required; they hire professionals as needed."
+            iconOnly
+          />
+        </h2>
         <p className="text-sm text-[var(--neutral)] mt-1">
-          An executor administers your estate and carries out the instructions in your will.
+          An executor administers your estate and carries out the instructions in your Will. They will also need to apply for{' '}
+          <TermDef term="Probate" definition="The court process of formally recognising a Will as valid and authorising the executor to deal with the estate's assets. Once granted, probate is a matter of public record." />
+          {' '}before they can distribute your assets.
         </p>
         {hasExtracted && (
           <p className="mt-1.5 text-xs" style={{ color: 'var(--teal-deep)' }}>Pre-filled from your uploaded Will — confirm or edit</p>

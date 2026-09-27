@@ -1,6 +1,7 @@
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import type { WillFormData } from './_types'
 import { resolveSubstituteBeneficiaryText } from './_types'
+import { validateWillForGeneration, validateRenderedText } from './_validate'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -63,38 +64,49 @@ function resolveSubForBeneficiary(sentinel: string, beneficiaryName: string): st
 
 function buildResidueDispositionText(formData: WillFormData): string {
   const { people, charities } = formData.beneficiariesData
+
+  // Filter out blank-name and zero-share entries — must never appear in the document
+  const activePeople = people.filter(
+    (p) => p.name.trim() && (parseFloat(p.percentage) || 0) > 0
+  )
+  const activeCharities = charities.filter(
+    (c) => c.name.trim() && (parseFloat(c.percentage) || 0) > 0
+  )
+
   const all = [
-    ...people.map((p) => ({
+    ...activePeople.map((p) => ({
       label: `${p.name}${p.relationship ? ` (${p.relationship})` : ''}`,
       name: p.name,
       pct: p.percentage,
       sub: p.substituteBeneficiary,
-      isCharity: false,
     })),
-    ...charities.map((c) => ({
+    ...activeCharities.map((c) => ({
       label: `${c.name}${c.abn ? ` (ABN ${c.abn})` : ''}`,
       name: c.name,
       pct: c.percentage,
       sub: c.substituteBeneficiary,
-      isCharity: true,
     })),
   ]
 
   if (all.length === 0) return '[no beneficiaries named]'
 
-  if (all.length === 1) {
+  const survivorshipDays = formData.survivorshipDays || '30'
+
+  // Single beneficiary at 100% — render in natural language without a percentage list
+  if (all.length === 1 && parseFloat(all[0].pct) === 100) {
     const b = all[0]
     let s = `to ${b.label} absolutely`
     if (b.sub) {
-      s += `. If ${b.label} does not survive me by ${formData.survivorshipDays || '30'} days, this share passes instead to ${resolveSubForBeneficiary(b.sub, b.name)}`
+      s += `. If ${b.label} does not survive me by ${survivorshipDays} days, that share passes instead to ${resolveSubForBeneficiary(b.sub, b.name)}`
     }
     return s
   }
 
+  // Multiple beneficiaries — retain percentage/share structure
   const lines = all.map((b) => {
     let line = `  - ${b.pct}% to ${b.label}`
     if (b.sub) {
-      line += `; if ${b.label} does not survive me by ${formData.survivorshipDays || '30'} days, this share passes instead to ${resolveSubForBeneficiary(b.sub, b.name)}`
+      line += `; if ${b.label} does not survive me by ${survivorshipDays} days, that share passes instead to ${resolveSubForBeneficiary(b.sub, b.name)}`
     }
     return line
   })
@@ -120,6 +132,12 @@ function buildLifeInterestEndCondition(formData: WillFormData): string {
   if (c === 'death_or_remarriage') return 'their death, remarriage, or entry into a new de facto relationship, whichever occurs first'
   return 'the occurrence of the specified termination event'
 }
+
+// DIVORCE-01 is a statutory note (Succession Act 2006 ss 12-13), not an operative provision.
+// LEGAL REVIEW REQUIRED before permanent removal: confirm no precedent obligation requires it
+// to appear as a numbered testamentary clause. Pending that review, it is emitted as an
+// un-numbered note after the execution clause rather than as a numbered clause.
+const DIVORCE_NOTE_CODE = 'DIVORCE-01'
 
 // ── Clause selector ────────────────────────────────────────────────────────
 
@@ -172,8 +190,10 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   instances.push({ code: 'DEBT-01', heading: `${++clauseNo}. DEBTS AND EXPENSES`, vars: {} })
 
   // ── 5. Specific gifts ─────────────────────────────────────────────────────
-  if (formData.specificGifts.length > 0) {
-    const giftLines = formData.specificGifts
+  // Filter out incomplete rows — recipient name is the minimum requirement
+  const activeGifts = formData.specificGifts.filter((g) => g.recipientName.trim())
+  if (activeGifts.length > 0) {
+    const giftLines = activeGifts
       .map((g) => `  - ${buildGiftLine(formData, g)}`)
       .join('\n')
     instances.push({
@@ -185,7 +205,10 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
 
   // ── 6. Residuary estate ───────────────────────────────────────────────────
   const { people, charities } = formData.beneficiariesData
-  if (people.length > 0 || charities.length > 0) {
+  // Only count beneficiaries that will actually render
+  const activePeople = people.filter((p) => p.name.trim() && (parseFloat(p.percentage) || 0) > 0)
+  const activeCharities = charities.filter((c) => c.name.trim() && (parseFloat(c.percentage) || 0) > 0)
+  if (activePeople.length > 0 || activeCharities.length > 0) {
     instances.push({
       code: 'RES-01',
       heading: `${++clauseNo}. RESIDUARY ESTATE`,
@@ -194,7 +217,7 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   }
 
   // ── 7. Charitable gift substitution ──────────────────────────────────────
-  for (const c of charities.filter((c) => c.substituteBeneficiary)) {
+  for (const c of activeCharities.filter((c) => c.substituteBeneficiary)) {
     instances.push({
       code: 'GIFT-CHARITY-SUB-01',
       heading: `${++clauseNo}. CHARITABLE GIFT SUBSTITUTION — ${c.name.toUpperCase()}`,
@@ -292,7 +315,8 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   if (hasInsurance) {
     instances.push({ code: 'INSUR-01', heading: `${++clauseNo}. LIFE INSURANCE NOTE`, vars: {} })
   }
-  instances.push({ code: 'DIVORCE-01', heading: `${++clauseNo}. MARRIAGE AND DIVORCE`, vars: {} })
+  // DIVORCE-01 is fetched separately and emitted after the execution clause as a non-numbered
+  // informational note (see assembleWillDocument below). Do not add it to instances here.
 
   // ── 18. Escalation clauses ────────────────────────────────────────────────
   // Included with their solicitor-review warning when triage flags are set.
@@ -364,7 +388,11 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   instances.push({
     code: 'EXEC-ATTEST-01',
     heading: `${++clauseNo}. EXECUTION AND ATTESTATION`,
-    vars: { testator_name: tname },
+    vars: {
+      testator_name: tname,
+      // AV witnessing is coordinated through the Vault, not embedded in the document
+      av_witnessing_statement: '',
+    },
   })
 
   return instances
@@ -396,16 +424,23 @@ function buildDocumentHeader(formData: WillFormData): string {
 // ── Top-level assembler ────────────────────────────────────────────────────
 
 export async function assembleWillDocument(formData: WillFormData): Promise<string> {
+  // ── Pre-render validation ────────────────────────────────────────────────
+  const preCheck = validateWillForGeneration(formData)
+  if (!preCheck.valid) {
+    throw new Error(
+      `Will generation blocked — validation failed:\n${preCheck.errors.map((e) => `  • ${e}`).join('\n')}`
+    )
+  }
+
   const instances = selectClauses(formData)
-  const codes = instances.map((i) => i.code)
-  const clauseTexts = await fetchClauseTexts(codes)
+  const codes = [...instances.map((i) => i.code), DIVORCE_NOTE_CODE]
+  const clauseTexts = await fetchClauseTexts([...new Set(codes)])
 
   const sections: string[] = [buildDocumentHeader(formData)]
 
   for (const instance of instances) {
     const raw = clauseTexts.get(instance.code)
     if (!raw) {
-      // Clause not in DB yet — emit a placeholder so the document is still complete
       sections.push(
         `${instance.heading ?? instance.code}\n\n[Clause ${instance.code} not yet available — solicitor to insert.]`
       )
@@ -416,13 +451,33 @@ export async function assembleWillDocument(formData: WillFormData): Promise<stri
     sections.push(instance.heading ? `${instance.heading}\n\n${body}` : body)
   }
 
+  // ── Post-execution statutory note (DIVORCE-01) ───────────────────────────
+  // Rendered as an un-numbered informational note after the execution clause.
+  // LEGAL REVIEW REQUIRED: confirm this positioning satisfies the approved precedent.
+  const divorceNoteText = clauseTexts.get(DIVORCE_NOTE_CODE)
+  if (divorceNoteText) {
+    sections.push(
+      `NOTE — EFFECT OF MARRIAGE AND DIVORCE\n\n${merge(divorceNoteText, {})}`
+    )
+  }
+
   sections.push(
     'IMPORTANT NOTICE\n\n' +
-      'This Will was prepared using Heirloom Life\'s clause assembly platform. ' +
+      "This Will was prepared using Heirloom Life's clause assembly platform. " +
       'It must be signed in the presence of two witnesses to be legally valid. ' +
       'If your circumstances involve overseas assets, business ownership, a blended family, or any other complex matter flagged above, ' +
       'a solicitor review is strongly recommended before execution.'
   )
 
-  return sections.join('\n\n')
+  const assembled = sections.join('\n\n')
+
+  // ── Post-render text validation ──────────────────────────────────────────
+  const postCheck = validateRenderedText(assembled)
+  if (!postCheck.valid) {
+    throw new Error(
+      `Will generation blocked — post-render validation failed:\n${postCheck.errors.map((e) => `  • ${e}`).join('\n')}`
+    )
+  }
+
+  return assembled
 }

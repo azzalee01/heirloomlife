@@ -4,7 +4,6 @@ import MarketingFooter from '@/components/marketing/MarketingFooter'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { loadWillFormData, loadAnonSessionFormData, EMPTY_WILL_FORM_DATA } from '@/app/will/new/_data'
 import StartPageClient from './_components/StartPageClient'
-import { hasWillAccess as profileHasWillAccess } from '@/src/lib/entitlements'
 
 export default async function StartPage({ searchParams }: { searchParams: Promise<{ mode?: string; partner?: string }> }) {
   const supabase = await createSupabaseServerClient()
@@ -13,15 +12,10 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
 
   // Load existing data  -  from DB for authenticated users, from anon session cookie otherwise
   let formData = { ...EMPTY_WILL_FORM_DATA }
-  let hasWillAccess = false
   if (user) {
     try {
-      const [{ formData: loaded }, { data: profile }] = await Promise.all([
-        loadWillFormData(supabase, user.id),
-        supabase.from('profiles').select('plan, plan_status, updates_status, updates_active_until').eq('id', user.id).single(),
-      ])
+      const { formData: loaded } = await loadWillFormData(supabase, user.id)
       formData = loaded
-      hasWillAccess = profileHasWillAccess(profile)
     } catch {
       // No will yet  -  start fresh
     }
@@ -56,7 +50,6 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
           <StartPageClient
             serverFormData={formData}
             isAuthenticated={!!user}
-            hasWillAccess={hasWillAccess}
             autoOpenUpload={params.mode === 'upload'}
             partnerCode={params.partner ?? null}
           />

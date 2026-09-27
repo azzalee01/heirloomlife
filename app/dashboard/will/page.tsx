@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from '@/app/will/new/_data'
 import { renderWillText } from '@/app/will/new/_render'
+import { assembleWillDocument } from '@/app/will/new/_assembly'
 import AiChat from '@/app/dashboard/_components/AiChat'
 import LegalReviewCallout from './_components/LegalReviewCallout'
 import VersionHistory, { type VersionSummary } from './_components/VersionHistory'
@@ -68,6 +69,15 @@ export default async function TheWillPage() {
   const { formData } = await loadWillFormData(supabase, user.id, will.id)
   const documentText = renderWillText(formData)
 
+  // Full clause-library assembly for the download. Falls back to the
+  // lightweight preview render if the clause DB is unavailable.
+  let downloadText = documentText
+  try {
+    downloadText = await assembleWillDocument(formData)
+  } catch {
+    // clause DB unavailable — download will use preview render
+  }
+
   const { data: versionRows } = await supabase
     .from('will_versions')
     .select('id, created_at, change_summary, needs_review')
@@ -114,7 +124,7 @@ export default async function TheWillPage() {
             {hasPaidForWill && (
               <DownloadWillButton
                 willId={will.id}
-                documentText={documentText}
+                documentText={downloadText}
                 hasDownloaded={will.has_downloaded ?? false}
               />
             )}

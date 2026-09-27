@@ -4,7 +4,6 @@ import { useState, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
-import { renderWillText } from '../_render'
 import {
   type WillFormData,
   type StepId,
@@ -20,7 +19,6 @@ import {
   STEP_IDS,
   STEP_LABELS,
 } from '../_types'
-import WillOffer from '@/components/checkout/WillOffer'
 import ProgressBar from './ProgressBar'
 import HelpPanel from './HelpPanel'
 
@@ -173,11 +171,10 @@ interface Props {
   initialData: WillFormData
   initialStep?: StepId
   isAuthenticated: boolean
-  hasWillAccess?: boolean
   extractedFields?: Set<string>
 }
 
-export default function WillWizard({ initialData, initialStep, isAuthenticated, hasWillAccess = false, extractedFields }: Props) {
+export default function WillWizard({ initialData, initialStep, isAuthenticated, extractedFields }: Props) {
   const router = useRouter()
   const [form, setForm] = useState<WillFormData>(initialData)
   const [wizardSteps, setWizardSteps] = useState<WizardStepId[]>(() =>
@@ -194,7 +191,6 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const [showEmailCapture, setShowEmailCapture] = useState(false)
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [showDownloadGate, setShowDownloadGate] = useState(false)
-  const [showCompletion, setShowCompletion] = useState(false)
   const [stepKey, setStepKey] = useState(0)
   const [slideDir, setSlideDir] = useState<'right' | 'left'>('right')
 
@@ -203,13 +199,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
 
   function scrollContentToTop() {
     contentScrollRef.current?.scrollTo({ top: 0 })
+    window.scrollTo({ top: 0 })
   }
-
-  const willPreviewText = useMemo(() => {
-    if (!showCompletion || hasWillAccess) return ''
-    const sections = renderWillText(form).split('\n\n')
-    return sections.slice(0, Math.ceil(sections.length / 2)).join('\n\n')
-  }, [showCompletion, hasWillAccess, form])
 
   const currentStepId = wizardSteps[stepIndex]
   const isBackupStep = typeof currentStepId === 'string' && currentStepId.startsWith('backup_')
@@ -558,7 +549,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     onChange={(updates) => setForm((prev) => ({ ...prev, ...updates }))}
                   />
                 )}
-                {currentStaticStep === 'review' && !showDownloadGate && !showCompletion && (
+                {currentStaticStep === 'review' && !showDownloadGate && (
                   <StepReview
                     formData={form}
                     onViewWill={handleComplete}
@@ -567,94 +558,8 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                 )}
                 {showDownloadGate && <AnonDownloadGate />}
 
-                {/* Completion screen */}
-                {showCompletion && (
-                  <div className="py-6 space-y-6">
-                    <div className="text-center space-y-2">
-                      <div
-                        className="w-14 h-14 mx-auto flex items-center justify-center"
-                        style={{ background: 'rgba(42,180,174,0.1)' }}
-                      >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                          <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
-                        </svg>
-                      </div>
-                      <h2 className="text-2xl font-semibold" style={{ color: 'var(--ink)', fontFamily: "var(--font-display)" }}>
-                        Your Will is ready
-                      </h2>
-                    </div>
-
-                    {hasWillAccess ? (
-                      <div className="max-w-md mx-auto space-y-3">
-                        <p className="text-sm text-center" style={{ color: 'var(--neutral)' }}>
-                          Your Will has been updated. Your download is available in your Vault.
-                        </p>
-                        <Link
-                          href="/dashboard"
-                          className="flex items-center justify-center gap-2 py-3 text-sm font-semibold text-white"
-                          style={{ backgroundColor: 'var(--teal)' }}
-                        >
-                          Go to Vault
-                        </Link>
-                      </div>
-                    ) : (
-                      <div className="space-y-5">
-                        <div style={{ position: 'relative' }}>
-                          <div
-                            style={{
-                              maxHeight: '22rem',
-                              overflowY: 'auto',
-                              border: '1px solid var(--line)',
-                              padding: '1.25rem 1.5rem',
-                              fontFamily: 'monospace',
-                              fontSize: '.75rem',
-                              lineHeight: 1.75,
-                              whiteSpace: 'pre-wrap',
-                              color: 'var(--ink)',
-                              background: 'var(--paper-warm)',
-                            }}
-                          >
-                            {willPreviewText}
-                          </div>
-                          <div
-                            style={{
-                              position: 'absolute',
-                              bottom: 0, left: 0, right: 0,
-                              height: '5rem',
-                              background: 'linear-gradient(to bottom, transparent, var(--paper-warm))',
-                              pointerEvents: 'none',
-                            }}
-                          />
-                        </div>
-
-                        <p className="text-sm text-center" style={{ color: 'var(--neutral)' }}>
-                          This is your complete Will. Unlock it to download and sign it.
-                        </p>
-
-                        <WillOffer />
-
-                        <Link
-                          href="/dashboard"
-                          className="flex items-center gap-3 border px-5 py-4 hover:border-[var(--teal)] transition-colors"
-                          style={{ borderColor: 'var(--line)' }}
-                        >
-                          <div className="w-8 h-8 flex items-center justify-center shrink-0" style={{ background: 'var(--paper-warm)' }}>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-                              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>View in Vault</p>
-                            <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>See your estate plan, assets, and people in one place</p>
-                          </div>
-                        </Link>
-                      </div>
-                    )}
-                  </div>
-                )}
-
                 {/* Desktop navigation stays within the form card. */}
-                {!showDownloadGate && !showCompletion && (
+                {!showDownloadGate && (
                   <div className="hidden sm:flex items-center justify-between pt-6 mt-8 border-t border-[var(--line)]">
                     <button
                       type="button"
@@ -699,7 +604,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       </div>
 
       {/* Mobile navigation remains pinned at the bottom. */}
-      {!showDownloadGate && !showCompletion && (
+      {!showDownloadGate && (
         <div
           className="wizard-nav-mobile sm:hidden shrink-0 border-t border-[var(--line)] px-5 py-3 flex items-center justify-between"
           style={{ background: 'var(--paper)' }}

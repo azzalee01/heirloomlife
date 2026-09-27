@@ -125,39 +125,61 @@ export function renderWillText(formData: WillFormData): string {
     )
   }
 
-  if (formData.specificGifts.length > 0) {
-    const gifts = formData.specificGifts
+  // Filter out incomplete specific-gift rows before rendering
+  const activeGifts = formData.specificGifts.filter((g) => g.recipientName.trim())
+  if (activeGifts.length > 0) {
+    const gifts = activeGifts
       .map((g) => {
         let line = `- ${g.type === 'cash' ? `The sum of $${g.amount || '0'}` : g.description || 'An item'} to ${g.recipientName}${g.recipientRelationship ? ` (${g.recipientRelationship})` : ''}.`
         if (g.substituteBeneficiary) {
-          line += ` If ${g.recipientName} does not survive me by ${survivorshipDays} days, this gift is instead given to ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary)}.`        
-}
+          line += ` If ${g.recipientName} does not survive me by ${survivorshipDays} days, this gift is instead given to ${resolveSubstituteBeneficiaryText(g.substituteBeneficiary)}.`
+        }
         return line
       })
       .join('\n')
     sections.push(`${next()}. SPECIFIC GIFTS\n\nI give the following specific gifts:\n${gifts}`)
   }
 
-  const people = formData.beneficiariesData.people
-  const charities = formData.beneficiariesData.charities
-  if (people.length > 0 || charities.length > 0) {
-    const lines = [
-      ...people.map((p) => {
-        let line = `- ${p.percentage}% to ${p.name}${p.relationship ? ` (${p.relationship})` : ''}.`
-        if (p.substituteBeneficiary) line += ` If ${p.name} does not survive me by ${survivorshipDays} days, this share is instead given to ${resolveSubstituteBeneficiaryText(p.substituteBeneficiary)}.`        
-return line
-      }),
-      ...charities.map((c) => {
-        let line = `- ${c.percentage}% to ${c.name}${c.abn ? ` (ABN ${c.abn})` : ''}.`
-        if (c.substituteBeneficiary) line += ` If ${c.name} no longer exists at the time of my death, this share is instead given to ${resolveSubstituteBeneficiaryText(c.substituteBeneficiary)}.`        
-return line
-      }),
-    ].join('\n')
-    sections.push(
-      `${next()}. RESIDUARY ESTATE\n\n` +
-        `A beneficiary must survive me by ${survivorshipDays} days to inherit under this clause. ` +
-        `I give the residue of my estate, after payment of debts, funeral and testamentary expenses, as follows:\n${lines}`
-    )
+  // Filter out blank-name and zero-share beneficiary entries — must never appear in the document
+  const activePeople = formData.beneficiariesData.people.filter(
+    (p) => p.name.trim() && (parseFloat(p.percentage) || 0) > 0
+  )
+  const activeCharities = formData.beneficiariesData.charities.filter(
+    (c) => c.name.trim() && (parseFloat(c.percentage) || 0) > 0
+  )
+
+  if (activePeople.length > 0 || activeCharities.length > 0) {
+    const allBeneficiaries = [...activePeople, ...activeCharities]
+
+    // Single beneficiary at 100% — natural language, no percentage list
+    if (allBeneficiaries.length === 1 && parseFloat(allBeneficiaries[0].percentage) === 100) {
+      const b = allBeneficiaries[0]
+      const label = `${b.name}${('relationship' in b && b.relationship) ? ` (${b.relationship})` : ''}${('abn' in b && b.abn) ? ` (ABN ${b.abn})` : ''}`
+      let residueText = `I give the whole of the rest and residue of my estate, after payment of debts, funeral and testamentary expenses, to ${label} absolutely.`
+      if (b.substituteBeneficiary) {
+        residueText += ` If ${b.name} does not survive me by ${survivorshipDays} days, the residue passes instead to ${resolveSubstituteBeneficiaryText(b.substituteBeneficiary)}.`
+      }
+      sections.push(`${next()}. RESIDUARY ESTATE\n\n${residueText}`)
+    } else {
+      // Multiple beneficiaries — retain percentage/share structure
+      const lines = [
+        ...activePeople.map((p) => {
+          let line = `- ${p.percentage}% to ${p.name}${p.relationship ? ` (${p.relationship})` : ''}.`
+          if (p.substituteBeneficiary) line += ` If ${p.name} does not survive me by ${survivorshipDays} days, this share is instead given to ${resolveSubstituteBeneficiaryText(p.substituteBeneficiary)}.`
+          return line
+        }),
+        ...activeCharities.map((c) => {
+          let line = `- ${c.percentage}% to ${c.name}${c.abn ? ` (ABN ${c.abn})` : ''}.`
+          if (c.substituteBeneficiary) line += ` If ${c.name} no longer exists at the time of my death, this share is instead given to ${resolveSubstituteBeneficiaryText(c.substituteBeneficiary)}.`
+          return line
+        }),
+      ].join('\n')
+      sections.push(
+        `${next()}. RESIDUARY ESTATE\n\n` +
+          `A beneficiary must survive me by ${survivorshipDays} days to inherit under this clause. ` +
+          `I give the residue of my estate, after payment of debts, funeral and testamentary expenses, as follows:\n${lines}`
+      )
+    }
   } else {
     sections.push(`${next()}. RESIDUARY ESTATE\n\n[No beneficiaries have been named yet.]`)
   }

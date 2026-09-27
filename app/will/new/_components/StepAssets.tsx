@@ -2,6 +2,7 @@
 
 import type { Asset, AssetType } from '../_types'
 import TriageFlag from './TriageFlag'
+import TermDef from './TermDef'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -222,7 +223,7 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
       {asset.assetType === 'digital_asset' && (
         <div className="space-y-4">
           <div className="border border-blue-100 bg-blue-50 px-3 py-2.5 text-xs text-blue-700 space-y-1">
-            <p><strong>Disclosure only.</strong> Record what you hold and where your access instructions are kept. Do not enter passwords, seed phrases, or private keys here - Wills become public on probate.</p>
+            <p><strong>Disclosure only.</strong> Record what you hold and where your access instructions are kept. Do not enter passwords, seed phrases, or private keys here — Wills become public on{' '}<TermDef term="Probate" definition="The court process of formally recognising a Will as valid and authorising the executor to deal with the estate's assets. Once probate is granted, your Will becomes a public document — so never record passwords or sensitive credentials in it." />.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>

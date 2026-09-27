@@ -2,6 +2,7 @@
 
 import type { WillFormData, PetCareData, LifeInterestData } from '../_types'
 import TriageFlag from './TriageFlag'
+import TermDef from './TermDef'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
@@ -37,7 +38,14 @@ export default function StepWishes({ formData, hasDependentChildren, onChange }:
 
       {/* Survivorship period */}
       <section className="space-y-3">
-        <p className={eyebrow}>Survivorship Period</p>
+        <p className={eyebrow}>
+          Survivorship Period
+          <TermDef
+            term="Survivorship period"
+            definition="The minimum number of days a beneficiary must outlive you to inherit. If they die within that window — for example in the same accident — their share passes to their backup beneficiary, avoiding the cost and delay of administering the same assets twice."
+            iconOnly
+          />
+        </p>
         <p className="text-sm text-[var(--neutral)]">
           A beneficiary must survive you by this many days to inherit  -  this avoids double-administration
           if you and a beneficiary die close together. 30 days is standard.
@@ -56,7 +64,14 @@ export default function StepWishes({ formData, hasDependentChildren, onChange }:
       {/* Testamentary trust / age of vesting */}
       {hasDependentChildren && (
         <section className="space-y-3">
-          <p className={eyebrow}>Testamentary Trust</p>
+          <p className={eyebrow}>
+            Testamentary Trust
+            <TermDef
+              term="Testamentary trust"
+              definition="A trust created inside your Will that comes into effect after your death. It holds a beneficiary's inheritance — usually for minor children — until they reach the vesting age you choose. A trustee (typically your executor) manages the funds in the meantime."
+              iconOnly
+            />
+          </p>
           <p className="text-sm text-[var(--neutral)]">
             Since you have dependent children, their inheritance will be held on trust until they reach
             this age, rather than paid out as a lump sum while they&apos;re still minors.
@@ -118,7 +133,14 @@ export default function StepWishes({ formData, hasDependentChildren, onChange }:
 
       {/* Life interest / right to reside */}
       <section className="space-y-3">
-        <p className={eyebrow}>Life Interest / Right to Reside</p>
+        <p className={eyebrow}>
+          Life Interest / Right to Reside
+          <TermDef
+            term="Life interest / right to reside"
+            definition="A right for someone — typically a surviving partner — to live in a property or receive income from an asset for their lifetime, without owning it outright. When the life interest ends (on death, remarriage, or another trigger), the asset passes to the remainder beneficiaries you name."
+            iconOnly
+          />
+        </p>
         <label className="flex items-center gap-2.5 cursor-pointer">
           <input
             type="checkbox"
