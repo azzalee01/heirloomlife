@@ -4,7 +4,6 @@ import MarketingFooter from '@/components/marketing/MarketingFooter'
 import JourneyLine from '@/components/marketing/JourneyLine'
 import PlatformPreview from '@/components/marketing/PlatformPreview'
 import Reveal from '@/components/marketing/Reveal'
-import { PRICING } from '@/src/lib/pricing'
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_PAD: React.CSSProperties = { paddingBlock: '5.5rem' }
@@ -62,7 +61,7 @@ export default function HomePage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Complete your Will in about 15 minutes. ${PRICING.willAud}, once, and you pay only when you download it. Add unlimited updates for ${PRICING.updatesAudPerYear} a year.
+              Complete your Will in about 15 minutes. You pay only when you download it. Add unlimited updates to keep it current as life changes.
             </p>
           </div>
           <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.9rem' }}>
