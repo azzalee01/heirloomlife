@@ -281,7 +281,7 @@ export default function HomePage() {
           <div style={{ maxWidth: '34rem' }}>
             <span style={SECTION_LABEL}>Pricing</span>
             <H2>Priced like something<br/>worth getting right.</H2>
-            <Sub>Pay $129 once for your Will. Add unlimited updates for $25 a year to keep it current as life changes. No other fees.</Sub>
+            <Sub>Pay once for your Will. Add unlimited updates annually to keep it current as life changes. No other fees.</Sub>
           </div>
           <div style={{ marginTop: '2rem' }}>
             <Link href="/pricing" className="mkt-btn-ink-m">View pricing</Link>
