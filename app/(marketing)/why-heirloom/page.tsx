@@ -5,6 +5,15 @@ import { PRICING } from '@/src/lib/pricing'
 export const metadata = {
   title: 'Why Heirloom | Heirloom Life',
   description: 'See how Heirloom Life compares to Safewill and Willed on price, features, and ongoing value.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/why-heirloom' },
+  openGraph: {
+    title: 'Why Heirloom | Heirloom Life',
+    description: 'See how Heirloom Life compares to Safewill and Willed on price, features, and ongoing value.',
+    url: 'https://www.heirloomlife.com.au/why-heirloom',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
 }
 
 const W: React.CSSProperties = { maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }

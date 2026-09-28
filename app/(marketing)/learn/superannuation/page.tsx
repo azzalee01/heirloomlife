@@ -5,6 +5,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Superannuation and Your Estate | Heirloom Life',
   description: 'Why super sits outside your Will, how beneficiary nominations work, and what you need to know about your superannuation death benefit.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/learn/superannuation' },
+  openGraph: {
+    title: 'Superannuation and Your Estate | Heirloom Life',
+    description: 'Why super sits outside your Will, how beneficiary nominations work, and what you need to know about your superannuation death benefit.',
+    url: 'https://www.heirloomlife.com.au/learn/superannuation',
+    siteName: 'Heirloom Life',
+    type: 'article',
+    images: [{ url: '/images/learn/superannuation.jpg' }],
+  },
 }
 
 const LABEL: React.CSSProperties = {

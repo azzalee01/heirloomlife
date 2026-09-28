@@ -6,6 +6,14 @@ import LegalDocument, { type LegalSection } from '@/components/marketing/LegalDo
 export const metadata: Metadata = {
   title: 'Terms of Service | Heirloom Life',
   description: 'Terms governing access to and use of the Heirloom Life website, Will tools, Living Vault and related services.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/terms' },
+  openGraph: {
+    title: 'Terms of Service | Heirloom Life',
+    description: 'Terms governing access to and use of the Heirloom Life website, Will tools, Living Vault and related services.',
+    url: 'https://www.heirloomlife.com.au/terms',
+    siteName: 'Heirloom Life',
+    type: 'website',
+  },
 }
 
 const sections: LegalSection[] = [

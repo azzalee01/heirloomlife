@@ -5,6 +5,14 @@ import LegalDocument, { type LegalSection } from '@/components/marketing/LegalDo
 export const metadata: Metadata = {
   title: 'Privacy Policy | Heirloom Life',
   description: 'How Heirloom Life collects, uses, stores and discloses personal information.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/privacy' },
+  openGraph: {
+    title: 'Privacy Policy | Heirloom Life',
+    description: 'How Heirloom Life collects, uses, stores and discloses personal information.',
+    url: 'https://www.heirloomlife.com.au/privacy',
+    siteName: 'Heirloom Life',
+    type: 'website',
+  },
 }
 
 const sections: LegalSection[] = [

@@ -9,8 +9,17 @@ const LABEL: React.CSSProperties = {
 }
 
 export const metadata = {
-  title: 'Leave a gift to charity in your Will — Heirloom Life',
+  title: 'Leave a gift to charity in your Will | Heirloom Life',
   description: 'Include a charitable gift in your Will and leave something meaningful behind. Heirloom makes it straightforward to name a charity as part of your estate plan.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/charity-wills' },
+  openGraph: {
+    title: 'Leave a gift to charity in your Will | Heirloom Life',
+    description: 'Include a charitable gift in your Will and leave something meaningful behind. Heirloom makes it straightforward to name a charity as part of your estate plan.',
+    url: 'https://www.heirloomlife.com.au/charity-wills',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/charity-wills.jpg' }],
+  },
 }
 
 export default function CharityWillsPage() {

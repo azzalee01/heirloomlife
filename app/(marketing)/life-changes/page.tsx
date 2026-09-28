@@ -6,6 +6,15 @@ import { LIFE_CHANGES } from './_data'
 export const metadata: Metadata = {
   title: 'Life Changes and Your Will | Heirloom Life',
   description: 'Understand what marriage, children, property, separation, illness, business changes and moving may mean for your estate plan.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/life-changes' },
+  openGraph: {
+    title: 'Life Changes and Your Will | Heirloom Life',
+    description: 'Understand what marriage, children, property, separation, illness, business changes and moving may mean for your estate plan.',
+    url: 'https://www.heirloomlife.com.au/life-changes',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
 }
 
 const W: React.CSSProperties = { maxWidth: 1120, marginInline: 'auto', paddingInline: '1.5rem' }

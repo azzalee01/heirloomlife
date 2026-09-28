@@ -4,6 +4,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'About | Heirloom Life',
   description: 'Why Heirloom Life exists and what we are building for Australians who want their estate plan to stay current.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/about' },
+  openGraph: {
+    title: 'About | Heirloom Life',
+    description: 'Why Heirloom Life exists and what we are building for Australians who want their estate plan to stay current.',
+    url: 'https://www.heirloomlife.com.au/about',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
 }
 
 const SECTION_LABEL: React.CSSProperties = {

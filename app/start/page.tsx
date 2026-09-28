@@ -1,5 +1,8 @@
+import type { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import MarketingNav from '@/components/marketing/MarketingNav'
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { loadWillFormData, loadAnonSessionFormData, EMPTY_WILL_FORM_DATA } from '@/app/will/new/_data'

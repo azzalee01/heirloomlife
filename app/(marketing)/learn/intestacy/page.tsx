@@ -5,6 +5,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'What Happens Without a Will | Heirloom Life',
   description: 'How Australian intestacy law distributes an estate when there is no valid Will — and why it may not match your intentions.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/learn/intestacy' },
+  openGraph: {
+    title: 'What Happens Without a Will | Heirloom Life',
+    description: 'How Australian intestacy law distributes an estate when there is no valid Will — and why it may not match your intentions.',
+    url: 'https://www.heirloomlife.com.au/learn/intestacy',
+    siteName: 'Heirloom Life',
+    type: 'article',
+    images: [{ url: '/images/learn/intestacy.jpg' }],
+  },
 }
 
 const LABEL: React.CSSProperties = {

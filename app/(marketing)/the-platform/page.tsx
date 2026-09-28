@@ -9,8 +9,17 @@ const SECTION_LABEL: React.CSSProperties = {
 }
 
 export const metadata = {
-  title: 'The Platform  -  Heirloom Life',
+  title: 'The Platform | Heirloom Life',
   description: 'One place for your Will, asset register, and executor notes — all current, all connected, and ready to update as life changes.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/the-platform' },
+  openGraph: {
+    title: 'The Platform | Heirloom Life',
+    description: 'One place for your Will, asset register, and executor notes — all current, all connected, and ready to update as life changes.',
+    url: 'https://www.heirloomlife.com.au/the-platform',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
 }
 
 export default function ThePlatformPage() {

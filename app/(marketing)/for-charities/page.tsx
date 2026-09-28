@@ -8,8 +8,17 @@ const LABEL: React.CSSProperties = {
 }
 
 export const metadata = {
-  title: 'For Charities - Grow your bequest program with Heirloom Life',
+  title: 'For Charities | Heirloom Life',
   description: 'Partner with Heirloom Life to reach Australians who are actively planning their estate. Grow your gifts-in-Wills program at exactly the right moment.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/for-charities' },
+  openGraph: {
+    title: 'For Charities | Heirloom Life',
+    description: 'Partner with Heirloom Life to reach Australians who are actively planning their estate. Grow your gifts-in-Wills program at exactly the right moment.',
+    url: 'https://www.heirloomlife.com.au/for-charities',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/charity-wills.jpg' }],
+  },
 }
 
 const STATS = [

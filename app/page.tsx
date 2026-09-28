@@ -1,5 +1,20 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import MarketingNav from '@/components/marketing/MarketingNav'
+
+export const metadata: Metadata = {
+  title: 'Heirloom Life — Australian Wills and Estate Planning',
+  description: 'Write a solicitor-reviewed Will online. Track life events, keep your estate plan current, and organise everything your family needs — all in one place.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au' },
+  openGraph: {
+    title: 'Heirloom Life — Australian Wills and Estate Planning',
+    description: 'Write a solicitor-reviewed Will online. Track life events, keep your estate plan current, and organise everything your family needs — all in one place.',
+    url: 'https://www.heirloomlife.com.au',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
+};
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 import WillDraftingAnimation from '@/components/marketing/WillDraftingAnimation'
 import JourneyLine from '@/components/marketing/JourneyLine'

@@ -1,6 +1,9 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr';
 import { SideNavWrapper } from '@/app/dashboard/_components/SideNavWrapper';
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function PoaLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createSupabaseServerClient();

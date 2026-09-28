@@ -5,6 +5,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Choosing an Executor | Heirloom Life',
   description: 'What an executor does, what qualities to look for, and why the conversation you have with them matters as much as the appointment itself.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/learn/choosing-an-executor' },
+  openGraph: {
+    title: 'Choosing an Executor | Heirloom Life',
+    description: 'What an executor does, what qualities to look for, and why the conversation you have with them matters as much as the appointment itself.',
+    url: 'https://www.heirloomlife.com.au/learn/choosing-an-executor',
+    siteName: 'Heirloom Life',
+    type: 'article',
+    images: [{ url: '/images/learn/choosing-an-executor.jpg' }],
+  },
 }
 
 const LABEL: React.CSSProperties = {

@@ -5,6 +5,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Choosing Your Beneficiaries | Heirloom Life',
   description: 'How to decide who benefits from your estate, how to structure gifts, and what happens when a beneficiary is no longer able to receive.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/learn/beneficiaries' },
+  openGraph: {
+    title: 'Choosing Your Beneficiaries | Heirloom Life',
+    description: 'How to decide who benefits from your estate, how to structure gifts, and what happens when a beneficiary is no longer able to receive.',
+    url: 'https://www.heirloomlife.com.au/learn/beneficiaries',
+    siteName: 'Heirloom Life',
+    type: 'article',
+    images: [{ url: '/images/learn/beneficiaries.jpg' }],
+  },
 }
 
 const LABEL: React.CSSProperties = {

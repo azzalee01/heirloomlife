@@ -4,6 +4,15 @@ import { PRICING } from '@/src/lib/pricing'
 export const metadata: Metadata = {
   title: 'FAQs | Heirloom Life',
   description: 'Answers to the questions people actually ask about Heirloom Life, making a Will, and keeping it current.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/faq' },
+  openGraph: {
+    title: 'FAQs | Heirloom Life',
+    description: 'Answers to the questions people actually ask about Heirloom Life, making a Will, and keeping it current.',
+    url: 'https://www.heirloomlife.com.au/faq',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
 }
 
 const SECTION_LABEL: React.CSSProperties = {

@@ -1,8 +1,23 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 import PricingVaultCTA from './_components/PricingVaultCTA'
 import { PRICING } from '@/src/lib/pricing'
+
+export const metadata: Metadata = {
+  title: 'Pricing | Heirloom Life',
+  description: `A solicitor-reviewed Australian Will for $${PRICING.willAud}. Optional Heirloom Unlimited for updates and Living Vault access.`,
+  alternates: { canonical: 'https://www.heirloomlife.com.au/pricing' },
+  openGraph: {
+    title: 'Pricing — Heirloom Life',
+    description: `A solicitor-reviewed Australian Will for $${PRICING.willAud}. Optional Heirloom Unlimited for updates and Living Vault access.`,
+    url: 'https://www.heirloomlife.com.au/pricing',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
+};
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_LABEL: React.CSSProperties = {

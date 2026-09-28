@@ -4,6 +4,15 @@ import EditorialBanner from '@/components/marketing/EditorialBanner'
 export const metadata: Metadata = {
   title: 'For Advisers | Heirloom Life',
   description: 'Adviser partnerships are coming soon. Register your interest to be notified when the Heirloom Life adviser programme launches.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/for-advisers' },
+  openGraph: {
+    title: 'For Advisers | Heirloom Life',
+    description: 'Adviser partnerships are coming soon. Register your interest to be notified when the Heirloom Life adviser programme launches.',
+    url: 'https://www.heirloomlife.com.au/for-advisers',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/advisers.jpg' }],
+  },
 }
 
 const SECTION_LABEL: React.CSSProperties = {

@@ -23,7 +23,19 @@ function Pill({ children, variant = 'teal' }: { children: React.ReactNode; varia
   )
 }
 
-export const metadata = { title: 'Living Vault | Heirloom Life', description: 'The estate command centre that keeps your Will current as your life changes.' }
+export const metadata = {
+  title: 'Living Vault | Heirloom Life',
+  description: 'The estate command centre that keeps your Will current as your life changes.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/living-vault' },
+  openGraph: {
+    title: 'Living Vault | Heirloom Life',
+    description: 'The estate command centre that keeps your Will current as your life changes.',
+    url: 'https://www.heirloomlife.com.au/living-vault',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/living-vault.jpg' }],
+  },
+}
 
 export default function LivingVaultPage() {
   return (

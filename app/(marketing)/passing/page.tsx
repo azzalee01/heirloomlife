@@ -5,6 +5,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Passing | Heirloom Life',
   description: 'Guides on estate administration, executor responsibilities, and what happens when someone dies — explained clearly for the people who need them.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/passing' },
+  openGraph: {
+    title: 'Passing | Heirloom Life',
+    description: 'Guides on estate administration, executor responsibilities, and what happens when someone dies — explained clearly for the people who need them.',
+    url: 'https://www.heirloomlife.com.au/passing',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/passing.jpg' }],
+  },
 }
 
 const LABEL: React.CSSProperties = {

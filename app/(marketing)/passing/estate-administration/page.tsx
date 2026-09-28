@@ -4,6 +4,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Estate Administration | Heirloom Life',
   description: 'What happens to an estate after someone dies — the eight stages of estate administration explained in plain English.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/passing/estate-administration' },
+  openGraph: {
+    title: 'Estate Administration | Heirloom Life',
+    description: 'What happens to an estate after someone dies — the eight stages of estate administration explained in plain English.',
+    url: 'https://www.heirloomlife.com.au/passing/estate-administration',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/passing.jpg' }],
+  },
 }
 
 const LABEL: React.CSSProperties = {

@@ -5,6 +5,15 @@ import { PRICING } from '@/src/lib/pricing'
 export const metadata: Metadata = {
   title: 'How It Works | Heirloom Life',
   description: 'From first login to a complete estate plan — what happens and when. Four stages, most completed in a single session.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/how-it-works' },
+  openGraph: {
+    title: 'How It Works | Heirloom Life',
+    description: 'From first login to a complete estate plan — what happens and when. Four stages, most completed in a single session.',
+    url: 'https://www.heirloomlife.com.au/how-it-works',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
 }
 
 const SECTION_LABEL: React.CSSProperties = {

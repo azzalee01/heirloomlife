@@ -22,7 +22,19 @@ function Pill({ children, variant = 'teal' }: { children: React.ReactNode; varia
   )
 }
 
-export const metadata = { title: 'The Will | Heirloom Life', description: 'A Will in plain English, drafted to your state\'s requirements, and versioned every time your life moves forward.' }
+export const metadata = {
+  title: 'The Will | Heirloom Life',
+  description: 'A Will in plain English, drafted to your state\'s requirements, and versioned every time your life moves forward.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/the-will' },
+  openGraph: {
+    title: 'The Will | Heirloom Life',
+    description: 'A Will in plain English, drafted to your state\'s requirements, and versioned every time your life moves forward.',
+    url: 'https://www.heirloomlife.com.au/the-will',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
+}
 
 export default function TheWillPage() {
   return (

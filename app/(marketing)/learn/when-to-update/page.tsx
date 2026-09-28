@@ -5,6 +5,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'When to Update Your Will | Heirloom Life',
   description: 'The life events that mean your Will may need attention — and why keeping it current matters as much as writing it in the first place.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/learn/when-to-update' },
+  openGraph: {
+    title: 'When to Update Your Will | Heirloom Life',
+    description: 'The life events that mean your Will may need attention — and why keeping it current matters as much as writing it in the first place.',
+    url: 'https://www.heirloomlife.com.au/learn/when-to-update',
+    siteName: 'Heirloom Life',
+    type: 'article',
+    images: [{ url: '/images/learn/when-to-update.jpg' }],
+  },
 }
 
 const LABEL: React.CSSProperties = {

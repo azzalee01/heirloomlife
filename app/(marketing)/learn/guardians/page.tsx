@@ -5,6 +5,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Appointing a Guardian for Your Children | Heirloom Life',
   description: 'How to record your guardian wishes in your Will, what the legal effect is, and how to choose the right person for the role.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/learn/guardians' },
+  openGraph: {
+    title: 'Appointing a Guardian for Your Children | Heirloom Life',
+    description: 'How to record your guardian wishes in your Will, what the legal effect is, and how to choose the right person for the role.',
+    url: 'https://www.heirloomlife.com.au/learn/guardians',
+    siteName: 'Heirloom Life',
+    type: 'article',
+    images: [{ url: '/images/learn/guardians.jpg' }],
+  },
 }
 
 const LABEL: React.CSSProperties = {

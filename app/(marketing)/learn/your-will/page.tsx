@@ -5,6 +5,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'What Makes a Will Legally Valid | Heirloom Life',
   description: 'The five requirements for a valid Will in Australia, what a Will covers, and why it matters to keep it current.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/learn/your-will' },
+  openGraph: {
+    title: 'What Makes a Will Legally Valid | Heirloom Life',
+    description: 'The five requirements for a valid Will in Australia, what a Will covers, and why it matters to keep it current.',
+    url: 'https://www.heirloomlife.com.au/learn/your-will',
+    siteName: 'Heirloom Life',
+    type: 'article',
+    images: [{ url: '/images/learn/your-will.jpg' }],
+  },
 }
 
 const LABEL: React.CSSProperties = {

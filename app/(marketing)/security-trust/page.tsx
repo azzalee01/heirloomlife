@@ -3,6 +3,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Security & Trust | Heirloom Life',
   description: 'What security measures are actually in place at Heirloom Life today — written accurately, not to match a competitor\'s marketing page.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/security-trust' },
+  openGraph: {
+    title: 'Security & Trust | Heirloom Life',
+    description: 'What security measures are actually in place at Heirloom Life today — written accurately, not to match a competitor\'s marketing page.',
+    url: 'https://www.heirloomlife.com.au/security-trust',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
 }
 
 const SECTION_LABEL: React.CSSProperties = {

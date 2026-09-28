@@ -6,6 +6,15 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Learn | Heirloom Life',
   description: 'Plain-English guides on Wills, estate planning, superannuation, guardians, executors, and what happens after someone dies.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/learn' },
+  openGraph: {
+    title: 'Learn | Heirloom Life',
+    description: 'Plain-English guides on Wills, estate planning, superannuation, guardians, executors, and what happens after someone dies.',
+    url: 'https://www.heirloomlife.com.au/learn',
+    siteName: 'Heirloom Life',
+    type: 'website',
+    images: [{ url: '/images/editorial/learn.jpg' }],
+  },
 }
 
 const LABEL: React.CSSProperties = {

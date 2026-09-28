@@ -14,9 +14,21 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const event = getLifeChange((await params).slug)
   if (!event) return {}
+  const title = `${event.title} and Your Will | Heirloom Life`
+  const description = `${event.summary} Read what may need attention and use a practical estate-planning checklist.`
+  const url = `https://www.heirloomlife.com.au/life-changes/${event.slug}`
   return {
-    title: `${event.title} and Your Will | Heirloom Life`,
-    description: `${event.summary} Read what may need attention and use a practical estate-planning checklist.`,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: 'Heirloom Life',
+      type: 'article',
+      images: [{ url: `/images/life-changes/${event.slug}.jpg` }],
+    },
   }
 }
 
