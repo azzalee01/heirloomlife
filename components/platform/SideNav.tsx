@@ -7,17 +7,12 @@ import { Settings, HelpCircle, LogOut, PanelLeft, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ── Nav items ────────────────────────────────────────────────────────────────
-type NavKey = 'dashboard' | 'life-events' | 'will' | 'live-will' | 'witnessing' | 'vault' | 'poa' | 'documents';
+type NavKey = 'dashboard' | 'live-will' | 'witnessing';
 
 const NAV_ITEMS: { key: NavKey; label: string; href: string; shortcut: string }[] = [
-  { key: 'dashboard', label: 'Overview',   href: '/dashboard',  shortcut: '⌘H' },
-  { key: 'life-events', label: 'Life Changes', href: '/dashboard/life-events', shortcut: '⌘C' },
-  { key: 'will',      label: 'Edit Will',      href: '/will/new',       shortcut: '⌘W' },
-  { key: 'live-will', label: 'Will Document', href: '/dashboard/will', shortcut: '⌘L' },
-  { key: 'witnessing', label: 'Witnessing', href: '/witnessing', shortcut: '⌘E' },
-  { key: 'vault',     label: 'Living Vault', href: '/dashboard/vault',    shortcut: '⌘V' },
-  { key: 'poa',       label: 'Power of Attorney', href: '/poa', shortcut: '⌘P' },
-  { key: 'documents', label: 'Documents',  href: '/documents',  shortcut: '⌘D' },
+  { key: 'dashboard', label: 'Overview',   href: '/dashboard',      shortcut: '⌘H' },
+  { key: 'live-will', label: 'My Will',    href: '/dashboard/will', shortcut: '⌘W' },
+  { key: 'witnessing', label: 'Witnessing', href: '/witnessing',    shortcut: '⌘E' },
 ];
 
 // ── Icons ────────────────────────────────────────────────────────────────────
@@ -31,19 +26,6 @@ function NavIcon({ k }: { k: NavKey }) {
           <path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
-    case 'life-events':
-      return (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
-          <path d="M12 21s-7-4.35-7-10a4 4 0 017-2.65A4 4 0 0119 11c0 5.65-7 10-7 10z" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M12 8v6M9 11h6" strokeWidth="1.8" strokeLinecap="round" />
-        </svg>
-      );
-    case 'will':
-      return (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
-          <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      );
     case 'live-will':
       return (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
@@ -55,29 +37,6 @@ function NavIcon({ k }: { k: NavKey }) {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
           <rect x="2" y="6" width="14" height="12" rx="2" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M16 10.5l5-3v9l-5-3" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      );
-    case 'vault':
-      return (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
-          <path d="M19 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2z" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M7 11V7a5 5 0 0110 0v4" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="12" cy="16" r="1" fill="currentColor" />
-        </svg>
-      );
-    case 'poa':
-      return (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          <circle cx="9" cy="7" r="4" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-      );
-    case 'documents':
-      return (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
-          <path d="M3 7h7l2 2h9v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M3 7V6a2 2 0 012-2h6l2 2" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       );
   }

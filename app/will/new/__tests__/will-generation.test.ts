@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { validateWillForGeneration, validateRenderedText } from '../_validate'
+import { validateWillForGeneration, validateRenderedText, validateExecutableWill, canReleaseForExecution } from '../_validate'
 import { renderWillText } from '../_render'
 import { assessComplexityFlags, maxSeverity } from '../_complexity'
 import { resolveSubstituteBeneficiaryText } from '../_types'
@@ -100,7 +100,7 @@ function baseFormData(overrides: Partial<WillFormData> = {}): WillFormData {
     otherJurisdictions: '',
     importantDocumentsLocation: '',
     survivorshipDays: '30',
-    petCare: { hasPets: 'no', description: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
+    petCare: { hasPets: 'no', petName: '', petDescription: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
     lifeInterest: {
       enabled: false, propertyDescription: '', lifeTenantName: '', lifeTenantRelationship: '',
       condition: '', remainderBeneficiaryName: '', remainderBeneficiaryRelationship: '',
@@ -339,7 +339,7 @@ describe('Case H — Unused modules omitted', () => {
       charities: [],
     },
     specificGifts: [],
-    petCare: { hasPets: 'no', description: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
+    petCare: { hasPets: 'no', petName: '', petDescription: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
   })
 
   it('does not render specific gifts section when no gifts', () => {
@@ -597,7 +597,7 @@ describe('Phase 14 Test 4 — Minor beneficiary / vesting age 25', () => {
 // TEST 5 — Pet with care provision
 describe('Phase 14 Test 5 — Pet with care provision', () => {
   const formData = baseFormData({
-    petCare: { hasPets: 'yes', description: 'Golden Retriever', caregiverName: 'Catherine Brown', caregiverRelationship: 'Sister', careFundAmount: '2000' },
+    petCare: { hasPets: 'yes', petName: 'Goldie', petDescription: 'golden retriever', caregiverName: 'Catherine Brown', caregiverRelationship: 'Sister', careFundAmount: '2000' },
     beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
   })
 
@@ -626,7 +626,7 @@ describe('Phase 14 Test 5 — Pet with care provision', () => {
 // TEST 6 — No pet
 describe('Phase 14 Test 6 — No pet', () => {
   const formData = baseFormData({
-    petCare: { hasPets: 'no', description: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
+    petCare: { hasPets: 'no', petName: '', petDescription: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
     beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
   })
 
@@ -803,7 +803,7 @@ describe('Phase 14 Test 13 — Long full-feature Will', () => {
       people: [personBeneficiary('Tom Smith', '100', 'Child')],
       charities: [],
     },
-    petCare: { hasPets: 'yes', description: 'cat', caregiverName: 'Helen Jones', caregiverRelationship: 'Aunt', careFundAmount: '1000' },
+    petCare: { hasPets: 'yes', petName: '', petDescription: 'cat', caregiverName: 'Helen Jones', caregiverRelationship: 'Aunt', careFundAmount: '1000' },
     assets: [
       {
         id: '1', assetType: 'digital_asset', ownershipType: 'sole',
@@ -869,11 +869,11 @@ describe('Phase 14 Test 13 — Long full-feature Will', () => {
 // TEST 14 — Clause removal closes numbering gaps
 describe('Phase 14 Test 14 — Clause removal renumbers correctly', () => {
   const withPets = baseFormData({
-    petCare: { hasPets: 'yes', description: 'dog', caregiverName: 'Mary', caregiverRelationship: '', careFundAmount: '500' },
+    petCare: { hasPets: 'yes', petName: '', petDescription: 'dog', caregiverName: 'Mary', caregiverRelationship: '', careFundAmount: '500' },
     beneficiariesData: { people: [personBeneficiary('James', '100')], charities: [] },
   })
   const withoutPets = baseFormData({
-    petCare: { hasPets: 'no', description: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
+    petCare: { hasPets: 'no', petName: '', petDescription: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
     beneficiariesData: { people: [personBeneficiary('James', '100')], charities: [] },
   })
 
@@ -1080,7 +1080,7 @@ describe('Test H — Money formatting', () => {
 
   it('formats $2,000 pet care fund with commas', () => {
     const formData = baseFormData({
-      petCare: { hasPets: 'yes', description: 'dog', caregiverName: 'Mary', caregiverRelationship: '', careFundAmount: '2000' },
+      petCare: { hasPets: 'yes', petName: '', petDescription: 'dog', caregiverName: 'Mary', caregiverRelationship: '', careFundAmount: '2000' },
       beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
     })
     const text = renderWillText(formData)
@@ -1156,7 +1156,7 @@ describe('Test J — Survivorship and trust interaction', () => {
 describe('Test K — Pet clause request/direction inconsistency (pending legal review)', () => {
   it('current PET-01 contains both precatory request and imperative direction language', () => {
     const formData = baseFormData({
-      petCare: { hasPets: 'yes', description: 'Golden Retriever', caregiverName: 'Catherine Brown', caregiverRelationship: 'Sister', careFundAmount: '2000' },
+      petCare: { hasPets: 'yes', petName: 'Goldie', petDescription: 'golden retriever', caregiverName: 'Catherine Brown', caregiverRelationship: 'Sister', careFundAmount: '2000' },
       beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
     })
     const text = renderWillText(formData)
@@ -1512,5 +1512,178 @@ describe('QA Test 12 — Final token QA: all Will variants pass post-render vali
     const preResult = validateWillForGeneration(formData)
     expect(preResult.valid).toBe(false)
     expect(preResult.structured?.some((e) => e.code === 'RELATIONSHIP_STATUS_CONFLICT')).toBe(true)
+  })
+})
+
+// ── Architecture: LIFE_INTEREST is now SOLICITOR_REQUIRED ─────────────────
+
+describe('Architecture — LIFE_INTEREST severity is SOLICITOR_REQUIRED', () => {
+  const formData = baseFormData({
+    lifeInterest: {
+      enabled: true,
+      propertyDescription: '123 Test Street',
+      lifeTenantName: 'Susan Smith',
+      lifeTenantRelationship: 'Spouse',
+      condition: 'death',
+      remainderBeneficiaryName: 'Tom Smith',
+      remainderBeneficiaryRelationship: 'Child',
+    },
+    beneficiariesData: { people: [personBeneficiary('Tom Smith', '100', 'Child')], charities: [] },
+  })
+
+  it('generates LIFE_INTEREST flag at SOLICITOR_REQUIRED severity', () => {
+    const flags = assessComplexityFlags(formData)
+    const flag = flags.find((f) => f.code === 'LIFE_INTEREST')
+    expect(flag).toBeDefined()
+    expect(flag?.severity).toBe('SOLICITOR_REQUIRED')
+  })
+
+  it('maxSeverity returns SOLICITOR_REQUIRED for life-interest Will', () => {
+    const flags = assessComplexityFlags(formData)
+    expect(maxSeverity(flags)).toBe('SOLICITOR_REQUIRED')
+  })
+})
+
+// ── Architecture: validateExecutableWill and canReleaseForExecution ────────
+
+describe('Architecture — validateExecutableWill passes on simple Will', () => {
+  const formData = baseFormData({
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Friend')], charities: [] },
+  })
+
+  it('validateExecutableWill returns valid=true', () => {
+    const text = renderWillText(formData)
+    const result = validateExecutableWill(formData, text)
+    expect(result.valid).toBe(true)
+    expect(result.errors).toHaveLength(0)
+  })
+
+  it('canReleaseForExecution returns can=true', () => {
+    const text = renderWillText(formData)
+    const { can, blockers } = canReleaseForExecution(formData, text)
+    expect(can).toBe(true)
+    expect(blockers).toHaveLength(0)
+  })
+})
+
+describe('Architecture — validateExecutableWill blocks SOLICITOR_REQUIRED Wills', () => {
+  it('blocks Will with overseas assets (OVERSEAS_ASSETS = SOLICITOR_REQUIRED)', () => {
+    const formData = baseFormData({
+      assetsOutsideAustralia: true,
+      otherJurisdictions: 'New Zealand',
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Friend')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    const result = validateExecutableWill(formData, text)
+    expect(result.valid).toBe(false)
+    expect(result.structured?.some((e) => e.code === 'SOLICITOR_REQUIRED_ACTIVE')).toBe(true)
+  })
+
+  it('blocks Will with life interest (LIFE_INTEREST = SOLICITOR_REQUIRED)', () => {
+    const formData = baseFormData({
+      lifeInterest: {
+        enabled: true,
+        propertyDescription: '123 Test Street',
+        lifeTenantName: 'Susan Smith',
+        lifeTenantRelationship: 'Spouse',
+        condition: 'death',
+        remainderBeneficiaryName: 'Tom Smith',
+        remainderBeneficiaryRelationship: 'Child',
+      },
+      beneficiariesData: { people: [personBeneficiary('Tom Smith', '100', 'Child')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    const result = validateExecutableWill(formData, text)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some((e) => e.includes('LIFE_INTEREST'))).toBe(true)
+  })
+
+  it('canReleaseForExecution returns can=false with blockers for SOLICITOR_REQUIRED Will', () => {
+    const formData = baseFormData({
+      assetsOutsideAustralia: true,
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Friend')], charities: [] },
+    })
+    const text = renderWillText(formData)
+    const { can, blockers } = canReleaseForExecution(formData, text)
+    expect(can).toBe(false)
+    expect(blockers.length).toBeGreaterThan(0)
+  })
+})
+
+describe('Architecture — validateExecutableWill blocks post-render artefacts', () => {
+  it('blocks Will text containing unresolved template variable', () => {
+    const formData = baseFormData({
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100', 'Friend')], charities: [] },
+    })
+    const badText = 'I give my estate to {{beneficiary_name}} absolutely.'
+    const result = validateExecutableWill(formData, badText)
+    expect(result.valid).toBe(false)
+    expect(result.errors.some((e) => e.includes('{{'))).toBe(true)
+  })
+})
+
+// ── Adversarial fixtures — complexity gate ────────────────────────────────────
+
+describe('Adversarial — Daniel Chen (overseas assets + business interest)', () => {
+  const danielFormData = baseFormData({
+    assetsOutsideAustralia: true,
+    otherJurisdictions: 'China',
+    triageFlags: {
+      hasBusinessInterest: true,
+      hasBlendedFamily: false,
+      hasExclusionIntent: false,
+      hasVulnerableBeneficiary: false,
+      hasBeneficiaryFinancialChallenges: false,
+      hasComplexTrusts: false,
+    },
+    beneficiariesData: { people: [personBeneficiary('Mei Chen', '100', 'Spouse')], charities: [] },
+  })
+
+  it('assessComplexityFlags raises SOLICITOR_REQUIRED flags', () => {
+    const flags = assessComplexityFlags(danielFormData)
+    expect(flags.some((f) => f.code === 'OVERSEAS_ASSETS' && f.severity === 'SOLICITOR_REQUIRED')).toBe(true)
+    expect(flags.some((f) => f.code === 'BUSINESS_INTEREST' && f.severity === 'SOLICITOR_REQUIRED')).toBe(true)
+  })
+
+  it('maxSeverity returns SOLICITOR_REQUIRED', () => {
+    expect(maxSeverity(assessComplexityFlags(danielFormData))).toBe('SOLICITOR_REQUIRED')
+  })
+
+  it('canReleaseForExecution returns can=false', () => {
+    const text = renderWillText(danielFormData)
+    const { can, blockers } = canReleaseForExecution(danielFormData, text)
+    expect(can).toBe(false)
+    expect(blockers.some((b) => b.includes('SOLICITOR_REQUIRED'))).toBe(true)
+  })
+})
+
+describe('Adversarial — Robert Hartley (life interest)', () => {
+  const robertFormData = baseFormData({
+    lifeInterest: {
+      enabled: true,
+      propertyDescription: '3 Fernleigh Road, Pymble',
+      lifeTenantName: 'Beatrice Hartley',
+      lifeTenantRelationship: 'Spouse',
+      condition: 'death',
+      remainderBeneficiaryName: 'Charles Hartley',
+      remainderBeneficiaryRelationship: 'Son',
+    },
+    beneficiariesData: { people: [personBeneficiary('Charles Hartley', '100', 'Son')], charities: [] },
+  })
+
+  it('assessComplexityFlags raises LIFE_INTEREST with SOLICITOR_REQUIRED', () => {
+    const flags = assessComplexityFlags(robertFormData)
+    expect(flags.some((f) => f.code === 'LIFE_INTEREST' && f.severity === 'SOLICITOR_REQUIRED')).toBe(true)
+  })
+
+  it('maxSeverity returns SOLICITOR_REQUIRED', () => {
+    expect(maxSeverity(assessComplexityFlags(robertFormData))).toBe('SOLICITOR_REQUIRED')
+  })
+
+  it('canReleaseForExecution returns can=false', () => {
+    const text = renderWillText(robertFormData)
+    const { can, blockers } = canReleaseForExecution(robertFormData, text)
+    expect(can).toBe(false)
+    expect(blockers.some((b) => b.includes('LIFE_INTEREST'))).toBe(true)
   })
 })

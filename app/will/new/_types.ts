@@ -1,3 +1,40 @@
+// ── Document lifecycle types ──────────────────────────────────────────────────
+// These types enforce a strict state machine over Will documents.
+// Every downstream function must accept a DocumentPurpose and refuse to proceed
+// if the purpose is incompatible with the operation (e.g. signing an INTERNAL draft).
+
+/** The intended use of a generated document. Determines which validator runs and
+ *  whether the document may be delivered to the testator for signature. */
+export type DocumentPurpose = 'PREVIEW' | 'INTERNAL_SOLICITOR_DRAFT' | 'EXECUTABLE'
+
+/** Lifecycle state of an assembled document. */
+export type DocumentStatus =
+  | 'ASSEMBLING'
+  | 'ASSEMBLED'
+  | 'VALIDATION_FAILED'
+  | 'RELEASED_FOR_EXECUTION'
+
+/** Whether this Will can be produced by the automated pipeline or requires a solicitor. */
+export type WillPathway = 'STANDARD' | 'ESCALATION_REQUIRED'
+
+/** Approval state of a single clause version.
+ *  Only APPROVED clauses may appear in an EXECUTABLE document. */
+export type ClauseApprovalStatus =
+  | 'APPROVED'
+  | 'DRAFT'
+  | 'LEGAL_REVIEW_REQUIRED'
+  | 'APPROVED_LEGAL_TEXT_REQUIRED'
+
+/** Which packet document a clause belongs to.
+ *  Doc A = Signing Instructions, B = Will Body, C = Estate Information,
+ *  D = Wishes, E = Executor Information. */
+export type DocumentClass =
+  | 'WILL_BODY'
+  | 'ESTATE_INFORMATION'
+  | 'WISHES'
+  | 'EXECUTOR_INFORMATION'
+  | 'SIGNING_INSTRUCTIONS'
+
 export type MaritalStatus =
   | 'single'
   | 'married'
@@ -165,7 +202,8 @@ export interface TriageFlags {
 
 export interface PetCareData {
   hasPets: 'yes' | 'no' | ''
-  description: string
+  petName: string         // e.g. "Maisie"
+  petDescription: string  // e.g. "golden retriever"
   caregiverName: string
   caregiverRelationship: string
   careFundAmount: string
@@ -287,3 +325,19 @@ export const SPOUSAL_RELATIONSHIP_LABELS = new Set([
 // Marital statuses where a spousal relationship label is contradictory.
 // 'separated' is intentionally excluded — a separated person retains their legal spouse.
 export const NON_SPOUSAL_STATUSES = new Set<string>(['single', 'divorced', 'widowed'])
+
+/**
+ * Returns true when the Will requires a delayed-vesting / minor beneficiary trust
+ * (MIN-01 + MIN-02). True when any child is marked as a minor/dependent AND the
+ * ageOfVesting field is set. This is the canonical trigger for the trust clauses —
+ * use it in both _assembly.ts and _render.ts rather than re-deriving inline.
+ *
+ * The name is intentionally broader than "hasDependent": it captures the semantic
+ * intent (a trust arises) rather than the triggering data (a child is dependent).
+ */
+export function computeRequiresDelayedVestingTrust(formData: WillFormData): boolean {
+  return (
+    formData.childrenData.hasChildren === 'yes' &&
+    formData.childrenData.children.some((c) => c.isDependent)
+  )
+}

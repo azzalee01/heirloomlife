@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
+import WillDraftingAnimation from '@/components/marketing/WillDraftingAnimation'
 import JourneyLine from '@/components/marketing/JourneyLine'
 import PlatformPreview from '@/components/marketing/PlatformPreview'
 import Reveal from '@/components/marketing/Reveal'
-import ProductFilm from '@/components/marketing/ProductFilm'
+
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_PAD: React.CSSProperties = { paddingBlock: '5.5rem' }
@@ -55,77 +56,46 @@ export default function HomePage() {
 
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
       <section style={{ position: 'relative', background: 'var(--mkt-surface)', color: 'var(--mkt-ink-text)', overflow: 'hidden' }}>
-        <div style={{ ...W, paddingTop: '8rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ maxWidth: '52rem' }}>
-            <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.7rem, 6.2vw, 5.4rem)', lineHeight: .98, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0 }}>
-              Protect what matters,{' '}
-              <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
-            </h1>
-            <p style={{ marginTop: '1.75rem', maxWidth: '36rem', marginInline: 'auto', fontSize: '1.15rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Complete your Will in 15 minutes. Keep it current as life changes.
-            </p>
-          </div>
-          <div style={{ marginTop: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.9rem' }}>
+        <div style={{ ...W, paddingTop: '12rem', paddingBottom: '9rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <h1 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 'clamp(3.4rem, 7.5vw, 6.8rem)',
+            lineHeight: 0.93,
+            letterSpacing: '-.025em',
+            color: 'var(--mkt-ink-text)',
+            margin: 0,
+          }}>
+            Protect what matters,<br />
+            <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
+          </h1>
+          <p style={{ marginTop: '2.25rem', maxWidth: '26rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
+            Complete your Will in 15 minutes. Keep it current as life changes.
+          </p>
+          <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.75rem' }}>
             <Link href="/start?path=retail" className="mkt-btn-ink-l">
               Create my Will
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                 <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </Link>
-            <p style={{ margin: 0, fontSize: '.85rem', color: 'var(--mkt-stone)' }}>
+            <p style={{ margin: 0, fontSize: '.8rem', color: 'var(--mkt-stone)' }}>
               Already have a Will?{' '}
-              <Link href="/start?mode=upload" style={{ color: 'var(--teal-deep)', fontWeight: 600, textDecoration: 'underline' }}>
+              <Link href="/start?mode=upload" style={{ color: 'var(--teal-deep)', fontWeight: 500, textDecoration: 'underline' }}>
                 Upload it and we&apos;ll take care of you.
               </Link>
             </p>
           </div>
         </div>
+      </section>
 
-        {/* ─── PRODUCT FILM ─────────────────────────────────────────────── */}
-        {/* Autoplay muted looping film. Reduced-motion users see poster only. */}
-        <div style={{ ...W, paddingTop: '3rem', paddingBottom: '4rem' }}>
-          <ProductFilm />
-        </div>
+      {/* ─── WILL DRAFTING ANIMATION ──────────────────────────────────────── */}
+      <section style={{ background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)', overflow: 'hidden' }}>
+        <WillDraftingAnimation />
       </section>
 
       {/* ─── JOURNEY LINE ─────────────────────────────────────────────────── */}
-      {/* Preserved from the original hero section; moved here to follow the film. */}
-      <section style={{ background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)' }}>
-        <div style={{ paddingTop: '3rem', paddingBottom: '2rem' }}>
-          <JourneyLine />
-        </div>
-      </section>
-
-      {/* ─── TRUST BAR ────────────────────────────────────────────────────── */}
-      <section style={{ borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)', background: '#fff' }}>
-        <div
-          className="md:px-10 md:grid-cols-4"
-          style={{ ...W, display: 'grid', gridTemplateColumns: '1fr', gap: '1.4rem', paddingBlock: '1.6rem', fontSize: '.8rem', color: 'var(--mkt-stone)' }}
-        >
-          {[
-            {
-              d: <><path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5l-8-3Z" stroke="currentColor" strokeWidth="1.4"/><path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
-              t: "Available in all Australian states and territories  -  drafted to your state's legal requirements",
-            },
-            {
-              d: <><path d="M4 12a8 8 0 1 1 16 0 8 8 0 0 1-16 0Z" stroke="currentColor" strokeWidth="1.4"/><path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
-              t: 'A living document, amended as your life changes',
-            },
-            {
-              d: <><rect x="4" y="10" width="16" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.4"/><path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" strokeWidth="1.4"/></>,
-              t: 'Solicitor reviewed, securely stored',
-            },
-            {
-              d: <><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/></>,
-              t: 'Free to start  -  pay only when you download',
-            },
-          ].map((item, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '.65rem' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0, color: 'var(--teal-deep)' }} aria-hidden="true">{item.d}</svg>
-              {item.t}
-            </div>
-          ))}
-        </div>
+      <section style={{ background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)', paddingBlock: '5.5rem', overflow: 'hidden' }}>
+        <JourneyLine />
       </section>
 
       {/* ─── PLATFORM DEMO ────────────────────────────────────────────────── */}

@@ -1,0 +1,31 @@
+{
+  "name": "heirloom-video",
+  "version": "0.1.0",
+  "description": "Remotion product film for Heirloom Life — isolated from main app deps",
+  "scripts": {
+    "studio": "npx remotion studio src/index.ts",
+    "render:desktop": "npx remotion render src/index.ts DesktopFilm --codec h264 --crf 18 --output out/desktop-master.mp4",
+    "render:desktop-web": "npx remotion render src/index.ts DesktopFilm --codec h264 --crf 26 --output out/desktop-web.mp4",
+    "render:desktop-webm": "npx remotion render src/index.ts DesktopFilm --codec vp8 --crf 10 --output out/desktop.webm",
+    "render:desktop-poster": "npx remotion still src/index.ts DesktopFilm --frame 0 --output out/desktop-poster.jpg",
+    "render:mobile": "npx remotion render src/index.ts MobileFilm --codec h264 --crf 18 --output out/mobile-master.mp4",
+    "render:mobile-web": "npx remotion render src/index.ts MobileFilm --codec h264 --crf 26 --output out/mobile-web.mp4",
+    "render:mobile-webm": "npx remotion render src/index.ts MobileFilm --codec vp8 --crf 10 --output out/mobile.webm",
+    "render:mobile-poster": "npx remotion still src/index.ts MobileFilm --frame 0 --output out/mobile-poster.jpg",
+    "render:all": "npm run render:desktop && npm run render:desktop-web && npm run render:desktop-webm && npm run render:desktop-poster && npm run render:mobile && npm run render:mobile-web && npm run render:mobile-webm && npm run render:mobile-poster"
+  },
+  "dependencies": {
+    "@remotion/bundler": "^4.0.0",
+    "@remotion/cli": "^4.0.0",
+    "@remotion/renderer": "^4.0.0",
+    "@remotion/transitions": "^4.0.0",
+    "remotion": "^4.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.3.3"
+  }
+}

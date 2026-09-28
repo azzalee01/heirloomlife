@@ -9,6 +9,7 @@
 
 import type { WillFormData } from './_types'
 import { SPOUSAL_RELATIONSHIP_LABELS, NON_SPOUSAL_STATUSES } from './_types'
+import { assessComplexityFlags, maxSeverity } from './_complexity'
 
 export interface ValidationError {
   code: string
@@ -227,4 +228,104 @@ export function validateRenderedText(text: string): ValidationResult {
   }
 
   return { valid: errors.length === 0, errors }
+}
+
+// ── Internal review draft validator ───────────────────────────────────────
+// Used to validate documents intended for SOLICITOR review only — not for
+// delivery to the testator. Less strict than validateExecutableWill:
+//   - Allows [solicitor to complete] placeholders (expected in escalation drafts)
+//   - Does not enforce complexity flags (solicitor may override)
+//   - Still blocks the hardest data errors (unresolved {{vars}}, undefined, null)
+
+const DRAFT_BLOCKING_CHECKS: Array<{ pattern: RegExp | string; message: string }> = [
+  { pattern: /\{\{/, message: 'Unresolved template variable "{{" found.' },
+  { pattern: /\}\}/, message: 'Unresolved template variable "}}" found.' },
+  { pattern: /\bundefined\b/, message: '"undefined" found in draft text.' },
+  { pattern: /\bnull\b/, message: '"null" found in draft text.' },
+  { pattern: /APPROVED_LEGAL_TEXT_REQUIRED/, message: 'Unresolved legal text placeholder "APPROVED_LEGAL_TEXT_REQUIRED" found.' },
+]
+
+export function validateInternalReviewDraft(
+  formData: WillFormData,
+  renderedText: string
+): ValidationResult {
+  const errors: string[] = []
+  const structured: ValidationError[] = []
+
+  // Layer 1: form-data validation (same as pre-render)
+  const preCheck = validateWillForGeneration(formData)
+  if (!preCheck.valid) {
+    errors.push(...preCheck.errors)
+    if (preCheck.structured) structured.push(...preCheck.structured)
+  }
+
+  // Layer 2: only the hardest artefact checks — permit [solicitor to complete] patterns
+  for (const { pattern, message } of DRAFT_BLOCKING_CHECKS) {
+    const matched =
+      typeof pattern === 'string' ? renderedText.includes(pattern) : pattern.test(renderedText)
+    if (matched) errors.push(message)
+  }
+
+  return { valid: errors.length === 0, errors, structured }
+}
+
+// ── Executable Will validator ──────────────────────────────────────────────
+// Combines form-data validation, post-render text checks, and complexity
+// screening into a single gate that must pass before a Will may be delivered
+// to the testator for signature.
+//
+// This is distinct from validateWillForGeneration (which only checks form data)
+// and validateRenderedText (which only checks the assembled string). An
+// executable Will must pass ALL three layers.
+
+export function validateExecutableWill(
+  formData: WillFormData,
+  renderedText: string
+): ValidationResult {
+  const errors: string[] = []
+  const structured: ValidationError[] = []
+
+  // Layer 1: form-data validation
+  const preCheck = validateWillForGeneration(formData)
+  if (!preCheck.valid) {
+    errors.push(...preCheck.errors)
+    if (preCheck.structured) structured.push(...preCheck.structured)
+  }
+
+  // Layer 2: post-render text artefact check
+  const textCheck = validateRenderedText(renderedText)
+  if (!textCheck.valid) {
+    errors.push(...textCheck.errors)
+  }
+
+  // Layer 3: complexity screening — any SOLICITOR_REQUIRED flag blocks executable release
+  const flags = assessComplexityFlags(formData)
+  const severity = maxSeverity(flags)
+  if (severity === 'SOLICITOR_REQUIRED') {
+    const blockerCodes = flags
+      .filter((f) => f.severity === 'SOLICITOR_REQUIRED')
+      .map((f) => f.code)
+    errors.push(
+      `Will cannot be released for execution: SOLICITOR_REQUIRED flag(s) active — ${blockerCodes.join(', ')}. This Will requires solicitor preparation before signing.`
+    )
+    structured.push({
+      code: 'SOLICITOR_REQUIRED_ACTIVE',
+      message: `Complexity flag(s) require solicitor review before execution: ${blockerCodes.join(', ')}`,
+      fieldPaths: blockerCodes.map((c) => `complexityFlags.${c}`),
+    })
+  }
+
+  return { valid: errors.length === 0, errors, structured }
+}
+
+// ── Release gate ───────────────────────────────────────────────────────────
+// Single canonical function that all release paths must call.
+// Returns { can: true } only when the Will is safe to deliver for execution.
+
+export function canReleaseForExecution(
+  formData: WillFormData,
+  renderedText: string
+): { can: boolean; blockers: string[] } {
+  const result = validateExecutableWill(formData, renderedText)
+  return { can: result.valid, blockers: result.errors }
 }

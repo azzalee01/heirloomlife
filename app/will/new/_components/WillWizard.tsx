@@ -194,7 +194,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const [stepKey, setStepKey] = useState(0)
   const [slideDir, setSlideDir] = useState<'right' | 'left'>('right')
 
-  const pendingSaveRef = useRef<Promise<string> | null>(null)
+  const pendingSaveRef = useRef<Promise<{ id: string; versionId: string | null }> | null>(null)
   const contentScrollRef = useRef<HTMLDivElement>(null)
 
   function scrollContentToTop() {
@@ -260,7 +260,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     if (!form.willId) {
       setSaving(true)
       try {
-        const willId = await saveStep(null, currentStaticStep, form)
+        const { id: willId } = await saveStep(null, currentStaticStep, form)
         setForm((prev) => ({ ...prev, willId }))
         setSlideDir('right')
         setStepKey(k => k + 1)

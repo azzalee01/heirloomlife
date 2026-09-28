@@ -1,7 +1,8 @@
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import type { WillFormData } from './_types'
-import { resolveSubstituteBeneficiaryText, formatCurrency, formatAmountDigits } from './_types'
+import { resolveSubstituteBeneficiaryText, formatCurrency, formatAmountDigits, computeRequiresDelayedVestingTrust } from './_types'
 import { validateWillForGeneration, validateRenderedText } from './_validate'
+import { assessComplexityFlags, maxSeverity } from './_complexity'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -138,7 +139,7 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   const ed = formData.executorsData
   const cd = formData.childrenData
   const tf = formData.triageFlags
-  const hasDependent = cd.hasChildren === 'yes' && cd.children.some((c) => c.isDependent)
+  const requiresDelayedVestingTrust = computeRequiresDelayedVestingTrust(formData)
   const survivorshipDays = formData.survivorshipDays || '30'
   const tname = testatorName(formData)
   const primaryExecName = fullName(ed.primary.firstName, ed.primary.lastName)
@@ -170,7 +171,7 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   let clauseNo = ed.hasAlternate && ed.alternate.firstName ? 3 : 2
 
   // ── 3. Guardian ───────────────────────────────────────────────────────────
-  if (hasDependent && cd.guardian.firstName) {
+  if (requiresDelayedVestingTrust && cd.guardian.firstName) {
     const guardianName = fullName(cd.guardian.firstName, cd.guardian.lastName)
     instances.push({
       code: 'GUARD-01',
@@ -226,7 +227,7 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   })
 
   // ── 9. Testamentary trust ─────────────────────────────────────────────────
-  if (hasDependent) {
+  if (requiresDelayedVestingTrust) {
     const vestingAge = cd.ageOfVesting || '25'
     instances.push({
       code: 'MIN-01',
@@ -263,8 +264,8 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
       heading: `${++clauseNo}. CARE OF PETS`,
       vars: {
         pet_guardian_name: pc.caregiverName,
-        pet_description: pc.description,
-        pet_name: pc.description,
+        pet_description: pc.petDescription,
+        pet_name: pc.petName,
         pet_care_amount: formatAmountDigits(pc.careFundAmount || '0'),
       },
     })
@@ -287,7 +288,7 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   // ── 14. Trustee powers — only when a trust can arise ─────────────────────
   // TRUST-POWERS-01 and TRUSTEE-APPOINT-01 are conditional per their metadata:
   // "Omit if the Will creates no trust and no beneficiary can be under the vesting age."
-  const hasTrust = hasDependent || tf.hasComplexTrusts
+  const hasTrust = requiresDelayedVestingTrust || tf.hasComplexTrusts
   if (hasTrust) {
     instances.push({ code: 'TRUST-POWERS-01', heading: `${++clauseNo}. TRUSTEE POWERS`, vars: {} })
     instances.push({ code: 'TRUSTEE-APPOINT-01', heading: `${++clauseNo}. TRUSTEE APPOINTMENT`, vars: {} })
@@ -334,11 +335,22 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
     })
   }
   if (formData.assetsOutsideAustralia) {
+    // foreign_asset_description describes the overseas property (e.g. "apartment in London").
+    // foreign_jurisdiction names the country. These are distinct fields — merging both to
+    // otherJurisdictions previously produced output like "China located in China".
+    const overseasAssetDescriptions = formData.assets
+      .filter((a) => a.isOverseas)
+      .map((a) => [a.description, a.overseasCountry].filter(Boolean).join(' in '))
+      .filter(Boolean)
+    const foreignAssetDescription =
+      overseasAssetDescriptions.length > 0
+        ? overseasAssetDescriptions.join('; ')
+        : '[overseas assets — solicitor to complete]'
     instances.push({
       code: 'FOREIGN-01',
       heading: `${++clauseNo}. FOREIGN ASSETS`,
       vars: {
-        foreign_asset_description: formData.otherJurisdictions || '[overseas assets — solicitor to complete]',
+        foreign_asset_description: foreignAssetDescription,
         foreign_jurisdiction: formData.otherJurisdictions || '[jurisdiction — solicitor to complete]',
         foreign_asset_beneficiary_name: '[beneficiary — solicitor to complete]',
       },
@@ -413,6 +425,23 @@ export async function assembleWillDocument(formData: WillFormData): Promise<stri
   if (!preCheck.valid) {
     throw new Error(
       `Will generation blocked — validation failed:\n${preCheck.errors.map((e) => `  • ${e}`).join('\n')}`
+    )
+  }
+
+  // ── Complexity gate ──────────────────────────────────────────────────────
+  // Wills that require solicitor preparation (SOLICITOR_REQUIRED) must NOT be
+  // automatically assembled into an executable document. They are routed to a
+  // solicitor who will prepare the document manually. This check runs before
+  // any Supabase fetches so that the failure is fast and clear.
+  const complexityFlags = assessComplexityFlags(formData)
+  const severity = maxSeverity(complexityFlags)
+  if (severity === 'SOLICITOR_REQUIRED') {
+    const blockerCodes = complexityFlags
+      .filter((f) => f.severity === 'SOLICITOR_REQUIRED')
+      .map((f) => f.code)
+    throw new Error(
+      `Will assembly blocked — requires solicitor: ${blockerCodes.join(', ')}. ` +
+      `This Will has been submitted for solicitor review. A Heirloom solicitor will prepare your document.`
     )
   }
 

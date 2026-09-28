@@ -114,8 +114,8 @@ export function assessComplexityFlags(formData: WillFormData): ComplexityFlag[] 
     flags.push({
       code: 'LIFE_INTEREST',
       description:
-        'A life interest or right to reside has been included. These provisions can create disputes; review is recommended to confirm the drafting matches your intentions.',
-      severity: 'REVIEW_RECOMMENDED',
+        'A life interest or right to reside has been included. This provision requires bespoke solicitor drafting and cannot be auto-released.',
+      severity: 'SOLICITOR_REQUIRED',
       triggeredBy: 'lifeInterest.enabled=true',
     })
   }

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { supabase } from '@/src/lib/supabase'
 
 const TABS = [
@@ -18,31 +18,30 @@ const TABS = [
     ),
   },
   {
-    label: 'Will',
+    label: 'My Will',
     href: '/dashboard/will',
     activeFor: (p: string) => p.startsWith('/dashboard/will') || p.startsWith('/will/new'),
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        <path d="M12 6.5c-1.5-1.2-3.5-1.8-5.5-1.8-1 0-2 .15-3 .45v13.3c1-.3 2-.45 3-.45 2 0 4 .6 5.5 1.8m0-13.3c1.5-1.2 3.5-1.8 5.5-1.8 1 0 2 .15 3 .45v13.3c-1-.3-2-.45-3-.45-2 0-4 .6-5.5 1.8m0-13.3V19.8"/>
       </svg>
     ),
   },
   {
-    label: 'Vault',
-    href: '/dashboard/vault',
-    activeFor: (p: string) => p.startsWith('/dashboard/vault'),
+    label: 'Witnessing',
+    href: '/witnessing',
+    activeFor: (p: string) => p.startsWith('/witnessing'),
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <rect x="3" y="11" width="18" height="11" rx="2"/>
-        <path d="M7 11V7a5 5 0 0110 0v4"/>
-        <circle cx="12" cy="16" r="1" fill="currentColor" stroke="none"/>
+        <rect x="2" y="6" width="14" height="12" rx="2"/>
+        <path d="M16 10.5l5-3v9l-5-3"/>
       </svg>
     ),
   },
   {
     label: 'More',
     href: null,
-    activeFor: (p: string) => ['/dashboard/life-events', '/documents', '/witnessing', '/poa'].some(h => p.startsWith(h)),
+    activeFor: (_p: string) => false,
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         <circle cx="5" cy="12" r="1" fill="currentColor" stroke="none"/>
@@ -53,49 +52,7 @@ const TABS = [
   },
 ] as const
 
-const MORE_ITEMS = [
-  {
-    label: 'Life Changes',
-    href: '/dashboard/life-events',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M12 21s-7-4.35-7-10a4 4 0 017-2.65A4 4 0 0119 11c0 5.65-7 10-7 10z"/>
-        <path d="M12 8v6M9 11h6"/>
-      </svg>
-    ),
-  },
-  {
-    label: 'Documents',
-    href: '/documents',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M3 7h7l2 2h9v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>
-        <path d="M3 7V6a2 2 0 012-2h6l2 2"/>
-      </svg>
-    ),
-  },
-  {
-    label: 'Witnessing',
-    href: '/witnessing',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <rect x="2" y="6" width="14" height="12" rx="2"/>
-        <path d="M16 10.5l5-3v9l-5-3"/>
-      </svg>
-    ),
-  },
-  {
-    label: 'Power of Attorney',
-    href: '/poa',
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-        <circle cx="9" cy="7" r="4"/>
-        <path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>
-      </svg>
-    ),
-  },
-]
+const MORE_ITEMS: { label: string; href: string; icon: React.ReactNode }[] = []
 
 export default function BottomNav({ userName }: { userName: string }) {
   const pathname = usePathname()

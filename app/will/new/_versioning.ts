@@ -19,19 +19,19 @@ export async function recordVersion(
   changeSummary: string,
   formData: WillFormData,
   runReview: boolean
-): Promise<void> {
+): Promise<{ versionId: string | null }> {
   const { needsReview, reasons } = runReview
     ? await assessLegalReviewNeed(formData)
     : { needsReview: false, reasons: [] as string[] }
 
-  await supabase.from('will_versions').insert({
+  const { data } = await supabase.from('will_versions').insert({
     will_id: willId,
     changed_section: changedSection,
     change_summary: changeSummary,
     snapshot: formData,
     needs_review: needsReview,
     needs_review_reasons: reasons,
-  })
+  }).select('id').single()
 
   if (runReview) {
     await supabase
@@ -39,4 +39,6 @@ export async function recordVersion(
       .update({ needs_review: needsReview, needs_review_reasons: reasons })
       .eq('id', willId)
   }
+
+  return { versionId: (data?.id as string) ?? null }
 }

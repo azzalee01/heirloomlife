@@ -1,5 +1,5 @@
 import type { WillFormData } from './_types'
-import { resolveSubstituteBeneficiaryText, formatCurrency } from './_types'
+import { resolveSubstituteBeneficiaryText, formatCurrency, computeRequiresDelayedVestingTrust } from './_types'
 
 // ─── Approved clause text library ──────────────────────────────────────────
 // These texts mirror the approved Supabase clause_versions for NSW.
@@ -125,9 +125,10 @@ function COMMON_GIFT_01(days: string): string {
 //   "I direct my Executor to transfer custody..." — imperative/binding
 // These formulations are in direct conflict. Do NOT rewrite until a replacement
 // is approved by the solicitor review team.
-function PET_01(guardianName: string, petDescription: string, careFundAmount: string): string {
+function PET_01(guardianName: string, petName: string, petDescription: string, careFundAmount: string): string {
+  const petLabel = petName ? `${petDescription} (${petName})` : petDescription
   return (
-    `I request (but do not legally require) that ${guardianName} take ownership and ongoing care of my ${petDescription} following my death.\n\n` +
+    `I request (but do not legally require) that ${guardianName} take ownership and ongoing care of my ${petLabel} following my death.\n\n` +
     `I direct my Executor to transfer custody of my pet to ${guardianName} as soon as practicable after my death. If ${guardianName} is unwilling or unable to accept custody, my Executor shall make arrangements for my pet to be placed with a suitable person or reputable animal rescue organisation.\n\n` +
     `I give the sum of ${formatCurrency(careFundAmount)} to ${guardianName} to assist with the ongoing cost of caring for my pet. If ${guardianName} does not accept custody of my pet, this sum shall fall into residue.`
   )
@@ -236,9 +237,7 @@ export function renderWillText(formData: WillFormData): string {
   const testatorName = fullName(pd.firstName, pd.middleName, pd.lastName) || '[Your name]'
   const address = [pd.addressLine1, pd.suburb, pd.state, pd.postcode].filter(Boolean).join(', ')
   const survivorshipDays = formData.survivorshipDays || '30'
-  const hasDependent =
-    formData.childrenData.hasChildren === 'yes' &&
-    formData.childrenData.children.some((c) => c.isDependent)
+  const hasDependent = computeRequiresDelayedVestingTrust(formData)
   const hasTrust = hasDependent || formData.triageFlags.hasComplexTrusts
   const hasDigitalAssets = formData.assets.some((a) => a.assetType === 'digital_asset')
   const hasChildrenRef =
@@ -352,9 +351,10 @@ export function renderWillText(formData: WillFormData): string {
   if (formData.petCare.hasPets === 'yes') {
     const pc = formData.petCare
     const guardianName = pc.caregiverName || '[unnamed carer]'
-    const petDesc = pc.description || 'pet'
+    const petName = pc.petName || ''
+    const petDescription = pc.petDescription || 'pet'
     const fundAmount = pc.careFundAmount || '0'
-    sections.push(`${next()}. CARE OF PETS\n\n${PET_01(guardianName, petDesc, fundAmount)}`)
+    sections.push(`${next()}. CARE OF PETS\n\n${PET_01(guardianName, petName, petDescription, fundAmount)}`)
   }
 
   // ── 10. Digital Assets (DIGITAL-01) — conditional on asset type ───────────

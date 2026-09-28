@@ -6,19 +6,25 @@ import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from '@/app/will/new/_data'
 import { saveStep } from '@/app/will/new/_actions'
+import { assembleWillDocument } from '@/app/will/new/_assembly'
 import type { WillFormData } from '@/app/will/new/_types'
 import { hasUpdatesAccess } from '@/src/lib/entitlements'
 
 const client = new Anthropic()
 
 export type ChatMessage = { id: string; role: 'user' | 'assistant'; content: string }
-export type AmendmentProposal = { id: string; toolName: string; toolInput: Record<string, unknown>; summary: string }
+export type AmendmentProposal = {
+  id: string
+  toolName: string
+  toolInput: Record<string, unknown>
+  summary: string
+}
 
 const TOOLS: Anthropic.Tool[] = [
   {
     name: 'add_asset',
     description:
-      'Propose adding a new asset to the estate (real estate, bank account, superannuation, shares, life insurance, vehicle, or other). Call this when the user describes acquiring or wanting to include a new asset.',
+      'Propose adding a new asset to the estate (real estate, bank account, superannuation, shares, life insurance, vehicle, or other). Call this when the user describes acquiring or wanting to record a new asset.',
     input_schema: {
       type: 'object',
       properties: {
@@ -28,7 +34,7 @@ const TOOLS: Anthropic.Tool[] = [
         },
         ownershipType: { type: 'string', enum: ['sole', 'joint_tenants', 'tenants_in_common'] },
         propertyAddress: { type: 'string', description: 'Full address, for real_estate' },
-        estimatedValue: { type: 'string', description: 'Estimated value in AUD, for real_estate' },
+        estimatedValue: { type: 'string', description: 'Estimated value in AUD' },
         bankName: { type: 'string' },
         bsb: { type: 'string' },
         accountNumber: { type: 'string' },
@@ -39,12 +45,12 @@ const TOOLS: Anthropic.Tool[] = [
         insurerName: { type: 'string' },
         policyNumber: { type: 'string' },
         coverAmount: { type: 'string' },
-        make: { type: 'string', description: 'For vehicle' },
-        model: { type: 'string', description: 'For vehicle' },
-        year: { type: 'string', description: 'For vehicle' },
-        rego: { type: 'string', description: 'For vehicle' },
+        make: { type: 'string' },
+        model: { type: 'string' },
+        year: { type: 'string' },
+        rego: { type: 'string' },
         description: { type: 'string', description: 'For other asset type' },
-        otherValue: { type: 'string', description: 'Estimated value, for other asset type' },
+        otherValue: { type: 'string' },
       },
       required: ['assetType'],
     },
@@ -52,7 +58,7 @@ const TOOLS: Anthropic.Tool[] = [
   {
     name: 'add_beneficiary',
     description:
-      'Propose adding a person or charity as a beneficiary who will inherit a share of the estate. Only propose this when the user has stated (or you have confirmed) a percentage share.',
+      'Propose adding a person or charity as a new beneficiary to inherit a share of the residuary estate. Only call this when the user has stated (or confirmed) a percentage share.',
     input_schema: {
       type: 'object',
       properties: {
@@ -60,7 +66,7 @@ const TOOLS: Anthropic.Tool[] = [
         name: { type: 'string', description: "Person's name, or organisation/charity name" },
         relationship: { type: 'string', description: 'Relationship to the testator, for individuals' },
         abn: { type: 'string', description: 'ABN, for organisations' },
-        percentage: { type: 'string', description: 'Share of the estate as a percentage number, e.g. "25"' },
+        percentage: { type: 'string', description: 'Share of the estate as a percentage, e.g. "25"' },
       },
       required: ['kind', 'name', 'percentage'],
     },
@@ -68,7 +74,7 @@ const TOOLS: Anthropic.Tool[] = [
   {
     name: 'add_specific_gift',
     description:
-      'Propose leaving a specific item or a specific amount of cash to a named person, separate from the general estate split.',
+      'Propose adding a specific item or a cash gift to a named person, separate from the residuary estate split.',
     input_schema: {
       type: 'object',
       properties: {
@@ -82,12 +88,17 @@ const TOOLS: Anthropic.Tool[] = [
     },
   },
   {
-    name: 'add_executor',
-    description: 'Propose adding a primary or alternate executor to manage the estate.',
+    name: 'replace_executor',
+    description:
+      'Propose replacing the current primary executor or backup executor with a new person. Call this when the user wants to change who their executor or backup executor is.',
     input_schema: {
       type: 'object',
       properties: {
-        role: { type: 'string', enum: ['primary', 'alternate'] },
+        role: { type: 'string', enum: ['primary', 'backup'], description: 'Which executor to replace' },
+        currentName: {
+          type: 'string',
+          description: 'Full name of the person being replaced, for the confirmation message',
+        },
         firstName: { type: 'string' },
         lastName: { type: 'string' },
         relationship: { type: 'string' },
@@ -95,57 +106,192 @@ const TOOLS: Anthropic.Tool[] = [
         email: { type: 'string' },
         address: { type: 'string' },
       },
-      required: ['role', 'firstName'],
+      required: ['role', 'firstName', 'lastName'],
+    },
+  },
+  {
+    name: 'update_beneficiary_share',
+    description:
+      "Propose changing an existing beneficiary's percentage share of the residuary estate.",
+    input_schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', description: 'Name of the existing beneficiary to update' },
+        newPercentage: { type: 'string', description: 'New share percentage, e.g. "30"' },
+      },
+      required: ['name', 'newPercentage'],
+    },
+  },
+  {
+    name: 'replace_beneficiary',
+    description:
+      'Propose replacing a named beneficiary in the residuary estate with a different person, keeping the same or a new percentage.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        currentName: { type: 'string', description: 'Name of the beneficiary being replaced' },
+        newName: { type: 'string', description: 'Name of the replacement beneficiary' },
+        relationship: { type: 'string', description: "New person's relationship to the testator" },
+        newPercentage: {
+          type: 'string',
+          description: 'New percentage — omit to keep the current share unchanged',
+        },
+      },
+      required: ['currentName', 'newName'],
+    },
+  },
+  {
+    name: 'refer_to_solicitor',
+    description:
+      'Call this ONLY when the user asks a question that requires personalised legal advice about their specific circumstances — e.g. whether to include or exclude someone, whether something is legally valid for them, tax implications, preventing a challenge, what they "should" do with their estate. Do NOT call this for general terminology questions.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        topic: { type: 'string', description: 'Brief description of the legal topic' },
+      },
+      required: ['topic'],
     },
   },
 ]
 
-const SYSTEM_PROMPT = `You are the Estate Assistant for Heirloom, an Australian online will-writing platform. You help users keep an already-drafted will up to date by chatting about life changes, and you answer questions about what their will currently says.
+const SYSTEM_PROMPT = `You are the Estate Assistant for Heirloom, an Australian online Will-writing platform. You help customers understand what their Will currently says, explain Will concepts in plain language, and propose changes when life changes.
 
-Rules:
-- You are not a lawyer and must not give legal advice (e.g. whether something is enforceable, what they "should" do with their estate, tax consequences). If asked, say you can't provide legal advice and suggest the solicitor review included with their plan.
-- You CAN and SHOULD answer factual questions about the will's current contents using the summary provided below.
-- To change the will, you must call one of the provided tools. Never claim you've updated the will in text  -  only a confirmed tool call actually changes anything. After calling a tool, briefly tell the user what you're proposing in one sentence and that they need to confirm it.
-- If a life update is ambiguous (e.g. missing a percentage share, or unclear which asset type), ask a clarifying question instead of guessing.
+## What you can do
+
+1. **Answer factual questions** about the Will using the summary below as your only source. Be direct. Do not make up or guess anything not in the summary. If something isn't recorded there, say so clearly.
+
+2. **Explain Will terminology** — short factual explanations for general concepts like executor, beneficiary, residuary estate, guardian, survivorship period, etc. Keep explanations general, not personalised to this specific Will.
+
+3. **Propose changes** — use the provided tools to propose changes the user has decided on. Never claim a change has been made without using a tool. After calling a tool, one sentence describing what you're proposing and that it needs confirmation. Ask one clarifying question if required information is missing.
+
+4. **Refer to a solicitor** — call refer_to_solicitor when the question requires personalised legal judgment about this person's circumstances.
+
+## Rules
+
+- Answer questions from the Will summary only.
+- Propose one change at a time unless the user clearly requested multiple.
+- Never give personalised legal advice: whether to include or exclude someone, enforceability, tax consequences, how to prevent a challenge, whether an arrangement is legally valid for this person, or what someone "should" do. Call refer_to_solicitor for these.
+- Do NOT add disclaimers to every response. Only call refer_to_solicitor when genuinely required.
 - Keep responses short and conversational.`
 
 function summarizeWill(formData: WillFormData): string {
   const parts: string[] = []
   const pd = formData.personalDetails
-  if (pd.firstName) parts.push(`Testator: ${pd.firstName} ${pd.lastName}, marital status: ${pd.maritalStatus || 'not set'}.`)
-  if (formData.assets.length > 0) {
+
+  if (pd.firstName) {
     parts.push(
-      'Assets: ' +
-        formData.assets.map((a) => `${a.assetType || 'unknown'}${a.description ? ` (${a.description})` : ''}`).join(', ')
+      `Testator: ${pd.firstName}${pd.middleName ? ' ' + pd.middleName : ''} ${pd.lastName}, DOB ${pd.dateOfBirth || 'not provided'}, marital status: ${pd.maritalStatus || 'not specified'}.`
     )
-  } else {
-    parts.push('Assets: none added yet.')
   }
-  if (formData.beneficiariesData.people.length > 0 || formData.beneficiariesData.charities.length > 0) {
-    const people = formData.beneficiariesData.people.map((p) => `${p.name} (${p.percentage}%)`)
-    const charities = formData.beneficiariesData.charities.map((c) => `${c.name} (${c.percentage}%)`)
-    parts.push('Beneficiaries: ' + [...people, ...charities].join(', '))
+
+  // Executors
+  const ep = formData.executorsData.primary
+  if (ep.firstName) {
+    parts.push(`Primary executor: ${ep.firstName} ${ep.lastName} (${ep.relationship || 'relationship not specified'}).`)
+    if (formData.executorsData.hasAlternate && formData.executorsData.alternate.firstName) {
+      const ea = formData.executorsData.alternate
+      parts.push(
+        `Backup/alternate executor: ${ea.firstName} ${ea.lastName} (${ea.relationship || 'relationship not specified'}).`
+      )
+    } else {
+      parts.push('No backup executor appointed.')
+    }
   } else {
-    parts.push('Beneficiaries: none added yet.')
+    parts.push('Executors: none appointed yet.')
   }
-  if (formData.executorsData.primary.firstName) {
+
+  // Children and guardian
+  if (formData.childrenData.hasChildren === 'yes' && formData.childrenData.children.length > 0) {
     parts.push(
-      `Primary executor: ${formData.executorsData.primary.firstName} ${formData.executorsData.primary.lastName}.` +
-        (formData.executorsData.hasAlternate ? ` Alternate: ${formData.executorsData.alternate.firstName} ${formData.executorsData.alternate.lastName}.` : '')
+      'Children: ' +
+        formData.childrenData.children
+          .map((c) => `${c.name}${c.isDependent ? ' (minor/dependent)' : ''}`)
+          .join(', ') +
+        '.'
     )
+    const hasMinors = formData.childrenData.children.some((c) => c.isDependent)
+    if (hasMinors) {
+      const g = formData.childrenData.guardian
+      if (g.firstName) {
+        parts.push(`Guardian for minor children: ${g.firstName} ${g.lastName} (${g.relationship}).`)
+      } else {
+        parts.push('No guardian appointed for minor children.')
+      }
+      parts.push(
+        `Minor beneficiaries' share held on trust until age: ${formData.childrenData.ageOfVesting || '18'}.`
+      )
+    }
   } else {
-    parts.push('Executors: none added yet.')
+    parts.push('No children recorded.')
   }
+
+  // Residuary beneficiaries
+  if (
+    formData.beneficiariesData.people.length > 0 ||
+    formData.beneficiariesData.charities.length > 0
+  ) {
+    const people = formData.beneficiariesData.people.map(
+      (p) =>
+        `${p.name} (${p.relationship || 'relationship not specified'}) — ${p.percentage}%${p.substituteBeneficiary ? `, substitute: ${p.substituteBeneficiary}` : ''}`
+    )
+    const charities = formData.beneficiariesData.charities.map(
+      (c) => `${c.name}${c.abn ? ` (ABN ${c.abn})` : ''} — ${c.percentage}%`
+    )
+    parts.push('Residuary beneficiaries: ' + [...people, ...charities].join('; ') + '.')
+  } else {
+    parts.push('Residuary beneficiaries: none recorded yet.')
+  }
+
+  // Specific gifts
   if (formData.specificGifts.length > 0) {
     parts.push(
       'Specific gifts: ' +
-        formData.specificGifts.map((g) => `${g.type === 'cash' ? `$${g.amount}` : g.description} to ${g.recipientName}`).join(', ')
+        formData.specificGifts
+          .map(
+            (g) =>
+              `${g.type === 'cash' ? `$${g.amount} cash` : g.description} to ${g.recipientName}${g.recipientRelationship ? ` (${g.recipientRelationship})` : ''}`
+          )
+          .join('; ') +
+        '.'
+    )
+  } else {
+    parts.push('Specific gifts: none.')
+  }
+
+  // Assets (brief)
+  if (formData.assets.length > 0) {
+    parts.push(
+      'Estate assets: ' +
+        formData.assets
+          .map(
+            (a) =>
+              `${a.assetType}${a.propertyAddress ? ` at ${a.propertyAddress}` : ''}${a.description ? ` (${a.description})` : ''}`
+          )
+          .join(', ') +
+        '.'
+    )
+  } else {
+    parts.push('Assets: none recorded yet.')
+  }
+
+  // Pet care
+  if (formData.petCare.hasPets === 'yes') {
+    const pc = formData.petCare
+    parts.push(
+      `Pet care: ${pc.petDescription || 'pet'} named ${pc.petName}, carer: ${pc.caregiverName}${pc.careFundAmount ? `, fund: $${pc.careFundAmount}` : ''}.`
     )
   }
+
   return parts.join('\n')
 }
 
-async function getWillId(): Promise<{ supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>; userId: string; willId: string; hasDownloaded: boolean }> {
+async function getWillContext(): Promise<{
+  supabase: Awaited<ReturnType<typeof createSupabaseServerClient>>
+  userId: string
+  willId: string
+  hasDownloaded: boolean
+  willStatus: string
+}> {
   const supabase = await createSupabaseServerClient()
   const {
     data: { user },
@@ -154,14 +300,22 @@ async function getWillId(): Promise<{ supabase: Awaited<ReturnType<typeof create
 
   const { data: willRows } = await supabase
     .from('wills')
-    .select('id, has_downloaded')
+    .select('id, has_downloaded, status')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
-  const will = willRows?.[0] as { id: string; has_downloaded: boolean } | undefined
-  if (!will) throw new Error('No will found  -  start a will first')
+  const will = willRows?.[0] as
+    | { id: string; has_downloaded: boolean; status: string }
+    | undefined
+  if (!will) throw new Error('No will found — start a will first')
 
-  return { supabase, userId: user.id, willId: will.id, hasDownloaded: will.has_downloaded ?? false }
+  return {
+    supabase,
+    userId: user.id,
+    willId: will.id,
+    hasDownloaded: will.has_downloaded ?? false,
+    willStatus: will.status ?? 'draft',
+  }
 }
 
 async function requireAmendmentAccess(userId: string, hasDownloaded: boolean): Promise<void> {
@@ -177,7 +331,7 @@ async function requireAmendmentAccess(userId: string, hasDownloaded: boolean): P
 }
 
 export async function loadChatHistory(): Promise<ChatMessage[]> {
-  const { supabase, willId } = await getWillId()
+  const { supabase, willId } = await getWillContext()
   const { data } = await supabase
     .from('chat_messages')
     .select('id, role, content')
@@ -190,16 +344,16 @@ export async function sendChatMessage(
   history: ChatMessage[],
   userText: string
 ): Promise<{ reply: string; proposals: AmendmentProposal[] }> {
-  const { supabase, userId, willId, hasDownloaded } = await getWillId()
+  const { supabase, userId, willId, hasDownloaded } = await getWillContext()
   await requireAmendmentAccess(userId, hasDownloaded)
   const { formData } = await loadWillFormData(supabase, userId, willId)
 
   await supabase.from('chat_messages').insert({ will_id: willId, role: 'user', content: userText })
 
   const response = await client.messages.create({
-    model: 'claude-sonnet-5',
+    model: 'claude-sonnet-4-6',
     max_tokens: 1024,
-    system: `${SYSTEM_PROMPT}\n\nCurrent will state:\n${summarizeWill(formData)}`,
+    system: `${SYSTEM_PROMPT}\n\nCurrent Will summary:\n${summarizeWill(formData)}`,
     tools: TOOLS,
     messages: [
       ...history.map((m) => ({ role: m.role, content: m.content })),
@@ -223,7 +377,9 @@ export async function sendChatMessage(
   }
 
   if (reply.trim()) {
-    await supabase.from('chat_messages').insert({ will_id: willId, role: 'assistant', content: reply.trim() })
+    await supabase
+      .from('chat_messages')
+      .insert({ will_id: willId, role: 'assistant', content: reply.trim() })
   }
 
   return { reply: reply.trim(), proposals }
@@ -232,13 +388,22 @@ export async function sendChatMessage(
 function describeProposal(toolName: string, input: Record<string, unknown>): string {
   switch (toolName) {
     case 'add_asset':
-      return `Add asset: ${input.assetType}${input.description ? `  -  ${input.description}` : ''}`
+      return `Add asset: ${input.assetType}${input.description ? ` — ${input.description}` : ''}`
     case 'add_beneficiary':
       return `Add beneficiary: ${input.name} (${input.percentage}%)`
     case 'add_specific_gift':
-      return `Add specific gift: ${input.type === 'cash' ? `$${input.amount}` : input.description} to ${input.recipientName}`
-    case 'add_executor':
-      return `Add ${input.role} executor: ${input.firstName} ${input.lastName ?? ''}`.trim()
+      return `Add gift: ${input.type === 'cash' ? `$${input.amount}` : input.description} to ${input.recipientName}`
+    case 'replace_executor': {
+      const role = input.role === 'backup' ? 'backup' : 'primary'
+      const from = input.currentName ? ` replacing ${input.currentName}` : ''
+      return `Replace ${role} executor${from} with ${input.firstName} ${input.lastName}`
+    }
+    case 'update_beneficiary_share':
+      return `Update ${input.name}'s share to ${input.newPercentage}%`
+    case 'replace_beneficiary':
+      return `Replace ${input.currentName} with ${input.newName}${input.newPercentage ? ` (${input.newPercentage}%)` : ''} as beneficiary`
+    case 'refer_to_solicitor':
+      return `Legal question: ${input.topic}`
     default:
       return `Proposed change: ${toolName}`
   }
@@ -246,11 +411,18 @@ function describeProposal(toolName: string, input: Record<string, unknown>): str
 
 const str = (v: unknown): string => (typeof v === 'string' ? v : '')
 
-export async function applyAmendment(proposal: AmendmentProposal): Promise<void> {
-  const { supabase, userId, willId, hasDownloaded } = await getWillId()
+export async function applyAmendment(
+  proposal: AmendmentProposal
+): Promise<{ requiresReview: boolean }> {
+  // Solicitor referral is informational — no DB change needed
+  if (proposal.toolName === 'refer_to_solicitor') return { requiresReview: false }
+
+  const { supabase, userId, willId, hasDownloaded, willStatus } = await getWillContext()
   await requireAmendmentAccess(userId, hasDownloaded)
   const { formData } = await loadWillFormData(supabase, userId, willId)
   const input = proposal.toolInput
+
+  let amendmentVersionId: string | null = null
 
   switch (proposal.toolName) {
     case 'add_asset': {
@@ -285,18 +457,37 @@ export async function applyAmendment(proposal: AmendmentProposal): Promise<void>
           overseasCountry: '',
         },
       ]
-      await saveStep(willId, 'assets', { ...formData, assets }, proposal.summary)
+      ;({ versionId: amendmentVersionId } = await saveStep(willId, 'assets', { ...formData, assets }, proposal.summary))
       break
     }
+
     case 'add_beneficiary': {
-      const entry = { id: randomUUID(), name: str(input.name), percentage: str(input.percentage), substituteBeneficiary: '' }
+      const entry = {
+        id: randomUUID(),
+        name: str(input.name),
+        percentage: str(input.percentage),
+        substituteBeneficiary: '',
+      }
       const beneficiariesData =
         input.kind === 'organisation'
-          ? { ...formData.beneficiariesData, charities: [...formData.beneficiariesData.charities, { ...entry, abn: str(input.abn) }] }
-          : { ...formData.beneficiariesData, people: [...formData.beneficiariesData.people, { ...entry, relationship: str(input.relationship) }] }
-      await saveStep(willId, 'beneficiaries', { ...formData, beneficiariesData }, proposal.summary)
+          ? {
+              ...formData.beneficiariesData,
+              charities: [
+                ...formData.beneficiariesData.charities,
+                { ...entry, abn: str(input.abn) },
+              ],
+            }
+          : {
+              ...formData.beneficiariesData,
+              people: [
+                ...formData.beneficiariesData.people,
+                { ...entry, relationship: str(input.relationship) },
+              ],
+            }
+      ;({ versionId: amendmentVersionId } = await saveStep(willId, 'beneficiaries', { ...formData, beneficiariesData }, proposal.summary))
       break
     }
+
     case 'add_specific_gift': {
       const specificGifts = [
         ...formData.specificGifts,
@@ -310,10 +501,11 @@ export async function applyAmendment(proposal: AmendmentProposal): Promise<void>
           substituteBeneficiary: '',
         },
       ]
-      await saveStep(willId, 'gifts', { ...formData, specificGifts }, proposal.summary)
+      ;({ versionId: amendmentVersionId } = await saveStep(willId, 'gifts', { ...formData, specificGifts }, proposal.summary))
       break
     }
-    case 'add_executor': {
+
+    case 'replace_executor': {
       const person = {
         firstName: str(input.firstName),
         lastName: str(input.lastName),
@@ -322,19 +514,87 @@ export async function applyAmendment(proposal: AmendmentProposal): Promise<void>
         email: str(input.email),
         address: str(input.address),
       }
-      const wantsPrimary = input.role === 'primary'
-      let executorsData = formData.executorsData
-      if (wantsPrimary && !formData.executorsData.primary.firstName) {
-        executorsData = { ...formData.executorsData, primary: person }
-      } else if (!formData.executorsData.hasAlternate) {
-        executorsData = { ...formData.executorsData, hasAlternate: true, alternate: person }
-      } else {
-        throw new Error('Both a primary and alternate executor are already set. Remove one first.')
-      }
-      await saveStep(willId, 'executors', { ...formData, executorsData }, proposal.summary)
+      const executorsData =
+        input.role === 'backup'
+          ? { ...formData.executorsData, hasAlternate: true, alternate: person }
+          : { ...formData.executorsData, primary: person }
+      ;({ versionId: amendmentVersionId } = await saveStep(willId, 'executors', { ...formData, executorsData }, proposal.summary))
       break
     }
+
+    case 'update_beneficiary_share': {
+      const targetName = str(input.name).toLowerCase()
+      const newPct = str(input.newPercentage)
+      const people = formData.beneficiariesData.people.map((p) =>
+        p.name.toLowerCase() === targetName ? { ...p, percentage: newPct } : p
+      )
+      const charities = formData.beneficiariesData.charities.map((c) =>
+        c.name.toLowerCase() === targetName ? { ...c, percentage: newPct } : c
+      )
+      ;({ versionId: amendmentVersionId } = await saveStep(
+        willId,
+        'beneficiaries',
+        { ...formData, beneficiariesData: { ...formData.beneficiariesData, people, charities } },
+        proposal.summary
+      ))
+      break
+    }
+
+    case 'replace_beneficiary': {
+      const currentName = str(input.currentName).toLowerCase()
+      const newName = str(input.newName)
+      const people = formData.beneficiariesData.people.map((p) =>
+        p.name.toLowerCase() === currentName
+          ? {
+              ...p,
+              name: newName,
+              relationship: str(input.relationship) || p.relationship,
+              percentage: str(input.newPercentage) || p.percentage,
+            }
+          : p
+      )
+      ;({ versionId: amendmentVersionId } = await saveStep(
+        willId,
+        'beneficiaries',
+        { ...formData, beneficiariesData: { ...formData.beneficiariesData, people } },
+        proposal.summary
+      ))
+      break
+    }
+
     default:
       throw new Error(`Unknown amendment type: ${proposal.toolName}`)
   }
+
+  // For Wills already submitted (non-draft), regenerate the document.
+  // Draft Wills aren't released yet — the next completeWill() call handles it.
+  const requiresReview = willStatus !== 'draft'
+  if (requiresReview) {
+    try {
+      const { formData: updated } = await loadWillFormData(supabase, userId, willId)
+      const documentText = await assembleWillDocument(updated)
+
+      if (willStatus === 'approved') {
+        // Preserve the approved document so users can continue downloading it.
+        // Store the new text in the exact version row created by saveStep above;
+        // staff promotes it to wills.document_text when the amendment is approved.
+        if (amendmentVersionId) {
+          await supabaseAdmin
+            .from('will_versions')
+            .update({ document_text: documentText, status: 'pending_review' })
+            .eq('id', amendmentVersionId)
+        }
+      } else {
+        // pending_review: still being reviewed, no approved version to preserve.
+        await supabaseAdmin
+          .from('wills')
+          .update({ document_text: documentText })
+          .eq('id', willId)
+      }
+    } catch (err) {
+      console.error('[estate-assistant] Will regeneration failed:', err)
+    }
+  }
+
+  return { requiresReview }
 }

@@ -126,7 +126,7 @@ return s
 
   if (formData.petCare.hasPets === 'yes') {
     const pc = formData.petCare
-    lines.push(`Pet care: ${pc.description} to be cared for by ${pc.caregiverName} (${pc.caregiverRelationship})${pc.careFundAmount ? `, with $${pc.careFundAmount} set aside for care` : ''}.`)
+    lines.push(`Pet care: ${pc.petDescription} named ${pc.petName} to be cared for by ${pc.caregiverName} (${pc.caregiverRelationship})${pc.careFundAmount ? `, with $${pc.careFundAmount} set aside for care` : ''}.`)
   }
 
   // Funeral wishes excluded  -  non-testamentary, stored in personal_wishes separately.

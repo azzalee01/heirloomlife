@@ -28,7 +28,7 @@ const blankGuardian = { firstName: '', lastName: '', relationship: '', phone: ''
 const blankSpouse   = { firstName: '', middleName: '', lastName: '', dateOfBirth: '', addressLine1: '', suburb: '', state: '', postcode: '', phoneMobile: '', email: '', occupation: '', previousWill: '' as const, previousWillLocation: '' }
 const blankWishes   = { funeralType: '' as const, funeralRestingPlace: '', funeralAdditionalWishes: '', hasFuneralPlan: false, funeralPlanDetails: '' }
 const blankLife     = { enabled: false, propertyDescription: '', lifeTenantName: '', lifeTenantRelationship: '', condition: '' as const, remainderBeneficiaryName: '', remainderBeneficiaryRelationship: '' }
-const blankPet      = { hasPets: 'no' as const, description: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' }
+const blankPet      = { hasPets: 'no' as const, petName: '', petDescription: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' }
 const blankTriage   = { hasBusinessInterest: false, hasBlendedFamily: false, hasExclusionIntent: false, hasVulnerableBeneficiary: false, hasBeneficiaryFinancialChallenges: false, hasComplexTrusts: false }
 
 // ── Test profiles ─────────────────────────────────────────────────────────────
@@ -163,12 +163,12 @@ const profiles: { label: string; name: string; formData: WillFormData }[] = [
       triageFlags: blankTriage,
       assetsOutsideAustralia: false, otherJurisdictions: '',
       importantDocumentsLocation: '', survivorshipDays: '30',
-      petCare: { hasPets: 'yes', description: 'Maisie, a golden retriever', caregiverName: 'Susan Nguyen', caregiverRelationship: 'Daughter', careFundAmount: '3000' },
+      petCare: { hasPets: 'yes', petName: 'Maisie', petDescription: 'golden retriever', caregiverName: 'Susan Nguyen', caregiverRelationship: 'Daughter', careFundAmount: '3000' },
       lifeInterest: blankLife, personalWishes: blankWishes,
     },
   },
 
-  // 4. Married, two dependent children, super
+  // 4. ADVERSARIAL — Married, overseas assets + business interest → SOLICITOR_REQUIRED gate
   {
     label: '4-daniel-wei-chen',
     name: 'Daniel Wei Chen',
@@ -210,14 +210,14 @@ const profiles: { label: string; name: string; formData: WillFormData }[] = [
       specificGifts: [
         { id: '1', type: 'item', description: 'my jade collection and family heirlooms', amount: '', recipientName: 'Mei Chen', recipientRelationship: 'Spouse', substituteBeneficiary: '' },
       ],
-      triageFlags: blankTriage,
-      assetsOutsideAustralia: false, otherJurisdictions: '',
+      triageFlags: { ...blankTriage, hasBusinessInterest: true },
+      assetsOutsideAustralia: true, otherJurisdictions: 'China',
       importantDocumentsLocation: '', survivorshipDays: '30',
       petCare: blankPet, lifeInterest: blankLife, personalWishes: blankWishes,
     },
   },
 
-  // 5. Married, adult children, super, multiple specific gifts
+  // 5. ADVERSARIAL — Married, adult children, life interest → SOLICITOR_REQUIRED gate
   {
     label: '5-robert-george-hartley',
     name: 'Robert George Hartley',
@@ -262,7 +262,17 @@ const profiles: { label: string; name: string; formData: WillFormData }[] = [
       triageFlags: blankTriage,
       assetsOutsideAustralia: false, otherJurisdictions: '',
       importantDocumentsLocation: '', survivorshipDays: '30',
-      petCare: blankPet, lifeInterest: blankLife, personalWishes: blankWishes,
+      petCare: blankPet,
+      lifeInterest: {
+        enabled: true,
+        propertyDescription: '3 Fernleigh Road, Pymble',
+        lifeTenantName: 'Beatrice Hartley',
+        lifeTenantRelationship: 'Spouse',
+        condition: 'death',
+        remainderBeneficiaryName: 'Charles Hartley',
+        remainderBeneficiaryRelationship: 'Son',
+      },
+      personalWishes: blankWishes,
     },
   },
 
@@ -284,7 +294,19 @@ async function main() {
   for (const profile of toRun) {
     process.stdout.write(`\nRendering: ${profile.name}...`)
 
-    const documentText = await assembleWillDocument(profile.formData)
+    let documentText: string
+    try {
+      documentText = await assembleWillDocument(profile.formData)
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err)
+      if (msg.includes('requires solicitor')) {
+        console.log(`\n  ✓ CORRECTLY BLOCKED — complexity gate fired (${profile.label})`)
+        console.log(`    ${msg.split('.')[0]}.`)
+        continue
+      }
+      throw err
+    }
+
     const wordCount = documentText.split(/\s+/).length
     console.log(` ${wordCount} words`)
 

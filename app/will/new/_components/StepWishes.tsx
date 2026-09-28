@@ -111,9 +111,13 @@ export default function StepWishes({ formData, hasDependentChildren, onChange }:
         </div>
         {pc.hasPets === 'yes' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-            <div className="sm:col-span-2">
-              <label className={lbl}>Pet(s)</label>
-              <input className={inp} placeholder="e.g. My dog Max and cat Willow" value={pc.description} onChange={(e) => setPetCare({ description: e.target.value })} />
+            <div>
+              <label className={lbl}>Pet name</label>
+              <input className={inp} placeholder="e.g. Maisie" value={pc.petName} onChange={(e) => setPetCare({ petName: e.target.value })} />
+            </div>
+            <div>
+              <label className={lbl}>Species / type</label>
+              <input className={inp} placeholder="e.g. golden retriever" value={pc.petDescription} onChange={(e) => setPetCare({ petDescription: e.target.value })} />
             </div>
             <div>
               <label className={lbl}>Caregiver name</label>

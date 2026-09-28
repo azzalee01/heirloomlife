@@ -155,7 +155,7 @@ export const EMPTY_WILL_FORM_DATA: WillFormData = {
   otherJurisdictions: '',
   importantDocumentsLocation: '',
   survivorshipDays: '30',
-  petCare: { hasPets: '', description: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
+  petCare: { hasPets: '', petName: '', petDescription: '', caregiverName: '', caregiverRelationship: '', careFundAmount: '' },
   lifeInterest: {
     enabled: false, propertyDescription: '', lifeTenantName: '', lifeTenantRelationship: '',
     condition: '', remainderBeneficiaryName: '', remainderBeneficiaryRelationship: '',
@@ -247,12 +247,20 @@ function mapAsset(a: AssetRow): Asset {
 
 function mapPetCare(v: WillRow['pet_care']): PetCareData {
   if (!v) return { ...EMPTY_WILL_FORM_DATA.petCare }
+  // Legacy records may have `description` instead of `petName`/`petDescription`.
+  // Preserve the old value in petDescription so it renders rather than being silently lost.
+  // petName is left empty — the testator will need to re-enter it if they return to edit.
+  const rec = v as Record<string, unknown>
+  const hasNewFields = typeof rec.petDescription === 'string' || typeof rec.petName === 'string'
   return {
-    hasPets: (v.hasPets as PetCareData['hasPets']) ?? '',
-    description: str(v.description as string | undefined),
-    caregiverName: str(v.caregiverName as string | undefined),
-    caregiverRelationship: str(v.caregiverRelationship as string | undefined),
-    careFundAmount: str(v.careFundAmount as string | undefined),
+    hasPets: (rec.hasPets as PetCareData['hasPets']) ?? '',
+    petName: hasNewFields ? str(rec.petName as string | undefined) : '',
+    petDescription: hasNewFields
+      ? str(rec.petDescription as string | undefined)
+      : str(rec.description as string | undefined),
+    caregiverName: str(rec.caregiverName as string | undefined),
+    caregiverRelationship: str(rec.caregiverRelationship as string | undefined),
+    careFundAmount: str(rec.careFundAmount as string | undefined),
   }
 }
 

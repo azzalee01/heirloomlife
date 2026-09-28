@@ -129,7 +129,7 @@ export async function saveStep(
   step: StepId,
   formData: WillFormData,
   changeSummary?: string
-): Promise<string> {
+): Promise<{ id: string; versionId: string | null }> {
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -138,9 +138,9 @@ export async function saveStep(
     // Eligibility and review steps don't persist data themselves.
     if (step === 'eligibility' || step === 'review') {
       const sessionId = await getAnonSessionId()
-      return sessionId ?? await saveToAnonSession(formData)
+      return { id: sessionId ?? await saveToAnonSession(formData), versionId: null }
     }
-    return await saveToAnonSession(formData)
+    return { id: await saveToAnonSession(formData), versionId: null }
   }
 
   // Ensure a profiles row exists (fallback for users predating the trigger)
@@ -388,16 +388,18 @@ export async function saveStep(
 
   // Snapshot the resulting state into version history (skip 'review', which
   // never mutates anything). A failure here shouldn't block the save itself.
+  let versionId: string | null = null
   if (step !== 'review') {
     try {
       const { formData: latest } = await loadWillFormData(supabase, user.id, id)
-      await recordVersion(supabase, id, step, changeSummary ?? `Updated ${STEP_LABELS[step]}`, latest, isAmendmentToLiveWill)
+      const result = await recordVersion(supabase, id!, step, changeSummary ?? `Updated ${STEP_LABELS[step]}`, latest, isAmendmentToLiveWill)
+      versionId = result.versionId
     } catch (versionError) {
       console.error('Version recording failed for', id, versionError)
     }
   }
 
-  return id!
+  return { id: id!, versionId }
 }
 
 // Save Personal Wishes (non-testamentary, not part of the signed Will).
