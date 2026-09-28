@@ -207,8 +207,13 @@ export default function PlatformPreview() {
 
   useEffect(() => {
     if (phase === 'typing' || phase === 'thinking' || phase === 'responded' || phase === 'applied') {
-      setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100)
-      setTimeout(() => mobileChatEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 100)
+      setTimeout(() => {
+        const el = chatEndRef.current
+        if (el?.parentElement) el.parentElement.scrollTo({ top: el.parentElement.scrollHeight, behavior: 'smooth' })
+      }, 100)
+      setTimeout(() => {
+        if (mobileScrollRef.current) mobileScrollRef.current.scrollTo({ top: mobileScrollRef.current.scrollHeight, behavior: 'smooth' })
+      }, 100)
     }
     if (phase === 'idle') {
       mobileScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
@@ -262,8 +267,13 @@ export default function PlatformPreview() {
     setTimeout(() => {
       setChatMsgs(prev => [...prev, { role: 'assistant', text: demoReply(text) }])
       setChatLoading(false)
-      setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }), 50)
-      setTimeout(() => mobileChatEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50)
+      setTimeout(() => {
+        const el = chatEndRef.current
+        if (el?.parentElement) el.parentElement.scrollTo({ top: el.parentElement.scrollHeight, behavior: 'smooth' })
+      }, 50)
+      setTimeout(() => {
+        if (mobileScrollRef.current) mobileScrollRef.current.scrollTo({ top: mobileScrollRef.current.scrollHeight, behavior: 'smooth' })
+      }, 50)
     }, 900)
   }
 
