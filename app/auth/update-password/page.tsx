@@ -5,19 +5,28 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/src/lib/supabase'
 
-export default function LoginPage() {
+export default function UpdatePasswordPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirm, setConfirm] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-    setLoading(true)
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (password !== confirm) {
+      setError('Passwords do not match.')
+      return
+    }
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters.')
+      return
+    }
+
+    setLoading(true)
+    const { error } = await supabase.auth.updateUser({ password })
 
     if (error) {
       setError(error.message)
@@ -25,7 +34,6 @@ export default function LoginPage() {
       return
     }
 
-    sessionStorage.setItem('show_intro', 'true')
     router.push('/dashboard')
   }
 
@@ -39,50 +47,45 @@ export default function LoginPage() {
           <Link
             href="/"
             className="inline-flex items-center gap-1.5 text-2xl"
-            style={{ color: 'var(--teal)', fontFamily: "var(--font-display)", fontStyle: 'italic', textDecoration: 'none' }}
+            style={{ color: 'var(--teal)', fontFamily: 'var(--font-display)', fontStyle: 'italic', textDecoration: 'none' }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden style={{ marginBottom: 2, flexShrink: 0 }}>
               <path d="M19 12H5M12 5l-7 7 7 7" />
             </svg>
             Heirloom Life
           </Link>
-          <h1 className="mt-5 text-2xl font-semibold text-[var(--ink)]">Welcome back</h1>
-          <p className="mt-2 text-sm text-[var(--neutral)]">Sign in to your account</p>
+          <h1 className="mt-5 text-2xl font-semibold text-[var(--ink)]">Choose a new password</h1>
+          <p className="mt-2 text-sm text-[var(--neutral)]">Enter your new password below.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-[var(--ink)] mb-1.5">
-              Email address
+            <label htmlFor="password" className="block text-sm font-medium text-[var(--ink)] mb-1.5">
+              New password
             </label>
-            <input
-              id="email"
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={inp}
-              placeholder="jane@example.com"
-            />
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label htmlFor="password" className="block text-sm font-medium text-[var(--ink)]">
-                Password
-              </label>
-              <Link href="/auth/reset-password" className="text-xs text-[var(--teal)]">
-                Forgot password?
-              </Link>
-            </div>
             <input
               id="password"
               type="password"
               required
-              autoComplete="current-password"
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className={inp}
+              placeholder="••••••••"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="confirm" className="block text-sm font-medium text-[var(--ink)] mb-1.5">
+              Confirm new password
+            </label>
+            <input
+              id="confirm"
+              type="password"
+              required
+              autoComplete="new-password"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
               className={inp}
               placeholder="••••••••"
             />
@@ -100,16 +103,9 @@ export default function LoginPage() {
             onMouseEnter={(e) => { if (!loading) (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--teal-deep)' }}
             onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--teal)' }}
           >
-            {loading ? 'Signing in…' : 'Sign in'}
+            {loading ? 'Saving…' : 'Set new password'}
           </button>
         </form>
-
-        <p className="mt-6 text-center text-sm text-[var(--neutral)]">
-          Don&apos;t have an account?{' '}
-          <Link href="/auth/signup" className="font-medium text-[var(--teal)]">
-            Create one
-          </Link>
-        </p>
       </div>
     </div>
   )

@@ -1,5 +1,11 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'When to Update Your Will | Heirloom Life',
+  description: 'The life events that mean your Will may need attention — and why keeping it current matters as much as writing it in the first place.',
+}
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',

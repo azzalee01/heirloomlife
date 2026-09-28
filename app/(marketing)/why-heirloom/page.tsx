@@ -2,7 +2,7 @@ import Link from 'next/link'
 import InfoTooltip from './_components/InfoTooltip'
 
 export const metadata = {
-  title: 'Why Heirloom — How We Compare',
+  title: 'Why Heirloom | Heirloom Life',
   description: 'See how Heirloom Life compares to Safewill and Willed on price, features, and ongoing value.',
 }
 

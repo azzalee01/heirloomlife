@@ -1,5 +1,11 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Appointing a Guardian for Your Children | Heirloom Life',
+  description: 'How to record your guardian wishes in your Will, what the legal effect is, and how to choose the right person for the role.',
+}
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
@@ -41,7 +47,7 @@ export default function GuardiansPage() {
               for your children
             </h1>
             <p style={{ fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', marginBottom: 0 }}>
-              If both parents die while a child is still a minor, a guardian takes on legal responsibility for their care. Your Will is where you record who that person should be. Without it, a court decides.
+              If both parents die while a child is still a minor, a guardian is typically responsible for their day-to-day care and upbringing. Your Will is where you record who you would like that person to be. Without it, a court decides without the benefit of your instructions.
             </p>
             <p style={{ marginTop: '.75rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)' }}>
               Australian law · 6 min read
@@ -56,7 +62,7 @@ export default function GuardiansPage() {
 
           <h2 style={H2}>What a guardian appointment means</h2>
           <p style={BODY}>
-            A testamentary guardian  -  one named in a Will  -  is appointed to take on parental responsibility for minor children if both legal parents die. That means day-to-day care, decisions about education, healthcare, living arrangements, and the child&#8217;s general welfare.
+            Your Will can record whom you would like to care for your children if you die. The legal effect of that appointment varies between Australian jurisdictions and does not necessarily give that person parental responsibility automatically. In practice, a named guardian would typically apply to the Family Court, which retains the overriding responsibility to act in the child&#8217;s best interests. Naming someone in your Will is a clear and important expression of your wishes  -  it does not bind the court, but it does provide strong guidance.
           </p>
           <p style={BODY}>
             The appointment only applies to children who are under 18 at the time of both parents&#8217; deaths. Once a child turns 18, the appointment has no further effect.

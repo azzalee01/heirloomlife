@@ -1,6 +1,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Learn | Heirloom Life',
+  description: 'Plain-English guides on Wills, estate planning, superannuation, guardians, executors, and what happens after someone dies.',
+}
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
@@ -68,7 +74,7 @@ const ARTICLES = [
         image: '/images/learn/superannuation.jpg',
         imageAlt: 'Retirement documents, glasses and a calculator on a desk',
         title: 'Superannuation and your estate',
-        summary: 'Why super sits outside your Will, what a Binding Death Nomination does, the three-year renewal trap, and who you can nominate.',
+        summary: 'Why super sits outside your Will, the types of beneficiary nominations available, the renewal trap, and who you can nominate.',
       },
     ],
   },

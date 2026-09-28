@@ -1,5 +1,11 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Passing | Heirloom Life',
+  description: 'Guides on estate administration, executor responsibilities, and what happens when someone dies — explained clearly for the people who need them.',
+}
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',

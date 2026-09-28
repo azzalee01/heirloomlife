@@ -21,7 +21,7 @@ function Pill({ children, variant = 'teal' }: { children: React.ReactNode; varia
   )
 }
 
-export const metadata = { title: 'The Will  -  Heirloom Life', description: 'A Will in plain English, drafted to your state\'s requirements, and versioned every time your life moves forward.' }
+export const metadata = { title: 'The Will | Heirloom Life', description: 'A Will in plain English, drafted to your state\'s requirements, and versioned every time your life moves forward.' }
 
 export default function TheWillPage() {
   return (
@@ -93,7 +93,7 @@ export default function TheWillPage() {
               <div style={{ padding: '1.75rem 1.5rem' }}>
                 {[
                   { n: '1', title: 'Appointment of Executor', body: "Names who carries out your wishes. Your executor gathers your assets, pays any debts, and distributes what remains as you've set out below.", badge: null },
-                  { n: '2', title: 'Guardianship of Minor Children', body: 'Flagged for review  -  a change to your family situation since your last amendment may affect this clause.', badge: 'Included review recommended' },
+                  { n: '2', title: 'Guardianship of Minor Children', body: 'Flagged for review  -  a change to your family situation since your last amendment may affect this clause.', badge: 'Review included' },
                   { n: '3', title: 'Distribution of Residuary Estate', body: 'Sets out how everything not otherwise gifted is divided. Last confirmed against your asset register two months ago.', badge: null },
                 ].map(clause => (
                   <div key={clause.n} style={{ display: 'flex', gap: '1rem', padding: '1rem 0', borderBottom: '1px solid var(--mkt-line)' }}>
@@ -107,7 +107,7 @@ export default function TheWillPage() {
                 ))}
               </div>
               <Link href="#solicitor-review" style={{ margin: '0 1.5rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 8, background: 'var(--mkt-ink)', padding: '1rem 1.25rem', color: '#fff', textDecoration: 'none' }}>
-                <span style={{ fontSize: '.85rem', fontWeight: 600 }}>Request solicitor review</span>
+                <span style={{ fontSize: '.85rem', fontWeight: 600 }}>How solicitor review works</span>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </Link>
             </div>
@@ -146,7 +146,7 @@ export default function TheWillPage() {
       <section id="solicitor-review" style={{ ...SECTION_PAD, background: '#fff', scrollMarginTop: '6rem' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem' }}>
-            Solicitor review, included as standard.
+            Solicitor review, included.
           </h2>
           <p style={{ fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>
             Every Will issued through Heirloom Life is subject to a standard solicitor quality review before being issued. For situations that are more complex  -  business succession, blended families, overseas assets, testamentary trusts  -  your Vault will flag the specific areas of concern, and you can communicate directly with our partner lawyers through your Vault for a more detailed bespoke engagement.

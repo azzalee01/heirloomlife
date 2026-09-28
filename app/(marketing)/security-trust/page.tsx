@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Security & Trust | Heirloom Life',
+  description: 'What security measures are actually in place at Heirloom Life today — written accurately, not to match a competitor\'s marketing page.',
+}
+
 const SECTION_LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
   fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block',
@@ -25,7 +32,7 @@ const ITEMS = [
   },
   {
     title: 'Authentication',
-    body: 'Access to your account is managed through a purpose-built authentication service. We support secure email and password login and issue short-lived, signed session tokens. No shared secrets, no persistent tokens stored in local storage.',
+    body: 'Access to your account is managed through Supabase Auth, a purpose-built authentication service. New accounts use a magic-link email flow — no password is required to create your account. Returning users sign in with email and password. Session tokens are short-lived and signed.',
   },
   {
     title: 'Executor access controls',
@@ -33,7 +40,7 @@ const ITEMS = [
   },
   {
     title: 'Solicitor review independence',
-    body: 'Solicitor review is conducted by qualified Australian legal practitioners who are independent of Heirloom Life. Review is triggered by you or by high-severity flags in your Will  -  not automatically shared on document creation.',
+    body: 'Every Will issued through Heirloom Life is subject to a standard solicitor quality review conducted by qualified Australian legal practitioners who are independent of Heirloom Life. For complex situations, an additional bespoke review can be requested through your Vault.',
   },
   {
     title: 'What we are not claiming',
@@ -61,7 +68,7 @@ export default function SecurityTrustPage() {
             Estate documents are among the most sensitive records you can hold. We have written this page to describe what is actually in place today  -  not to match the length of a competitor&#8217;s security marketing page.
           </p>
           <div style={{ marginTop: '1.5rem', padding: '1rem 1.25rem', borderRadius: 4, border: '1px solid var(--mkt-line)', background: '#fff', fontSize: '.85rem', color: 'var(--mkt-stone)', lineHeight: 1.5 }}>
-            This page is subject to engineering confirmation. Items pending confirmation are clearly noted. We will update this page as each item is verified rather than publish claims in advance.
+            This page describes what is currently in place. Items not yet fully verified are noted as such. We will update this page as confirmations are in place rather than publish claims in advance.
           </div>
         </div>
       </section>

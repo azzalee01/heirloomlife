@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import { PRICING } from '@/src/lib/pricing'
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_PAD: React.CSSProperties = { paddingBlock: '5.5rem' }
@@ -22,7 +23,7 @@ function Pill({ children, variant = 'teal' }: { children: React.ReactNode; varia
   )
 }
 
-export const metadata = { title: 'Living Vault  -  Heirloom Life', description: 'The estate command centre that keeps your Will current as your life changes.' }
+export const metadata = { title: 'Living Vault | Heirloom Life', description: 'The estate command centre that keeps your Will current as your life changes.' }
 
 export default function LivingVaultPage() {
   return (
@@ -45,7 +46,7 @@ export default function LivingVaultPage() {
               Tell us when life changes. Living Vault helps you review what may be affected, maintain your Will and estate record, and keep everything organised for the people who may one day need it.
             </p>
             <p style={{ marginTop: '1rem', fontSize: '.9rem', lineHeight: 1.6, color: 'var(--mkt-stone)' }}>
-              Your Will is in your Vault from day one. Add unlimited updates for $25 a year to change it as life changes.
+              {'Your Will is in your Vault from day one. Add unlimited updates for $' + PRICING.updatesAudPerYear + ' a year to change it as life changes.'}
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <Link href="/dashboard" className="mkt-btn-ink-l">

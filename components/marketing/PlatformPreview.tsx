@@ -60,7 +60,7 @@ type Phase   = 'idle' | 'typing' | 'thinking' | 'responded' | 'approving' | 'app
 const DEMO_REPLIES: Record<string, string> = {
   default:  "Great question. In the real platform I'd read your will, flag affected clauses, and draft a specific amendment. Create a free account to try it with your own details.",
   property: "A new property changes your asset register immediately. I'd add it then check your residuary estate clause. Create an account to do this for real.",
-  child:    "A new child is a high-severity event  -  guardianship and distribution provisions both need reviewing. Create an account to walk through it.",
+  child:    "A new child is an important life event — guardianship and distribution provisions both need reviewing. Create an account to walk through it.",
   executor: "Changing an executor is high-stakes. I'd update the appointment clause and queue solicitor sign-off. Create an account to make the change.",
   married:  "Marriage automatically revokes a prior Will in most Australian states. This is urgent. Create an account to get started.",
 }

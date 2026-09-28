@@ -1,5 +1,11 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Superannuation and Your Estate | Heirloom Life',
+  description: 'Why super sits outside your Will, how beneficiary nominations work, and what you need to know about your superannuation death benefit.',
+}
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
@@ -61,14 +67,14 @@ export default function SuperannuationPage() {
             This surprises many people. A Will is a comprehensive document that covers your financial affairs  -  but it cannot reach assets you don&#8217;t legally own. Your super fund has its own separate beneficiary nomination process, entirely independent of anything in your Will.
           </p>
           <blockquote style={CALLOUT}>
-            Writing a Will without a current Binding Death Nomination means a potentially significant asset will be distributed entirely at the fund trustee&#8217;s discretion  -  not yours.
+            Writing a Will without checking your super fund&#8217;s beneficiary nominations means a potentially significant asset may be distributed at the fund trustee&#8217;s discretion. Check the nomination options your fund offers.
           </blockquote>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
 
-          <h2 style={H2}>What is a Binding Death Nomination?</h2>
+          <h2 style={H2}>Binding Death Nominations and other fund nominations</h2>
           <p style={BODY}>
-            A Binding Death Nomination (BDN) is a formal instruction to your super fund directing where your death benefit should go. Unlike a non-binding nomination  -  which is merely a suggestion the trustee can override  -  a valid BDN legally compels the trustee to distribute the benefit as you instructed.
+            Your super fund may offer different types of beneficiary nominations. A Binding Death Nomination (BDN) is a formal instruction that legally compels the trustee to pay your death benefit as directed  -  unlike a non-binding nomination, which is merely a suggestion the trustee can override.
           </p>
           <p style={BODY}>
             To make a BDN valid:
@@ -76,7 +82,7 @@ export default function SuperannuationPage() {
           <ul style={{ paddingLeft: '1.4rem', margin: '0 0 1rem' }}>
             <li style={{ ...BODY, margin: '0 0 .5rem' }}>You must nominate only eligible dependants or your legal personal representative (your estate)</li>
             <li style={{ ...BODY, margin: '0 0 .5rem' }}>The nomination must be in writing and signed by you in front of two witnesses</li>
-            <li style={{ ...BODY, margin: 0 }}>Most BDNs expire after three years and must be renewed  -  even if nothing in your life has changed</li>
+            <li style={{ ...BODY, margin: 0 }}>Lapsing binding nominations generally expire after three years and must be renewed. Some funds offer non-lapsing binding nominations. Check the rules of your super fund.</li>
           </ul>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -109,12 +115,12 @@ export default function SuperannuationPage() {
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
 
-          <h2 style={H2}>The three-year renewal trap</h2>
+          <h2 style={H2}>The renewal trap</h2>
           <p style={BODY}>
-            Most Binding Death Nominations lapse after three years. If yours has expired, the nomination becomes non-binding and the trustee regains discretion over where your super goes.
+            Lapsing binding nominations generally expire after three years. If yours has expired, the nomination becomes non-binding and the trustee regains discretion over where your super goes. Some funds offer non-lapsing binding nominations that do not expire  -  check the rules of your super fund.
           </p>
           <p style={BODY}>
-            This catches people out. You may have made a BDN years ago, assumed it was taken care of, and never thought about it again  -  while three years quietly passed. Some funds offer non-lapsing BDNs; check with your fund.
+            This catches people out. You may have made a nomination years ago, assumed it was taken care of, and never thought about it again  -  while the renewal deadline quietly passed.
           </p>
           <p style={BODY}>
             A practical habit: treat your BDN review the same way you treat your annual tax return. Check it each year alongside any changes to your personal circumstances.

@@ -1,5 +1,11 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'What Makes a Will Legally Valid | Heirloom Life',
+  description: 'The five requirements for a valid Will in Australia, what a Will covers, and why it matters to keep it current.',
+}
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
@@ -87,7 +93,7 @@ export default function YourWillPage() {
             {
               n: '03',
               title: 'Your Will must be in writing',
-              body: 'Handwritten or typed  -  both are acceptable. Verbal instructions, voice recordings, and video messages are not legally binding as a Will in Australia, regardless of how clearly they express your intentions.',
+              body: 'Handwritten or typed  -  both are acceptable. A formal Will should be written and executed in accordance with the requirements of your state or territory. In limited circumstances, a court may recognise an informal document that was not executed in the usual way, but this can require court proceedings and should not be relied on as a substitute for properly signing your Will.',
             },
             {
               n: '04',
@@ -127,13 +133,13 @@ export default function YourWillPage() {
             Two of the most valuable assets most Australians own  -  superannuation and jointly held property  -  fall outside your Will entirely.
           </p>
           <p style={BODY}>
-            Superannuation is held in trust by your fund trustee, not by you directly. It does not form part of your estate and cannot be distributed through your Will. To direct it, you need a separate Binding Death Nomination with your fund.
+            Superannuation is held in trust by your fund trustee, not by you directly. It does not form part of your estate and cannot be distributed through your Will. Your super fund may offer different types of beneficiary nominations  -  depending on the fund, you may be able to nominate an eligible beneficiary or your legal personal representative so the benefit can be paid to your estate.
           </p>
           <p style={BODY}>
             Property owned as joint tenants  -  common for couples  -  automatically passes to the surviving owner by right of survivorship. It bypasses your Will and the probate process entirely.
           </p>
           <blockquote style={CALLOUT}>
-            Life insurance, bank accounts held jointly, and assets held in a family trust follow similar rules. Your Will only controls assets in your own name, held individually.
+            Some superannuation, insurance, jointly held assets and trust assets can pass outside your Will. The outcome depends on ownership, nominations and the relevant policy, trust or account terms.
           </blockquote>
 
           <div style={{ height: 1, background: 'var(--mkt-line)', margin: '2.5rem 0' }} />
@@ -184,7 +190,7 @@ export default function YourWillPage() {
             Ready to write your Will?
           </h2>
           <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', margin: '0 0 2rem' }}>
-            Answer seven guided questions and we&#8217;ll produce a complete, state-specific Will draft.
+            Answer a guided series of questions and we&#8217;ll produce a complete, state-specific Will draft.
           </p>
           <Link href="/start" className="mkt-btn-ink-l">
             Start your Will

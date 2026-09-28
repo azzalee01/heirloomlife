@@ -18,6 +18,16 @@ const WILLS_SOURCE = {
   href: 'https://www.legalaid.wa.gov.au/find-legal-answers/managing-your-affairs/wills-and-estates/wills',
 }
 
+const LEGALAID_NSW_WILLS = {
+  label: 'Legal Aid NSW: Making a Will',
+  href: 'https://www.legalaid.nsw.gov.au/my-problem-is-about/planning-ahead/wills',
+}
+
+const AG_INTERNATIONAL_WILLS = {
+  label: 'Australian Attorney-General\'s Department: International wills',
+  href: 'https://www.ag.gov.au/international-relations/private-international-law/international-wills',
+}
+
 const SUPER_SOURCE = {
   label: 'Australian Taxation Office: Superannuation death benefits',
   href: 'https://www.ato.gov.au/individuals-and-families/super-for-individuals-and-families/superannuation-death-benefits',
@@ -121,7 +131,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     checklist: ['Review your signed Will and appointments', 'Consider powers of attorney and health documents', 'Confirm original-document storage', 'Update trusted and emergency contacts', 'Organise assets, liabilities and practical instructions'],
     advice: 'Use an independent solicitor where capacity may be questioned, a beneficiary is involved in arranging the Will, family conflict exists, or urgent execution is required. Medical urgency should never be used to pressure a person.',
     productStep: 'personal',
-    sources: [WILLS_SOURCE],
+    sources: [LEGALAID_NSW_WILLS],
   },
   {
     slug: 'starting-selling-business',
@@ -175,7 +185,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     checklist: ['Update your address and asset locations', 'Review state-based appointment documents', 'Check signing and witnessing instructions', 'Record overseas property or accounts', 'Tell an appropriate person where originals are stored'],
     advice: 'Obtain specialist advice when you live, hold assets or have beneficiaries in more than one country. Multiple Wills must be coordinated so one does not unintentionally revoke another.',
     productStep: 'personal',
-    sources: [WILLS_SOURCE],
+    sources: [LEGALAID_NSW_WILLS, AG_INTERNATIONAL_WILLS],
   },
 ]
 

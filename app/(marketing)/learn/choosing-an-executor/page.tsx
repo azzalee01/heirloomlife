@@ -1,5 +1,11 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Choosing an Executor | Heirloom Life',
+  description: 'What an executor does, what qualities to look for, and why the conversation you have with them matters as much as the appointment itself.',
+}
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
@@ -55,7 +61,7 @@ export default function ExecutorPage() {
 
           <h2 style={H2}>What an executor actually does</h2>
           <p style={BODY}>
-            An executor&#8217;s job begins at death and ends when the estate is fully distributed  -  a process that typically takes six to twelve months for straightforward estates, and longer for complex ones.
+            An executor&#8217;s job begins at death and ends when the estate is fully distributed  -  a process that often takes several months for straightforward estates and can take considerably longer for complex ones.
           </p>
           <p style={BODY}>
             The core tasks include: registering the death, locating the original Will, applying for a grant of probate, notifying banks and institutions, identifying all assets and liabilities, paying outstanding debts and taxes, and distributing what remains to beneficiaries according to your instructions.

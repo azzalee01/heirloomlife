@@ -1,4 +1,10 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Estate Administration | Heirloom Life',
+  description: 'What happens to an estate after someone dies — the eight stages of estate administration explained in plain English.',
+}
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
@@ -29,7 +35,7 @@ const STEPS = [
   {
     n: '02',
     title: 'Locate the original Will',
-    body: 'Only the original signed Will carries full legal weight. A photocopy or digital version is not sufficient for probate. Common storage locations include: with a solicitor, in a safe at home, at the Public Trustee, or lodged with the Supreme Court registry (in some states). If the Will cannot be found, the estate may be treated as intestate.',
+    body: 'The original signed Will is normally required for a straightforward probate application. If the original cannot be found, a court may in some circumstances admit a copy or other evidence, although additional evidence and procedures may be required. Common storage locations include: with a solicitor, in a safe at home, at the Public Trustee, or lodged with the Supreme Court registry (in some states). If the Will cannot be located at all, the estate may need to proceed under intestacy rules.',
   },
   {
     n: '03',
@@ -39,7 +45,7 @@ const STEPS = [
   {
     n: '04',
     title: 'Apply for a Grant of Probate (or Letters of Administration)',
-    body: 'Probate is the formal court process by which the Will is validated and the executor is authorised to administer the estate. The application is made to the Supreme Court of the relevant state. It requires the original Will, the death certificate, and an inventory of assets and liabilities. If there is no Will, Letters of Administration are required instead  -  a more complex process. After lodgment, there is typically a 14-day period for objections before the court processes the application.',
+    body: 'Probate is the formal court process by which the Will is validated and the executor is authorised to administer the estate. The application is made to the Supreme Court of the relevant state. It requires the original Will, the death certificate, and an inventory of assets and liabilities. If there is no Will, Letters of Administration are required instead  -  a more complex process. Probate notice and filing requirements vary between Australian jurisdictions. In NSW, notice of an intended application must generally be published before the probate application is filed.',
   },
   {
     n: '05',
@@ -94,10 +100,10 @@ export default function EstateAdministrationPage() {
 
           <h2 style={H2}>How long does it take?</h2>
           <p style={BODY}>
-            A straightforward estate  -  modest assets, no disputes, clear Will  -  can be fully administered in three to six months. More complex estates, particularly those involving property, business interests, overseas assets, or contested claims, routinely take twelve months or longer.
+            Estate administration often takes several months and can take considerably longer depending on the assets, beneficiaries, disputes, tax issues and court requirements involved. More complex estates  -  particularly those involving property, business interests, overseas assets, or contested claims  -  can take a year or more.
           </p>
           <p style={BODY}>
-            The probate process itself typically adds six to eight weeks from application to grant. Everything else  -  settling debts, transferring assets, resolving tax  -  happens before and after.
+            The probate application itself can add several weeks from lodgment to grant. Everything else  -  settling debts, transferring assets, resolving tax  -  happens before and after.
           </p>
           <blockquote style={CALLOUT}>
             An estate cannot be distributed to beneficiaries until debts are settled and probate is granted. During this period, beneficiaries often have no access to estate funds  -  even for urgent expenses.

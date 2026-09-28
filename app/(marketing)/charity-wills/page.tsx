@@ -77,7 +77,7 @@ export default function CharityWillsPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             {[
               ['Your choices remain yours', 'Heirloom does not select a charity or suggest a share. You name the cause and set the percentage that feels right.'],
-              ['It sits alongside your family', 'A charitable gift is a share of your residuary estate. Your family beneficiaries are named in the same clause - there is no conflict.'],
+              ['It sits alongside your family', 'Heirloom can help you include a charitable gift using the options supported by your Will pathway, including a share of your residuary estate where applicable. Your charitable and other beneficiary gifts should be structured so that your intentions are clear and consistent.'],
               ['It is legally recognised', 'A bequest to a registered charity is a standard testamentary gift, treated the same way as any other beneficiary gift under Australian law.'],
             ].map(([title, body]) => (
               <div key={title} style={{ borderLeft: '2px solid var(--teal)', paddingLeft: '1.25rem' }}>

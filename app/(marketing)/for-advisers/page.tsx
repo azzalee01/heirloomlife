@@ -1,3 +1,11 @@
+import type { Metadata } from 'next'
+import EditorialBanner from '@/components/marketing/EditorialBanner'
+
+export const metadata: Metadata = {
+  title: 'For Advisers | Heirloom Life',
+  description: 'Adviser partnerships are coming soon. Register your interest to be notified when the Heirloom Life adviser programme launches.',
+}
+
 const SECTION_LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
   fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block',
@@ -53,4 +61,3 @@ export default function ForAdvisersPage() {
     </>
   )
 }
-import EditorialBanner from '@/components/marketing/EditorialBanner'

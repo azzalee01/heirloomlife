@@ -1,3 +1,10 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'FAQs | Heirloom Life',
+  description: 'Answers to the questions people actually ask about Heirloom Life, making a Will, and keeping it current.',
+}
+
 const SECTION_LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
   fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block',
@@ -6,7 +13,7 @@ const SECTION_LABEL: React.CSSProperties = {
 const FAQS = [
   {
     q: 'Is a Heirloom Life Will legally valid in Australia?',
-    a: "A Will produced through Heirloom Life is only legally valid once it is correctly signed and witnessed according to the requirements of your state. We walk you through those requirements step by step  -  but signing and witnessing is something you must do correctly. An unsigned or incorrectly witnessed Will has no legal effect.",
+    a: "A Will produced through Heirloom Life is only legally valid once it is correctly signed and witnessed according to the requirements of your state. We walk you through those requirements step by step  -  but signing and witnessing is something you must do correctly. A Will that is not properly executed may have no legal effect. In limited circumstances, a court may recognise an informally executed document, but this requires court proceedings and should not be relied on as a substitute for properly signing your Will.",
   },
   {
     q: 'How is this different from downloading a Will kit from a newsagent?',

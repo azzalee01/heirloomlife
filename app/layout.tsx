@@ -18,7 +18,7 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   title: "Heirloom Life",
-  description: "Preserve what matters most",
+  description: "An estate command centre for Australians — your Will and Living Vault, kept in one place.",
 };
 
 export default function RootLayout({

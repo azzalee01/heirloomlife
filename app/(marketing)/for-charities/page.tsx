@@ -21,7 +21,7 @@ const VALUE_PROPS = [
   ['Present at the right moment', 'Your cause appears to supporters while they are actively drafting their estate plan - not through a cold campaign weeks later.'],
   ['No disruption to your existing program', 'We work alongside your bequest team, not instead of it. Supporters can still speak directly to your staff.'],
   ['Built for Australian charities', 'We understand DGR requirements, the regulatory environment, and the sensitivities that come with bequest fundraising.'],
-  ['Full attribution and reporting', 'Know exactly how many people have named your organisation, and track your program over time with transparent data.'],
+  ['Partnership reporting', 'We share information about your program\'s reach as it develops, so your bequest team can understand and build on the results.'],
 ]
 
 const HOW_IT_WORKS = [

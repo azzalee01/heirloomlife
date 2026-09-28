@@ -1,4 +1,10 @@
 import Link from 'next/link'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'How It Works | Heirloom Life',
+  description: 'From first login to a complete estate plan — what happens and when. Four stages, most completed in a single session.',
+}
 
 const SECTION_LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',

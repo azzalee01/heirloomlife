@@ -1,3 +1,11 @@
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Guidance Notes | Heirloom Life',
+  description: 'Plain-language legal reference notes explaining how the Heirloom Life service works from a legal perspective. Currently pending finalisation.',
+  robots: { index: false },
+}
+
 export default function GuidanceNotesPage() {
   return (
     <section style={{ paddingTop: '4rem', paddingBottom: '8rem', background: 'var(--mkt-surface)' }}>

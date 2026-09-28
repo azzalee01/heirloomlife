@@ -1,5 +1,11 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Choosing Your Beneficiaries | Heirloom Life',
+  description: 'How to decide who benefits from your estate, how to structure gifts, and what happens when a beneficiary is no longer able to receive.',
+}
 
 const LABEL: React.CSSProperties = {
   fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase',
