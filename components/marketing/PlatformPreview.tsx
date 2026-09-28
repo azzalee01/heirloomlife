@@ -121,6 +121,8 @@ export default function PlatformPreview() {
   const inputRef         = useRef<HTMLInputElement>(null)
   const mobileScrollRef  = useRef<HTMLDivElement>(null)
   const mobileChatEndRef = useRef<HTMLDivElement>(null)
+  const containerRef     = useRef<HTMLDivElement>(null)
+  const isVisible        = useRef(false)
 
   function addTimer(fn: () => void, ms: number) {
     const t = setTimeout(fn, ms)
@@ -138,12 +140,12 @@ export default function PlatformPreview() {
   }, [])
 
   const runDemo = useCallback(() => {
-    if (userTookOver.current) return
+    if (userTookOver.current || !isVisible.current) return
     setPhase('typing')
     let i = 0
 
     function typeNext() {
-      if (userTookOver.current) return
+      if (userTookOver.current || !isVisible.current) return
       if (i < DEMO_PROMPT.length) {
         i++
         setTypedText(DEMO_PROMPT.slice(0, i))
@@ -201,6 +203,23 @@ export default function PlatformPreview() {
   }, [resetDemo])
 
   useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    const obs = new IntersectionObserver(([entry]) => {
+      const wasHidden = !isVisible.current
+      isVisible.current = entry.isIntersecting
+      if (entry.isIntersecting && wasHidden && !userTookOver.current) {
+        clearTimers()
+        resetDemo()
+        addTimer(runDemo, 800)
+      }
+    }, { threshold: 0 })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [resetDemo, runDemo])
+
+  useEffect(() => {
+    if (!isVisible.current) return
     const t = setTimeout(runDemo, replayKey === 0 ? 2000 : 2500)
     return () => { clearTimeout(t); clearTimers() }
   }, [replayKey, runDemo])
@@ -208,14 +227,16 @@ export default function PlatformPreview() {
   useEffect(() => {
     if (phase === 'typing' || phase === 'thinking' || phase === 'responded' || phase === 'applied') {
       setTimeout(() => {
+        if (!isVisible.current) return
         const el = chatEndRef.current
         if (el?.parentElement) el.parentElement.scrollTo({ top: el.parentElement.scrollHeight, behavior: 'smooth' })
       }, 100)
       setTimeout(() => {
-        if (mobileScrollRef.current) mobileScrollRef.current.scrollTo({ top: mobileScrollRef.current.scrollHeight, behavior: 'smooth' })
+        if (!isVisible.current || !mobileScrollRef.current) return
+        mobileScrollRef.current.scrollTo({ top: mobileScrollRef.current.scrollHeight, behavior: 'smooth' })
       }, 100)
     }
-    if (phase === 'idle') {
+    if (phase === 'idle' && isVisible.current) {
       mobileScrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [phase, demoMsgs.length])
@@ -368,7 +389,7 @@ export default function PlatformPreview() {
 
   // ─── Render ──────────────────────────────────────────────────────────────────
   return (
-    <div>
+    <div ref={containerRef}>
 
       {/* ── DESKTOP (sm and up) ─────────────────────────────────────────────── */}
       <div className="hidden sm:block">
