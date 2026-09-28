@@ -30,7 +30,7 @@ const AG_INTERNATIONAL_WILLS = {
 
 const SUPER_SOURCE = {
   label: 'Australian Taxation Office: Superannuation death benefits',
-  href: 'https://www.ato.gov.au/individuals-and-families/super-for-individuals-and-families/superannuation-death-benefits',
+  href: 'https://www.ato.gov.au/individuals-and-families/super-for-individuals-and-families/super/withdrawing-and-using-your-super/superannuation-death-benefits',
 }
 
 const NSW_SUCCESSION = { label: 'NSW Succession Act 2006, sections 12–13', href: 'https://legislation.nsw.gov.au/view/html/inforce/current/act-2006-80' }
