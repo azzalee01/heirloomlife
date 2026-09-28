@@ -10,7 +10,7 @@ const SECTION_LABEL: React.CSSProperties = {
 
 export const metadata = {
   title: 'The Platform  -  Heirloom Life',
-  description: 'One place for your Will, asset register, and executor instructions — all current, all connected.',
+  description: 'One place for your Will, asset register, and executor notes — all current, all connected, and ready to update as life changes.',
 }
 
 export default function ThePlatformPage() {
@@ -30,7 +30,7 @@ export default function ThePlatformPage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>working</em>.
             </h1>
             <p style={{ marginTop: '1.5rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
-              Your Will, asset register, and executor instructions — all current, all connected, and ready when the people you&apos;ve named need them most.
+              Your Will, asset register, and executor notes — all current, all connected, and ready to update as your circumstances change.
             </p>
             <div style={{ marginTop: '2rem', display: 'flex', gap: '.9rem', flexWrap: 'wrap' }}>
               <Link href="/start?path=retail" className="mkt-btn-ink-l">
@@ -76,7 +76,7 @@ export default function ThePlatformPage() {
               },
               {
                 title: 'Living Vault',
-                body: 'Your asset register, life events, and executor instructions — all in one place. The Vault tracks what\'s changed and surfaces updates before a gap becomes a problem.',
+                body: 'Your asset register, life events, and notes for your executor — all in one place. The Vault tracks what\'s changed and surfaces updates before a gap becomes a problem.',
                 href: '/living-vault',
                 cta: 'About the Vault',
               },

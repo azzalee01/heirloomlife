@@ -120,8 +120,8 @@ export default function LivingVaultPage() {
               },
               {
                 tag: 'Document Storage',
-                title: 'Everything your family needs, in one place.',
-                body: 'Your Will, asset register, and instructions are stored securely in your Vault. When it matters, there is no searching through filing cabinets  -  it\'s all there.',
+                title: 'Keep what your executor may one day need, organised.',
+                body: 'Your Will, asset register, and notes are stored securely in your Vault, always up to date. Brief your executor on where everything lives  -  no filing cabinets, no scattered paperwork.',
               },
               {
                 tag: 'Bank Connections',

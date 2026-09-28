@@ -50,8 +50,8 @@ const FACTS: { label: string; heading: string; body: string }[] = [
   },
   {
     label: 'Your Vault',
-    heading: 'Everything your executor needs, in one place.',
-    body: 'Your Will, asset register and instructions live securely in your Vault — clear, up to date, and ready when it matters most.',
+    heading: 'Your Vault — organised for when it matters.',
+    body: 'Your Will, asset register and notes live securely in your Vault — clear, up to date, and ready to share with your executor when the time is right.',
   },
   {
     label: 'All states covered',

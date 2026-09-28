@@ -209,7 +209,7 @@ export default function HomePage() {
             </div>
             {[
               { tag: 'Lawyer Review', h: 'Included as standard, with escalation available.', p: 'Every Will is subject to a standard solicitor quality review before being issued. Complex flags  -  business succession, trusts, blended families  -  are surfaced in your Vault, where you can reach our partner lawyers directly.' },
-              { tag: 'Document Storage', h: 'Everything in one place, always up to date.', p: "Your Will, asset register, and instructions stored securely in your Vault  -  so nothing is left to find at the worst possible time." },
+              { tag: 'Document Storage', h: 'Everything in one place, always up to date.', p: "Your Will, asset register, and notes stored securely in your Vault  -  organised and up to date so you can brief your executor on where everything lives." },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: '#fff', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: 'linear-gradient(90deg, transparent, var(--teal) 30%, var(--teal) 70%, transparent)', pointerEvents: 'none' }}/>
