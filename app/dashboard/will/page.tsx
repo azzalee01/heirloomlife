@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from '@/app/will/new/_data'
+import { assembleWillDocument } from '@/app/will/new/_assembly'
 import { renderWillText } from '@/app/will/new/_render'
 import AiChat from '@/app/dashboard/_components/AiChat'
 import LegalReviewCallout from './_components/LegalReviewCallout'
@@ -66,7 +67,13 @@ export default async function TheWillPage() {
   }
 
   const { formData } = await loadWillFormData(supabase, user.id, will.id)
-  const documentText = renderWillText(formData)
+  let documentText: string
+  try {
+    documentText = await assembleWillDocument(formData)
+  } catch (err) {
+    console.warn('[will/page] assembleWillDocument failed, falling back to renderWillText:', err)
+    documentText = renderWillText(formData)
+  }
 
   const { data: versionRows } = await supabase
     .from('will_versions')

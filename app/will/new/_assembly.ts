@@ -379,17 +379,6 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
     })
   }
 
-  // ── 19. Execution ─────────────────────────────────────────────────────────
-  instances.push({
-    code: 'EXEC-ATTEST-01',
-    heading: `${++clauseNo}. EXECUTION AND ATTESTATION`,
-    vars: {
-      testator_name: tname,
-      // AV witnessing is coordinated through the Vault, not embedded in the document
-      av_witnessing_statement: '',
-    },
-  })
-
   return instances
 }
 
@@ -456,12 +445,10 @@ export async function assembleWillDocument(formData: WillFormData): Promise<stri
     )
   }
 
+  // Sentinel used by renderWillPdf to end body text before drawing the
+  // programmatic Execution & Attestation block with signature fields.
   sections.push(
-    'IMPORTANT NOTICE\n\n' +
-      "This Will was prepared using Heirloom Life's clause assembly platform. " +
-      'It must be signed in the presence of two witnesses to be legally valid. ' +
-      'If your circumstances involve overseas assets, business ownership, a blended family, or any other complex matter flagged above, ' +
-      'a solicitor review is strongly recommended before execution.'
+    'IN WITNESS WHEREOF I have set my hand to this my Will, signed in the presence of two witnesses present at the same time, who attested and subscribed this Will in my presence.'
   )
 
   const assembled = sections.join('\n\n')

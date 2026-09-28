@@ -4,6 +4,7 @@ import MarketingFooter from '@/components/marketing/MarketingFooter'
 import JourneyLine from '@/components/marketing/JourneyLine'
 import PlatformPreview from '@/components/marketing/PlatformPreview'
 import Reveal from '@/components/marketing/Reveal'
+import ProductFilm from '@/components/marketing/ProductFilm'
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_PAD: React.CSSProperties = { paddingBlock: '5.5rem' }
@@ -80,8 +81,17 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* The moments that change a Will: drag the pen line */}
-        <div style={{ paddingTop: '3.5rem', paddingBottom: '4rem' }}>
+        {/* ─── PRODUCT FILM ─────────────────────────────────────────────── */}
+        {/* Autoplay muted looping film. Reduced-motion users see poster only. */}
+        <div style={{ ...W, paddingTop: '3rem', paddingBottom: '4rem' }}>
+          <ProductFilm />
+        </div>
+      </section>
+
+      {/* ─── JOURNEY LINE ─────────────────────────────────────────────────── */}
+      {/* Preserved from the original hero section; moved here to follow the film. */}
+      <section style={{ background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)' }}>
+        <div style={{ paddingTop: '3rem', paddingBottom: '2rem' }}>
           <JourneyLine />
         </div>
       </section>
