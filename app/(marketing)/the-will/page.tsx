@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { PRICING } from '@/src/lib/pricing'
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
 const SECTION_PAD: React.CSSProperties = { paddingBlock: '5.5rem' }
@@ -128,7 +129,7 @@ export default function TheWillPage() {
             {[
               { n: '01', title: 'Answer guided questions', body: 'Guided questions covering your assets, beneficiaries, executor, and any guardianship arrangements. Every question has a plain-English explanation.' },
               { n: '02', title: 'Review your draft', body: 'Your answers become a structured Will draft. Review clause by clause. Change your answers and the draft updates immediately.' },
-              { n: '03', title: 'Download, sign and witness', body: 'Pay $129 to download your solicitor-reviewed Will. Sign it in the presence of two independent witnesses  -  NSW members can use remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Complex situations are flagged in your Vault, where you can reach our partner lawyers directly.' },
+              { n: '03', title: 'Download, sign and witness', body: `Pay $${PRICING.willAud} to download your solicitor-reviewed Will. Sign it in the presence of two independent witnesses  -  NSW members can use remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Complex situations are flagged in your Vault, where you can reach our partner lawyers directly.` },
               { n: '04', title: 'Store and update', body: 'Your Will PDF lives in your Vault alongside your asset register. Every time your life changes, update your Will from the same place.' },
               { n: '+', title: 'Versioned as your life changes', body: 'Every amendment creates a new version. A change to your family, your assets, or your executors prompts an update  -  not a whole new Will.' },
             ].map(step => (

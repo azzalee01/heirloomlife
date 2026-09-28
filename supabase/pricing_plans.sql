@@ -37,8 +37,8 @@ values
     'will-single',
     'The Will — Single',
     'Pay once, with three months of full Vault benefits',
-    12900,
-    '$129',
+    14900,
+    '$149',
     'one_time',
     'A signing-ready Will with three months of full Living Vault benefits and permanent document access.',
     ARRAY[

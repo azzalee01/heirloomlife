@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import InfoTooltip from './_components/InfoTooltip'
+import { PRICING } from '@/src/lib/pricing'
 
 export const metadata = {
   title: 'Why Heirloom | Heirloom Life',
@@ -56,7 +57,7 @@ type CellValue =
 const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: CellValue }[] = [
   {
     label: 'Upfront price',
-    heirloom: { kind: 'text', lines: ['$129', 'includes solicitor review'] },
+    heirloom: { kind: 'text', lines: [`$${PRICING.willAud}`, 'includes solicitor review'] },
     safewill: { kind: 'text', lines: ['$160', 'standard price; excl. promotions'] },
     willed:   { kind: 'text', lines: ['$159'] },
   },
@@ -241,7 +242,7 @@ export default function WhyHeirloomPage() {
             Start for free. See for yourself.
           </h2>
           <p style={{ margin: '1rem 0 2rem', fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
-            Draft your complete Will at no cost. Pay $129 only when you&apos;re ready to download.
+            Draft your complete Will at no cost. Pay ${PRICING.willAud} only when you&apos;re ready to download.
           </p>
           <Link href="/start" className="mkt-btn-ink-l">Start your Will</Link>
         </div>

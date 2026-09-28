@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import EditorialBanner from '@/components/marketing/EditorialBanner'
+import { PRICING } from '@/src/lib/pricing'
 
 const W: React.CSSProperties = { maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }
 const LABEL: React.CSSProperties = {
@@ -100,7 +101,7 @@ export default function CharityWillsPage() {
           </p>
           <Link href="/start" className="mkt-btn-ink-l">Start your Will</Link>
           <p style={{ marginTop: '1.1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)' }}>
-            Free to draft. Pay $129 to download your solicitor-reviewed Will.
+            Free to draft. Pay ${PRICING.willAud} to download your solicitor-reviewed Will.
           </p>
         </div>
       </section>

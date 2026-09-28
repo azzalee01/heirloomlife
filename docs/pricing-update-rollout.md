@@ -1,4 +1,4 @@
-# Pricing change: $129 Will + optional $25/yr unlimited updates
+# Pricing change: $149 Will + optional $25/yr unlimited updates
 
 Branch: `feat/pricing-updates-addon` (local, uncommitted). Written 2026-09-25.
 
@@ -6,10 +6,10 @@ Branch: `feat/pricing-updates-addon` (local, uncommitted). Written 2026-09-25.
 
 | | |
 |---|---|
-| **The Will** | A$129 one-off, GST inclusive. Complete Will, standard solicitor quality review, permanent download, guided signing. One remote (AV) signing session included for NSW addresses; print-and-sign elsewhere. |
+| **The Will** | A$149 one-off, GST inclusive. Complete Will, standard solicitor quality review, permanent download, guided signing. One remote (AV) signing session included for NSW addresses; print-and-sign elsewhere. |
 | **Unlimited updates** | A$25/year, GST inclusive, optional. Offered **unticked** at checkout with the Will (charged then: A$154 total), or later from the dashboard. Renews yearly until cancelled. Change the Will as often as needed and download each version. |
 | **Coming soon** | Video re-witnessing of an updated Will. Until then updates are printed and signed. Not sold, not promised. |
-| **Partner discount** | Will only: A$40 off (A$89). Never on the add-on. |
+| **Partner discount** | Will only: A$40 off (A$109). Never on the add-on. |
 | **Lapse** | Lapsed updates keep view + download of the Will and all versions. Editing needs reactivation at A$25. No unlock fee. |
 | **Estate Assistant (AI amendments)** | Behind unlimited updates (per-use AI cost). |
 
@@ -24,7 +24,7 @@ your own uncommitted work: do not `git add -A`; add only the files listed at the
 
 1. **Database, additive** (safe any time): run `supabase/updates_addon_entitlements.sql`.
 2. **Stripe, test mode first**
-   - Price for the Will: one-time A$129, tax behaviour inclusive -> `STRIPE_PRICE_WILL` (check it already is).
+   - Price for the Will: one-time A$149, tax behaviour inclusive -> `STRIPE_PRICE_WILL` (check it already is).
    - New product "Unlimited updates": recurring A$25 / year, tax behaviour inclusive -> `STRIPE_PRICE_UPDATES_ANNUAL`.
    - `STRIPE_COUPON_WILL_PARTNER`: A$40 off, **restricted to the Will product** (`applies_to.products`). Unrestricted, it would also discount the add-on line when both are bought together.
    - Delete `STRIPE_COUPON_VAULT_PARTNER` and stop using `STRIPE_PRICE_VAULT_ANNUAL` (after deploy).
@@ -40,7 +40,7 @@ your own uncommitted work: do not `git add -A`; add only the files listed at the
 
 Canonical strings (use `src/lib/pricing.ts` constants where the page is a component):
 
-- Will: "$129 one payment, includes GST"
+- Will: "$149 one payment, includes GST"
 - Add-on: "Unlimited updates, $25/year (optional)"
 - Coming soon: "Video re-witnessing of updated Wills: coming soon"
 
@@ -51,13 +51,13 @@ Do not add claims about unlimited re-witnessing, and leave the solicitor-review 
 
 | Page | Replace with |
 |---|---|
-| `app/pricing/page.tsx` hero | "Free to start. Draft your whole Will at your own pace, then pay $129 to download and sign it. Add unlimited updates for $25/year if you want to keep it current as life changes." |
+| `app/pricing/page.tsx` hero | "Free to start. Draft your whole Will at your own pace, then pay $149 to download and sign it. Add unlimited updates for $25/year if you want to keep it current as life changes." |
 | pricing: Will card | Remove "3 months Living Vault membership included". Add "One remote signing session included (NSW)". |
 | pricing: second card | Title "Unlimited updates", "$25 / year, optional". Bullets: change your Will as often as life changes; add or remove beneficiaries, gifts and executors; download every new version; cancel any time. Note: "Video re-witnessing of updated Wills: coming soon." CTA: "Start your Will" (remove `PricingVaultCTA`'s "$99/year" text). |
-| `app/page.tsx` "Membership" section | Eyebrow "Pricing". Sub: "Pay $129 once for your Will. Add unlimited updates for $25 a year to keep it current as life changes. No other fees." |
-| `app/(marketing)/faq/page.tsx` | Q "Can I update my Will after signing it?" A "Yes. Add unlimited updates for $25 a year, when you buy your Will or any time after. Every changed Will must be signed and witnessed again. Video re-witnessing of updated Wills is coming soon; until then you print and sign updates."<br>Q "Do I have to subscribe?" A "No. The Will is a one-off $129 and it is yours to keep and download. Unlimited updates ($25/year, optional) only matters if you want to change your Will later."<br>Q "What is the Living Vault?" A "Living Vault is where your Will, assets and people live, from the day you buy your Will. Unlimited updates keeps your Will current as life changes." |
+| `app/page.tsx` "Membership" section | Eyebrow "Pricing". Sub: "Pay $149 once for your Will. Add unlimited updates for $25 a year to keep it current as life changes. No other fees." |
+| `app/(marketing)/faq/page.tsx` | Q "Can I update my Will after signing it?" A "Yes. Add unlimited updates for $25 a year, when you buy your Will or any time after. Every changed Will must be signed and witnessed again. Video re-witnessing of updated Wills is coming soon; until then you print and sign updates."<br>Q "Do I have to subscribe?" A "No. The Will is a one-off $149 and it is yours to keep and download. Unlimited updates ($25/year, optional) only matters if you want to change your Will later."<br>Q "What is the Living Vault?" A "Living Vault is where your Will, assets and people live, from the day you buy your Will. Unlimited updates keeps your Will current as life changes." |
 | `living-vault/page.tsx` | Hero: "Your Will is in your Vault from day one. Add unlimited updates for $25 a year to change it as life changes." CTA "Compare pricing" -> /pricing. |
-| `life-changes/[slug]/page.tsx` CTA | "Pay $129 once for your Will. Add unlimited updates for $25 a year to keep it current as life changes." |
+| `life-changes/[slug]/page.tsx` CTA | "Pay $149 once for your Will. Add unlimited updates for $25 a year to keep it current as life changes." |
 | `why-heirloom/page.tsx` price cell | `['$25', 'per year, optional']` (check the row label reads "yearly cost" or adjust) |
 | Terms s9 | see below |
 
@@ -65,7 +65,7 @@ Do not add claims about unlimited re-witnessing, and leave the solicitor-review 
 
 > **9. Prices, subscriptions and cancellation**
 > Prices, billing periods and included features are shown before purchase and are in Australian dollars, including GST, unless stated otherwise. Payments are processed by Stripe.
-> The Will is a one-off payment of $129. It includes your completed Will, permanent access to download it, guided signing and, for NSW addresses, one remote witnessing session. You keep and can download your Will whether or not you buy anything else.
+> The Will is a one-off payment of $149. It includes your completed Will, permanent access to download it, guided signing and, for NSW addresses, one remote witnessing session. You keep and can download your Will whether or not you buy anything else.
 > Unlimited updates is an optional add-on at $25 per year. You can add it when you buy your Will or later. While it is active you can change your Will as many times as you need and download each new version. It renews automatically each year at the price then shown until you cancel, and we will remind you before each renewal. You can cancel at any time from your dashboard. Cancelling stops future renewals, your access continues to the end of the paid period, and you keep your completed Will and its versions.
 > Remote witnessing of an updated Will is not yet available. Features described as coming soon are not part of the service until we make them available.
 > Nothing in these terms excludes rights or remedies that cannot lawfully be excluded, including under the Australian Consumer Law. Any refund policy is subject to those rights. Contact hello@heirloomlife.com.au about billing, cancellation or a service that was not supplied as promised.

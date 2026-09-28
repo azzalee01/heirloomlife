@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { PRICING } from '@/src/lib/pricing'
 import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 
@@ -26,7 +27,7 @@ export default function WaitlistPage() {
             <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>nationwide</em>.
           </h1>
           <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', marginBottom: '2.5rem', maxWidth: '30rem' }}>
-            We now support all Australian states and territories. Your Will is drafted to the specific legal requirements of your state — free to start, $129 to download with solicitor review included.
+            We now support all Australian states and territories. Your Will is drafted to the specific legal requirements of your state — free to start, ${PRICING.willAud} to download with solicitor review included.
           </p>
 
           <Link href="/start" className="mkt-btn-ink-m">

@@ -54,8 +54,8 @@ export default function PricingPage() {
                 $0
               </p>
               <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>Free to draft. No account required to start.</p>
-              <p style={{ fontSize: '.85rem', color: 'var(--teal-deep)', fontWeight: 600, marginBottom: '.3rem' }}>Pay $129 to download  - solicitor review included.</p>
-              <p style={{ fontSize: '.8rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount: $89 when your partner shares their link with you.</p>
+              <p style={{ fontSize: '.85rem', color: 'var(--teal-deep)', fontWeight: 600, marginBottom: '.3rem' }}>Pay ${PRICING.willAud} to download  - solicitor review included.</p>
+              <p style={{ fontSize: '.8rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount: ${PRICING.willAud - PRICING.partnerWillDiscountAud} when your partner shares their link with you.</p>
 
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
                 {[
@@ -156,7 +156,7 @@ export default function PricingPage() {
           {[
             {
               q: 'Is it really free to start?',
-              a: 'Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $129 when you\'re ready to download your solicitor-reviewed, signed-ready document. Unlimited updates ($25/year, optional) only matters if you want to change your Will later.',
+              a: `Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $${PRICING.willAud} when you're ready to download your solicitor-reviewed, signed-ready document. Unlimited updates ($25/year, optional) only matters if you want to change your Will later.`,
             },
             {
               q: 'Which states are supported?',

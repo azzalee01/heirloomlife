@@ -24,9 +24,9 @@ Generated: 2026-09-21 · Branch: copy/site-accuracy-sweep (LR-01–LR-05) / copy
 
 ## LR-02 — Vault partner pricing: dollar amount unknown
 
-**Status:** Partially fixed on copy/site-accuracy-sweep. Partner rate confirmed at $89 for the Will tier; Vault rate not yet specified.
+**Status:** Updated for $149 Will price. Partner rate for the Will tier is now $109 (A$40 off A$149); Vault rate not yet specified.
 
-**Background:** Vault moved from $99/yr (retired) to $12/month billed annually. Pricing page shows `$89` for Will partner discount. Vault tier shows "Partner discount available" without a dollar amount.
+**Background:** Vault moved from $99/yr (retired) to $12/month billed annually. Pricing page shows `$109` for Will partner discount. Vault tier shows "Partner discount available" without a dollar amount.
 
 **Requires founder confirmation:**
 - What is the correct Vault partner discount price at $12/month billing? Once confirmed, update `app/pricing/page.tsx` (partner discount line under the Living Vault tier).

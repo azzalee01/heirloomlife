@@ -3,12 +3,12 @@
 // keep these amounts in step with them. Marketing pages should import from here, not hardcode strings.
 
 export const PRICING = {
-  willAud: 129,
+  willAud: 149,
   updatesAudPerYear: 25,
   partnerWillDiscountAud: 40,
 } as const
 
-// Derived label strings — use these in UI rather than hardcoding "$129" etc.
+// Derived label strings — use these in UI rather than hardcoding "$149" etc.
 export const WILL_PRICE_LABEL = `$${PRICING.willAud}`
 export const UPDATES_PRICE_LABEL = `$${PRICING.updatesAudPerYear}/year`
 export const PARTNER_WILL_PRICE_LABEL = `$${PRICING.willAud - PRICING.partnerWillDiscountAud}`

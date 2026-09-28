@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { PRICING } from '@/src/lib/pricing'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import IntroAnimationLoader from './_components/IntroAnimationLoader'
@@ -214,7 +215,7 @@ export default async function DashboardPage({
                         </a>
                       ) : (
                         <Link href="/pricing" className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
-                          Download my Will — $129 →
+                          Download my Will — ${PRICING.willAud} →
                         </Link>
                       )}
                     </>

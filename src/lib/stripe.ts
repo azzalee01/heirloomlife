@@ -1,6 +1,6 @@
 import Stripe from 'stripe'
 
-// 'will'    = one-off Will purchase (A$129 incl. GST). Includes the first signing and permanent download.
+// 'will'    = one-off Will purchase (A$149 incl. GST). Includes the first signing and permanent download.
 // 'updates' = optional annual "unlimited updates" add-on (A$25/yr incl. GST). Bought alongside the Will
 //             at checkout, or later from the dashboard. Never required to keep or download a paid Will.
 export type Product = 'will' | 'updates'

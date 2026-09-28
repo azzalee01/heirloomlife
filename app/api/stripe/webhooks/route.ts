@@ -17,7 +17,7 @@ function generateCoupleCode(): string {
   return `HMPL-${suffix}`
 }
 
-// Partner discount applies to the Will only (A$40 off => A$89). The updates add-on is never discounted.
+// Partner discount applies to the Will only (A$40 off => A$109). The updates add-on is never discounted.
 // STRIPE_COUPON_WILL_PARTNER must be restricted in Stripe to the Will product (applies_to.products),
 // otherwise it would also discount the add-on line when both are bought together.
 async function createCoupleDiscountCode(userId: string) {

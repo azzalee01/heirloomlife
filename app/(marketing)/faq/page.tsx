@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { PRICING } from '@/src/lib/pricing'
 
 export const metadata: Metadata = {
   title: 'FAQs | Heirloom Life',
@@ -33,7 +34,7 @@ const FAQS = [
   },
   {
     q: 'Do I have to subscribe?',
-    a: "No. The Will is a one-off $129 and it is yours to keep and download. Unlimited updates ($25/year, optional) only matters if you want to change your Will later.",
+    a: `No. The Will is a one-off $${PRICING.willAud} and it is yours to keep and download. Unlimited updates ($25/year, optional) only matters if you want to change your Will later.`,
   },
   {
     q: 'What is the Living Vault?',

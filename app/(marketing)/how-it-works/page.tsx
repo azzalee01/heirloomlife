@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { PRICING } from '@/src/lib/pricing'
 
 export const metadata: Metadata = {
   title: 'How It Works | Heirloom Life',
@@ -25,7 +26,7 @@ const STEPS = [
   {
     num: '03',
     title: 'Download, sign and witness',
-    body: 'Pay $129 to download your solicitor-reviewed Will. Sign it in the presence of two independent witnesses  -  NSW members can use remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Complex situations are flagged in your Vault, where you can reach our partner lawyers directly.',
+    body: `Pay $${PRICING.willAud} to download your solicitor-reviewed Will. Sign it in the presence of two independent witnesses  -  NSW members can use remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Complex situations are flagged in your Vault, where you can reach our partner lawyers directly.`,
   },
   {
     num: '04',
