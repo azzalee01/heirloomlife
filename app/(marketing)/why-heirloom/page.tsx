@@ -242,7 +242,7 @@ export default function WhyHeirloomPage() {
             Start for free. See for yourself.
           </h2>
           <p style={{ margin: '1rem 0 2rem', fontSize: '1rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
-            Draft your complete Will at no cost. Pay ${PRICING.willAud} only when you&apos;re ready to download.
+            Draft your complete Will at no cost. Pay ${PRICING.willAud}{' '}only when you&apos;re ready to download.
           </p>
           <Link href="/start" className="mkt-btn-ink-l">Start your Will</Link>
         </div>
