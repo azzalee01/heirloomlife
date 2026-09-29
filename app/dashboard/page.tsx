@@ -5,7 +5,6 @@ import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import IntroAnimationLoader from './_components/IntroAnimationLoader'
 import PartnerShareCard from './_components/PartnerShareCard'
-import AiChat from './_components/AiChat'
 
 type Will = { id: string; status: string; updated_at: string }
 
@@ -225,9 +224,6 @@ export default async function DashboardPage({
             )}
           </div>
         </section>
-
-        {/* ── Estate Assistant ───────────────────────────────────────────────── */}
-        {will && <AiChat />}
 
         {/* ── Signing ────────────────────────────────────────────────────────── */}
         {will && willStatus !== 'draft' && (
