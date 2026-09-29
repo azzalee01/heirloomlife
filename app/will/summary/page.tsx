@@ -5,7 +5,42 @@ import LogoutButton from '@/src/components/LogoutButton'
 
 // ─── DB row types ─────────────────────────────────────────────────────────────
 
-type Will = { id: string; status: string; updated_at: string; document_text: string | null }
+type Will = {
+  id: string
+  status: string
+  updated_at: string
+  document_text: string | null
+  survivorship_days: number | null
+  pet_care: PetCareJson | null
+  life_interest: LifeInterestJson | null
+}
+
+type PetCareJson = {
+  hasPets?: string
+  petName?: string
+  petDescription?: string
+  caregiverName?: string
+  caregiverRelationship?: string
+  careFundAmount?: string
+}
+
+type LifeInterestJson = {
+  enabled?: boolean
+  propertyDescription?: string
+  lifeTenantName?: string
+  lifeTenantRelationship?: string
+  condition?: string
+  remainderBeneficiaryName?: string
+  remainderBeneficiaryRelationship?: string
+}
+
+type PersonalWishes = {
+  funeral_type?: string | null
+  funeral_resting_place?: string | null
+  funeral_additional_wishes?: string | null
+  has_funeral_plan?: boolean | null
+  funeral_plan_details?: string | null
+}
 
 type Testator = {
   id: string
@@ -76,6 +111,7 @@ type Beneficiary = {
   abn: string | null
   relationship: string | null
   share_percentage: number | null
+  lapse_fallback: string | null
 }
 
 type Gift = {
@@ -221,7 +257,7 @@ export default async function WillSummaryPage() {
 
   const { data: willRows } = await supabase
     .from('wills')
-    .select('id, status, updated_at, document_text')
+    .select('id, status, updated_at, document_text, survivorship_days, pet_care, life_interest')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
@@ -229,7 +265,7 @@ export default async function WillSummaryPage() {
   const will = (willRows?.[0] as Will) ?? null
   if (!will) redirect('/dashboard')
 
-  const [testatorRes, childrenRes, guardianRes, executorRes, assetRes, beneficiaryRes, giftRes] =
+  const [testatorRes, childrenRes, guardianRes, executorRes, assetRes, beneficiaryRes, giftRes, personalWishesRes] =
     await Promise.all([
       supabase.from('testators').select('*').eq('will_id', will.id),
       supabase.from('children').select('*').eq('will_id', will.id),
@@ -238,6 +274,7 @@ export default async function WillSummaryPage() {
       supabase.from('assets').select('*').eq('will_id', will.id),
       supabase.from('beneficiaries').select('*').eq('will_id', will.id).order('order_index'),
       supabase.from('specific_gifts').select('*').eq('will_id', will.id).order('order_index'),
+      supabase.from('personal_wishes').select('*').eq('will_id', will.id).maybeSingle(),
     ])
 
   const testators = (testatorRes.data ?? []) as Testator[]
@@ -247,6 +284,7 @@ export default async function WillSummaryPage() {
   const assets = (assetRes.data ?? []) as Asset[]
   const beneficiaries = (beneficiaryRes.data ?? []) as Beneficiary[]
   const gifts = (giftRes.data ?? []) as Gift[]
+  const personalWishes = (personalWishesRes.data ?? null) as PersonalWishes | null
 
   const primary = testators.find((t) => t.marital_status !== null) ?? testators[0] ?? null
   const spouse = testators.find((t) => t.marital_status === null) ?? null
@@ -517,9 +555,14 @@ export default async function WillSummaryPage() {
                           </div>
                           <div>
                             <p className="text-sm font-semibold text-[var(--ink)]">{name ?? 'Unnamed'}</p>
-                            <div className="flex items-center gap-2 mt-0.5">
+                            <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                               {b.relationship && <p className="text-xs text-[var(--neutral)]">{b.relationship}</p>}
                               {b.abn && <p className="text-xs text-[var(--neutral)]">ABN {b.abn}</p>}
+                              {b.lapse_fallback && (
+                                <p className="text-xs text-[var(--neutral)]">
+                                  Backup: <span className="font-medium text-[var(--ink)]">{b.lapse_fallback}</span>
+                                </p>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -588,6 +631,63 @@ export default async function WillSummaryPage() {
                       </div>
                     )
                   })}
+                </div>
+              </Section>
+            </div>
+          )}
+
+          {/* Survivorship & Pet Care */}
+          {(will.survivorship_days != null || will.pet_care?.hasPets === 'yes') && (
+            <div className="px-6 py-6 space-y-6">
+              {will.survivorship_days != null && (
+                <Section title="Survivorship Period">
+                  <div className="space-y-2.5">
+                    <Field label="Survivorship period" value={`${will.survivorship_days} days`} />
+                  </div>
+                </Section>
+              )}
+
+              {will.pet_care?.hasPets === 'yes' && (
+                <Section title="Pet Care">
+                  <div className="space-y-2.5">
+                    {will.pet_care.petName && <Field label="Pet name" value={will.pet_care.petName} />}
+                    {will.pet_care.petDescription && <Field label="Description" value={will.pet_care.petDescription} />}
+                    {will.pet_care.caregiverName && <Field label="Caregiver" value={will.pet_care.caregiverName} />}
+                    {will.pet_care.caregiverRelationship && <Field label="Relationship" value={will.pet_care.caregiverRelationship} />}
+                    {will.pet_care.careFundAmount && <Field label="Care fund" value={`$${will.pet_care.careFundAmount}`} />}
+                  </div>
+                </Section>
+              )}
+            </div>
+          )}
+
+          {/* Life Interest */}
+          {will.life_interest?.enabled && (
+            <div className="px-6 py-6">
+              <Section title="Life Interest">
+                <div className="space-y-2.5">
+                  {will.life_interest.propertyDescription && <Field label="Property" value={will.life_interest.propertyDescription} />}
+                  {will.life_interest.lifeTenantName && <Field label="Life tenant" value={will.life_interest.lifeTenantName} />}
+                  {will.life_interest.lifeTenantRelationship && <Field label="Relationship" value={will.life_interest.lifeTenantRelationship} />}
+                  {will.life_interest.condition && <Field label="Ends on" value={will.life_interest.condition.replace(/_/g, ' ')} />}
+                  {will.life_interest.remainderBeneficiaryName && <Field label="Remainder to" value={will.life_interest.remainderBeneficiaryName} />}
+                </div>
+              </Section>
+            </div>
+          )}
+
+          {/* Personal Wishes (non-testamentary) */}
+          {personalWishes && (personalWishes.funeral_type || personalWishes.funeral_resting_place || personalWishes.funeral_additional_wishes) && (
+            <div className="px-6 py-6">
+              <Section title="Personal Wishes">
+                <p className="text-xs text-[var(--neutral)] mb-4 -mt-2">
+                  These wishes are recorded for your executor's guidance. They are not legally binding.
+                </p>
+                <div className="space-y-2.5">
+                  {personalWishes.funeral_type && <Field label="Funeral preference" value={personalWishes.funeral_type.charAt(0).toUpperCase() + personalWishes.funeral_type.slice(1)} />}
+                  {personalWishes.funeral_resting_place && <Field label="Resting place" value={personalWishes.funeral_resting_place} />}
+                  {personalWishes.funeral_additional_wishes && <Field label="Additional wishes" value={personalWishes.funeral_additional_wishes} />}
+                  {personalWishes.has_funeral_plan && <Field label="Funeral plan" value={personalWishes.funeral_plan_details || 'Yes'} />}
                 </div>
               </Section>
             </div>
