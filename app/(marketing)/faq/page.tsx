@@ -39,11 +39,11 @@ const FAQS = [
   },
   {
     q: 'Can I update my Will after signing it?',
-    a: "Yes. Add unlimited updates for $25 a year, when you buy your Will or any time after. Every changed Will must be signed and witnessed again. Video re-witnessing of updated Wills is coming soon; until then you print and sign updates.",
+    a: `Yes. Add unlimited updates for $${PRICING.updatesAudPerYear} a year, when you buy your Will or any time after. Every changed Will must be signed and witnessed again. Video re-witnessing of updated Wills is coming soon; until then you print and sign updates.`,
   },
   {
     q: 'Do I have to subscribe?',
-    a: `No. The Will is a one-off $${PRICING.willAud} and it is yours to keep and download. Unlimited updates ($25/year, optional) only matters if you want to change your Will later.`,
+    a: `No. The Will is a one-off $${PRICING.willAud} and it is yours to keep and download. Unlimited updates ($${PRICING.updatesAudPerYear}/year, optional) only matters if you want to change your Will later.`,
   },
   {
     q: 'What is the Living Vault?',

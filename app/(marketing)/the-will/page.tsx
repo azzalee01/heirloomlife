@@ -155,8 +155,32 @@ export default function TheWillPage() {
         </div>
       </section>
 
+      {/* ── Signing ───────────────────────────────────────────────────────── */}
+      <section id="signing" style={{ ...SECTION_PAD, background: '#fff', borderTop: '1px solid var(--mkt-line)', scrollMarginTop: '6rem' }}>
+        <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
+          <span style={SECTION_LABEL}>Signing your Will</span>
+          <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem' }}>
+            Two witnesses. The same moment.
+          </h2>
+          <p style={{ fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>
+            A Will is only legally valid if signed correctly. The requirements are straightforward:
+          </p>
+          <ol style={{ fontSize: '.92rem', lineHeight: 1.75, color: 'var(--mkt-stone)', paddingLeft: '1.5rem', margin: '0 0 1.5rem' }}>
+            <li style={{ marginBottom: '.5rem' }}>Sign each page in front of two witnesses at the same time.</li>
+            <li style={{ marginBottom: '.5rem' }}>Both witnesses must be present when you sign, and each witness signs in your presence.</li>
+            <li style={{ marginBottom: '.5rem' }}>Witnesses must be 18 or over and must not be a beneficiary under the Will (or married to one).</li>
+          </ol>
+          <p style={{ fontSize: '.92rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: '0 0 .75rem' }}>
+            <strong style={{ color: 'var(--mkt-ink-text)' }}>NSW members:</strong> Remote audio-visual witnessing is available. Heirloom can coordinate an AV signing session so you can sign from home.
+          </p>
+          <p style={{ fontSize: '.92rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: 0 }}>
+            <strong style={{ color: 'var(--mkt-ink-text)' }}>All other states:</strong> Print your Will, sign in the presence of two eligible witnesses, and follow the step-by-step instructions included with your download.
+          </p>
+        </div>
+      </section>
+
       {/* ── Solicitor review note ─────────────────────────────────────────── */}
-      <section id="solicitor-review" style={{ ...SECTION_PAD, background: '#fff', scrollMarginTop: '6rem' }}>
+      <section id="solicitor-review" style={{ ...SECTION_PAD, background: 'var(--mkt-surface-2)', scrollMarginTop: '6rem' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem' }}>
             Solicitor review, included.

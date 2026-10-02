@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 interface Props {
   code: string
-  product: 'will' | 'vault'
+  product: 'will'
   discountCents: number
   expiresAt: string
   usedAt: string | null
@@ -16,7 +16,7 @@ export default function PartnerShareCard({ code, product, discountCents, expires
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'https://heirloomlife.com.au'
   const link = `${baseUrl}/start?partner=${code}`
   const discountLabel = `$${discountCents / 100} off`
-  const productLabel = product === 'will' ? 'Will' : 'Heirloom Vault'
+  const productLabel = 'Will'
   const expiry = new Date(expiresAt).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })
 
   function handleCopy() {

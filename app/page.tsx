@@ -20,6 +20,7 @@ import WillDraftingAnimation from '@/components/marketing/WillDraftingAnimation'
 import JourneyLine from '@/components/marketing/JourneyLine'
 import PlatformPreview from '@/components/marketing/PlatformPreview'
 import Reveal from '@/components/marketing/Reveal'
+import EmailCapture from '@/components/marketing/EmailCapture'
 
 
 const W: React.CSSProperties = { maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }
@@ -266,6 +267,13 @@ export default function HomePage() {
           <blockquote style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'clamp(1.7rem, 2.9vw, 2.6rem)', lineHeight: 1.25, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', maxWidth: '46rem', margin: 0 }}>
             A Will isn&#8217;t paperwork—it&#8217;s the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet.
           </blockquote>
+        </Reveal>
+      </section>
+
+      {/* ─── EMAIL CAPTURE ────────────────────────────────────────────────── */}
+      <section style={{ ...SECTION_PAD, background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)' }}>
+        <Reveal className="md:px-10" style={{ ...W, maxWidth: 640 }}>
+          <EmailCapture source="homepage" />
         </Reveal>
       </section>
 

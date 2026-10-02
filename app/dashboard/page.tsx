@@ -128,7 +128,7 @@ export default async function DashboardPage({
           <PartnerShareCard
             key={c.code as string}
             code={c.code as string}
-            product={c.product as 'will' | 'vault'}
+            product="will"
             discountCents={c.discount_cents as number}
             expiresAt={c.expires_at as string}
             usedAt={c.used_at as string | null}
@@ -259,7 +259,7 @@ export default async function DashboardPage({
             Need help?
           </h2>
           <a
-            href="mailto:support@heirloomlife.com.au"
+            href="mailto:hello@heirloomlife.com.au"
             className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg"
             style={{ background: 'var(--paper-warm)', color: 'var(--ink)', border: '1px solid var(--line)' }}
           >
