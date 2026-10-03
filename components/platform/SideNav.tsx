@@ -7,12 +7,13 @@ import { Settings, HelpCircle, LogOut, PanelLeft, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ── Nav items ────────────────────────────────────────────────────────────────
-type NavKey = 'dashboard' | 'live-will' | 'witnessing';
+type NavKey = 'dashboard' | 'live-will' | 'witnessing' | 'appointments';
 
 const NAV_ITEMS: { key: NavKey; label: string; href: string; shortcut: string }[] = [
-  { key: 'dashboard', label: 'Overview',   href: '/dashboard',      shortcut: '⌘H' },
-  { key: 'live-will', label: 'My Will',    href: '/dashboard/will', shortcut: '⌘W' },
-  { key: 'witnessing', label: 'Witnessing', href: '/witnessing',    shortcut: '⌘E' },
+  { key: 'dashboard',    label: 'Overview',     href: '/dashboard',              shortcut: '⌘H' },
+  { key: 'live-will',    label: 'My Will',      href: '/dashboard/will',         shortcut: '⌘W' },
+  { key: 'witnessing',   label: 'Witnessing',   href: '/witnessing',             shortcut: '⌘E' },
+  { key: 'appointments', label: 'Guided calls', href: '/dashboard/appointments', shortcut: '⌘G' },
 ];
 
 // ── Icons ────────────────────────────────────────────────────────────────────
@@ -37,6 +38,14 @@ function NavIcon({ k }: { k: NavKey }) {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
           <rect x="2" y="6" width="14" height="12" rx="2" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M16 10.5l5-3v9l-5-3" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      );
+    case 'appointments':
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" className={common} aria-hidden>
+          <rect x="3" y="4" width="18" height="18" rx="2" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M16 2v4M8 2v4M3 10h18" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01" strokeWidth="2" strokeLinecap="round" />
         </svg>
       );
   }
