@@ -88,12 +88,17 @@ export default function HomePage() {
             Complete your Will in 15 minutes. Keep it current as life changes.
           </p>
           <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.75rem' }}>
-            <Link href="/start?path=retail" className="mkt-btn-ink-l">
-              Create my Will
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </Link>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <Link href="/start?path=retail" className="mkt-btn-ink-l">
+                Create my Will
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+              <Link href="/book" className="mkt-btn-ink-l" style={{ background: 'transparent', border: '1.5px solid var(--teal)', color: 'var(--teal-deep)' }}>
+                Book a guided call
+              </Link>
+            </div>
             <p style={{ margin: 0, fontSize: '.8rem', color: 'var(--mkt-stone)' }}>
               Already have a Will?{' '}
               <Link href="/start?mode=upload" style={{ color: 'var(--teal-deep)', fontWeight: 500, textDecoration: 'underline' }}>
