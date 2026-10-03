@@ -234,3 +234,155 @@ export async function sendWitnessInviteEmail(params: {
     console.error(`Failed to send witness invite email to ${to}:`, err)
   }
 }
+
+// ─── Guided appointments ────────────────────────────────────────────────────
+
+function esc(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+const APPT_TZ = 'Australia/Sydney'
+
+function formatApptTime(iso: string): string {
+  return new Intl.DateTimeFormat('en-AU', {
+    timeZone: APPT_TZ,
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  }).format(new Date(iso))
+}
+
+function icsStamp(iso: string): string {
+  return new Date(iso).toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')
+}
+
+function buildIcs(params: { id: string; startsAt: string; endsAt: string; joinUrl: string }): string {
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Heirloom Life//Guided call//EN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    `UID:${params.id}@heirloomlife.com.au`,
+    `DTSTAMP:${icsStamp(new Date().toISOString())}`,
+    `DTSTART:${icsStamp(params.startsAt)}`,
+    `DTEND:${icsStamp(params.endsAt)}`,
+    'SUMMARY:Heirloom Life guided call',
+    `DESCRIPTION:Join your video call: ${params.joinUrl}`,
+    `URL:${params.joinUrl}`,
+    'END:VEVENT',
+    'END:VCALENDAR',
+  ].join('\r\n')
+}
+
+function apptButton(url: string, label: string): string {
+  return `<a href="${url}" style="display:inline-block;padding:14px 28px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:16px;font-weight:600;text-decoration:none;">${label}</a>`
+}
+
+const APPT_LEGAL_FOOTER = `
+      <p style="margin:16px 0 0;color:#8A8D87;font-size:11px;line-height:1.5;">
+        Heirloom Life is not a law firm and your guide cannot give legal advice. Your Will is a template document and must be signed and witnessed to be legally valid.
+      </p>`
+
+export async function sendAppointmentConfirmationEmail(params: {
+  to: string
+  name: string
+  appointmentId: string
+  startsAt: string
+  endsAt: string
+  joinUrl: string
+  bookedBy?: string | null
+  forCustomer?: string | null
+  rescheduled?: boolean
+}): Promise<boolean> {
+  const { to, name, appointmentId, startsAt, endsAt, joinUrl, bookedBy, forCustomer, rescheduled } = params
+  const when = formatApptTime(startsAt)
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:22px;color:#0E1310;margin:0 0 16px;">${forCustomer ? 'Guided call booked' : 'Your guided call is booked'}</h1>
+      <p style="margin:0 0 8px;color:#0E1310;font-size:16px;line-height:1.6;">Hi ${esc(name.split(' ')[0])},</p>
+      ${bookedBy ? `<p style="margin:0 0 8px;color:#0E1310;font-size:16px;line-height:1.6;">${esc(bookedBy)} booked this call for you.</p>` : ''}
+      <p style="margin:0 0 20px;color:#0E1310;font-size:16px;line-height:1.6;">
+        ${forCustomer ? `You&rsquo;ve booked a guided call for <strong>${esc(forCustomer)}</strong>. On the day, open the link below to join them.` : 'We&rsquo;ll talk you through your Will on a video call.'}<br/>
+        <strong>${esc(when)}</strong>
+      </p>
+      <p style="margin:0 0 20px;">${apptButton(joinUrl, 'Join your call')}</p>
+      <p style="margin:0 0 12px;color:#0E1310;font-size:14px;line-height:1.6;">
+        Use this same link when it&rsquo;s time. It works on a phone, tablet or computer, and you don&rsquo;t need to install anything. You can join up to 15 minutes early.
+      </p>
+      <p style="margin:0 0 12px;color:#0E1310;font-size:14px;line-height:1.6;">
+        The call is recorded so there is an accurate record of how your Will was prepared. You&rsquo;ll be asked to agree before it starts.
+      </p>
+      <p style="margin:0;color:#8A8D87;font-size:12px;line-height:1.5;">
+        Need to change the time? Open the link above and choose &ldquo;Cancel this booking&rdquo;, then book a new time. If the button doesn&rsquo;t work, copy this link: ${joinUrl}
+      </p>${APPT_LEGAL_FOOTER}
+    </div>
+  `
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: rescheduled ? 'Your Heirloom Life call has been rescheduled' : 'Your Heirloom Life guided call is booked',
+      html,
+      attachments: [
+        {
+          filename: 'heirloom-guided-call.ics',
+          content: Buffer.from(buildIcs({ id: appointmentId, startsAt, endsAt, joinUrl }), 'utf-8'),
+        },
+      ],
+    })
+    if (error) {
+      console.error(`Resend rejected appointment confirmation to ${to}:`, error)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error(`Failed to send appointment confirmation to ${to}:`, err)
+    return false
+  }
+}
+
+export async function sendAppointmentReminderEmail(params: {
+  to: string
+  name: string
+  startsAt: string
+  joinUrl: string
+  window: '24h' | '1h'
+}): Promise<boolean> {
+  const { to, name, startsAt, joinUrl, window } = params
+  const when = formatApptTime(startsAt)
+  const lead = window === '24h' ? 'Your guided call is coming up' : 'Your guided call starts in about an hour'
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:22px;color:#0E1310;margin:0 0 16px;">${lead}</h1>
+      <p style="margin:0 0 20px;color:#0E1310;font-size:16px;line-height:1.6;">
+        Hi ${esc(name.split(' ')[0])}, <strong>${esc(when)}</strong>.
+      </p>
+      <p style="margin:0 0 20px;">${apptButton(joinUrl, 'Join your call')}</p>
+      <p style="margin:0;color:#8A8D87;font-size:12px;line-height:1.5;">
+        If the button doesn&rsquo;t work, copy this link: ${joinUrl}
+      </p>${APPT_LEGAL_FOOTER}
+    </div>
+  `
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: window === '24h' ? 'Reminder: your Heirloom Life call is coming up' : 'Your Heirloom Life call starts soon',
+      html,
+    })
+    if (error) {
+      console.error(`Resend rejected appointment reminder to ${to}:`, error)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error(`Failed to send appointment reminder to ${to}:`, err)
+    return false
+  }
+}

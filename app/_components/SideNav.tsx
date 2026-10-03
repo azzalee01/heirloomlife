@@ -29,6 +29,17 @@ const NAV = [
     ),
   },
   {
+    key: 'appointments',
+    href: '/dashboard/appointments',
+    label: 'Appointments',
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M16 3v4M8 3v4M3 10h18" />
+      </svg>
+    ),
+  },
+  {
     key: 'notifications',
     href: '/dashboard/notifications',
     label: 'Recommendations',
@@ -117,7 +128,9 @@ export default function SideNav({ userName, userEmail }: Props) {
             const active =
               item.key === 'dashboard'
                 ? pathname === '/dashboard'
-                : pathname.startsWith('/will/')
+                : item.key === 'will'
+                  ? pathname.startsWith('/will/')
+                  : pathname.startsWith(item.href)
             return (
               <li key={item.key}>
                 <Link
