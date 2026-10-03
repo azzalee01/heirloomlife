@@ -17,7 +17,7 @@ export default function BookPage() {
         We&rsquo;ll talk you through it.
       </h1>
       <p className="mt-4 text-lg leading-relaxed" style={{ color: ‘var(--mkt-stone)’, maxWidth: ‘32rem’ }}>
-        A member of our team walks you through your Will on video — nothing to install, we&rsquo;ll email you a link.
+        A member of our team walks you through your Will on video. We&rsquo;ll email you a link to join.
       </p>
 
       <div className="mt-12">
