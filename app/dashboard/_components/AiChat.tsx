@@ -243,7 +243,7 @@ export default function AiChat({
                         do in this situation.
                       </p>
                       <a
-                        href="mailto:support@heirloomlife.com.au?subject=Legal advice enquiry"
+                        href="mailto:hello@heirloomlife.com.au?subject=Legal advice enquiry"
                         className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-md border transition-colors hover:bg-white"
                         style={{
                           borderColor: 'var(--line)',

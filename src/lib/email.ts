@@ -138,6 +138,45 @@ ${button}
   }
 }
 
+export async function sendWillAbandonmentEmail(params: { to: string; firstName: string | null }) {
+  const { to, firstName } = params
+  const greeting = firstName ? `Hi ${firstName},` : 'Hi,'
+  const dashboardUrl = `${APP_URL}/dashboard`
+
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 16px;">${greeting}</h1>
+      <p style="margin:0 0 16px;color:#0E1310;font-size:14px;line-height:1.6;">
+        You started a Will with Heirloom a few days ago but haven't finished yet. It's still there  -  your answers are saved and you can pick up right where you left off.
+      </p>
+      <p style="margin:0 0 24px;color:#0E1310;font-size:14px;line-height:1.6;">
+        Most people finish in about 20 minutes.
+      </p>
+      <a href="${dashboardUrl}" style="display:inline-block;padding:12px 24px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:14px;font-weight:600;text-decoration:none;">
+        Continue your Will
+      </a>
+      <p style="margin:24px 0 0;color:#8A8D87;font-size:12px;line-height:1.5;">
+        If you've already finished or have a question, reply to this email  -  we're happy to help.
+      </p>
+      <p style="margin:16px 0 0;color:#8A8D87;font-size:11px;line-height:1.5;">
+        Heirloom Life is not a law firm and this is not legal advice. Your Will is a template document and must be signed and witnessed to be legally valid.
+      </p>
+    </div>
+  `
+
+  try {
+    await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: 'Your Will is still waiting  -  Heirloom Life',
+      html,
+    })
+  } catch (err) {
+    console.error(`Failed to send abandonment email to ${to}:`, err)
+  }
+}
+
 export async function sendWitnessInviteEmail(params: {
   to: string
   witnessName: string

@@ -4,6 +4,7 @@ import MarketingNav from '@/components/marketing/MarketingNav'
 import MarketingFooter from '@/components/marketing/MarketingFooter'
 import PricingVaultCTA from './_components/PricingVaultCTA'
 import { PRICING } from '@/src/lib/pricing'
+import EmailCapture from '@/components/marketing/EmailCapture'
 
 export const metadata: Metadata = {
   title: 'Pricing | Heirloom Life',
@@ -75,7 +76,7 @@ export default function PricingPage() {
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
                 {[
                   'Guided questionnaire',
-                  'State-specific legal compliance for all Australian states and territories',
+                  'Drafted to NSW legal requirements (Succession Act 2006)',
                   'Standard solicitor quality review before your Will is issued',
                   'Your Will, permanently downloadable',
                   'One remote signing session included (NSW)',
@@ -162,6 +163,19 @@ export default function PricingPage() {
         </div>
       </section>
 
+      {/* ── Email capture ────────────────────────────────────────────────────── */}
+      <section style={{ paddingBlock: '4rem', background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10" style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }}>
+          <div style={{ maxWidth: 560 }}>
+            <EmailCapture
+              source="pricing"
+              heading="Not ready yet? That's fine."
+              subtext="Get the Australian estate planning checklist  -  plain English, no jargon, no pressure."
+            />
+          </div>
+        </div>
+      </section>
+
       {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
       <section style={{ paddingBlock: '5.5rem', background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
@@ -175,7 +189,7 @@ export default function PricingPage() {
             },
             {
               q: 'Which states are supported?',
-              a: 'All Australian states and territories. Your Will is drafted to the specific legal requirements of your state. NSW members have access to remote AV witnessing  -  all other states complete with a straightforward print-and-sign process we walk you through.',
+              a: 'Currently NSW. Your Will is drafted to NSW legal requirements under the Succession Act 2006. Members in all states can use Heirloom  -  NSW members have access to remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Other states are in progress.',
             },
             {
               q: 'Can I upload my existing Will?',
