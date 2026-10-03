@@ -466,6 +466,17 @@ input, textarea, [contenteditable="true"] { user-select: text; -webkit-user-sele
 *:hover::-webkit-scrollbar-thumb:hover { background: var(--neutral); }
 
 /* ── Intro animation ─────────────────────────────────────────────────────────── */
+
+/* Covers the page immediately (before React hydrates) when the intro flag is set.
+   Removes the FOSC (flash of styled content) before the overlay div renders. */
+html.hl-intro-pending::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: #0A1211;
+}
+
 .hl-overlay {
   position: fixed; inset: 0; z-index: 9999;
   background: #0A1211;

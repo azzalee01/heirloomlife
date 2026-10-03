@@ -17,6 +17,8 @@ export default function IntroAnimation() {
   const [mounted, setMounted] = useState(show)
 
   useEffect(() => {
+    // Remove the pre-hydration cover — our overlay div (or nothing) has taken over.
+    document.documentElement.classList.remove('hl-intro-pending')
     if (!show) return
     const timer = setTimeout(() => setMounted(false), 3100)
     return () => clearTimeout(timer)
