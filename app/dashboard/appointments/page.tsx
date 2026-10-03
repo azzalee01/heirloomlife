@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { listAppointmentsForUser } from '@/src/lib/appointments/server'
 import { APPOINTMENT_TZ } from '@/src/lib/appointments/constants'
+import BookingFlow from '@/app/(marketing)/book/_components/BookingFlow'
 
 export const dynamic = 'force-dynamic'
 
@@ -39,28 +40,20 @@ export default async function AppointmentsPage() {
         style={{ background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(16px)', borderColor: 'var(--line)' }}
       >
         <h1 className="text-base font-medium" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-          Appointments
+          Guided calls
         </h1>
       </header>
 
-      <main className="mx-auto max-w-2xl space-y-6 px-4 py-8 pb-28 sm:px-6 md:pb-8">
+      <main className="mx-auto max-w-2xl space-y-8 px-4 py-8 pb-28 sm:px-6 md:pb-8">
+
         {/* Upcoming */}
-        <section className="overflow-hidden rounded-xl border bg-white" style={{ borderColor: 'var(--line)' }}>
-          <div className="h-1" style={{ background: 'var(--teal)' }} />
-          <div className="space-y-4 px-5 py-6">
-            <h2 className="text-xl font-medium" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-              Upcoming
-            </h2>
-            {upcoming.length === 0 ? (
-              <div className="space-y-4">
-                <p className="text-lg leading-relaxed" style={{ color: 'var(--mkt-stone)' }}>
-                  No upcoming calls booked. Prefer to talk it through? We&rsquo;ll read each question aloud and help you enter your answers.
-                </p>
-                <Link href="/book" className="btn btn-primary inline-flex" style={{ height: 56, fontSize: 18 }}>
-                  Book a guided call
-                </Link>
-              </div>
-            ) : (
+        {upcoming.length > 0 && (
+          <section className="overflow-hidden rounded-xl border bg-white" style={{ borderColor: 'var(--line)' }}>
+            <div className="h-1" style={{ background: 'var(--teal)' }} />
+            <div className="px-5 py-6">
+              <h2 className="mb-4 text-xl font-medium" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+                Upcoming
+              </h2>
               <ul className="divide-y" style={{ borderColor: 'var(--line)' }}>
                 {upcoming.map((r) => (
                   <li key={r.id} className="flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0">
@@ -84,7 +77,21 @@ export default async function AppointmentsPage() {
                   </li>
                 ))}
               </ul>
-            )}
+            </div>
+          </section>
+        )}
+
+        {/* Book a call */}
+        <section className="overflow-hidden rounded-xl border bg-white" style={{ borderColor: 'var(--line)' }}>
+          <div className="h-1" style={{ background: 'var(--teal)' }} />
+          <div className="px-5 py-6">
+            <h2 className="text-xl font-medium" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
+              {upcoming.length > 0 ? 'Book another call' : 'Book a guided call'}
+            </h2>
+            <p className="mt-2 mb-6 text-base leading-relaxed" style={{ color: 'var(--mkt-stone)' }}>
+              A member of our team will read each question aloud and help you fill in your Will over video. Nothing to install — we&rsquo;ll email you a link.
+            </p>
+            <BookingFlow />
           </div>
         </section>
 
@@ -94,7 +101,7 @@ export default async function AppointmentsPage() {
             <div className="h-1" style={{ background: 'var(--line)' }} />
             <div className="px-5 py-6">
               <h2 className="mb-4 text-xl font-medium" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>
-                Past
+                Past calls
               </h2>
               <ul className="divide-y" style={{ borderColor: 'var(--line)' }}>
                 {past.map((r) => {
@@ -115,6 +122,7 @@ export default async function AppointmentsPage() {
             </div>
           </section>
         )}
+
       </main>
     </div>
   )
