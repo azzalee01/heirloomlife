@@ -296,6 +296,21 @@ export default function HomePage() {
         </Reveal>
       </section>
 
+      {/* ─── GUIDED CALL BAND ─────────────────────────────────────────────── */}
+      <section style={{ borderTop: '1px solid var(--mkt-line)', background: '#fff' }}>
+        <div className="md:px-10 md:flex-row md:items-center md:justify-between" style={{ ...W, display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingBlock: '2.2rem' }}>
+          <div>
+            <p style={{ ...SECTION_LABEL, marginBottom: '.4rem' }}>Guided call</p>
+            <h2 style={{ fontSize: 'clamp(1.4rem, 2vw, 1.9rem)', fontWeight: 500, letterSpacing: '-.02em', maxWidth: '32rem', margin: 0, color: 'var(--mkt-ink-text)' }}>
+              Prefer to talk it through? We&rsquo;ll walk you through your Will on video.
+            </h2>
+          </div>
+          <Link href="/book" className="mkt-btn-ink-m" style={{ flexShrink: 0 }}>
+            Book a guided call
+          </Link>
+        </div>
+      </section>
+
       {/* ─── FOR ADVISERS BAND ────────────────────────────────────────────── */}
       <section style={{ borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)' }}>
         <div className="md:px-10 md:flex-row md:items-center md:justify-between" style={{ ...W, display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingBlock: '2.2rem' }}>
