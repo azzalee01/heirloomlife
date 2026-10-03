@@ -10,7 +10,8 @@ const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 
 const inp =
   'w-full px-4 py-3 border border-[var(--line)] text-lg text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
-const bigBtn = { height: 52, fontSize: 17 } as const
+const primaryBtn = { height: 64, fontSize: 20 } as const
+const tabBtn = { height: 60, fontSize: 18 } as const
 
 const dateKey = (iso: string) =>
   new Intl.DateTimeFormat('en-CA', { timeZone: APPOINTMENT_TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(iso))
@@ -97,23 +98,22 @@ export default function BookingFlow() {
 
   if (done) {
     return (
-      <div className="border border-[var(--line)] bg-white overflow-hidden" role="status">
-        <div className="h-[3px]" style={{ background: 'var(--teal)' }} />
-        <div className="px-6 py-8 space-y-3">
-          <h2 className="text-2xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-            You’re booked.
+      <div className="overflow-hidden border border-[var(--line)] bg-white" role="status">
+        <div className="h-1" style={{ background: 'var(--teal)' }} />
+        <div className="space-y-4 px-6 py-8 sm:px-8">
+          <h2 className="text-4xl leading-tight" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+            You&rsquo;re booked.
           </h2>
-          <p className="text-lg" style={{ color: 'var(--ink)' }}>
+          <p className="text-2xl font-medium" style={{ color: 'var(--ink)' }}>
             {longDay(done.slot.startsAt)} at {timeLabel(done.slot.startsAt)} ({tzName(done.slot.startsAt)})
           </p>
           {done.emailed ? (
-            <p className="text-base" style={{ color: 'var(--mkt-stone)' }}>
-              We’ve emailed a link to <strong>{done.email}</strong>. Open it at the time of your call and tap “Join”. We’ll
-              send a reminder the day before and an hour before.
+            <p className="text-xl leading-relaxed" style={{ color: 'var(--mkt-stone)' }}>
+              We&rsquo;ve emailed a link to <strong style={{ color: 'var(--ink)' }}>{done.email}</strong>. Open it at the time of your call and tap &ldquo;Join your call&rdquo;. We&rsquo;ll send a reminder the day before and an hour before.
             </p>
           ) : (
-            <p className="text-base" style={{ color: '#92400e' }}>
-              Your time is saved, but we couldn’t send the confirmation email. Please contact us so we can send your link.
+            <p className="text-xl leading-relaxed" style={{ color: '#92400e' }}>
+              Your time is saved, but we couldn&rsquo;t send the confirmation email. Please contact us so we can send your link.
             </p>
           )}
         </div>
@@ -123,25 +123,32 @@ export default function BookingFlow() {
 
   return (
     <div className="space-y-10">
-      {/* 1. Pick a time */}
+      {/* Step 1: Choose a time */}
       <section aria-labelledby="pick-time">
-        <h2 id="pick-time" className="text-2xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-          1. Choose a time
-        </h2>
-        <p className="mt-1 text-sm" style={{ color: 'var(--mkt-stone)' }}>
-          Times are shown in Sydney time. Each call runs about an hour.
-        </p>
+        <div className="mb-5">
+          <p className="text-sm font-semibold uppercase tracking-widest" style={{ color: 'var(--teal-deep)' }}>
+            Step 1 of 2
+          </p>
+          <h2 id="pick-time" className="mt-1 text-3xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+            Choose a time
+          </h2>
+          <p className="mt-2 text-lg" style={{ color: 'var(--mkt-stone)' }}>
+            Times are in Sydney time. Each call runs about an hour.
+          </p>
+        </div>
 
-        {slots === null && <p className="mt-4 text-base" style={{ color: 'var(--mkt-stone)' }}>Loading available times…</p>}
+        {slots === null && (
+          <p className="text-xl" style={{ color: 'var(--mkt-stone)' }}>Loading available times&hellip;</p>
+        )}
         {slots !== null && days.length === 0 && (
-          <p className="mt-4 text-base" style={{ color: 'var(--ink)' }}>
+          <p className="text-xl" style={{ color: 'var(--ink)' }}>
             There are no times available right now. Please check back soon.
           </p>
         )}
 
         {days.length > 0 && (
           <>
-            <div className="mt-4 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Day">
+            <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Day">
               {days.map(([k, list]) => {
                 const selected = k === activeDay
                 return (
@@ -150,19 +157,16 @@ export default function BookingFlow() {
                     type="button"
                     role="tab"
                     aria-selected={selected}
-                    onClick={() => {
-                      setDay(k)
-                      setSlot(null)
-                    }}
+                    onClick={() => { setDay(k); setSlot(null) }}
                     className={`btn shrink-0 ${selected ? 'btn-primary' : 'btn-secondary'}`}
-                    style={bigBtn}
+                    style={tabBtn}
                   >
                     {dayLabel(list[0].startsAt)}
                   </button>
                 )
               })}
             </div>
-            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+            <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
               {daySlots.map((s) => {
                 const selected = slot?.startsAt === s.startsAt
                 return (
@@ -172,7 +176,7 @@ export default function BookingFlow() {
                     aria-pressed={selected}
                     onClick={() => setSlot(s)}
                     className={`btn ${selected ? 'btn-primary' : 'btn-secondary'}`}
-                    style={bigBtn}
+                    style={tabBtn}
                   >
                     {timeLabel(s.startsAt)}
                   </button>
@@ -183,59 +187,72 @@ export default function BookingFlow() {
         )}
       </section>
 
-      {/* 2. Details */}
+      {/* Step 2: Your details */}
       {slot && (
         <form onSubmit={submit} className="space-y-5" aria-labelledby="your-details">
-          <div>
-            <h2 id="your-details" className="text-2xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-              2. Your details
-            </h2>
-            <p className="mt-1 text-base" style={{ color: 'var(--ink)' }}>
-              {longDay(slot.startsAt)} at {timeLabel(slot.startsAt)} ({tzName(slot.startsAt)})
-            </p>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-widest" style={{ color: 'var(--teal-deep)' }}>
+                Step 2 of 2
+              </p>
+              <h2 id="your-details" className="mt-1 text-3xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+                Your details
+              </h2>
+            </div>
+            <div
+              className="rounded-lg px-4 py-4"
+              style={{ background: 'var(--teal-light)', border: '1px solid var(--teal-soft)' }}
+            >
+              <p className="text-sm font-semibold uppercase tracking-wide" style={{ color: 'var(--teal-deep)' }}>
+                Selected time
+              </p>
+              <p className="mt-1 text-xl font-medium" style={{ color: 'var(--teal-deep)' }}>
+                {longDay(slot.startsAt)} at {timeLabel(slot.startsAt)} ({tzName(slot.startsAt)})
+              </p>
+            </div>
           </div>
 
           <label className="block">
-            <span className="mb-1 block text-base font-medium" style={{ color: 'var(--ink)' }}>Full name of the person making the Will</span>
+            <span className="mb-1 block text-lg font-medium" style={{ color: 'var(--ink)' }}>Full name of the person making the Will</span>
             <input className={inp} value={name} onChange={(e) => setName(e.target.value)} required autoComplete="name" maxLength={120} />
           </label>
-          <label className="flex items-start gap-3 text-base" style={{ color: 'var(--ink)' }}>
+          <label className="flex items-start gap-3 text-lg" style={{ color: 'var(--ink)' }}>
             <input
               type="checkbox"
               checked={forSomeoneElse}
               onChange={(e) => setForSomeoneElse(e.target.checked)}
               className="mt-1 h-5 w-5"
             />
-            <span>I’m booking this for someone else (a parent or relative)</span>
+            <span>I&rsquo;m booking this for someone else (a parent or relative)</span>
           </label>
 
           {!forSomeoneElse ? (
             <>
               <label className="block">
-                <span className="mb-1 block text-base font-medium" style={{ color: 'var(--ink)' }}>Email (we’ll send the link here)</span>
+                <span className="mb-1 block text-lg font-medium" style={{ color: 'var(--ink)' }}>Email (we&rsquo;ll send the link here)</span>
                 <input className={inp} type="email" value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
               </label>
               <label className="block">
-                <span className="mb-1 block text-base font-medium" style={{ color: 'var(--ink)' }}>Mobile (optional)</span>
+                <span className="mb-1 block text-lg font-medium" style={{ color: 'var(--ink)' }}>Mobile (optional)</span>
                 <input className={inp} type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" />
               </label>
             </>
           ) : (
             <div className="space-y-5 border-l-2 pl-4" style={{ borderColor: 'var(--teal)' }}>
               <label className="block">
-                <span className="mb-1 block text-base font-medium" style={{ color: 'var(--ink)' }}>Your name</span>
+                <span className="mb-1 block text-lg font-medium" style={{ color: 'var(--ink)' }}>Your name</span>
                 <input className={inp} value={bookerName} onChange={(e) => setBookerName(e.target.value)} required maxLength={120} autoComplete="name" />
               </label>
               <label className="block">
-                <span className="mb-1 block text-base font-medium" style={{ color: 'var(--ink)' }}>Your email (we’ll send the link here)</span>
+                <span className="mb-1 block text-lg font-medium" style={{ color: 'var(--ink)' }}>Your email (we&rsquo;ll send the link here)</span>
                 <input className={inp} type="email" value={bookerEmail} onChange={(e) => setBookerEmail(e.target.value)} required autoComplete="email" />
               </label>
               <label className="block">
-                <span className="mb-1 block text-base font-medium" style={{ color: 'var(--ink)' }}>Their email (optional, if they have one)</span>
+                <span className="mb-1 block text-lg font-medium" style={{ color: 'var(--ink)' }}>Their email (optional, if they have one)</span>
                 <input className={inp} type="email" value={theirEmail} onChange={(e) => setTheirEmail(e.target.value)} />
               </label>
               <label className="block">
-                <span className="mb-1 block text-base font-medium" style={{ color: 'var(--ink)' }}>Their mobile (optional)</span>
+                <span className="mb-1 block text-lg font-medium" style={{ color: 'var(--ink)' }}>Their mobile (optional)</span>
                 <input className={inp} type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
               </label>
             </div>
@@ -265,17 +282,16 @@ export default function BookingFlow() {
           )}
 
           {error && (
-            <p role="alert" className="text-base" style={{ color: '#b91c1c' }}>
+            <p role="alert" className="text-xl" style={{ color: '#b91c1c' }}>
               {error}
             </p>
           )}
 
-          <button type="submit" disabled={submitting} className="btn btn-primary w-full" style={bigBtn}>
+          <button type="submit" disabled={submitting} className="btn btn-primary w-full" style={primaryBtn}>
             {submitting ? 'Booking…' : 'Book my call'}
           </button>
-          <p className="text-xs" style={{ color: 'var(--neutral)' }}>
-            Heirloom Life is not a law firm and this is not legal advice. We’ll use your details only to run your call and
-            prepare your Will.
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--neutral)' }}>
+            Heirloom Life is not a law firm and this is not legal advice. We&rsquo;ll use your details only to run your call and prepare your Will.
           </p>
         </form>
       )}

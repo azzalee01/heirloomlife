@@ -9,17 +9,37 @@ import type { AppointmentView, ViewerAccess } from '@/src/lib/appointments/types
 
 type Stage = 'overview' | 'checking' | 'consent' | 'declined' | 'joining' | 'incall' | 'left' | 'cancelled'
 
-const bigBtn = { height: 56, fontSize: 18 } as const
+const primaryBtn = { height: 64, fontSize: 20 } as const
+const secondaryBtn = { height: 60, fontSize: 18 } as const
 
 const fmt = (iso: string, opts: Intl.DateTimeFormatOptions) =>
   new Intl.DateTimeFormat('en-AU', { timeZone: APPOINTMENT_TZ, ...opts }).format(new Date(iso))
-const longWhen = (iso: string) => `${fmt(iso, { weekday: 'long', day: 'numeric', month: 'long' })} at ${fmt(iso, { hour: 'numeric', minute: '2-digit', hour12: true })}`
+const longWhen = (iso: string) =>
+  `${fmt(iso, { weekday: 'long', day: 'numeric', month: 'long' })} at ${fmt(iso, { hour: 'numeric', minute: '2-digit', hour12: true })}`
 
 interface Props {
   access: ViewerAccess
   initial: AppointmentView
   supportPhone?: string
   bookHref?: string
+}
+
+function Spinner() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="animate-spin"
+      style={{ width: 22, height: 22, flexShrink: 0 }}
+      fill="none"
+      viewBox="0 0 24 24"
+    >
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.25" />
+      <path
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+      />
+    </svg>
+  )
 }
 
 export default function JoinPanel({ access, initial, supportPhone, bookHref = '/book' }: Props) {
@@ -30,7 +50,7 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
   const [confirmCancel, setConfirmCancel] = useState(false)
   const [participants, setParticipants] = useState(1)
 
-  // Use the server's clock as the reference so a wrong device clock doesn't mislead the customer.
+  // Use the server's clock so a wrong device clock doesn't mislead the customer.
   const skew = useRef(0)
   const [now, setNow] = useState(() => new Date(initial.serverNow).getTime())
   useEffect(() => {
@@ -45,7 +65,9 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
 
   const opensAt = new Date(view.joinOpensAt).getTime()
   const closesAt = new Date(view.joinClosesAt).getTime()
-  const canJoin = view.status === 'scheduled' || view.status === 'in_progress' ? now >= opensAt && now <= closesAt : false
+  const canJoin = (view.status === 'scheduled' || view.status === 'in_progress')
+    ? now >= opensAt && now <= closesAt
+    : false
   const tooEarly = (view.status === 'scheduled' || view.status === 'in_progress') && now < opensAt
   const passed = (view.status === 'scheduled' || view.status === 'in_progress') && now > closesAt
 
@@ -69,10 +91,7 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
       callRef.current = call
       const count = () => setParticipants(Object.keys(call.participants()).length)
       call
-        .on('joined-meeting', () => {
-          setStage('incall')
-          count()
-        })
+        .on('joined-meeting', () => { setStage('incall'); count() })
         .on('participant-joined', count)
         .on('participant-left', count)
         .on('left-meeting', () => {
@@ -142,106 +161,179 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
 
   return (
     <div className="space-y-6">
-      {/* The frame container is always mounted so the call can attach to it. */}
+      {/* Video frame — always mounted so the call can attach to it */}
       <div
         className={inCallLayout ? 'block' : 'hidden'}
         style={{ height: 'min(78vh, 720px)', border: '1px solid var(--line)', background: '#000' }}
       >
         <div ref={containerRef} className="h-full w-full" />
       </div>
+
       {stage === 'incall' && participants < 2 && (
-        <p className="text-lg" style={{ color: 'var(--ink)' }} role="status">
+        <p className="text-xl" style={{ color: 'var(--ink)' }} role="status">
           You&rsquo;re in. We&rsquo;re just waiting for your guide to join you.
         </p>
       )}
       {stage === 'joining' && (
-        <p className="text-lg" style={{ color: 'var(--ink)' }} role="status">
-          Opening your call…
-        </p>
+        <div className="flex items-center gap-3" role="status">
+          <Spinner />
+          <p className="text-xl" style={{ color: 'var(--ink)' }}>Opening your call&hellip;</p>
+        </div>
       )}
 
+      {/* Overview + device-check: same panel, button state changes during check */}
       {(stage === 'overview' || stage === 'checking') && (
-        <section className="border border-[var(--line)] bg-white">
-          <div className="h-[3px]" style={{ background: 'var(--teal)' }} />
-          <div className="space-y-4 px-6 py-7">
-            <h1 className="text-3xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+        <section className="overflow-hidden border border-[var(--line)] bg-white">
+          <div className="h-1" style={{ background: 'var(--teal)' }} />
+          <div className="space-y-5 px-6 py-8 sm:px-8">
+            <h1
+              className="text-4xl leading-tight"
+              style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}
+            >
               Your guided call
             </h1>
-            <p className="text-xl" style={{ color: 'var(--ink)' }}>
+
+            <p className="text-2xl font-medium leading-snug" style={{ color: 'var(--ink)' }}>
               {longWhen(view.startsAt)}{' '}
-              <span style={{ color: 'var(--mkt-stone)' }}>({fmt(view.startsAt, { timeZoneName: 'short' }).split(' ').pop()})</span>
+              <span className="text-xl font-normal" style={{ color: 'var(--mkt-stone)' }}>
+                ({fmt(view.startsAt, { timeZoneName: 'short' }).split(' ').pop()})
+              </span>
             </p>
 
             {view.status === 'completed' && (
-              <p className="text-lg" style={{ color: 'var(--ink)' }}>This call is finished. Thank you.</p>
+              <p className="text-xl" style={{ color: 'var(--ink)' }}>This call is finished. Thank you.</p>
             )}
             {view.status === 'no_show' && (
-              <p className="text-lg" style={{ color: 'var(--ink)' }}>We missed you for this call. You can book a new time whenever suits.</p>
+              <p className="text-xl" style={{ color: 'var(--ink)' }}>
+                We missed you for this call. You can book a new time whenever suits.
+              </p>
             )}
 
             {(view.status === 'scheduled' || view.status === 'in_progress') && (
               <>
                 {tooEarly && (
-                  <p className="text-lg" style={{ color: 'var(--mkt-stone)' }}>
-                    Your call opens at {fmt(view.joinOpensAt, { hour: 'numeric', minute: '2-digit', hour12: true })}. Come back to this
-                    page then and tap &ldquo;Join&rdquo;.
-                  </p>
+                  <div
+                    className="rounded-lg px-4 py-4"
+                    style={{ background: 'var(--teal-light)', border: '1px solid var(--teal-soft)' }}
+                  >
+                    <p className="text-xl" style={{ color: 'var(--teal-deep)' }}>
+                      Your call opens at{' '}
+                      <strong>{fmt(view.joinOpensAt, { hour: 'numeric', minute: '2-digit', hour12: true })}</strong>.
+                    </p>
+                    <p className="mt-1 text-lg" style={{ color: 'var(--teal-deep)' }}>
+                      Come back to this page then and tap &ldquo;Join your call&rdquo;.
+                    </p>
+                  </div>
                 )}
+
                 {passed && (
-                  <p className="text-lg" style={{ color: 'var(--ink)' }}>
+                  <p className="text-xl" style={{ color: 'var(--ink)' }}>
                     This call time has passed. You can book a new time below.
                   </p>
                 )}
+
                 {error && (
-                  <div role="alert" className="space-y-1">
-                    <p className="text-lg" style={{ color: '#b91c1c' }}>{error}</p>
+                  <div
+                    role="alert"
+                    className="rounded-lg px-4 py-4 space-y-2"
+                    style={{ background: '#fef2f2', border: '1px solid #fecaca' }}
+                  >
+                    <p className="text-xl font-medium" style={{ color: '#b91c1c' }}>{error}</p>
                     {supportPhone && (
-                      <p className="text-base" style={{ color: 'var(--ink)' }}>
+                      <p className="text-lg" style={{ color: '#7f1d1d' }}>
                         Need help? Call us on{' '}
-                        <a href={`tel:${supportPhone.replace(/\s/g, '')}`} className="font-medium underline" style={{ color: 'var(--teal-deep)' }}>
+                        <a
+                          href={`tel:${supportPhone.replace(/\s/g, '')}`}
+                          className="font-semibold underline"
+                          style={{ color: '#7f1d1d' }}
+                        >
                           {supportPhone}
                         </a>
                       </p>
                     )}
                   </div>
                 )}
-                <button
-                  type="button"
-                  className="btn btn-primary w-full"
-                  style={bigBtn}
-                  disabled={!canJoin || busy || stage === 'checking'}
-                  onClick={onJoinClick}
-                >
-                  {stage === 'checking' ? 'Checking your camera…' : busy ? 'Please wait…' : 'Join your call'}
-                </button>
-                <p className="text-base" style={{ color: 'var(--mkt-stone)' }}>
-                  You&rsquo;ll be asked to allow your camera and microphone. Nothing to install.
-                  {supportPhone && !error ? <> Having trouble? Call us on <a href={`tel:${supportPhone.replace(/\s/g, '')}`} className="underline" style={{ color: 'var(--teal-deep)' }}>{supportPhone}</a>.</> : null}
+
+                {/* During device check: spinner + status message instead of a dead button */}
+                {stage === 'checking' ? (
+                  <div className="flex items-center gap-4 py-2" role="status">
+                    <Spinner />
+                    <p className="text-xl" style={{ color: 'var(--mkt-stone)' }}>
+                      Checking your camera and microphone&hellip;
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn btn-primary w-full"
+                    style={primaryBtn}
+                    disabled={!canJoin || busy}
+                    onClick={onJoinClick}
+                  >
+                    {busy ? 'Please wait…' : 'Join your call'}
+                  </button>
+                )}
+
+                <p className="text-base leading-relaxed" style={{ color: 'var(--mkt-stone)' }}>
+                  You&rsquo;ll need to allow camera and microphone access when prompted. Nothing to install.
+                  {supportPhone && !error
+                    ? <>{' '}Having trouble? Call us on{' '}
+                        <a
+                          href={`tel:${supportPhone.replace(/\s/g, '')}`}
+                          className="underline"
+                          style={{ color: 'var(--teal-deep)' }}
+                        >
+                          {supportPhone}
+                        </a>.
+                      </>
+                    : null}
                 </p>
               </>
             )}
 
             {view.status === 'scheduled' && !passed && (
-              <div className="pt-2 space-y-3">
+              <div className="space-y-4 border-t pt-5" style={{ borderColor: 'var(--line)' }}>
                 {'token' in access && (
                   <Link
                     href={`/appointments/reschedule/${(access as { token: string }).token}`}
-                    className="text-base underline block"
+                    className="text-lg underline block"
                     style={{ color: 'var(--mkt-stone)' }}
                   >
-                    Reschedule
+                    Need a different time? Reschedule
                   </Link>
                 )}
                 {!confirmCancel ? (
-                  <button type="button" className="text-base underline block" style={{ color: 'var(--mkt-stone)' }} onClick={() => setConfirmCancel(true)}>
+                  <button
+                    type="button"
+                    className="text-lg underline block"
+                    style={{ color: 'var(--mkt-stone)' }}
+                    onClick={() => setConfirmCancel(true)}
+                  >
                     Cancel this booking
                   </button>
                 ) : (
-                  <div className="space-y-3" role="alertdialog" aria-label="Confirm cancel">
-                    <p className="text-lg" style={{ color: 'var(--ink)' }}>Cancel this booking?</p>
+                  <div className="space-y-4" role="alertdialog" aria-label="Confirm cancel">
+                    <p className="text-xl" style={{ color: 'var(--ink)' }}>
+                      Are you sure you want to cancel?
+                    </p>
                     <div className="flex gap-3">
-                      <button type="button" className="btn btn-secondary" style={bigBtn} onClick={() => setConfirmCancel(false)}>Keep it</button>
-                      <button type="button" className="btn btn-secondary" style={bigBtn} disabled={busy} onClick={onCancel}>Yes, cancel</button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary flex-1"
+                        style={secondaryBtn}
+                        onClick={() => setConfirmCancel(false)}
+                      >
+                        Keep it
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary flex-1"
+                        style={secondaryBtn}
+                        disabled={busy}
+                        onClick={onCancel}
+                      >
+                        Yes, cancel
+                      </button>
                     </div>
                   </div>
                 )}
@@ -252,20 +344,41 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
       )}
 
       {stage === 'consent' && (
-        <section className="border border-[var(--line)] bg-white" aria-labelledby="consent-h">
-          <div className="h-[3px]" style={{ background: 'var(--teal)' }} />
-          <div className="space-y-4 px-6 py-7">
-            <h1 id="consent-h" className="text-3xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+        <section
+          className="overflow-hidden border border-[var(--line)] bg-white"
+          aria-labelledby="consent-h"
+        >
+          <div className="h-1" style={{ background: 'var(--teal)' }} />
+          <div className="space-y-5 px-6 py-8 sm:px-8">
+            <h1
+              id="consent-h"
+              className="text-4xl leading-tight"
+              style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}
+            >
               {RECORDING_CONSENT_TEXT.heading}
             </h1>
             {RECORDING_CONSENT_TEXT.body.map((p) => (
-              <p key={p} className="text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>{p}</p>
+              <p key={p} className="text-xl leading-relaxed" style={{ color: 'var(--ink)' }}>{p}</p>
             ))}
-            {error && <p role="alert" className="text-lg" style={{ color: '#b91c1c' }}>{error}</p>}
-            <button type="button" className="btn btn-primary w-full" style={bigBtn} disabled={busy} onClick={onAgree}>
+            {error && (
+              <p role="alert" className="text-xl" style={{ color: '#b91c1c' }}>{error}</p>
+            )}
+            <button
+              type="button"
+              className="btn btn-primary w-full"
+              style={primaryBtn}
+              disabled={busy}
+              onClick={onAgree}
+            >
               {busy ? 'Please wait…' : RECORDING_CONSENT_TEXT.agree}
             </button>
-            <button type="button" className="btn btn-secondary w-full" style={bigBtn} disabled={busy} onClick={onDecline}>
+            <button
+              type="button"
+              className="btn btn-secondary w-full"
+              style={secondaryBtn}
+              disabled={busy}
+              onClick={onDecline}
+            >
               {RECORDING_CONSENT_TEXT.decline}
             </button>
           </div>
@@ -273,37 +386,84 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
       )}
 
       {stage === 'declined' && (
-        <section className="space-y-4 border border-[var(--line)] bg-white px-6 py-7">
-          <p className="text-lg leading-relaxed" style={{ color: 'var(--ink)' }}>{RECORDING_CONSENT_TEXT.declined}</p>
-          <div className="flex flex-wrap gap-3">
-            <button type="button" className="btn btn-secondary" style={bigBtn} onClick={() => setStage('consent')}>Go back</button>
-            {view.status === 'scheduled' && (
-              <button type="button" className="btn btn-secondary" style={bigBtn} disabled={busy} onClick={onCancel}>Cancel this booking</button>
-            )}
-            <Link href="/start" className="btn btn-primary" style={bigBtn}>Do it myself online</Link>
+        <section className="overflow-hidden border border-[var(--line)] bg-white">
+          <div className="h-1" style={{ background: 'var(--teal)' }} />
+          <div className="space-y-5 px-6 py-8 sm:px-8">
+            <p className="text-xl leading-relaxed" style={{ color: 'var(--ink)' }}>
+              {RECORDING_CONSENT_TEXT.declined}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                style={secondaryBtn}
+                onClick={() => setStage('consent')}
+              >
+                Go back
+              </button>
+              {view.status === 'scheduled' && (
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  style={secondaryBtn}
+                  disabled={busy}
+                  onClick={onCancel}
+                >
+                  Cancel this booking
+                </button>
+              )}
+              <Link href="/start" className="btn btn-primary" style={secondaryBtn}>
+                Do it myself online
+              </Link>
+            </div>
           </div>
         </section>
       )}
 
       {stage === 'left' && (
-        <section className="space-y-4 border border-[var(--line)] bg-white px-6 py-7">
-          <p className="text-xl" style={{ color: 'var(--ink)' }}>You&rsquo;ve left the call.</p>
-          <p className="text-lg" style={{ color: 'var(--mkt-stone)' }}>If that was a mistake, you can rejoin straight away.</p>
-          <button type="button" className="btn btn-primary w-full" style={bigBtn} disabled={busy || !canJoin} onClick={startCall}>
-            Rejoin the call
-          </button>
+        <section className="overflow-hidden border border-[var(--line)] bg-white">
+          <div className="h-1" style={{ background: 'var(--teal)' }} />
+          <div className="space-y-5 px-6 py-8 sm:px-8">
+            <h1 className="text-4xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+              You&rsquo;ve left the call.
+            </h1>
+            <p className="text-xl" style={{ color: 'var(--mkt-stone)' }}>
+              If that was a mistake, you can rejoin straight away.
+            </p>
+            <button
+              type="button"
+              className="btn btn-primary w-full"
+              style={primaryBtn}
+              disabled={busy || !canJoin}
+              onClick={startCall}
+            >
+              Rejoin the call
+            </button>
+          </div>
         </section>
       )}
 
       {stage === 'cancelled' && (
-        <section className="space-y-4 border border-[var(--line)] bg-white px-6 py-7">
-          <p className="text-xl" style={{ color: 'var(--ink)' }}>This booking is cancelled.</p>
-          <Link href={bookHref} className="btn btn-primary" style={bigBtn}>Book a new time</Link>
+        <section className="overflow-hidden border border-[var(--line)] bg-white">
+          <div className="h-1" style={{ background: 'var(--teal)' }} />
+          <div className="space-y-5 px-6 py-8 sm:px-8">
+            <h1 className="text-4xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
+              This booking is cancelled.
+            </h1>
+            <p className="text-xl" style={{ color: 'var(--mkt-stone)' }}>
+              You can book a new time whenever you&rsquo;re ready.
+            </p>
+            <Link href={bookHref} className="btn btn-primary inline-flex" style={primaryBtn}>
+              Book a new time
+            </Link>
+          </div>
         </section>
       )}
 
-      {(stage === 'overview' && (passed || view.status === 'no_show')) && (
-        <Link href={bookHref} className="btn btn-secondary" style={bigBtn}>Book a new time</Link>
+      {stage === 'overview' && (passed || view.status === 'no_show') && (
+        <Link href={bookHref} className="btn btn-secondary inline-flex" style={secondaryBtn}>
+          Book a new time
+        </Link>
       )}
     </div>
   )

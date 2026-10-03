@@ -22,11 +22,14 @@ export default async function ReschedulePage({ params }: { params: Promise<{ tok
   }
 
   return (
-    <div className="min-h-screen px-5 py-8" style={{ background: 'var(--paper)' }}>
+    <div className="min-h-screen px-5 py-10 sm:py-14" style={{ background: 'var(--paper)' }}>
       <div className="mx-auto max-w-2xl">
-        <p className="mb-6 text-xl" style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'var(--teal)' }}>
-          Heirloom
-        </p>
+        <div className="mb-8">
+          <p className="text-2xl" style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', color: 'var(--teal)' }}>
+            Heirloom
+          </p>
+          <p className="mt-1 text-base" style={{ color: 'var(--neutral)' }}>Your Will is in good hands.</p>
+        </div>
         <RescheduleFlow access={{ token }} currentStartsAt={appt.starts_at} />
       </div>
     </div>
