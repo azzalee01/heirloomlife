@@ -81,8 +81,8 @@ export async function getRecordingAccessLink(recordingId: string): Promise<strin
 // Rooms are created lazily on first join (not at booking), named deterministically so a race between the
 // host and customer joining resolves to the same room. The room opens an hour before the slot and closes two
 // hours after it ends; who may enter inside that window is enforced server-side per participant.
-export async function ensureAppointmentRoom(appointmentId: string, startsAt: string, endsAt: string): Promise<DailyRoom> {
-  const name = `appt-${appointmentId}`
+export async function ensureAppointmentRoom(appointmentId: string, startsAt: string, endsAt: string, version = 1): Promise<DailyRoom> {
+  const name = `appt-${appointmentId}-v${version}`
   const nbf = Math.floor(new Date(startsAt).getTime() / 1000) - 60 * 60
   const exp = Math.floor(new Date(endsAt).getTime() / 1000) + 2 * 60 * 60
 

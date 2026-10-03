@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { sendAppointmentReminderEmail } from '@/src/lib/email'
+import { sendSms } from '@/src/lib/sms'
 import { joinUrl } from '@/src/lib/appointments/links'
 import { logEvent } from '@/src/lib/appointments/server'
 
@@ -11,6 +12,7 @@ type Row = {
   id: string
   customer_name: string
   customer_email: string
+  customer_phone: string | null
   booked_by_email: string | null
   starts_at: string
   token_version: number
@@ -22,7 +24,7 @@ async function sendWindow(window: '24h' | '1h', from: Date, to: Date, minBooking
   const col = window === '24h' ? 'reminder_24h_sent_at' : 'reminder_1h_sent_at'
   const { data } = await supabaseAdmin
     .from('appointments')
-    .select('id, customer_name, customer_email, booked_by_email, starts_at, token_version')
+    .select('id, customer_name, customer_email, customer_phone, booked_by_email, starts_at, token_version')
     .eq('status', 'scheduled')
     .is(col, null)
     .gt('starts_at', from.toISOString())
@@ -44,6 +46,13 @@ async function sendWindow(window: '24h' | '1h', from: Date, to: Date, minBooking
     const ok = await sendAppointmentReminderEmail({ to: r.customer_email, name: r.customer_name, startsAt: r.starts_at, joinUrl: link, window })
     if (ok && r.booked_by_email && r.booked_by_email !== r.customer_email) {
       await sendAppointmentReminderEmail({ to: r.booked_by_email, name: 'there', startsAt: r.starts_at, joinUrl: link, window })
+    }
+    if (ok && r.customer_phone) {
+      const when = window === '1h' ? 'in about 1 hour' : 'tomorrow'
+      await sendSms(
+        r.customer_phone,
+        `Hi ${r.customer_name.split(' ')[0]}, your Heirloom Life Will call is ${when}. Join here: ${link}`
+      )
     }
     if (ok) {
       sent++

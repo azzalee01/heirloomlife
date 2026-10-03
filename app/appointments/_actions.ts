@@ -4,7 +4,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { createAppointmentToken } from '@/src/lib/daily'
 import { sendAppointmentConfirmationEmail } from '@/src/lib/email'
-import { assertLinkSecret, joinUrl } from '@/src/lib/appointments/links'
+import { assertLinkSecret, buildAccessToken, joinUrl } from '@/src/lib/appointments/links'
 import {
   authorizeViewer,
   ensureRoomFor,
@@ -41,6 +41,7 @@ export interface BookingInput {
   bookedByName?: string
   bookedByEmail?: string
   website?: string // honeypot: real users never fill this
+  turnstileToken?: string
 }
 
 export async function bookAppointment(input: BookingInput): Promise<ActionResult<{ emailed: boolean }>> {
@@ -58,6 +59,19 @@ const str = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice
 async function bookAppointmentInner(input: BookingInput): Promise<ActionResult<{ emailed: boolean }>> {
   // Honeypot: pretend success so bots learn nothing.
   if (typeof input?.website === 'string' && input.website.trim()) return { ok: true, emailed: true }
+
+  // Turnstile verification (only when TURNSTILE_SECRET_KEY is configured).
+  const tsSecret = process.env.TURNSTILE_SECRET_KEY
+  if (tsSecret) {
+    const tsToken = typeof input?.turnstileToken === 'string' ? input.turnstileToken : ''
+    const verification = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret: tsSecret, response: tsToken }).toString(),
+    })
+    const result = (await verification.json()) as { success: boolean }
+    if (!result.success) return { ok: false, error: 'Please complete the security check and try again.' }
+  }
 
   const name = str(input?.customerName, 120)
   const email = str(input?.customerEmail, 200).toLowerCase()
@@ -264,6 +278,74 @@ export async function reportLeft(access: ViewerAccess): Promise<void> {
   // Only meaningful for a call that is actually under way; otherwise a link holder could pad the audit trail.
   if (appt.status !== 'in_progress' || !appt.recording_consent_at) return
   await logEvent(appt.id, 'left', 'customer')
+}
+
+export async function rescheduleAppointment(
+  access: ViewerAccess,
+  startsAt: string
+): Promise<ActionResult<{ token: string }>> {
+  try {
+    assertLinkSecret()
+    const g = await guard(access)
+    if ('error' in g) return { ok: false, error: g.error as string }
+    const appt = g.appt!
+
+    if (appt.status !== 'scheduled') return { ok: false, error: "This booking can't be rescheduled." }
+    if (new Date() >= new Date(appt.starts_at)) return { ok: false, error: 'This call has already started.' }
+
+    const startMs = Date.parse(startsAt)
+    if (Number.isNaN(startMs)) return { ok: false, error: 'Invalid time.' }
+
+    // Re-validate server-side. The customer's current slot is still in the busy list,
+    // so rescheduling to the same time correctly returns an error.
+    const slots = await getOpenSlotsInternal()
+    const slot = slots.find((s) => s.startsAt === new Date(startMs).toISOString())
+    if (!slot) return { ok: false, error: 'That time is no longer available. Please choose another.' }
+
+    const newVersion = appt.token_version + 1
+
+    const { error } = await supabaseAdmin
+      .from('appointments')
+      .update({
+        starts_at: slot.startsAt,
+        ends_at: slot.endsAt,
+        token_version: newVersion,
+        // Clear the room so a new one is created with the correct nbf/exp for the new time.
+        daily_room_name: null,
+        daily_room_url: null,
+        // Reset reminders so they fire again for the new time.
+        reminder_24h_sent_at: null,
+        reminder_1h_sent_at: null,
+      })
+      .eq('id', appt.id)
+      .eq('status', 'scheduled')
+      .eq('token_version', appt.token_version) // optimistic lock
+
+    if (error) {
+      if (error.code === '23P01') return { ok: false, error: 'That time was just taken. Please choose another.' }
+      console.error('rescheduleAppointment update failed:', error.message)
+      return { ok: false, error: 'Something went wrong. Please try again.' }
+    }
+
+    await logEvent(appt.id, 'rescheduled', 'customer', {
+      metadata: { old_starts_at: appt.starts_at, new_starts_at: slot.startsAt },
+    })
+
+    const newToken = buildAccessToken(appt.id, newVersion)
+    const link = joinUrl(appt.id, newVersion)
+
+    // Best-effort emails — reschedule is committed regardless.
+    const base = { appointmentId: appt.id, startsAt: slot.startsAt, endsAt: slot.endsAt, joinUrl: link, rescheduled: true }
+    await sendAppointmentConfirmationEmail({ ...base, to: appt.customer_email, name: appt.customer_name, bookedBy: appt.booked_by_name })
+    if (appt.booked_by_email && appt.booked_by_email !== appt.customer_email) {
+      await sendAppointmentConfirmationEmail({ ...base, to: appt.booked_by_email, name: appt.booked_by_name ?? 'there', forCustomer: appt.customer_name })
+    }
+
+    return { ok: true, token: newToken }
+  } catch (err) {
+    console.error('rescheduleAppointment failed:', err)
+    return { ok: false, error: 'Something went wrong. Please try again.' }
+  }
 }
 
 export async function cancelAppointment(access: ViewerAccess): Promise<ActionResult> {

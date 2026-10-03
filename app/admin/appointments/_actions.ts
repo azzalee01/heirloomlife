@@ -91,6 +91,20 @@ export async function markNoShow(appointmentId: string) {
   return finish(appointmentId, 'no_show')
 }
 
+export async function saveHostNotes(appointmentId: string, notes: string): Promise<ActionResult> {
+  try {
+    const { appt } = await hostAppointment(appointmentId)
+    const { error } = await supabaseAdmin
+      .from('appointments')
+      .update({ host_notes: notes.slice(0, 5000) })
+      .eq('id', appt.id)
+    if (error) return { ok: false, error: 'Could not save notes.' }
+    return { ok: true }
+  } catch {
+    return { ok: false, error: 'Could not save notes.' }
+  }
+}
+
 // Syncs Daily's recordings for this room into appointment_recordings (one row per segment, in start order).
 export async function refreshRecordings(appointmentId: string): Promise<ActionResult<{ count: number }>> {
   try {

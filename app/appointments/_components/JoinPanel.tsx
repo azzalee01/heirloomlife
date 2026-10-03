@@ -7,7 +7,7 @@ import { cancelAppointment, getCustomerJoin, recordConsent, reportLeft } from '.
 import { APPOINTMENT_TZ, RECORDING_CONSENT_TEXT } from '@/src/lib/appointments/constants'
 import type { AppointmentView, ViewerAccess } from '@/src/lib/appointments/types'
 
-type Stage = 'overview' | 'consent' | 'declined' | 'joining' | 'incall' | 'left' | 'cancelled'
+type Stage = 'overview' | 'checking' | 'consent' | 'declined' | 'joining' | 'incall' | 'left' | 'cancelled'
 
 const bigBtn = { height: 56, fontSize: 18 } as const
 
@@ -83,7 +83,7 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
         })
       await call.join({ url: res.roomUrl, token: res.token })
     } catch {
-      setError('We couldn’t start the video. Please check your camera and microphone are allowed, then try again.')
+      setError("We couldn't start the video. Please check your camera and microphone are allowed, then try again.")
       callRef.current?.destroy()
       callRef.current = null
       setStage('overview')
@@ -93,6 +93,16 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
   }, [access])
 
   async function onJoinClick() {
+    setStage('checking')
+    setError(null)
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      stream.getTracks().forEach((t) => t.stop())
+    } catch {
+      setError("We couldn't access your camera or microphone. Please allow access in your browser, then try again.")
+      setStage('overview')
+      return
+    }
     if (view.consentGiven) return startCall()
     setStage('consent')
   }
@@ -141,7 +151,7 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
       </div>
       {stage === 'incall' && participants < 2 && (
         <p className="text-lg" style={{ color: 'var(--ink)' }} role="status">
-          You’re in. We’re just waiting for your guide to join you.
+          You&rsquo;re in. We&rsquo;re just waiting for your guide to join you.
         </p>
       )}
       {stage === 'joining' && (
@@ -150,7 +160,7 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
         </p>
       )}
 
-      {stage === 'overview' && (
+      {(stage === 'overview' || stage === 'checking') && (
         <section className="border border-[var(--line)] bg-white">
           <div className="h-[3px]" style={{ background: 'var(--teal)' }} />
           <div className="space-y-4 px-6 py-7">
@@ -174,7 +184,7 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
                 {tooEarly && (
                   <p className="text-lg" style={{ color: 'var(--mkt-stone)' }}>
                     Your call opens at {fmt(view.joinOpensAt, { hour: 'numeric', minute: '2-digit', hour12: true })}. Come back to this
-                    page then and tap “Join”.
+                    page then and tap &ldquo;Join&rdquo;.
                   </p>
                 )}
                 {passed && (
@@ -183,28 +193,47 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
                   </p>
                 )}
                 {error && (
-                  <p role="alert" className="text-lg" style={{ color: '#b91c1c' }}>{error}</p>
+                  <div role="alert" className="space-y-1">
+                    <p className="text-lg" style={{ color: '#b91c1c' }}>{error}</p>
+                    {supportPhone && (
+                      <p className="text-base" style={{ color: 'var(--ink)' }}>
+                        Need help? Call us on{' '}
+                        <a href={`tel:${supportPhone.replace(/\s/g, '')}`} className="font-medium underline" style={{ color: 'var(--teal-deep)' }}>
+                          {supportPhone}
+                        </a>
+                      </p>
+                    )}
+                  </div>
                 )}
                 <button
                   type="button"
                   className="btn btn-primary w-full"
                   style={bigBtn}
-                  disabled={!canJoin || busy}
+                  disabled={!canJoin || busy || stage === 'checking'}
                   onClick={onJoinClick}
                 >
-                  {busy ? 'Please wait…' : 'Join your call'}
+                  {stage === 'checking' ? 'Checking your camera…' : busy ? 'Please wait…' : 'Join your call'}
                 </button>
                 <p className="text-base" style={{ color: 'var(--mkt-stone)' }}>
-                  You’ll be asked to allow your camera and microphone. Nothing to install.
-                  {supportPhone ? <> Having trouble? Call us on <a href={`tel:${supportPhone.replace(/\s/g, '')}`} className="underline" style={{ color: 'var(--teal-deep)' }}>{supportPhone}</a>.</> : null}
+                  You&rsquo;ll be asked to allow your camera and microphone. Nothing to install.
+                  {supportPhone && !error ? <> Having trouble? Call us on <a href={`tel:${supportPhone.replace(/\s/g, '')}`} className="underline" style={{ color: 'var(--teal-deep)' }}>{supportPhone}</a>.</> : null}
                 </p>
               </>
             )}
 
-            {(view.status === 'scheduled') && !passed && (
-              <div className="pt-2">
+            {view.status === 'scheduled' && !passed && (
+              <div className="pt-2 space-y-3">
+                {'token' in access && (
+                  <Link
+                    href={`/appointments/reschedule/${(access as { token: string }).token}`}
+                    className="text-base underline block"
+                    style={{ color: 'var(--mkt-stone)' }}
+                  >
+                    Reschedule
+                  </Link>
+                )}
                 {!confirmCancel ? (
-                  <button type="button" className="text-base underline" style={{ color: 'var(--mkt-stone)' }} onClick={() => setConfirmCancel(true)}>
+                  <button type="button" className="text-base underline block" style={{ color: 'var(--mkt-stone)' }} onClick={() => setConfirmCancel(true)}>
                     Cancel this booking
                   </button>
                 ) : (
@@ -258,7 +287,7 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
 
       {stage === 'left' && (
         <section className="space-y-4 border border-[var(--line)] bg-white px-6 py-7">
-          <p className="text-xl" style={{ color: 'var(--ink)' }}>You’ve left the call.</p>
+          <p className="text-xl" style={{ color: 'var(--ink)' }}>You&rsquo;ve left the call.</p>
           <p className="text-lg" style={{ color: 'var(--mkt-stone)' }}>If that was a mistake, you can rejoin straight away.</p>
           <button type="button" className="btn btn-primary w-full" style={bigBtn} disabled={busy || !canJoin} onClick={startCall}>
             Rejoin the call

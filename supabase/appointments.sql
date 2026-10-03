@@ -98,7 +98,9 @@ create index if not exists appointments_email_idx on public.appointments (lower(
 create index if not exists appointments_scheduled_idx on public.appointments (starts_at) where status = 'scheduled';
 
 create or replace function public.appointments_set_updated_at()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql
+set search_path = ''
+as $$
 begin
   new.updated_at = now();
   return new;
@@ -150,7 +152,9 @@ create index if not exists appointment_events_appt_idx on public.appointment_eve
 -- Append-only audit trail. RLS does not bind the service role, so this is enforced with a trigger:
 -- no updates or deletes on events, for any role.
 create or replace function public.appointment_events_immutable()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql
+set search_path = ''
+as $$
 begin
   raise exception 'appointment_events is append-only';
 end $$;

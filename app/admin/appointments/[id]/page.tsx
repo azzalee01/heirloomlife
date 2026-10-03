@@ -6,6 +6,7 @@ import { getHostUser, loadAppointment } from '@/src/lib/appointments/server'
 import { APPOINTMENT_TZ } from '@/src/lib/appointments/constants'
 import HostRoom from './_components/HostRoom'
 import RecordingsPanel from './_components/RecordingsPanel'
+import { HostNotesEditor } from './_components/HostNotesEditor'
 
 export const metadata: Metadata = { title: 'Guided call (host)', robots: { index: false, follow: false } }
 export const dynamic = 'force-dynamic'
@@ -55,6 +56,11 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
         consentGiven={Boolean(appt.recording_consent_at)}
         status={appt.status}
       />
+
+      <section>
+        <h2 className="mb-2 text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>Host notes</h2>
+        <HostNotesEditor appointmentId={appt.id} initialNotes={appt.host_notes} />
+      </section>
 
       <section>
         <h2 className="mb-2 text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>Recordings</h2>

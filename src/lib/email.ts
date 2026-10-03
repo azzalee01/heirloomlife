@@ -255,10 +255,11 @@ export async function sendAppointmentConfirmationEmail(params: {
   startsAt: string
   endsAt: string
   joinUrl: string
-  bookedBy?: string | null // set when someone else booked this for the recipient
-  forCustomer?: string | null // set when the recipient is the booker: the name of the person the call is for
+  bookedBy?: string | null
+  forCustomer?: string | null
+  rescheduled?: boolean
 }): Promise<boolean> {
-  const { to, name, appointmentId, startsAt, endsAt, joinUrl, bookedBy, forCustomer } = params
+  const { to, name, appointmentId, startsAt, endsAt, joinUrl, bookedBy, forCustomer, rescheduled } = params
   const when = formatApptTime(startsAt)
   const html = `
     <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;">
@@ -286,7 +287,7 @@ export async function sendAppointmentConfirmationEmail(params: {
     const { error } = await resend.emails.send({
       from: FROM_ADDRESS,
       to,
-      subject: 'Your Heirloom Life guided call is booked',
+      subject: rescheduled ? 'Your Heirloom Life call has been rescheduled' : 'Your Heirloom Life guided call is booked',
       html,
       attachments: [
         {

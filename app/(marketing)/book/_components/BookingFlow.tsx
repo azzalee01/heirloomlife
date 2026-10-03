@@ -4,6 +4,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { bookAppointment, getOpenSlots } from '@/app/appointments/_actions'
 import { APPOINTMENT_TZ } from '@/src/lib/appointments/constants'
 import type { Slot } from '@/src/lib/appointments/slots'
+import { TurnstileWidget } from '@/app/appointments/_components/TurnstileWidget'
+
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? ''
 
 const inp =
   'w-full px-4 py-3 border border-[var(--line)] text-lg text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
@@ -37,6 +40,8 @@ export default function BookingFlow() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState<{ emailed: boolean; slot: Slot; email: string } | null>(null)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileError, setTurnstileError] = useState(false)
 
   useEffect(() => {
     getOpenSlots().then(setSlots)
@@ -62,6 +67,11 @@ export default function BookingFlow() {
     // The person on the call is the customer. A family member booking for them is recorded as the booker, and the
     // link goes to the customer's own email if they have one, otherwise to the booker.
     const customerEmail = forSomeoneElse ? theirEmail.trim() || bookerEmail.trim() : email.trim()
+    if (TURNSTILE_SITE_KEY && !turnstileToken) {
+      setError('Please complete the security check.')
+      setSubmitting(false)
+      return
+    }
     const res = await bookAppointment({
       startsAt: slot.startsAt,
       customerName: name,
@@ -70,6 +80,7 @@ export default function BookingFlow() {
       bookedByName: forSomeoneElse ? bookerName : undefined,
       bookedByEmail: forSomeoneElse ? bookerEmail : undefined,
       website,
+      turnstileToken: TURNSTILE_SITE_KEY ? turnstileToken : undefined,
     })
     setSubmitting(false)
     if (!res.ok) {
@@ -237,6 +248,21 @@ export default function BookingFlow() {
               <input tabIndex={-1} autoComplete="off" value={website} onChange={(e) => setWebsite(e.target.value)} />
             </label>
           </div>
+
+          {TURNSTILE_SITE_KEY && (
+            <div>
+              <TurnstileWidget
+                siteKey={TURNSTILE_SITE_KEY}
+                onToken={(t) => { setTurnstileToken(t); setTurnstileError(false) }}
+                onError={() => setTurnstileError(true)}
+              />
+              {turnstileError && (
+                <p className="mt-1 text-sm" style={{ color: '#b91c1c' }}>
+                  Security check failed. Please refresh and try again.
+                </p>
+              )}
+            </div>
+          )}
 
           {error && (
             <p role="alert" className="text-base" style={{ color: '#b91c1c' }}>

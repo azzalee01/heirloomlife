@@ -37,6 +37,7 @@ export interface AppointmentRow {
   started_at: string | null
   ended_at: string | null
   escalated: boolean
+  host_notes: string | null
 }
 
 const NOT_FOUND = 'Appointment not found'
@@ -186,7 +187,7 @@ export async function getOpenSlotsInternal(now = new Date()): Promise<Slot[]> {
 
 export async function ensureRoomFor(appt: AppointmentRow): Promise<{ name: string; url: string }> {
   if (appt.daily_room_name && appt.daily_room_url) return { name: appt.daily_room_name, url: appt.daily_room_url }
-  const room = await ensureAppointmentRoom(appt.id, appt.starts_at, appt.ends_at)
+  const room = await ensureAppointmentRoom(appt.id, appt.starts_at, appt.ends_at, appt.token_version)
   await supabaseAdmin
     .from('appointments')
     .update({ daily_room_name: room.name, daily_room_url: room.url })
