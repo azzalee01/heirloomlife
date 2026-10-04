@@ -40,7 +40,7 @@ const STEPS = [
   {
     num: '04',
     title: 'Store and update',
-    body: 'Your Will PDF lives in your Vault alongside your asset register. Connect your bank accounts to see live balances alongside your manually entered assets  -  giving you a single, complete view of your estate. Every time your life changes, update your Will from the same place.',
+    body: 'Your Will PDF lives in your Vault alongside your asset register, giving you a single, complete view of your estate. Every time your life changes, update your Will from the same place.',
   },
 ]
 

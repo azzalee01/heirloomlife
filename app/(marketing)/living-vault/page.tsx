@@ -116,10 +116,6 @@ export default function LivingVaultPage() {
                   <span style={{ flex: 1, color: 'var(--mkt-ink-text)' }}>New asset added: Investment property, Bondi</span>
                   <Pill>Synced</Pill>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', padding: '.85rem 1rem', borderRadius: 8, background: '#fff', border: '1px solid var(--mkt-line)', fontSize: '.82rem' }}>
-                  <span style={{ flex: 1, color: 'var(--mkt-ink-text)' }}>ANZ savings account balance synced</span>
-                  <Pill>Synced</Pill>
-                </div>
               </div>
             </div>
 
@@ -134,11 +130,6 @@ export default function LivingVaultPage() {
                 tag: 'Document Storage',
                 title: 'Keep what your executor may one day need, organised.',
                 body: 'Your Will, asset register, and notes are stored securely in your Vault, always up to date. Brief your executor on where everything lives  -  no filing cabinets, no scattered paperwork.',
-              },
-              {
-                tag: 'Bank Connections',
-                title: 'Your complete financial picture, alongside your estate.',
-                body: 'Connect your bank accounts securely through Basiq, a Consumer Data Right accredited intermediary. Your account name and balance appear alongside your manually entered assets. Heirloom never sees your banking credentials  -  you authenticate directly on Basiq\'s consent page. Balance data only, no transactions. Consent lasts 12 months and can be revoked from your Vault at any time.',
               },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: 'var(--mkt-surface)', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>

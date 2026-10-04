@@ -54,14 +54,6 @@ const FAQS = [
     a: "Your Will is stored in your Vault. Executor access to the Vault is on our build roadmap  -  we will publish details of the process before it is released.",
   },
   {
-    q: 'Can I connect my bank accounts to my Vault?',
-    a: "Yes. From your Vault dashboard you can connect bank accounts through Basiq, a Consumer Data Right (CDR) accredited data intermediary. You are redirected to Basiq's secure consent page to authenticate directly with your bank  -  Heirloom never sees your banking credentials. We request your account name, type and balance only. No transaction history is collected. Your consent lasts 12 months and can be revoked at any time from your Vault.",
-  },
-  {
-    q: 'What is Basiq and why does Heirloom use it?',
-    a: "Basiq is a CDR-accredited data intermediary regulated under Australia's Consumer Data Right framework. Using an accredited intermediary means your banking credentials are handled by a regulated third party, not Heirloom. The CDR logo and Basiq's name appear on the consent screen as required by law. You can read more about how bank connections work on our Security and Trust page.",
-  },
-  {
     q: 'Is Heirloom Life providing legal advice?',
     a: "No. Heirloom Life is not a law firm and does not provide legal advice. Your Will is prepared using established estate planning drafting standards. Every Will issued through Heirloom Life is subject to a standard solicitor quality review before being finalised. Using Heirloom Life does not create a solicitor-client relationship.",
   },
