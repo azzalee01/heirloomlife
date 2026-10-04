@@ -22,6 +22,8 @@ interface Props {
   initial: AppointmentView
   supportPhone?: string
   bookHref?: string
+  onInCallChange?: (active: boolean) => void
+  videoStyle?: React.CSSProperties
 }
 
 function Spinner() {
@@ -42,7 +44,7 @@ function Spinner() {
   )
 }
 
-export default function JoinPanel({ access, initial, supportPhone, bookHref = '/book' }: Props) {
+export default function JoinPanel({ access, initial, supportPhone, bookHref = '/book', onInCallChange, videoStyle }: Props) {
   const [view, setView] = useState(initial)
   const [stage, setStage] = useState<Stage>(initial.status === 'cancelled' ? 'cancelled' : 'overview')
   const [error, setError] = useState<string | null>(null)
@@ -62,6 +64,9 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
   const containerRef = useRef<HTMLDivElement>(null)
   const callRef = useRef<DailyCall | null>(null)
   useEffect(() => () => { callRef.current?.destroy() }, [])
+
+  const inCallLayout = stage === 'joining' || stage === 'incall'
+  useEffect(() => { onInCallChange?.(inCallLayout) }, [inCallLayout, onInCallChange])
 
   const opensAt = new Date(view.joinOpensAt).getTime()
   const closesAt = new Date(view.joinClosesAt).getTime()
@@ -157,14 +162,12 @@ export default function JoinPanel({ access, initial, supportPhone, bookHref = '/
     setStage('cancelled')
   }
 
-  const inCallLayout = stage === 'joining' || stage === 'incall'
-
   return (
     <div className="space-y-6">
       {/* Video frame — always mounted so the call can attach to it */}
       <div
         className={inCallLayout ? 'block' : 'hidden'}
-        style={{ height: 'min(78vh, 720px)', border: '1px solid var(--line)', background: '#000' }}
+        style={{ height: 'min(78vh, 720px)', border: '1px solid var(--line)', background: '#000', ...videoStyle }}
       >
         <div ref={containerRef} className="h-full w-full" />
       </div>

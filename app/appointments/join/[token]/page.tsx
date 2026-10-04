@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { authorizeViewer, toView } from '@/src/lib/appointments/server'
 import JoinPanel from '../../_components/JoinPanel'
 
@@ -10,12 +11,19 @@ export const dynamic = 'force-dynamic'
 export default async function JoinPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params
 
-  let view
+  let appt
   try {
-    view = toView(await authorizeViewer({ token }))
+    appt = await authorizeViewer({ token })
   } catch {
     notFound()
   }
+
+  // Logged-in users get the full dashboard experience (video + estate assistant)
+  const supabase = await createSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) redirect(`/dashboard/appointments/${appt.id}`)
+
+  const view = toView(appt)
 
   return (
     <div className="min-h-screen px-5 py-10 sm:py-14" style={{ background: 'var(--paper)' }}>

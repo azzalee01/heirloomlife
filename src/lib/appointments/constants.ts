@@ -3,7 +3,7 @@
 export const APPOINTMENT_TZ = 'Australia/Sydney'
 
 export const BOOKING_HORIZON_DAYS = 28
-export const MIN_NOTICE_HOURS = 0 // TEMP: set to 0 for video call testing — revert to 12
+export const MIN_NOTICE_HOURS = 12
 export const MAX_ACTIVE_BOOKINGS_PER_EMAIL = 2
 
 // Customers may join from 15 minutes before the start until 30 minutes after the scheduled end.
