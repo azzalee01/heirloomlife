@@ -109,14 +109,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ─── WILL DRAFTING ANIMATION ──────────────────────────────────────── */}
-      <section style={{ background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)', overflow: 'hidden' }}>
-        <WillDraftingAnimation />
-      </section>
-
       {/* ─── JOURNEY LINE ─────────────────────────────────────────────────── */}
       <section style={{ background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)', paddingBlock: '5.5rem', overflow: 'hidden' }}>
         <JourneyLine />
+      </section>
+
+      {/* ─── WILL DRAFTING ANIMATION ──────────────────────────────────────── */}
+      <section style={{ background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)', overflow: 'hidden' }}>
+        <WillDraftingAnimation />
       </section>
 
       {/* ─── PLATFORM DEMO ────────────────────────────────────────────────── */}
