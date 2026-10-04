@@ -85,7 +85,7 @@ export default function HomePage() {
             <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
           </h1>
           <p style={{ marginTop: '2.25rem', maxWidth: '26rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-            Complete your Will in 15 minutes. Keep it current as life changes.
+            Complete your Will in 15 minutes.<br/>Keep it current as life changes.
           </p>
           <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.75rem' }}>
             <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
