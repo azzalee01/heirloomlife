@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import BookingFlow from './_components/BookingFlow'
+import { getOpenSlotsInternal } from '@/src/lib/appointments/server'
 
 export const metadata: Metadata = {
   title: 'Book a guided call | Heirloom Life',
@@ -7,7 +8,11 @@ export const metadata: Metadata = {
     "Prefer to talk it through? Book a video call and we'll walk you through your Will step by step, reading each question aloud.",
 }
 
-export default function BookPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function BookPage() {
+  const slots = await getOpenSlotsInternal()
+
   return (
     <div className="mx-auto max-w-2xl px-5 py-12 sm:py-16">
       <p className="text-base font-semibold" style={{ color: 'var(--teal-deep)' }}>
@@ -21,7 +26,7 @@ export default function BookPage() {
       </p>
 
       <div className="mt-12">
-        <BookingFlow />
+        <BookingFlow initialSlots={slots} />
       </div>
     </div>
   )

@@ -145,8 +145,8 @@ const inp = 'w-full px-4 py-3 border border-[var(--line)] rounded-xl text-base t
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-export default function BookingFlow() {
-  const [slots, setSlots] = useState<Slot[] | null>(null)
+export default function BookingFlow({ initialSlots }: { initialSlots?: Slot[] }) {
+  const [slots, setSlots] = useState<Slot[] | null>(initialSlots ?? null)
   const [day, setDay] = useState<string | null>(null)
   const [slot, setSlot] = useState<Slot | null>(null)
 
@@ -165,7 +165,7 @@ export default function BookingFlow() {
   const [turnstileToken, setTurnstileToken] = useState('')
   const [turnstileError, setTurnstileError] = useState(false)
 
-  useEffect(() => { getOpenSlots().then(setSlots) }, [])
+  useEffect(() => { if (slots === null) getOpenSlots().then(setSlots) }, [])
 
   const { availableDays, slotsByDay } = useMemo(() => {
     const map = new Map<string, Slot[]>()

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
-import { listAppointmentsForUser } from '@/src/lib/appointments/server'
+import { listAppointmentsForUser, getOpenSlotsInternal } from '@/src/lib/appointments/server'
 import { APPOINTMENT_TZ } from '@/src/lib/appointments/constants'
 import BookingFlow from '@/app/(marketing)/book/_components/BookingFlow'
 
@@ -31,7 +31,10 @@ export default async function AppointmentsPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { upcoming, past } = await listAppointmentsForUser(user)
+  const [{ upcoming, past }, slots] = await Promise.all([
+    listAppointmentsForUser(user),
+    getOpenSlotsInternal(),
+  ])
 
   return (
     <div className="min-h-screen min-w-0 max-w-full overflow-x-hidden" style={{ background: 'var(--paper)' }}>
@@ -91,7 +94,7 @@ export default async function AppointmentsPage() {
             <p className="mt-2 mb-6 text-base leading-relaxed" style={{ color: 'var(--mkt-stone)' }}>
               A member of our team will read each question aloud and help you fill in your Will over video. Nothing to install — we&rsquo;ll email you a link.
             </p>
-            <BookingFlow />
+            <BookingFlow initialSlots={slots} />
           </div>
         </section>
 
