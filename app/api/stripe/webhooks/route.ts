@@ -103,7 +103,7 @@ export async function POST(request: NextRequest) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
         const userId = session.metadata?.userId
-        const product = session.metadata?.product
+        const product = session.metadata?.product as 'will' | 'updates' | 'rewit' | undefined
         if (!userId || !isProduct(product)) break
 
         // The Will (one-off) and the updates subscription are recorded separately: a Will purchase never
@@ -118,6 +118,14 @@ export async function POST(request: NextRequest) {
         if (product === 'will') {
           updates.plan = 'will'
           updates.plan_status = 'active'
+        }
+        if (product === 'rewit') {
+          // Increment re-witnessing credits atomically
+          const { error: rewitErr } = await supabaseAdmin.rpc('increment_rewit_credits', { p_user_id: userId })
+          if (rewitErr) {
+            console.error('[webhook] increment_rewit_credits failed', { eventId: event.id, userId, error: rewitErr.message })
+            return fail(event.id)
+          }
         }
         if (includesUpdates && subscriptionId) {
           const sub = await stripe.subscriptions.retrieve(subscriptionId)
@@ -197,9 +205,9 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Send purchase confirmation email (best-effort, non-blocking)
+        // Send purchase confirmation email (best-effort, non-blocking) — skip for rewit
         const emailAddress = (session.customer_details as { email?: string | null } | null)?.email ?? null
-        if (emailAddress) {
+        if (emailAddress && (product === 'will' || product === 'updates')) {
           const { data: profileForEmail } = await supabaseAdmin
             .from('profiles')
             .select('full_name')

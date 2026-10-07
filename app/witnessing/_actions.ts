@@ -29,7 +29,7 @@ async function getOwnedWill() {
 // a paid Will, an NSW address, and only the one session included with the Will. Re-witnessing updates is coming soon.
 async function assertMayScheduleSigning(userId: string, willId: string): Promise<void> {
   const [{ data: profile }, { data: testator }, { data: sessions }] = await Promise.all([
-    supabaseAdmin.from('profiles').select('plan, plan_status').eq('id', userId).single(),
+    supabaseAdmin.from('profiles').select('plan, plan_status, rewit_credits').eq('id', userId).single(),
     supabaseAdmin.from('testators').select('state').eq('will_id', willId).not('state', 'is', null).limit(1).maybeSingle(),
     supabaseAdmin.from('witnessing_sessions').select('status').eq('will_id', willId),
   ])
@@ -37,8 +37,19 @@ async function assertMayScheduleSigning(userId: string, willId: string): Promise
   if ((testator as { state: string | null } | null)?.state !== 'NSW') {
     throw new Error('Remote witnessing is currently available for NSW addresses only.')
   }
-  if (hasUsedIncludedSigning(((sessions ?? []) as { status: string }[]).map((r) => r.status))) {
-    throw new Error('Your included signing session has been used. Video re-witnessing of updated Wills is coming soon.')
+  const statuses = ((sessions ?? []) as { status: string }[]).map((r) => r.status)
+  if (hasUsedIncludedSigning(statuses)) {
+    const credits = (profile as { rewit_credits?: number } | null)?.rewit_credits ?? 0
+    if (credits < 1) {
+      throw new Error('Purchase a re-witnessing session to book another video signing.')
+    }
+    // Decrement the credit atomically before the room is created.
+    const { error } = await supabaseAdmin
+      .from('profiles')
+      .update({ rewit_credits: credits - 1 })
+      .eq('id', userId)
+      .eq('rewit_credits', credits) // optimistic lock
+    if (error) throw new Error('Could not claim re-witnessing credit. Please try again.')
   }
 }
 
@@ -268,6 +279,28 @@ export async function getWitnessJoinToken(accessToken: string, displayName: stri
   const token = await createMeetingToken(roomName, displayName, false)
 
   return { roomUrl, token }
+}
+
+// ─── Re-witnessing reminders ────────────────────────────────────────────────
+
+export async function setRewitnessingReminder(
+  months: 12 | 24 | 36 | null,
+): Promise<{ ok: boolean; nextReminderAt: string | null }> {
+  const supabase = await createSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  const nextReminderAt = months
+    ? new Date(Date.now() + months * 30.44 * 24 * 60 * 60 * 1000).toISOString()
+    : null
+
+  const { error } = await supabaseAdmin
+    .from('profiles')
+    .update({ rewit_reminder_months: months, rewit_next_reminder_at: nextReminderAt })
+    .eq('id', user.id)
+
+  if (error) throw new Error(error.message)
+  return { ok: true, nextReminderAt }
 }
 
 export async function refreshRecordingStatus(sessionId: string) {

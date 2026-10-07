@@ -3,7 +3,8 @@ import Stripe from 'stripe'
 // 'will'    = one-off Will purchase (A$149 incl. GST). Includes the first signing and permanent download.
 // 'updates' = optional annual "unlimited updates" add-on (A$25/yr incl. GST). Bought alongside the Will
 //             at checkout, or later from the dashboard. Never required to keep or download a paid Will.
-export type Product = 'will' | 'updates'
+// 'rewit'   = one-off re-witnessing session (A$79 incl. GST). Adds one AV session credit for an updated Will.
+export type Product = 'will' | 'updates' | 'rewit'
 
 let _stripe: Stripe | undefined
 
@@ -18,7 +19,9 @@ export function getStripe(): Stripe {
 
 export function priceId(product: Product): string {
   const id =
-    product === 'will' ? process.env.STRIPE_PRICE_WILL : process.env.STRIPE_PRICE_UPDATES_ANNUAL
+    product === 'will' ? process.env.STRIPE_PRICE_WILL
+    : product === 'updates' ? process.env.STRIPE_PRICE_UPDATES_ANNUAL
+    : process.env.STRIPE_PRICE_REWIT
   if (!id) throw new Error(`Price env var not set for product: ${product}`)
   return id
 }
@@ -28,7 +31,7 @@ export function isSubscriptionProduct(product: Product): boolean {
 }
 
 export function isProduct(value: unknown): value is Product {
-  return value === 'will' || value === 'updates'
+  return value === 'will' || value === 'updates' || value === 'rewit'
 }
 
 /**

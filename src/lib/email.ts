@@ -383,6 +383,56 @@ export async function sendExecutedWillEmail(params: { to: string; name: string |
   }
 }
 
+export async function sendRewitnessingReminderEmail(params: {
+  to: string
+  name: string | null
+  cadenceLabel: string
+}): Promise<boolean> {
+  const { to, name, cadenceLabel } = params
+  const witnessingUrl = `${APP_URL}/witnessing`
+  const firstName = name ? name.split(' ')[0] : null
+  const greeting = firstName ? `Hi ${firstName},` : 'Hi,'
+
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 16px;">${greeting} time to review your Will.</h1>
+      <p style="margin:0 0 16px;color:#0E1310;font-size:14px;line-height:1.6;">
+        You asked us to remind you ${cadenceLabel.toLowerCase()} to get your Will re-witnessed. That time has come.
+      </p>
+      <p style="margin:0 0 24px;color:#0E1310;font-size:14px;line-height:1.6;">
+        If your circumstances have changed &mdash; new partner, child, asset, or anything that affects who gets what &mdash; update your Will and book a new witnessing session to make it legally valid.
+      </p>
+      <a href="${witnessingUrl}" style="display:inline-block;padding:12px 24px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:14px;font-weight:600;text-decoration:none;">
+        Review your Will
+      </a>
+      <p style="margin:24px 0 0;color:#8A8D87;font-size:12px;line-height:1.5;">
+        If nothing has changed, you don&rsquo;t need to do anything. We&rsquo;ll remind you again in ${cadenceLabel.toLowerCase()}.
+      </p>
+      <p style="margin:16px 0 0;color:#8A8D87;font-size:11px;line-height:1.5;">
+        Heirloom Life is not a law firm and this is not legal advice. To stop these reminders, visit your witnessing page and select &ldquo;Don&rsquo;t remind me&rdquo;.
+      </p>
+    </div>
+  `
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: 'Time to review your Will — Heirloom Life',
+      html,
+    })
+    if (error) {
+      console.error(`Resend rejected rewit reminder to ${to}:`, error)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error(`Failed to send rewit reminder to ${to}:`, err)
+    return false
+  }
+}
+
 export async function sendAppointmentReminderEmail(params: {
   to: string
   name: string

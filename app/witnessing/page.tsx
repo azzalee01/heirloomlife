@@ -4,6 +4,7 @@ import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import ScheduleSessionForm from './_components/ScheduleSessionForm'
 import SessionList, { type WitnessingSessionSummary } from './_components/SessionList'
+import RewitnessingReminder from './_components/RewitnessingReminder'
 import { hasWillAccess, hasUsedIncludedSigning } from '@/src/lib/entitlements'
 
 export default async function WitnessingPage() {
@@ -43,7 +44,7 @@ export default async function WitnessingPage() {
 
   // One AV signing session is included with a paid Will, for NSW addresses. Re-witnessing an updated Will is coming soon.
   const [profileRes, testatorRes] = await Promise.all([
-    supabaseAdmin.from('profiles').select('plan, plan_status').eq('id', user.id).single(),
+    supabaseAdmin.from('profiles').select('plan, plan_status, rewit_reminder_months, rewit_next_reminder_at, rewit_credits').eq('id', user.id).single(),
     supabase.from('testators').select('state').eq('will_id', will.id).not('marital_status', 'is', null).limit(1).single(),
   ])
   const ownsWill = hasWillAccess(profileRes.data)
@@ -77,7 +78,7 @@ export default async function WitnessingPage() {
               </Link>
             )}
             {ownsWill && userState === 'VIC' && (
-              <Link href="/waitlist" className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold underline" style={{ color: 'var(--teal-deep)' }}>
+              <Link href="/witnessing/waitlist" className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold underline" style={{ color: 'var(--teal-deep)' }}>
                 Join the Victorian waitlist →
               </Link>
             )}
@@ -132,12 +133,11 @@ export default async function WitnessingPage() {
         </p>
 
         {includedSigningUsed ? (
-          <div className="border border-[var(--line)] bg-white p-6 space-y-2">
-            <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>Your included signing session is booked or complete</p>
-            <p className="text-sm leading-relaxed" style={{ color: 'var(--neutral)' }}>
-              Video re-witnessing of updated Wills is coming soon. Until then, print your updated Will and sign it in front of two independent witnesses.
-            </p>
-          </div>
+          <RewitnessingReminder
+            currentMonths={(profileRes.data as { rewit_reminder_months: number | null } | null)?.rewit_reminder_months ?? null}
+            currentNextAt={(profileRes.data as { rewit_next_reminder_at: string | null } | null)?.rewit_next_reminder_at ?? null}
+            rewitCredits={(profileRes.data as { rewit_credits: number } | null)?.rewit_credits ?? 0}
+          />
         ) : (
           <ScheduleSessionForm />
         )}

@@ -82,6 +82,13 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  // Re-witnessing requires an existing paid Will.
+  if (product === 'rewit') {
+    if (!hasWillAccess(profile)) {
+      return Response.json({ error: 'Unlock your Will first to purchase a re-witnessing session.' }, { status: 403 })
+    }
+  }
+
   // State availability gate — check testator state on user's latest will
   const { data: latestWill } = await supabaseAdmin
     .from('wills')

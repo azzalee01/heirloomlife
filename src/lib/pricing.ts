@@ -6,6 +6,7 @@ export const PRICING = {
   willAud: 149,
   updatesAudPerYear: 25,
   partnerWillDiscountAud: 40,
+  rewitAud: 79,
 } as const
 
 // Derived label strings — use these in UI rather than hardcoding "$149" etc.
