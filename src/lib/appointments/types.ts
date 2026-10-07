@@ -24,3 +24,5 @@ export type EventType =
   | 'recording_start_failed' | 'recording_accessed'
   | 'payment_step_started' | 'payment_step_completed'
   | 'capacity_flag' | 'third_party_present' | 'escalated' | 'completed' | 'no_show'
+  | 'witnessing_will_linked' | 'testator_signed_confirmed'
+  | 'testator_document_uploaded' | 'executed_will_stored'

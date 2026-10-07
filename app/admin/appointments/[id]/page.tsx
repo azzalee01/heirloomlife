@@ -3,10 +3,12 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { getHostUser, loadAppointment } from '@/src/lib/appointments/server'
+import { getWitnessNamesFromEvents } from '@/src/lib/appointments/witnessing'
 import { APPOINTMENT_TZ } from '@/src/lib/appointments/constants'
 import HostRoom from './_components/HostRoom'
 import RecordingsPanel from './_components/RecordingsPanel'
 import { HostNotesEditor } from './_components/HostNotesEditor'
+import WitnessingPanel from './_components/WitnessingPanel'
 
 export const metadata: Metadata = { title: 'Guided call (host)', robots: { index: false, follow: false } }
 export const dynamic = 'force-dynamic'
@@ -19,7 +21,25 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
   const host = await getHostUser()
   if (!host) notFound()
   const appt = await loadAppointment(id)
-  if (!appt || appt.host_id !== host.id) notFound()
+  if (!appt) notFound()
+
+  // Look up the user's will (if they have an account) so the panel can pre-fill the will ID
+  let suggestedWillId: string | null = null
+  if (appt.user_id) {
+    const { data: willRow } = await supabaseAdmin
+      .from('wills')
+      .select('id')
+      .eq('user_id', appt.user_id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    suggestedWillId = (willRow as { id: string } | null)?.id ?? null
+  }
+
+  // Fetch witness names from the audit trail once confirming has happened
+  const witnessNames = appt.witnessing_status !== 'none' && appt.witnessing_status !== 'will_linked'
+    ? await getWitnessNamesFromEvents(id)
+    : null
 
   const [{ data: events }, { data: recordings }] = await Promise.all([
     supabaseAdmin
@@ -55,6 +75,19 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
         appointmentId={appt.id}
         consentGiven={Boolean(appt.recording_consent_at)}
         status={appt.status}
+      />
+
+      <WitnessingPanel
+        appointmentId={appt.id}
+        witnessingStatus={appt.witnessing_status ?? 'none'}
+        linkedWillId={appt.will_id ?? null}
+        suggestedWillId={suggestedWillId}
+        testatorSignedAt={appt.testator_signed_confirmed_at ?? null}
+        witness1Name={witnessNames?.witness1Name ?? null}
+        witness2Name={witnessNames?.witness2Name ?? null}
+        hasTestatorUpload={Boolean(appt.testator_upload_path)}
+        hasExecutedWill={Boolean(appt.executed_will_path)}
+        dailyRoomName={appt.daily_room_name ?? null}
       />
 
       <section>

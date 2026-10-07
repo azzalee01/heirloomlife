@@ -346,6 +346,43 @@ export async function sendAppointmentConfirmationEmail(params: {
   }
 }
 
+export async function sendExecutedWillEmail(params: { to: string; name: string | null }) {
+  const { to, name } = params
+  const dashboardUrl = `${APP_URL}/dashboard/will`
+  const firstName = name ? name.split(' ')[0] : null
+  const greeting = firstName ? `Hi ${firstName},` : 'Hi,'
+
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 16px;">${greeting} your executed Will is ready.</h1>
+      <p style="margin:0 0 20px;color:#0E1310;font-size:14px;line-height:1.6;">
+        Your Heirloom guide has countersigned your Will. The fully executed document is now available to download from your dashboard. Keep it somewhere safe.
+      </p>
+      <a href="${dashboardUrl}" style="display:inline-block;padding:12px 24px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:14px;font-weight:500;text-decoration:none;">
+        Download your executed Will
+      </a>
+      <p style="margin:24px 0 0;color:#8A8D87;font-size:12px;line-height:1.5;">
+        Store the original signed document in a safe place and let your executor know where it is. You may also want to lodge a copy with a trusted adviser.
+      </p>
+      <p style="margin:16px 0 0;color:#8A8D87;font-size:11px;line-height:1.5;">
+        Heirloom Life is solicitor-reviewed but not a law firm. If your circumstances change materially, consider updating your Will.
+      </p>
+    </div>
+  `
+
+  try {
+    await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: 'Your executed Will is ready — Heirloom Life',
+      html,
+    })
+  } catch (err) {
+    console.error(`Failed to send executed will email to ${to}:`, err)
+  }
+}
+
 export async function sendAppointmentReminderEmail(params: {
   to: string
   name: string

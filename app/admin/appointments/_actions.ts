@@ -11,7 +11,7 @@ import type { ActionResult, EventType } from '@/src/lib/appointments/types'
 async function hostAppointment(id: string) {
   const host = await requireHost()
   const appt = await loadAppointment(id)
-  if (!appt || appt.host_id !== host.id) throw new Error('Not found')
+  if (!appt) throw new Error('Not found')
   return { host, appt }
 }
 

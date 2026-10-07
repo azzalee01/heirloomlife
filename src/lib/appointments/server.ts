@@ -19,6 +19,7 @@ export interface AppointmentRow {
   id: string
   host_id: string
   user_id: string | null
+  will_id: string | null
   customer_name: string
   customer_email: string
   customer_phone: string | null
@@ -38,6 +39,12 @@ export interface AppointmentRow {
   ended_at: string | null
   escalated: boolean
   host_notes: string | null
+  witnessing_status: string
+  witness_1_id: string | null
+  witness_2_id: string | null
+  testator_signed_confirmed_at: string | null
+  testator_upload_path: string | null
+  executed_will_path: string | null
 }
 
 const NOT_FOUND = 'Appointment not found'
