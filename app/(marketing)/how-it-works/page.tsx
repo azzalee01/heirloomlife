@@ -108,7 +108,7 @@ export default function HowItWorksPage() {
             A note on state-specific requirements
           </h2>
           <p style={{ fontSize: '.95rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: 0 }}>
-            Australian succession law is largely state-based. Heirloom Life is available across all states and territories, accounting for each state&#8217;s specific requirements throughout the drafting and review process.
+            Australian succession law is largely state-based. Heirloom Life is available across all states and territories. Wills are currently drafted to NSW legal requirements (Succession Act 2006). Signing and witnessing guidance for all other states is included with your download.
           </p>
           <p style={{ marginTop: '1rem', fontSize: '.85rem', color: 'var(--mkt-stone-soft)' }}>
             Complex situations are flagged in your Vault after you complete your Will. Every Will issued through Heirloom Life is subject to a standard solicitor quality review. For complex situations flagged in your Vault, we can connect you with a partner lawyer directly.

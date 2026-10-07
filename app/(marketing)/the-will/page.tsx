@@ -195,7 +195,7 @@ export default function TheWillPage() {
       <section style={{ paddingBlock: '3.5rem', background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10 md:flex-row md:items-center md:justify-between" style={{ ...W, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <p style={{ maxWidth: '38rem', fontSize: '.92rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: 0 }}>
-            Australian succession law is state-based. Heirloom Life is available across all states and territories, accounting for each state&#8217;s specific requirements around execution, witnessing, and revocation.
+            Australian succession law is state-based. Heirloom Life is available across all states and territories. Wills are currently drafted to NSW legal requirements (Succession Act 2006). Signing and witnessing guidance for other states is included with your download.
           </p>
           <Link href="/start" className="mkt-btn-ink-m" style={{ flexShrink: 0 }}>
             Start your Will

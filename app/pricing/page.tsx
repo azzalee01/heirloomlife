@@ -185,7 +185,7 @@ export default function PricingPage() {
           {[
             {
               q: 'Is it really free to start?',
-              a: `Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $${PRICING.willAud} when you're ready to download your solicitor-reviewed, signed-ready document. Unlimited updates ($25/year, optional) only matters if you want to change your Will later.`,
+              a: `Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $${PRICING.willAud} when you're ready to download your solicitor-reviewed, signed-ready document. Unlimited updates ($${PRICING.updatesAudPerYear}/year, optional) only matters if you want to change your Will later.`,
             },
             {
               q: 'Which states are supported?',
@@ -197,7 +197,7 @@ export default function PricingPage() {
             },
             {
               q: 'What is the Living Vault?',
-              a: 'Living Vault is where your Will, assets and people live, from the day you buy your Will. Unlimited updates ($25/year, optional) keeps your Will current as life changes.',
+              a: `Living Vault is where your Will, assets and people live, from the day you buy your Will. Unlimited updates ($${PRICING.updatesAudPerYear}/year, optional) keeps your Will current as life changes.`,
             },
             {
               q: 'What if my situation is complex?',

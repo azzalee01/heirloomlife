@@ -168,7 +168,7 @@ export default function LivingVaultPage() {
             ))}
           </div>
           <p style={{ marginTop: '1.25rem', fontSize: '.8rem', color: 'var(--mkt-stone-soft)', lineHeight: 1.5 }}>
-            Rules vary by state. Heirloom Life is available across all Australian states and territories  -  your Will is drafted to the specific requirements of your state.
+            Rules vary by state. Heirloom Life is available across all Australian states and territories. Wills are currently drafted to NSW legal requirements, with other states in progress.
           </p>
         </div>
       </section>

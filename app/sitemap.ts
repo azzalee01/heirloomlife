@@ -43,6 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE}/security-trust`,                    lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
     { url: `${BASE}/privacy`,                           lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${BASE}/terms`,                             lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${BASE}/refund-policy`,                     lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
   ]
 
   const lifeChangeRoutes: MetadataRoute.Sitemap = LIFE_CHANGE_SLUGS.map(slug => ({

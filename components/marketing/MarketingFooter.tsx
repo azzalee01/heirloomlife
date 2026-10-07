@@ -32,6 +32,7 @@ const COLUMNS = [
       { label: 'Security & Trust', href: '/security-trust' },
       { label: 'Terms of Service', href: '/terms' },
       { label: 'Privacy Policy', href: '/privacy' },
+      { label: 'Refund Policy', href: '/refund-policy' },
       { label: 'FAQ', href: '/faq' },
     ],
   },
@@ -91,6 +92,7 @@ export default function MarketingFooter() {
           <div style={{ display: 'flex', gap: '1.5rem' }}>
             <Link href="/terms" className="mkt-link" style={{ fontSize: '.78rem' }}>Terms</Link>
             <Link href="/privacy" className="mkt-link" style={{ fontSize: '.78rem' }}>Privacy</Link>
+            <Link href="/refund-policy" className="mkt-link" style={{ fontSize: '.78rem' }}>Refunds</Link>
           </div>
         </div>
 
