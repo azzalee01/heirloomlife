@@ -6,7 +6,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import IntroAnimationLoader from './_components/IntroAnimationLoader'
 import PartnerShareCard from './_components/PartnerShareCard'
 
-type Will = { id: string; status: string; updated_at: string }
+type Will = { id: string; status: string; updated_at: string; executed_at: string | null }
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -31,6 +31,12 @@ const WILL_STATUS = {
     headline: 'Your Will is ready.',
     sub: 'Download it and follow the signing instructions below to make it legally valid.',
   },
+  executed: {
+    label: 'Executed',
+    badge: { background: 'rgba(42,180,174,0.12)', color: 'var(--teal-deep)' },
+    headline: 'Your Will has been signed and witnessed.',
+    sub: 'Your executed Will is stored securely and available to download from your Will page.',
+  },
 } as const
 
 export default async function DashboardPage({
@@ -51,7 +57,7 @@ export default async function DashboardPage({
     'there'
 
   const { data: willRows } = await supabase
-    .from('wills').select('id, status, updated_at')
+    .from('wills').select('id, status, updated_at, executed_at')
     .eq('user_id', user.id).order('created_at', { ascending: false }).limit(1)
   const will = (willRows?.[0] as Will) ?? null
 
@@ -82,7 +88,9 @@ export default async function DashboardPage({
   const planStatus = (profileRow?.plan_status as string | null) ?? null
   const isPaid = (plan === 'will' || plan === 'vault') && planStatus === 'active'
 
-  const willStatus = (will?.status as keyof typeof WILL_STATUS) ?? 'draft'
+  const willStatus: keyof typeof WILL_STATUS = will?.executed_at
+    ? 'executed'
+    : ((will?.status as keyof typeof WILL_STATUS) ?? 'draft')
   const sc = WILL_STATUS[willStatus] ?? WILL_STATUS.draft
   const hasPendingAmendment = willStatus === 'approved' && !!pendingAmendmentRow
 
@@ -200,12 +208,12 @@ export default async function DashboardPage({
                     </Link>
                   )}
 
-                  {willStatus === 'approved' && (
+                  {(willStatus === 'approved' || willStatus === 'executed') && (
                     <>
                       <Link href="/dashboard/will" className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg" style={{ background: 'var(--paper-warm)', color: 'var(--ink)', border: '1px solid var(--line)' }}>
-                        View Will
+                        {willStatus === 'executed' ? 'Download executed Will' : 'View Will'}
                       </Link>
-                      {isPaid ? (
+                      {willStatus === 'approved' && (isPaid ? (
                         <a href="/api/will/download" className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
@@ -216,7 +224,7 @@ export default async function DashboardPage({
                         <Link href="/pricing" className="btn btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
                           Download my Will — ${PRICING.willAud} →
                         </Link>
-                      )}
+                      ))}
                     </>
                   )}
                 </div>
@@ -226,7 +234,7 @@ export default async function DashboardPage({
         </section>
 
         {/* ── Signing ────────────────────────────────────────────────────────── */}
-        {will && willStatus !== 'draft' && (
+        {will && willStatus !== 'draft' && willStatus !== 'executed' && (
           <section className="rounded-xl border bg-white px-6 py-5" style={{ borderColor: 'var(--line)' }}>
             <h2 className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--neutral)' }}>
               Signing

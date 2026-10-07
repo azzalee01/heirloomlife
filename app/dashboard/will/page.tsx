@@ -9,6 +9,7 @@ import AiChat from '@/app/dashboard/_components/AiChat'
 import LegalReviewCallout from './_components/LegalReviewCallout'
 import VersionHistory, { type VersionSummary } from './_components/VersionHistory'
 import DownloadWillButton from './_components/DownloadWillButton'
+import DownloadExecutedWillButton from './_components/DownloadExecutedWillButton'
 import UnlockWillBanner from './_components/UnlockWillBanner'
 import { completeWill } from '@/app/will/new/_actions'
 
@@ -28,13 +29,13 @@ export default async function TheWillPage() {
 
   const { data: willRows } = await supabase
     .from('wills')
-    .select('id, status, needs_review, needs_review_reasons, updated_at, has_downloaded')
+    .select('id, status, needs_review, needs_review_reasons, updated_at, has_downloaded, executed_at, executed_will_path')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
     .limit(1)
 
   const will = willRows?.[0] as
-    | { id: string; status: string; needs_review: boolean; needs_review_reasons: string[] | null; updated_at: string; has_downloaded: boolean }
+    | { id: string; status: string; needs_review: boolean; needs_review_reasons: string[] | null; updated_at: string; has_downloaded: boolean; executed_at: string | null; executed_will_path: string | null }
     | undefined
 
   if (!will) {
@@ -118,6 +119,24 @@ export default async function TheWillPage() {
         <div className="bg-white border border-[var(--line)] overflow-hidden">
           <div className="h-[3px] w-full" style={{ backgroundColor: 'var(--teal)' }} />
           <div className="px-6 py-6 space-y-5">
+            {will.executed_at && (
+              <div className="rounded border px-4 py-3 flex items-start gap-3" style={{ borderColor: 'var(--teal)', background: 'rgba(42,180,174,0.06)' }}>
+                <svg className="shrink-0 mt-0.5" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3" />
+                </svg>
+                <div className="space-y-2 min-w-0">
+                  <p className="text-sm font-medium" style={{ color: 'var(--teal-deep)' }}>
+                    Will executed —{' '}
+                    {new Date(will.executed_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' })}
+                  </p>
+                  <p className="text-xs" style={{ color: 'var(--neutral)' }}>
+                    Your signed Will is stored securely. Download it below to keep a personal copy.
+                  </p>
+                  <DownloadExecutedWillButton willId={will.id} />
+                </div>
+              </div>
+            )}
+
             {hasPaidForWill && (
               <DownloadWillButton
                 willId={will.id}
