@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
+import PostHogProvider from './_components/PostHogProvider'
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -66,7 +67,9 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {children}
+        <PostHogProvider>
+          {children}
+        </PostHogProvider>
       </body>
     </html>
   );
