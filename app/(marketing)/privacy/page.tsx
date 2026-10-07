@@ -54,7 +54,7 @@ const sections: LegalSection[] = [
   },
   {
     title: 'Cookies and technical data',
-    content: <><p>We use cookies and similar browser storage that are necessary for login sessions, security, anonymous Will progress, preferences and core platform operation. Our servers and providers may record IP address, browser and device information, timestamps, referring pages, errors and feature interactions.</p><p>You can restrict cookies in your browser, but essential account and progress-saving features may then stop working. If we introduce non-essential advertising or analytics cookies, we will update our notices and provide choices where required.</p></>,
+    content: <><p>We use cookies and similar browser storage that are necessary for login sessions, security, anonymous Will progress, preferences and core platform operation. Our servers and providers may record IP address, browser and device information, timestamps, referring pages, errors and feature interactions.</p><p>We use PostHog (EU-hosted) for product analytics. PostHog collects anonymous usage events — pages visited, session duration, interactions — to help us understand how the platform is used and improve it. IP addresses are masked before transmission and are not stored. No personally identifiable information from your Will or account is included in these events. PostHog&apos;s privacy policy is available at <a href="https://posthog.com/privacy" rel="noreferrer">posthog.com/privacy</a>.</p><p>You can restrict cookies in your browser, but essential account and progress-saving features may then stop working.</p></>,
   },
   {
     title: 'Storage, security and retention',
