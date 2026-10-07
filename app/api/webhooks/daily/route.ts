@@ -78,7 +78,11 @@ export async function POST(request: NextRequest) {
     sig.length !== expected.length ||
     !timingSafeEqual(Buffer.from(sig, 'utf8'), Buffer.from(expected, 'utf8'))
   ) {
-    return NextResponse.json({ error: 'Bad signature' }, { status: 401 })
+    // During webhook registration Daily signs with a key we haven't yet confirmed.
+    // Log it and return 200 so registration can succeed; we'll tighten this once the
+    // correct secret is confirmed in Vercel.
+    console.warn('[daily-webhook] HMAC mismatch — sig:', sig, 'expected:', expected)
+    return NextResponse.json({ ok: true, ignored: true })
   }
 
   let event: DailyWebhookEvent
