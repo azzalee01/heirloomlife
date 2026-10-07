@@ -30,7 +30,8 @@ async function fetchClauseTexts(codes: string[]): Promise<Map<string, string>> {
     .from('clause_versions')
     .select('clauses!inner(clause_code), clause_text')
     .in('clauses.clause_code', unique)
-    .eq('status', 'draft')
+    .in('status', ['production', 'draft'])
+    .order('status', { ascending: false }) // 'production' > 'draft' lexicographically — prefer production
     .order('version', { ascending: false })
 
   if (error) throw new Error(`clause_versions fetch failed: ${error.message}`)
