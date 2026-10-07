@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { getHostUser } from '@/src/lib/appointments/server'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import ApproveAmendmentButton from './_components/ApproveAmendmentButton'
+import RejectAmendmentButton from './_components/RejectAmendmentButton'
 
 type PendingRow = {
   id: string
@@ -59,7 +60,10 @@ export default async function WillsAdminPage() {
                       {new Date(row.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
-                  <ApproveAmendmentButton versionId={row.id} />
+                  <div className="flex gap-2 shrink-0">
+                    <ApproveAmendmentButton versionId={row.id} />
+                    <RejectAmendmentButton versionId={row.id} />
+                  </div>
                 </div>
 
                 {row.change_summary && (
@@ -78,11 +82,11 @@ export default async function WillsAdminPage() {
 
                 <div className="flex gap-3 pt-1">
                   <a
-                    href={`/admin/wills/${row.will_id}`}
+                    href={`/admin/wills/${row.will_id}?version=${row.id}`}
                     className="text-xs underline"
                     style={{ color: 'var(--teal-deep)' }}
                   >
-                    View Will →
+                    Read amendment →
                   </a>
                 </div>
               </div>

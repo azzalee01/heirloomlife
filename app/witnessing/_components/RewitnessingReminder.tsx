@@ -68,27 +68,18 @@ export default function RewitnessingReminder({
   return (
     <div className="border border-[var(--line)] bg-white p-6 space-y-5">
 
-      {/* Book a new session */}
-      <div className="rounded border px-4 py-4 space-y-3" style={{ borderColor: rewitCredits > 0 ? 'var(--teal)' : 'var(--line)', background: rewitCredits > 0 ? 'rgba(42,180,174,0.04)' : 'transparent' }}>
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>
-              Book a new witnessing session
-            </p>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
-              {rewitCredits > 0
-                ? `You have ${rewitCredits} session credit${rewitCredits > 1 ? 's' : ''} — book above.`
-                : `Updated your Will? A new session costs $${PRICING.rewitAud}.`}
-            </p>
-          </div>
-          {rewitCredits > 0 ? (
-            <a
-              href="/witnessing"
-              className="btn btn-primary shrink-0 inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold"
-            >
-              Book now
-            </a>
-          ) : (
+      {/* Buy a new session — only shown when no credits held (form is shown above when credits > 0) */}
+      {rewitCredits === 0 && (
+        <div className="rounded border px-4 py-4 space-y-3" style={{ borderColor: 'var(--line)' }}>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold" style={{ color: 'var(--ink)' }}>
+                Book a new witnessing session
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>
+                Updated your Will? A new session costs ${PRICING.rewitAud}.
+              </p>
+            </div>
             <button
               type="button"
               onClick={handleBuy}
@@ -97,10 +88,10 @@ export default function RewitnessingReminder({
             >
               {buying ? 'Loading…' : `Buy session — $${PRICING.rewitAud}`}
             </button>
-          )}
+          </div>
+          {buyError && <p className="text-xs" style={{ color: '#b91c1c' }}>{buyError}</p>}
         </div>
-        {buyError && <p className="text-xs" style={{ color: '#b91c1c' }}>{buyError}</p>}
-      </div>
+      )}
 
       <div>
         <p className="text-sm font-semibold mb-1" style={{ color: 'var(--ink)' }}>

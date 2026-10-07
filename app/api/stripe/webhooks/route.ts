@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server'
 import Stripe from 'stripe'
 import { getStripe, isProduct, subscriptionPeriodEnd } from '@/src/lib/stripe'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
-import { sendPurchaseConfirmationEmail } from '@/src/lib/email'
+import { sendPurchaseConfirmationEmail, sendRewitnessingConfirmationEmail } from '@/src/lib/email'
 
 export const dynamic = 'force-dynamic'
 
@@ -120,11 +120,20 @@ export async function POST(request: NextRequest) {
           updates.plan_status = 'active'
         }
         if (product === 'rewit') {
-          // Increment re-witnessing credits atomically
           const { error: rewitErr } = await supabaseAdmin.rpc('increment_rewit_credits', { p_user_id: userId })
           if (rewitErr) {
             console.error('[webhook] increment_rewit_credits failed', { eventId: event.id, userId, error: rewitErr.message })
             return fail(event.id)
+          }
+          const emailAddress = (session.customer_details as { email?: string | null } | null)?.email ?? null
+          if (emailAddress) {
+            const { data: profileForEmail } = await supabaseAdmin.from('profiles').select('full_name').eq('id', userId).maybeSingle()
+            sendRewitnessingConfirmationEmail({
+              to: emailAddress,
+              name: (profileForEmail?.full_name as string | null) ?? null,
+            }).catch((err: unknown) => {
+              console.error('[webhook] rewit confirmation email failed (non-fatal)', { eventId: event.id, userId, error: (err as Error).message })
+            })
           }
         }
         if (includesUpdates && subscriptionId) {

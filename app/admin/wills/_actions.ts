@@ -41,3 +41,26 @@ export async function promoteAmendment(versionId: string): Promise<void> {
 
   if (error) throw new Error(error.message)
 }
+
+export async function rejectAmendment(versionId: string, reason: string): Promise<void> {
+  await requireStaffAuth()
+
+  // Mark the version as rejected
+  const { data: version, error: vErr } = await supabaseAdmin
+    .from('will_versions')
+    .update({ status: 'rejected', rejection_reason: reason })
+    .eq('id', versionId)
+    .eq('status', 'pending_review')
+    .select('will_id')
+    .single()
+
+  if (vErr || !version) throw new Error(vErr?.message ?? 'Version not found or already actioned')
+
+  // Return the Will to approved so the customer can still download their last valid version
+  const { error: wErr } = await supabaseAdmin
+    .from('wills')
+    .update({ status: 'approved', needs_review: true, needs_review_reasons: [reason] })
+    .eq('id', (version as { will_id: string }).will_id)
+
+  if (wErr) throw new Error(wErr.message)
+}

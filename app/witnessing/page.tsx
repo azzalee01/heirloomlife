@@ -95,6 +95,7 @@ export default async function WitnessingPage() {
     .order('scheduled_at', { ascending: false })
 
   const includedSigningUsed = hasUsedIncludedSigning((sessionRows ?? []).map((r) => r.status as string))
+  const rewitCredits = (profileRes.data as { rewit_credits: number } | null)?.rewit_credits ?? 0
 
   const sessions: WitnessingSessionSummary[] = (sessionRows ?? []).map((s) => ({
     id: s.id as string,
@@ -132,14 +133,16 @@ export default async function WitnessingPage() {
           Schedule a remote witnessing session for signing your Will over audio-visual link. Your witness must see you sign in real time.
         </p>
 
-        {includedSigningUsed ? (
+        {/* Show booking form for first session, or when re-witnessing credits are available */}
+        {(!includedSigningUsed || rewitCredits > 0) && <ScheduleSessionForm />}
+
+        {/* Show buy / reminder panel whenever the included session has been used */}
+        {includedSigningUsed && (
           <RewitnessingReminder
             currentMonths={(profileRes.data as { rewit_reminder_months: number | null } | null)?.rewit_reminder_months ?? null}
             currentNextAt={(profileRes.data as { rewit_next_reminder_at: string | null } | null)?.rewit_next_reminder_at ?? null}
-            rewitCredits={(profileRes.data as { rewit_credits: number } | null)?.rewit_credits ?? 0}
+            rewitCredits={rewitCredits}
           />
-        ) : (
-          <ScheduleSessionForm />
         )}
 
         <section>

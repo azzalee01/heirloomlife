@@ -383,6 +383,43 @@ export async function sendExecutedWillEmail(params: { to: string; name: string |
   }
 }
 
+export async function sendRewitnessingConfirmationEmail(params: { to: string; name: string | null }): Promise<void> {
+  const { to, name } = params
+  const witnessingUrl = `${APP_URL}/witnessing`
+  const firstName = name ? name.split(' ')[0] : null
+  const greeting = firstName ? `Hi ${firstName},` : 'Hi,'
+
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 16px;">${greeting} your re-witnessing session is ready to book.</h1>
+      <p style="margin:0 0 20px;color:#0E1310;font-size:14px;line-height:1.6;">
+        Payment received. One witnessing session credit has been added to your account. Book your video session when you're ready &mdash; your witnesses just need to see you sign in real time.
+      </p>
+      <a href="${witnessingUrl}" style="display:inline-block;padding:12px 24px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:14px;font-weight:600;text-decoration:none;">
+        Book your session
+      </a>
+      <p style="margin:24px 0 0;color:#8A8D87;font-size:12px;line-height:1.5;">
+        Your credit doesn&rsquo;t expire. Take your time.
+      </p>
+      <p style="margin:16px 0 0;color:#8A8D87;font-size:11px;line-height:1.5;">
+        Heirloom Life is not a law firm and this is not legal advice.
+      </p>
+    </div>
+  `
+
+  try {
+    await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: 'Your re-witnessing session is ready — Heirloom Life',
+      html,
+    })
+  } catch (err) {
+    console.error(`Failed to send rewit confirmation to ${to}:`, err)
+  }
+}
+
 export async function sendRewitnessingReminderEmail(params: {
   to: string
   name: string | null
