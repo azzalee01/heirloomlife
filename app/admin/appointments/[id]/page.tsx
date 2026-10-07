@@ -6,6 +6,7 @@ import { getHostUser, loadAppointment } from '@/src/lib/appointments/server'
 import { getWitnessNamesFromEvents } from '@/src/lib/appointments/witnessing'
 import { APPOINTMENT_TZ } from '@/src/lib/appointments/constants'
 import HostRoom from './_components/HostRoom'
+import CopilotPanel from './_components/CopilotPanel'
 import RecordingsPanel from './_components/RecordingsPanel'
 import { HostNotesEditor } from './_components/HostNotesEditor'
 import WitnessingPanel from './_components/WitnessingPanel'
@@ -76,6 +77,8 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
         consentGiven={Boolean(appt.recording_consent_at)}
         status={appt.status}
       />
+
+      <CopilotPanel appointmentId={appt.id} />
 
       <WitnessingPanel
         appointmentId={appt.id}
