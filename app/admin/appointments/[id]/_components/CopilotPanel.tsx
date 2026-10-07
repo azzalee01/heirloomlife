@@ -98,13 +98,17 @@ export default function CopilotPanel({ appointmentId }: { appointmentId: string 
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
   const poll = useCallback(async () => {
-    const result = await getWillSnapshot(appointmentId)
-    if (result.ok) {
-      setSnapshot(result.snapshot)
-      setNoWill(false)
-      setLastUpdated(new Date())
-    } else if (result.error === 'no_will') {
-      setNoWill(true)
+    try {
+      const result = await getWillSnapshot(appointmentId)
+      if (result.ok) {
+        setSnapshot(result.snapshot)
+        setNoWill(false)
+        setLastUpdated(new Date())
+      } else if (result.error === 'no_will') {
+        setNoWill(true)
+      }
+    } catch {
+      // network hiccup — stay on last good state, next tick will retry
     }
   }, [appointmentId])
 
@@ -123,8 +127,8 @@ export default function CopilotPanel({ appointmentId }: { appointmentId: string 
         {lastUpdated && (
           <span className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--neutral)' }}>
             <span
-              className="h-1.5 w-1.5 rounded-full"
-              style={{ background: 'var(--teal)', animation: 'pulse 2s infinite' }}
+              className="animate-pulse h-1.5 w-1.5 rounded-full"
+              style={{ background: 'var(--teal)' }}
             />
             live
           </span>
