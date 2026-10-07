@@ -29,3 +29,15 @@ export const RECORDING_CONSENT_TEXT = {
   declined:
     'No problem. We can’t run a guided call without a recording, so nothing has been recorded and the session has not started. You can still complete your Will yourself on the website, or cancel this booking below.',
 } as const
+
+export function buildAvStatement(witness1Name: string, witness2Name: string, date: string, platform: string): string {
+  const d = new Intl.DateTimeFormat('en-AU', {
+    timeZone: APPOINTMENT_TZ, day: 'numeric', month: 'long', year: 'numeric',
+  }).format(new Date(date))
+  const block = (name: string) =>
+    `I, ${name}, witnessed the will-maker sign this Will by audio visual link on ${d} using ${platform}. ` +
+    `I observed the will-maker sign in real time. I have signed a counterpart of this document and am ` +
+    `reasonably satisfied it is the same document, or a copy of the document, that I observed the will-maker sign. ` +
+    `This document was witnessed in accordance with section 14G of the Electronic Transactions Act 2000 (NSW).`
+  return `${block(witness1Name)}\n\n${block(witness2Name)}`
+}

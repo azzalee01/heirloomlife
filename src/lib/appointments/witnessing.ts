@@ -4,7 +4,6 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { sendExecutedWillEmail } from '@/src/lib/email'
 import { loadAppointment, logEvent, requireHost } from './server'
-import { APPOINTMENT_TZ } from './constants'
 import type { ActionResult } from './types'
 
 async function requireHostForAppt(appointmentId: string) {
@@ -161,18 +160,6 @@ export async function getExecutedWillDownloadUrl(willId: string): Promise<Action
     if (error || !data) return { ok: false, error: 'Could not generate download link.' }
     return { ok: true, url: data.signedUrl }
   } catch { return { ok: false, error: 'Could not generate download link.' } }
-}
-
-export function buildAvStatement(witness1Name: string, witness2Name: string, date: string, platform: string): string {
-  const d = new Intl.DateTimeFormat('en-AU', {
-    timeZone: APPOINTMENT_TZ, day: 'numeric', month: 'long', year: 'numeric',
-  }).format(new Date(date))
-  const block = (name: string) =>
-    `I, ${name}, witnessed the will-maker sign this Will by audio visual link on ${d} using ${platform}. ` +
-    `I observed the will-maker sign in real time. I have signed a counterpart of this document and am ` +
-    `reasonably satisfied it is the same document, or a copy of the document, that I observed the will-maker sign. ` +
-    `This document was witnessed in accordance with section 14G of the Electronic Transactions Act 2000 (NSW).`
-  return `${block(witness1Name)}\n\n${block(witness2Name)}`
 }
 
 // Fetches witness names from the audit trail

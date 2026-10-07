@@ -1,10 +1,17 @@
 import { LoopsClient } from 'loops'
 
-const loops = new LoopsClient(process.env.LOOPS_API_KEY ?? '')
+let _loops: LoopsClient | null = null
+function getLoops(): LoopsClient | null {
+  if (!process.env.LOOPS_API_KEY) return null
+  if (!_loops) _loops = new LoopsClient(process.env.LOOPS_API_KEY)
+  return _loops
+}
 
 export type SubscribeSource = 'homepage' | 'pricing'
 
 export async function subscribeToLoops(email: string, source: SubscribeSource): Promise<{ ok: boolean; alreadySubscribed?: boolean }> {
+  const loops = getLoops()
+  if (!loops) return { ok: false }
   try {
     const resp = await loops.createContact({ email, properties: { signupSource: source } })
     if ('success' in resp && resp.success) return { ok: true }

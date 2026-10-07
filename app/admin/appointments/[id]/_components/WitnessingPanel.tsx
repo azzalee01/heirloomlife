@@ -7,8 +7,8 @@ import {
   uploadTestatorScan,
   uploadExecutedWill,
   getWitnessingDownloadUrl,
-  buildAvStatement,
 } from '@/src/lib/appointments/witnessing'
+import { buildAvStatement } from '@/src/lib/appointments/constants'
 
 interface Props {
   appointmentId: string
