@@ -383,6 +383,73 @@ export async function sendExecutedWillEmail(params: { to: string; name: string |
   }
 }
 
+export async function sendAmendmentApprovedEmail(params: { to: string; name: string | null }): Promise<void> {
+  const { to, name } = params
+  const willUrl = `${APP_URL}/dashboard/will`
+  const firstName = name ? name.split(' ')[0] : null
+  const greeting = firstName ? `Hi ${firstName},` : 'Hi,'
+
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 16px;">${greeting} your updated Will is ready.</h1>
+      <p style="margin:0 0 20px;color:#0E1310;font-size:14px;line-height:1.6;">
+        Your amendment has been reviewed and approved. The updated version of your Will is now available to download — print it, sign it in front of two witnesses, and store it somewhere safe.
+      </p>
+      <a href="${willUrl}" style="display:inline-block;padding:12px 24px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:14px;font-weight:600;text-decoration:none;">
+        View your Will
+      </a>
+      <p style="margin:24px 0 0;color:#8A8D87;font-size:12px;line-height:1.5;">
+        Remember to destroy any previous signed copies to avoid confusion about which version is current.
+      </p>
+      <p style="margin:16px 0 0;color:#8A8D87;font-size:11px;line-height:1.5;">
+        Heirloom Life is not a law firm and this is not legal advice. Your Will must be signed and witnessed to be legally valid.
+      </p>
+    </div>
+  `
+
+  try {
+    await resend.emails.send({ from: FROM_ADDRESS, to, subject: 'Your updated Will is ready — Heirloom Life', html })
+  } catch (err) {
+    console.error(`Failed to send amendment approved email to ${to}:`, err)
+  }
+}
+
+export async function sendAmendmentRejectedEmail(params: { to: string; name: string | null; reason: string }): Promise<void> {
+  const { to, name, reason } = params
+  const willUrl = `${APP_URL}/dashboard/will`
+  const firstName = name ? name.split(' ')[0] : null
+  const greeting = firstName ? `Hi ${firstName},` : 'Hi,'
+
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 16px;">${greeting} your Will amendment needs a change.</h1>
+      <p style="margin:0 0 16px;color:#0E1310;font-size:14px;line-height:1.6;">
+        Our legal team reviewed your recent amendment and has flagged something that needs to be addressed before it can be issued.
+      </p>
+      <div style="border-left:3px solid #fca5a5;padding:12px 16px;margin:0 0 20px;background:#fef2f2;">
+        <p style="margin:0;color:#7f1d1d;font-size:14px;line-height:1.6;">${reason}</p>
+      </div>
+      <p style="margin:0 0 20px;color:#0E1310;font-size:14px;line-height:1.6;">
+        Your current Will remains valid and downloadable. Update your Will to address the issue above and resubmit for review.
+      </p>
+      <a href="${willUrl}" style="display:inline-block;padding:12px 24px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:14px;font-weight:600;text-decoration:none;">
+        View your Will
+      </a>
+      <p style="margin:24px 0 0;color:#8A8D87;font-size:12px;line-height:1.5;">
+        If you have questions, reply to this email and we'll help you resolve it.
+      </p>
+    </div>
+  `
+
+  try {
+    await resend.emails.send({ from: FROM_ADDRESS, to, subject: 'Your Will amendment needs a change — Heirloom Life', html })
+  } catch (err) {
+    console.error(`Failed to send amendment rejected email to ${to}:`, err)
+  }
+}
+
 export async function sendRewitnessingConfirmationEmail(params: { to: string; name: string | null }): Promise<void> {
   const { to, name } = params
   const witnessingUrl = `${APP_URL}/witnessing`
