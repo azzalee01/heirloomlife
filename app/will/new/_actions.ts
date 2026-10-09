@@ -439,6 +439,9 @@ export async function savePersonalWishes(
   }
 
   if (!willId) return
+  // Guard against anon session UUID leaking in (same pattern as saveStep)
+  const { data: willCheck } = await supabase.from('wills').select('id').eq('id', willId).single()
+  if (!willCheck) return
   const payload = {
     funeral_type: wishes.funeralType || null,
     funeral_resting_place: wishes.funeralRestingPlace || null,
