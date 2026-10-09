@@ -170,7 +170,25 @@ export async function saveStep(
     id = data.id as string
   } else {
     const { data } = await supabase.from('wills').select('status').eq('id', id).single()
-    willStatus = (data?.status as string | undefined) ?? 'draft'
+    if (!data) {
+      // The provided willId doesn't match a will owned by this user — most likely
+      // an anon session UUID that leaked in when the user authenticated mid-flow.
+      // Create a fresh will so subsequent FK inserts don't blow up.
+      const cookieStore = await cookies()
+      const partnerRef = cookieStore.get('hl_partner_ref')?.value ?? null
+      const { data: newWill, error: newError } = await supabase
+        .from('wills')
+        .insert({
+          user_id: user.id,
+          ...(partnerRef && { partner_referral_code: partnerRef }),
+        })
+        .select('id')
+        .single()
+      if (newError) throw new Error(newError.message)
+      id = newWill.id as string
+    } else {
+      willStatus = (data.status as string | undefined) ?? 'draft'
+    }
   }
   // Only a will that's already been completed once is a "live" document  - 
   // edits to it (via the wizard or the AI chat) warrant a fresh legal review.

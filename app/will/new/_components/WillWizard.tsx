@@ -286,10 +286,18 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       setShowEmailCapture(true)
     }
 
-    pendingSaveRef.current = saveStep(form.willId, currentStaticStep, form)
-    pendingSaveRef.current.catch((e) => {
-      setError(e instanceof Error ? e.message : 'Your progress may not have saved. Please try again.')
-    })
+    const willIdAtSave = form.willId
+    pendingSaveRef.current = saveStep(willIdAtSave, currentStaticStep, form)
+    pendingSaveRef.current
+      .then(({ id: savedId }) => {
+        // If saveStep created a new will (e.g. anon UUID replaced after auth), sync the ID
+        if (savedId !== willIdAtSave) {
+          setForm((prev) => ({ ...prev, willId: savedId }))
+        }
+      })
+      .catch((e) => {
+        setError(e instanceof Error ? e.message : 'Your progress may not have saved. Please try again.')
+      })
   }
 
   function handleBack() {
