@@ -11,7 +11,7 @@ const UPDATES_PRICE = PRICING.updatesAudPerYear
 
 const INCLUDED = [
   'Your complete Will, ready to sign',
-  'Standard solicitor quality review before it is issued',
+  'Reviewed against a solicitor-written checklist before issue',
   'Permanent download',
   'Guided signing: remote video witnessing in NSW, print-and-sign elsewhere',
 ]

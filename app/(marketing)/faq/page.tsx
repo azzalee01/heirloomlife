@@ -27,11 +27,11 @@ const FAQS = [
   },
   {
     q: 'How is this different from downloading a Will kit from a newsagent?',
-    a: "A Will kit gives you a blank form and a set of instructions. Heirloom Life gives you a guided drafting process, a Vault to keep your estate current, and a standard solicitor quality review before your Will is issued. The difference is not mainly the document  -  it's the process around it and the ongoing maintenance.",
+    a: "A Will kit gives you a blank form and a set of instructions. Heirloom Life gives you a guided drafting process, a Vault to keep your estate current, and a checklist review before your Will is issued. The difference is not mainly the document  -  it's the process around it and the ongoing maintenance.",
   },
   {
     q: 'What if my estate is complicated  -  business interests, trusts, overseas assets?',
-    a: "Complete your Will through the questionnaire  -  we'll flag the specific areas of concern in your Vault. Your Will also receives a standard solicitor quality review before being issued. For situations that need a more detailed bespoke engagement, we can connect you directly with our partner lawyers through your Vault. For very complex estates, a bespoke Will prepared entirely by a solicitor may be more appropriate, and we can refer you.",
+    a: "Complete your Will through the questionnaire  -  we'll flag the specific areas of concern in your Vault. Your Will is reviewed against a solicitor-written checklist before being issued. For situations that need a more detailed bespoke engagement, we can connect you directly with our partner lawyers through your Vault. For very complex estates, a bespoke Will prepared entirely by a solicitor may be more appropriate, and we can refer you.",
   },
   {
     q: 'How long does it take to complete a Will?',
@@ -55,7 +55,7 @@ const FAQS = [
   },
   {
     q: 'Is Heirloom Life providing legal advice?',
-    a: "No. Heirloom Life is not a law firm and does not provide legal advice. Your Will is prepared using established estate planning drafting standards. Every Will issued through Heirloom Life is subject to a standard solicitor quality review before being finalised. Using Heirloom Life does not create a solicitor-client relationship.",
+    a: "No. Heirloom Life is not a law firm and does not provide legal advice. Your Will is prepared using established estate planning drafting standards. Every Will is reviewed against a solicitor-written checklist before being issued. Using Heirloom Life does not create a solicitor-client relationship.",
   },
   {
     q: 'What states do you support?',

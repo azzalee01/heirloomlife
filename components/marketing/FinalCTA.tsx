@@ -54,7 +54,7 @@ export function FinalCTA() {
             className="text-[15px] md:text-base mb-12 leading-relaxed"
             style={{ color: '#5A7A77' }}
           >
-            A complete, solicitor-reviewed Will takes less than 20 minutes.
+            A complete, reviewed Will takes less than 20 minutes.
             <br className="hidden sm:block" />
             The clarity it creates lasts a lifetime.
           </motion.p>
@@ -84,7 +84,7 @@ export function FinalCTA() {
             className="mt-8 text-xs tracking-wide"
             style={{ color: '#2E4E4C' }}
           >
-            No subscription required · Solicitor review included · Secure Australian storage
+            No subscription required · Reviewed before issue · Secure Australian storage
           </motion.p>
 
         </div>

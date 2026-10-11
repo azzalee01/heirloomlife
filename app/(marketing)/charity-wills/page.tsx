@@ -58,7 +58,7 @@ export default function CharityWillsPage() {
           {[
             ['1', 'Draft your Will', 'Work through the guided questions at your own pace. Cover your executors, guardians, specific gifts, and the people who matter most.'],
             ['2', 'Add a charitable beneficiary', 'In the residuary estate step, name a registered charity alongside your family. Set the share that feels right to you - you stay in control.'],
-            ['3', 'Download when ready', 'Pay once to receive your solicitor-reviewed, signed-ready Will. Your charitable gift is part of it - no separate process required.'],
+            ['3', 'Download when ready', 'Pay once to receive your reviewed, signed-ready Will. Your charitable gift is part of it - no separate process required.'],
           ].map(([number, title, body]) => (
             <div key={number} style={{ border: '1px solid var(--mkt-line)', borderRadius: 12, padding: '1.75rem', background: 'var(--mkt-surface)' }}>
               <span style={{ display: 'flex', width: 30, height: 30, alignItems: 'center', justifyContent: 'center', borderRadius: 7, background: 'var(--teal)', color: '#fff', fontSize: '.75rem', fontWeight: 700 }}>{number}</span>
@@ -110,7 +110,7 @@ export default function CharityWillsPage() {
           </p>
           <Link href="/start" className="mkt-btn-ink-l">Start your Will</Link>
           <p style={{ marginTop: '1.1rem', fontSize: '.78rem', color: 'var(--mkt-stone-soft)' }}>
-            Free to draft. Pay ${PRICING.willAud} to download your solicitor-reviewed Will.
+            Free to draft. Pay ${PRICING.willAud} to download your reviewed Will.
           </p>
         </div>
       </section>

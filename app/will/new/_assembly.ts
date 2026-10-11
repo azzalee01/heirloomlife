@@ -442,7 +442,7 @@ export async function assembleWillDocument(formData: WillFormData): Promise<stri
       .map((f) => f.code)
     throw new Error(
       `Will assembly blocked — requires solicitor: ${blockerCodes.join(', ')}. ` +
-      `This Will has been submitted for solicitor review. A Heirloom solicitor will prepare your document.`
+      `This Will has been submitted for review. Our team will prepare your document.`
     )
   }
 

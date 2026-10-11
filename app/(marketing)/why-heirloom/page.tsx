@@ -66,7 +66,7 @@ type CellValue =
 const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: CellValue }[] = [
   {
     label: 'Upfront price',
-    heirloom: { kind: 'text', lines: [`$${PRICING.willAud}`, 'includes solicitor review'] },
+    heirloom: { kind: 'text', lines: [`$${PRICING.willAud}`, 'reviewed before issue'] },
     safewill: { kind: 'text', lines: ['$160', 'standard price; excl. promotions'] },
     willed:   { kind: 'text', lines: ['$159'] },
   },
@@ -78,7 +78,7 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
   },
   {
     label: 'Solicitor review',
-    heirloom: { kind: 'text', lines: ['Standard, included'] },
+    heirloom: { kind: 'text', lines: ['Checklist review, included'] },
     safewill: { kind: 'text', lines: ['Included', '(affiliate law firm review)'] },
     willed:   { kind: 'text', lines: ['"Vetted" by legal team'] },
   },

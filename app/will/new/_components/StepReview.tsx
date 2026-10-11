@@ -61,7 +61,7 @@ export default function StepReview({ formData, onViewWill, saving }: Props) {
 
       <div className="border border-[var(--line)] bg-[var(--paper-warm)] px-4 py-3">
         <p className="text-xs" style={{ color: 'var(--neutral)' }}>
-          <span className="font-semibold" style={{ color: 'var(--ink)' }}>Note:</span> Heirloom Life is not a law firm and this is not legal advice. Your Will is prepared using established estate planning standards. Every Will issued through Heirloom Life is subject to a standard solicitor quality review before being finalised.
+          <span className="font-semibold" style={{ color: 'var(--ink)' }}>Note:</span> Heirloom Life is not a law firm and this is not legal advice. Your Will is prepared using established estate planning standards. Every Will is reviewed against a solicitor-written checklist before being issued.
         </p>
       </div>
     </div>

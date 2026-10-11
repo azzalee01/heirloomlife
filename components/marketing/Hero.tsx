@@ -53,7 +53,7 @@ export function Hero() {
               className="text-base sm:text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10 text-balance"
               style={{ color: '#8AADAA' }}
             >
-              A legally valid Australian Will in under 20 minutes  -  with optional solicitor review,
+              A legally valid Australian Will in under 20 minutes  -  reviewed before issue,
               living document storage, and everything your family needs.
             </motion.p>
 
@@ -81,7 +81,7 @@ export function Hero() {
               className="text-xs tracking-wide"
               style={{ color: '#4A6A67' }}
             >
-              Solicitor-reviewed
+              Reviewed before issue
             </motion.p>
 
           </div>

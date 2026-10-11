@@ -79,7 +79,7 @@ export default function ThePlatformPage() {
             {[
               {
                 title: 'Your Will',
-                body: 'Drafted to your state\'s requirements, written in plain English, and versioned every time your life moves forward. A solicitor quality review is included before your Will is issued.',
+                body: 'Drafted to your state\'s requirements, written in plain English, and versioned every time your life moves forward. Reviewed against a solicitor-written checklist before being issued.',
                 href: '/the-will',
                 cta: 'About the Will',
               },

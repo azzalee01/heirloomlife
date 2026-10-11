@@ -54,7 +54,7 @@ export default function TheWillPage() {
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>again</em>.
             </h1>
             <p style={{ marginTop: '1.75rem', maxWidth: '34rem', fontSize: '1.1rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault  -  readable in plain English, reviewed by solicitors when it counts, and versioned every time your life moves forward.
+              Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault  -  readable in plain English, reviewed against solicitor-written standards, and versioned every time your life moves forward.
             </p>
             <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <Link href="/start" className="mkt-btn-ink-l">
@@ -90,7 +90,7 @@ export default function TheWillPage() {
                     <p style={{ fontSize: '.75rem', color: 'var(--mkt-stone-soft)', marginTop: '.15rem' }}>Version 4 · Last amended 12 Jun 2026</p>
                   </div>
                 </div>
-                <Pill>Solicitor reviewed</Pill>
+                <Pill>Reviewed</Pill>
               </div>
 
               {/* Tab strip */}
@@ -120,7 +120,7 @@ export default function TheWillPage() {
                 ))}
               </div>
               <Link href="#solicitor-review" style={{ margin: '0 1.5rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 8, background: 'var(--mkt-ink)', padding: '1rem 1.25rem', color: '#fff', textDecoration: 'none' }}>
-                <span style={{ fontSize: '.85rem', fontWeight: 600 }}>How solicitor review works</span>
+                <span style={{ fontSize: '.85rem', fontWeight: 600 }}>How our review process works</span>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               </Link>
             </div>
@@ -141,7 +141,7 @@ export default function TheWillPage() {
             {[
               { n: '01', title: 'Answer guided questions', body: 'Guided questions covering your assets, beneficiaries, executor, and any guardianship arrangements. Every question has a plain-English explanation.' },
               { n: '02', title: 'Review your draft', body: 'Your answers become a structured Will draft. Review clause by clause. Change your answers and the draft updates immediately.' },
-              { n: '03', title: 'Download, sign and witness', body: `Pay $${PRICING.willAud} to download your solicitor-reviewed Will. Sign it in the presence of two independent witnesses  -  NSW members can use remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Complex situations are flagged in your Vault, where you can reach our partner lawyers directly.` },
+              { n: '03', title: 'Download, sign and witness', body: `Pay $${PRICING.willAud} to download your reviewed Will. Sign it in the presence of two independent witnesses  -  NSW members can use remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Complex situations are flagged in your Vault, where you can reach our partner lawyers directly.` },
               { n: '04', title: 'Store and update', body: 'Your Will PDF lives in your Vault alongside your asset register. Every time your life changes, update your Will from the same place.' },
               { n: '+', title: 'Versioned as your life changes', body: 'Every amendment creates a new version. A change to your family, your assets, or your executors prompts an update  -  not a whole new Will.' },
             ].map(step => (
@@ -183,10 +183,10 @@ export default function TheWillPage() {
       <section id="solicitor-review" style={{ ...SECTION_PAD, background: 'var(--mkt-surface-2)', scrollMarginTop: '6rem' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem' }}>
-            Solicitor review, included.
+            Reviewed before issue.
           </h2>
           <p style={{ fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>
-            Every Will issued through Heirloom Life is subject to a standard solicitor quality review before being issued. For situations that are more complex  -  business succession, blended families, overseas assets, testamentary trusts  -  your Vault will flag the specific areas of concern, and you can communicate directly with our partner lawyers through your Vault for a more detailed bespoke engagement.
+            Every Will is reviewed by our team against a solicitor-written checklist before being issued. For situations that are more complex  -  business succession, blended families, overseas assets, testamentary trusts  -  your Vault will flag the specific areas of concern, and you can communicate directly with our partner lawyers through your Vault for a more detailed bespoke engagement.
           </p>
         </div>
       </section>

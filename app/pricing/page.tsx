@@ -8,11 +8,11 @@ import EmailCapture from '@/components/marketing/EmailCapture'
 
 export const metadata: Metadata = {
   title: 'Pricing | Heirloom Life',
-  description: `A solicitor-reviewed Australian Will for $${PRICING.willAud}. Optional Heirloom Unlimited for updates and Living Vault access.`,
+  description: `A reviewed Australian Will for $${PRICING.willAud}. Optional Heirloom Unlimited for updates and Living Vault access.`,
   alternates: { canonical: 'https://www.heirloomlife.com.au/pricing' },
   openGraph: {
     title: 'Pricing — Heirloom Life',
-    description: `A solicitor-reviewed Australian Will for $${PRICING.willAud}. Optional Heirloom Unlimited for updates and Living Vault access.`,
+    description: `A reviewed Australian Will for $${PRICING.willAud}. Optional Heirloom Unlimited for updates and Living Vault access.`,
     url: 'https://www.heirloomlife.com.au/pricing',
     siteName: 'Heirloom Life',
     type: 'website',
@@ -70,14 +70,14 @@ export default function PricingPage() {
                 $0
               </p>
               <p style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', marginBottom: '.3rem' }}>Free to draft. No account required to start.</p>
-              <p style={{ fontSize: '.85rem', color: 'var(--teal-deep)', fontWeight: 600, marginBottom: '.3rem' }}>Pay ${PRICING.willAud} to download  - solicitor review included.</p>
+              <p style={{ fontSize: '.85rem', color: 'var(--teal-deep)', fontWeight: 600, marginBottom: '.3rem' }}>Pay ${PRICING.willAud} to download  - reviewed before issue.</p>
               <p style={{ fontSize: '.8rem', color: 'var(--mkt-stone-soft)', marginBottom: '1.5rem' }}>Partner discount: ${PRICING.willAud - PRICING.partnerWillDiscountAud} when your partner shares their link with you.</p>
 
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', listStyle: 'none', padding: 0, margin: '0 0 2rem' }}>
                 {[
                   'Guided questionnaire',
                   'Drafted to NSW legal requirements (Succession Act 2006)',
-                  'Standard solicitor quality review before your Will is issued',
+                  'Reviewed against a solicitor-written checklist before issue',
                   'Your Will, permanently downloadable',
                   'One remote signing session included (NSW)',
                   'Witnessing guidance (remote AV witnessing in NSW — print-and-sign in all other states)',
@@ -185,11 +185,11 @@ export default function PricingPage() {
           {[
             {
               q: 'Is it really free to start?',
-              a: `Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $${PRICING.willAud} when you're ready to download your solicitor-reviewed, signed-ready document. Unlimited updates ($${PRICING.updatesAudPerYear}/year, optional) only matters if you want to change your Will later.`,
+              a: `Yes. You can draft your complete Will  - every step, every clause  - without paying anything. You pay $${PRICING.willAud} when you're ready to download your reviewed, signed-ready document. Unlimited updates ($${PRICING.updatesAudPerYear}/year, optional) only matters if you want to change your Will later.`,
             },
             {
               q: 'Which states are supported?',
-              a: 'Currently NSW. Your Will is drafted to NSW legal requirements under the Succession Act 2006. Members in all states can use Heirloom  -  NSW members have access to remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Other states are in progress.',
+              a: 'All Australian states and territories. Your Will is drafted to NSW legal requirements under the Succession Act 2006. Remote AV witnessing is currently available to NSW members only  -  all other states complete with a straightforward print-and-sign process we walk you through step by step.',
             },
             {
               q: 'Can I upload my existing Will?',
@@ -201,7 +201,7 @@ export default function PricingPage() {
             },
             {
               q: 'What if my situation is complex?',
-              a: 'Complete the questionnaire and your Vault will flag the specific areas of concern. Your Will also receives a standard solicitor quality review before being issued. For situations that need a more detailed bespoke engagement, you can communicate directly with our partner lawyers through your Vault. For estates too complex for a template Will entirely, we can refer you to a solicitor for a bespoke engagement.',
+              a: 'Complete the questionnaire and your Vault will flag the specific areas of concern. Your Will is reviewed against a solicitor-written checklist before being issued. For situations that need a more detailed bespoke engagement, you can communicate directly with our partner lawyers through your Vault. For estates too complex for a template Will entirely, we can refer you to a solicitor for a bespoke engagement.',
             },
           ].map((item) => (
             <details
@@ -225,7 +225,7 @@ export default function PricingPage() {
       <section style={{ paddingBlock: '3rem', background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <p style={{ fontSize: '.78rem', lineHeight: 1.7, color: 'var(--mkt-stone-soft)' }}>
-            Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. All Wills receive a standard solicitor quality review before being issued — this review checks for document compliance and drafting standards, not the suitability of your instructions for your individual circumstances. If your situation involves factors like overseas assets, business ownership, or a blended family, we strongly recommend a bespoke Will prepared by a solicitor.
+            Heirloom Life provides a platform for you to prepare your own Will. We are not a law firm and this is not legal advice. Every Will is reviewed against a solicitor-written checklist before being issued — this review checks for document compliance and drafting standards, not the suitability of your instructions for your individual circumstances. If your situation involves factors like overseas assets, business ownership, or a blended family, we strongly recommend a bespoke Will prepared by a solicitor.
           </p>
         </div>
       </section>

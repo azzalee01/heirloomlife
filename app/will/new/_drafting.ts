@@ -29,7 +29,7 @@ Structure to follow, adapting section numbers and headings as appropriate, and o
 11. A note on assets with an existing binding death benefit nomination (superannuation/life insurance), flagging that those may pass outside the will.
 12. A closing attestation clause for signing and witnessing (do not fabricate witness names).
 
-Write in formal legal-document prose appropriate for a will, using the testator's real details throughout. Do not include commentary, explanations, or a preamble  -  output only the will document text itself. Include a note in an Important: line at the end of the document stating that this document was prepared using Heirloom Life's template platform and has been subject to a standard solicitor quality review before being issued, and must be signed and witnessed to be legally valid.`
+Write in formal legal-document prose appropriate for a will, using the testator's real details throughout. Do not include commentary, explanations, or a preamble  -  output only the will document text itself. Include a note in an Important: line at the end of the document stating that this document was prepared using Heirloom Life's guided platform and reviewed against a solicitor-written checklist before being issued, and must be signed and witnessed to be legally valid.`
 
 function buildIntakeSummary(formData: WillFormData): string {
   const pd = formData.personalDetails

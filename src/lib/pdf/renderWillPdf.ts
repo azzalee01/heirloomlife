@@ -200,7 +200,7 @@ export async function renderWillPdf(
   doc.setFontSize(7.5)
   doc.setTextColor(138, 155, 153)
   const disclaimer =
-    'This Will has been prepared using solicitor-reviewed drafting standards. Heirloom Life Pty Ltd is not a law firm and this document does not constitute legal advice.'
+    'This Will was prepared using Heirloom Life\'s guided platform and reviewed against a solicitor-written drafting checklist before issue. Heirloom Life Pty Ltd is not a law firm and this document does not constitute legal advice.'
   const dLines = doc.splitTextToSize(disclaimer, pageW - 30)
   doc.text(dLines, pageW / 2, footerY + 7, { align: 'center' })
   doc.setTextColor(180, 200, 198)

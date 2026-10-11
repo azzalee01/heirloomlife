@@ -34,8 +34,8 @@ const ITEMS = [
     body: 'Executor access controls are on our build roadmap. Today, your Vault is accessible only to you with your account credentials. We will publish details of the executor access model before it is released.',
   },
   {
-    title: 'Solicitor review independence',
-    body: 'Every Will issued through Heirloom Life is subject to a standard solicitor quality review conducted by qualified Australian legal practitioners who are independent of Heirloom Life. For complex situations, an additional bespoke review can be requested through your Vault.',
+    title: 'Checklist review',
+    body: 'Every Will is reviewed against a solicitor-written checklist before being issued. The checklist was prepared by qualified Australian legal practitioners. For complex situations, an additional bespoke review via our partner lawyers can be requested through your Vault.',
   },
   {
     title: 'What we are not claiming',

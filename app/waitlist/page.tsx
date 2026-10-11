@@ -27,7 +27,7 @@ export default function WaitlistPage() {
             <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>nationwide</em>.
           </h1>
           <p style={{ fontSize: '1rem', lineHeight: 1.75, color: 'var(--mkt-stone)', marginBottom: '2.5rem', maxWidth: '30rem' }}>
-            We now support all Australian states and territories. Wills are currently drafted to NSW legal requirements — free to start, ${PRICING.willAud} to download with solicitor review included.
+            We now support all Australian states and territories. Wills are currently drafted to NSW legal requirements — free to start, ${PRICING.willAud} to download, reviewed before issue.
           </p>
 
           <Link href="/start" className="mkt-btn-ink-m">

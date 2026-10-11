@@ -124,7 +124,7 @@ export default function LivingVaultPage() {
               {
                 tag: 'Lawyer Review',
                 title: 'Included where it matters, priced where it doesn\'t.',
-                body: 'High-severity flags  -  guardianship, trusts, business succession  -  are surfaced in your Vault with a clear recommendation. Every Will issued through Heirloom Life is subject to a standard solicitor quality review. For complex situations, you can communicate directly with our partner lawyers through your Vault.',
+                body: 'High-severity flags  -  guardianship, trusts, business succession  -  are surfaced in your Vault with a clear recommendation. Every Will is reviewed against a solicitor-written checklist before being issued. For complex situations, you can communicate directly with our partner lawyers through your Vault.',
               },
               {
                 tag: 'Document Storage',

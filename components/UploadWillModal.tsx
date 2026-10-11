@@ -39,9 +39,9 @@ const FACTS: { label: string; heading: string; body: string }[] = [
     body: 'Over 60% of Australians haven\'t made one. If you pass without a Will, the state decides who gets what — regardless of your wishes.',
   },
   {
-    label: 'Solicitor review',
+    label: 'Checklist review',
     heading: 'Every Heirloom Will is reviewed before issue.',
-    body: 'A standard solicitor quality review is included as part of every Will — not an optional extra. Complex situations are flagged and escalated automatically.',
+    body: 'Every Will is reviewed against a solicitor-written checklist before being issued — included, not optional. Complex situations are flagged and escalated automatically.',
   },
   {
     label: 'Stays current',

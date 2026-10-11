@@ -35,7 +35,7 @@ const STEPS = [
   {
     num: '03',
     title: 'Download, sign and witness',
-    body: `Pay $${PRICING.willAud} to download your solicitor-reviewed Will. Sign it in the presence of two independent witnesses  -  NSW members can use remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Complex situations are flagged in your Vault, where you can reach our partner lawyers directly.`,
+    body: `Pay $${PRICING.willAud} to download your reviewed Will. Sign it in the presence of two independent witnesses  -  NSW members can use remote AV witnessing, all other states complete with a straightforward print-and-sign process we walk you through. Complex situations are flagged in your Vault, where you can reach our partner lawyers directly.`,
   },
   {
     num: '04',
@@ -111,7 +111,7 @@ export default function HowItWorksPage() {
             Australian succession law is largely state-based. Heirloom Life is available across all states and territories. Wills are currently drafted to NSW legal requirements (Succession Act 2006). Signing and witnessing guidance for all other states is included with your download.
           </p>
           <p style={{ marginTop: '1rem', fontSize: '.85rem', color: 'var(--mkt-stone-soft)' }}>
-            Complex situations are flagged in your Vault after you complete your Will. Every Will issued through Heirloom Life is subject to a standard solicitor quality review. For complex situations flagged in your Vault, we can connect you with a partner lawyer directly.
+            Complex situations are flagged in your Vault after you complete your Will. Every Will is reviewed against a solicitor-written checklist before being issued. For complex situations flagged in your Vault, we can connect you with a partner lawyer directly.
           </p>
         </div>
       </section>

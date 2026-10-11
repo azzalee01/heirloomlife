@@ -31,7 +31,7 @@ const sections: LegalSection[] = [
     content: (
       <>
         <p>
-          The Will is a one-off payment of ${PRICING.willAud}. This covers preparation of your solicitor-reviewed Will document and, for NSW addresses, one remote witnessing session.
+          The Will is a one-off payment of ${PRICING.willAud}. This covers preparation of your reviewed Will document and, for NSW addresses, one remote witnessing session.
         </p>
         <p>
           Because the Will document is generated and made available for download immediately on payment, we generally cannot offer a change-of-mind refund once you have downloaded your Will. If you have not yet downloaded your Will and wish to cancel, contact us within 7 days of purchase and we will assess your request.

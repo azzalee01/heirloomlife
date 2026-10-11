@@ -4,11 +4,11 @@ import MarketingNav from '@/components/marketing/MarketingNav'
 
 export const metadata: Metadata = {
   title: 'Heirloom Life — Australian Wills and Estate Planning',
-  description: 'Write a solicitor-reviewed Will online. Track life events, keep your estate plan current, and organise everything your family needs — all in one place.',
+  description: 'Write a reviewed Australian Will online. Track life events, keep your estate plan current, and organise everything your family needs — all in one place.',
   alternates: { canonical: 'https://www.heirloomlife.com.au' },
   openGraph: {
     title: 'Heirloom Life — Australian Wills and Estate Planning',
-    description: 'Write a solicitor-reviewed Will online. Track life events, keep your estate plan current, and organise everything your family needs — all in one place.',
+    description: 'Write a reviewed Australian Will online. Track life events, keep your estate plan current, and organise everything your family needs — all in one place.',
     url: 'https://www.heirloomlife.com.au',
     siteName: 'Heirloom Life',
     type: 'website',
@@ -145,7 +145,7 @@ export default function HomePage() {
           <div>
             <span style={SECTION_LABEL}>The Will</span>
             <H2>Not a document you sign once<br/>and hope you never think about again.</H2>
-            <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault — readable in plain English, versioned every time your life moves forward, with a standard solicitor quality review included before your Will is issued.</Sub>
+            <Sub>Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault — readable in plain English, versioned every time your life moves forward, and reviewed against a solicitor-written checklist before being issued.</Sub>
             <div style={{ marginTop: '2rem', display: 'flex', gap: '.9rem', flexWrap: 'wrap' }}>
               <Link href="/start" className="mkt-btn-ink-l">
                 Start your Will
@@ -168,7 +168,7 @@ export default function HomePage() {
                   <p style={{ fontSize: '.75rem', color: 'var(--mkt-stone-soft)', marginTop: '.15rem' }}>Version 4 · Last amended 12 Jun 2026</p>
                 </div>
               </div>
-              <Pill>Solicitor reviewed</Pill>
+              <Pill>Reviewed</Pill>
             </div>
             <div style={{ display: 'flex', gap: '1.6rem', paddingInline: '1.5rem', borderBottom: '1px solid var(--mkt-line)', overflowX: 'auto' }}>
               {['Clauses', 'Beneficiaries', 'Version History', 'Suggested Edits'].map((tab, i) => (
@@ -194,7 +194,7 @@ export default function HomePage() {
               ))}
             </div>
             <Link href="/the-will#solicitor-review" style={{ margin: '0 1.5rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: 8, background: 'var(--mkt-ink)', padding: '1rem 1.25rem', color: '#fff', textDecoration: 'none' }}>
-              <span style={{ fontSize: '.85rem', fontWeight: 600 }}>Request solicitor review</span>
+              <span style={{ fontSize: '.85rem', fontWeight: 600 }}>How our review process works</span>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
             </Link>
           </div>
@@ -229,7 +229,7 @@ export default function HomePage() {
               </div>
             </div>
             {[
-              { tag: 'Lawyer Review', h: 'Included as standard, with escalation available.', p: 'Every Will is subject to a standard solicitor quality review before being issued. Complex flags  -  business succession, trusts, blended families  -  are surfaced in your Vault, where you can reach our partner lawyers directly.' },
+              { tag: 'Checklist Review', h: 'Reviewed before issue, with escalation available.', p: 'Every Will is reviewed against a solicitor-written checklist before being issued. Complex flags  -  business succession, trusts, blended families  -  are surfaced in your Vault, where you can reach our partner lawyers directly.' },
               { tag: 'Document Storage', h: 'Everything in one place, always up to date.', p: "Your Will, asset register, and notes stored securely in your Vault  -  organised and up to date so you can brief your executor on where everything lives." },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: '#fff', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
