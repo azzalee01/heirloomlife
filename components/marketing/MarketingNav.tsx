@@ -81,8 +81,9 @@ const TABS: NavTab[] = [
   },
   {
     id: 'partners',
-    label: 'Partners',
+    label: 'For Organisations',
     items: [
+      { label: 'For Employers', href: '/for-employers' },
       { label: 'For Advisers', href: '/for-advisers' },
       { label: 'For Charities', href: '/for-charities' },
     ],

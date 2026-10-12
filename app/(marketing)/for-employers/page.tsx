@@ -1,0 +1,335 @@
+import type { Metadata } from 'next'
+import EmployerEnquiryForm from './_components/EmployerEnquiryForm'
+
+export const metadata: Metadata = {
+  title: 'For Employers | Heirloom Life',
+  description: 'A meaningful financial wellbeing benefit for your people. Give your employees access to simple, guided Will preparation — no legal complexity, no cost to them.',
+  alternates: { canonical: 'https://www.heirloomlife.com.au/for-employers' },
+  openGraph: {
+    title: 'For Employers | Heirloom Life',
+    description: 'A meaningful financial wellbeing benefit for your people.',
+    url: 'https://www.heirloomlife.com.au/for-employers',
+    siteName: 'Heirloom Life',
+    type: 'website',
+  },
+}
+
+const W: React.CSSProperties = { maxWidth: 1100, marginInline: 'auto', paddingInline: '1.5rem' }
+const LABEL: React.CSSProperties = {
+  margin: 0, color: 'var(--teal-deep)', fontSize: '.72rem',
+  fontWeight: 700, letterSpacing: '.16em', textTransform: 'uppercase',
+}
+
+const WHY_ITEMS = [
+  {
+    heading: 'Financial wellbeing, made tangible.',
+    body: 'A Will is one of the most important financial decisions a person makes — and most employees have never made one. Offering access to Heirloom turns financial wellbeing from a talking point into something your people can actually act on.',
+  },
+  {
+    heading: 'Support at life\'s biggest moments.',
+    body: 'Marriage, a new child, a mortgage, a promotion — these are the moments when estate planning matters most. Giving your team access to Heirloom means they\'re supported when it counts, not left to find help on their own.',
+  },
+  {
+    heading: 'No complexity for HR.',
+    body: 'Heirloom operates entirely independently of your organisation. You enrol. We do the rest. There are no ongoing obligations, no data obligations, and no legal involvement required from your team.',
+  },
+]
+
+const HOW_IT_WORKS = [
+  {
+    n: '01',
+    heading: 'Your organisation enrols',
+    body: 'We set up employer-funded access for your team. Your HR contact receives everything they need to communicate the benefit to employees.',
+  },
+  {
+    n: '02',
+    heading: 'Employees receive access',
+    body: 'Each employee gets their own Heirloom access. They complete their Will in their own time, entirely independently of your organisation.',
+  },
+  {
+    n: '03',
+    heading: 'Heirloom delivers the service',
+    body: 'We guide employees through the process, review their Will against a solicitor-written checklist before issue, and support them if their situation needs more than our platform can handle.',
+  },
+]
+
+const INCLUDED = [
+  'Guided Will preparation — seven steps, around 15–20 minutes',
+  'Reviewed against a solicitor-written checklist before issue',
+  'Signing guidance: remote video witnessing in NSW, print-and-sign elsewhere',
+  'Living Vault — secure document storage and estate organisation',
+  'Escalation pathway: complex situations referred to our partner lawyers',
+  'Updates if life changes — your team keeps their Will current as circumstances evolve',
+]
+
+const FAQ = [
+  {
+    q: 'Can employees keep their Will after they leave the company?',
+    a: 'Yes. A Will belongs to the person who made it. Employees retain full access to their Will and Vault regardless of their employment status.',
+  },
+  {
+    q: 'Does our organisation see any employee information?',
+    a: 'No. Every employee interacts directly and independently with Heirloom. We hold all estate data under our own privacy policy. Nothing flows back to you — not the Will itself, not the beneficiaries, not the executor, not any other estate details.',
+  },
+  {
+    q: 'How does billing work?',
+    a: 'We offer flexible pricing to suit organisations of different sizes. Typical structures are prepaid access codes or an annual per-employee arrangement. We\'ll confirm the right model for your organisation during our initial conversation.',
+  },
+  {
+    q: 'Can employees\' spouses or partners also use the benefit?',
+    a: 'That\'s something we can accommodate — speak to us about it during your enquiry. Many employers extend the benefit to household members as part of a broader family financial wellbeing offering.',
+  },
+  {
+    q: 'What if an employee\'s estate situation is complex?',
+    a: 'Heirloom is designed for straightforward estates. If the platform identifies that an employee\'s situation — business interests, overseas assets, blended family arrangements — needs specialist attention, we refer them to our partner lawyers. We never take anyone further than we should.',
+  },
+  {
+    q: 'Are there any fringe benefits tax implications?',
+    a: 'We aren\'t able to provide tax advice. We recommend speaking with your payroll or tax adviser to understand the FBT treatment for your specific arrangement. We can provide any product information they need.',
+  },
+]
+
+export default function ForEmployersPage() {
+  return (
+    <>
+      {/* ── Hero ───────────────────────────────────────────────────────────── */}
+      <section style={{ background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', paddingBlock: '8rem 5.5rem' }}>
+        <div className="md:px-10" style={{ ...W, maxWidth: 780 }}>
+          <p style={LABEL}>For Employers</p>
+          <h1 style={{
+            margin: '1.25rem 0 0',
+            fontFamily: 'var(--font-display)',
+            fontSize: 'clamp(2.8rem, 5.5vw, 5.2rem)',
+            lineHeight: 1.02,
+            fontWeight: 400,
+            color: 'var(--mkt-ink-text)',
+          }}>
+            A meaningful benefit{' '}
+            <em style={{ color: 'var(--teal-deep)', fontWeight: 400 }}>for life&apos;s biggest moments.</em>
+          </h1>
+          <p style={{ margin: '1.75rem 0 0', maxWidth: '40rem', fontSize: '1.1rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
+            Give your employees access to simple, guided Will preparation as part of your financial wellbeing programme. Help them plan for their families and their futures — without adding complexity for your HR team.
+          </p>
+          <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <a href="#enquire" className="mkt-btn-ink-l">Book a demo</a>
+            <a href="#how-it-works" style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+              See how it works
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Why offer Heirloom ─────────────────────────────────────────────── */}
+      <section style={{ paddingBlock: '5.5rem', background: '#fff', borderBottom: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10" style={W}>
+          <div style={{ maxWidth: '36rem', marginBottom: '3rem' }}>
+            <p style={LABEL}>Why offer Heirloom</p>
+            <h2 style={{
+              margin: '.9rem 0 0',
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.9rem, 3.5vw, 2.8rem)',
+              lineHeight: 1.08,
+              fontWeight: 400,
+              color: 'var(--mkt-ink-text)',
+            }}>
+              Financial wellbeing goes beyond super and salary.
+            </h2>
+          </div>
+          <div
+            className="md:grid-cols-3"
+            style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}
+          >
+            {WHY_ITEMS.map(({ heading, body }) => (
+              <div
+                key={heading}
+                style={{ padding: '1.75rem', border: '1px solid var(--mkt-line)', borderRadius: 10, background: 'var(--mkt-surface)' }}
+              >
+                <h3 style={{ margin: '0 0 .75rem', fontSize: '1rem', fontWeight: 600, lineHeight: 1.35, color: 'var(--mkt-ink-text)' }}>
+                  {heading}
+                </h3>
+                <p style={{ margin: 0, fontSize: '.88rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
+                  {body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── How it works ───────────────────────────────────────────────────── */}
+      <section id="how-it-works" style={{ paddingBlock: '5.5rem', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', scrollMarginTop: '5rem' }}>
+        <div className="md:px-10" style={W}>
+          <p style={LABEL}>How it works</p>
+          <div
+            className="md:grid-cols-3"
+            style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem', marginTop: '2.5rem' }}
+          >
+            {HOW_IT_WORKS.map(({ n, heading, body }) => (
+              <div key={n}>
+                <p style={{
+                  margin: '0 0 1rem',
+                  fontFamily: 'var(--font-display)',
+                  fontSize: '2.4rem',
+                  lineHeight: 1,
+                  fontWeight: 400,
+                  color: 'var(--teal-deep)',
+                  opacity: 0.35,
+                }}>
+                  {n}
+                </p>
+                <h3 style={{ margin: '0 0 .6rem', fontSize: '1.05rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>
+                  {heading}
+                </h3>
+                <p style={{ margin: 0, fontSize: '.9rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
+                  {body}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── What's included ────────────────────────────────────────────────── */}
+      <section style={{ paddingBlock: '5.5rem', background: '#fff', borderBottom: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10 md:flex md:items-start md:gap-20" style={{ ...W }}>
+          <div style={{ flexShrink: 0, maxWidth: '22rem', marginBottom: '2rem' }}>
+            <p style={LABEL}>What&apos;s included</p>
+            <h2 style={{
+              margin: '.9rem 0 .75rem',
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.9rem, 3vw, 2.6rem)',
+              lineHeight: 1.1,
+              fontWeight: 400,
+              color: 'var(--mkt-ink-text)',
+            }}>
+              Everything your employees need.
+            </h2>
+            <p style={{ margin: 0, fontSize: '.9rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
+              Heirloom handles the entire process. Your organisation provides the access.
+            </p>
+          </div>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
+            {INCLUDED.map((item) => (
+              <li key={item} style={{ display: 'flex', gap: '.75rem', alignItems: 'flex-start' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden style={{ flexShrink: 0, marginTop: 2 }}>
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <span style={{ fontSize: '.9rem', lineHeight: 1.6, color: 'var(--mkt-ink-text)' }}>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ── Privacy ────────────────────────────────────────────────────────── */}
+      <section style={{ paddingBlock: '3.5rem', background: 'var(--mkt-ink)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+        <div className="md:px-10 md:flex md:items-center md:justify-between md:gap-16" style={{ ...W, maxWidth: 900 }}>
+          <div style={{ marginBottom: '1rem' }}>
+            <p style={{ ...LABEL, color: 'var(--teal)' }}>Private by design</p>
+            <h2 style={{
+              margin: '.75rem 0 .75rem',
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.5rem, 2.5vw, 2rem)',
+              lineHeight: 1.15,
+              fontWeight: 400,
+              color: '#fff',
+            }}>
+              Your organisation sees nothing.
+            </h2>
+            <p style={{ margin: 0, maxWidth: '28rem', fontSize: '.9rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.55)' }}>
+              Estate planning is deeply personal. Every employee interacts directly with Heirloom under our own privacy policy. No Will details, beneficiary names, or asset information ever reaches your organisation.
+            </p>
+          </div>
+          <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '.6rem', flexShrink: 0, minWidth: '16rem' }}>
+            {[
+              'Your employees\' Will contents',
+              'Beneficiary or executor names',
+              'Asset information',
+              'Instructions or wishes',
+              'Any platform activity',
+            ].map((item) => (
+              <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '.65rem', fontSize: '.88rem', color: 'rgba(255,255,255,0.65)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ── Pricing note ───────────────────────────────────────────────────── */}
+      <section style={{ paddingBlock: '4rem', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10 md:flex md:items-center md:justify-between md:gap-12" style={{ ...W, maxWidth: 860 }}>
+          <div>
+            <p style={LABEL}>Pricing</p>
+            <h2 style={{
+              margin: '.75rem 0 .5rem',
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)',
+              lineHeight: 1.12,
+              fontWeight: 400,
+              color: 'var(--mkt-ink-text)',
+            }}>
+              Flexible pricing for businesses of all sizes.
+            </h2>
+            <p style={{ margin: 0, maxWidth: '32rem', fontSize: '.9rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
+              We offer both prepaid access codes and annual per-employee arrangements. We&apos;ll confirm the right model for your organisation during our initial conversation — no pricing pressure, just an honest conversation about what fits.
+            </p>
+          </div>
+          <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', flexShrink: 0 }}>
+            <a href="#enquire" className="mkt-btn-ink-l">Book a demo</a>
+            <a href="#enquire" style={{
+              padding: '.65rem 1.4rem', fontSize: '.9rem', fontWeight: 600,
+              border: '1.5px solid var(--mkt-ink)', color: 'var(--mkt-ink-text)',
+              borderRadius: 6, textDecoration: 'none',
+            }}>
+              Request a proposal
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ────────────────────────────────────────────────────────────── */}
+      <section style={{ paddingBlock: '5rem', background: '#fff', borderBottom: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10" style={{ ...W, maxWidth: 760 }}>
+          <p style={LABEL}>Questions</p>
+          <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {FAQ.map(({ q, a }) => (
+              <div key={q}>
+                <h3 style={{ margin: '0 0 .6rem', fontSize: '1rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>
+                  {q}
+                </h3>
+                <p style={{ margin: 0, fontSize: '.9rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>{a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Enquiry form ───────────────────────────────────────────────────── */}
+      <section id="enquire" style={{ paddingBlock: '5.5rem', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10" style={{ ...W, maxWidth: 760 }}>
+          <p style={LABEL}>Get in touch</p>
+          <h2 style={{
+            margin: '1.1rem 0 .75rem',
+            fontFamily: 'var(--font-display)',
+            fontSize: 'clamp(1.9rem, 3.5vw, 2.8rem)',
+            lineHeight: 1.1,
+            fontWeight: 400,
+            color: 'var(--mkt-ink-text)',
+          }}>
+            Let&apos;s talk about your team.
+          </h2>
+          <p style={{ margin: '0 0 2.5rem', fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
+            Tell us about your organisation. We&apos;ll follow up within one business day — no hard sell, just a conversation about whether Heirloom is the right fit.
+          </p>
+          <div style={{ background: '#fff', border: '1px solid var(--mkt-line)', borderRadius: 8, padding: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
+            <EmployerEnquiryForm />
+          </div>
+        </div>
+      </section>
+    </>
+  )
+}

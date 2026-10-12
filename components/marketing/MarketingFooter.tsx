@@ -22,6 +22,7 @@ const COLUMNS = [
     links: [
       { label: 'Learn', href: '/learn' },
       { label: 'Passing', href: '/passing' },
+      { label: 'For employers', href: '/for-employers' },
       { label: 'For advisers', href: '/for-advisers' },
       { label: 'For charities', href: '/for-charities' },
     ],
