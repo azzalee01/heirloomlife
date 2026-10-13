@@ -11,19 +11,17 @@ export async function POST(request: NextRequest) {
   const body = await request.json() as {
     name?: string
     firm?: string
-    role?: string
-    state?: string
-    settlementsPerYear?: string
     email?: string
+    message?: string
     website?: string
   }
 
-  // Honeypot — bots fill this field, humans leave it blank
+  // Honeypot
   if (body.website) {
     return Response.json({ ok: true })
   }
 
-  const { name, firm, role = '', state = '', settlementsPerYear = '', email } = body
+  const { name, firm, email, message = '' } = body
 
   if (!name?.trim() || !firm?.trim() || !email?.trim()) {
     return Response.json({ error: 'Name, firm, and email are required.' }, { status: 400 })
@@ -39,18 +37,14 @@ export async function POST(request: NextRequest) {
       supabaseAdmin.from('partner_enquiries').insert({
         name: name.trim(),
         firm: firm.trim(),
-        role: role.trim(),
-        state: state.trim(),
-        settlements_per_year: settlementsPerYear.trim(),
         email: email.trim(),
+        message: message.trim() || null,
       }),
       sendPartnerEnquiryEmail({
         name: name.trim(),
         firm: firm.trim(),
-        role: role.trim(),
-        state: state.trim(),
-        settlementsPerYear: settlementsPerYear.trim(),
         email: email.trim(),
+        message: message.trim(),
       }),
     ])
     return Response.json({ ok: true })

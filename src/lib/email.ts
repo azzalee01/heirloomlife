@@ -46,24 +46,20 @@ export async function sendResumeEmail(params: { to: string; sessionId: string })
 export async function sendPartnerEnquiryEmail(params: {
   name: string
   firm: string
-  role: string
-  state: string
-  settlementsPerYear: string
   email: string
+  message: string
 }) {
-  const { name, firm, role, state, settlementsPerYear, email } = params
+  const { name, firm, email, message } = params
 
   const html = `
     <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;">
       <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
-      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 20px;">New pilot enquiry</h1>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 20px;">New partner enquiry</h1>
       <table style="width:100%;border-collapse:collapse;font-size:14px;color:#0E1310;">
-        <tr><td style="padding:8px 0;color:#8A8D87;width:160px;">Name</td><td style="padding:8px 0;font-weight:600;">${name}</td></tr>
+        <tr><td style="padding:8px 0;color:#8A8D87;width:120px;">Name</td><td style="padding:8px 0;font-weight:600;">${name}</td></tr>
         <tr><td style="padding:8px 0;color:#8A8D87;">Firm</td><td style="padding:8px 0;">${firm}</td></tr>
-        <tr><td style="padding:8px 0;color:#8A8D87;">Role</td><td style="padding:8px 0;">${role || 'Not specified'}</td></tr>
-        <tr><td style="padding:8px 0;color:#8A8D87;">State</td><td style="padding:8px 0;">${state || 'Not specified'}</td></tr>
-        <tr><td style="padding:8px 0;color:#8A8D87;">Settlements/yr</td><td style="padding:8px 0;">${settlementsPerYear || 'Not specified'}</td></tr>
         <tr><td style="padding:8px 0;color:#8A8D87;">Email</td><td style="padding:8px 0;"><a href="mailto:${email}" style="color:#2AB4AE;">${email}</a></td></tr>
+        ${message ? `<tr><td style="padding:8px 0;color:#8A8D87;vertical-align:top;">Message</td><td style="padding:8px 0;line-height:1.6;">${message}</td></tr>` : ''}
       </table>
     </div>
   `
@@ -72,7 +68,7 @@ export async function sendPartnerEnquiryEmail(params: {
     from: FROM_ADDRESS,
     to: 'hello@heirloomlife.com.au',
     replyTo: email,
-    subject: `Partner pilot enquiry: ${firm}`,
+    subject: `Partner enquiry: ${firm}`,
     html,
   })
 }
