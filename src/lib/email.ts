@@ -78,28 +78,22 @@ export async function sendPartnerEnquiryEmail(params: {
 }
 
 export async function sendEmployerEnquiryEmail(params: {
-  contactName: string
+  name: string
   company: string
-  role: string
   email: string
-  employeeCount: string
-  state: string
-  intent: string
+  message: string
 }) {
-  const { contactName, company, role, email, employeeCount, state, intent } = params
+  const { name, company, email, message } = params
 
   const html = `
     <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;">
       <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
       <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 20px;">New employer enquiry</h1>
       <table style="width:100%;border-collapse:collapse;font-size:14px;color:#0E1310;">
-        <tr><td style="padding:8px 0;color:#8A8D87;width:160px;">Contact</td><td style="padding:8px 0;font-weight:600;">${contactName}</td></tr>
+        <tr><td style="padding:8px 0;color:#8A8D87;width:120px;">Name</td><td style="padding:8px 0;font-weight:600;">${name}</td></tr>
         <tr><td style="padding:8px 0;color:#8A8D87;">Company</td><td style="padding:8px 0;">${company}</td></tr>
-        <tr><td style="padding:8px 0;color:#8A8D87;">Role</td><td style="padding:8px 0;">${role || 'Not specified'}</td></tr>
         <tr><td style="padding:8px 0;color:#8A8D87;">Email</td><td style="padding:8px 0;"><a href="mailto:${email}" style="color:#2AB4AE;">${email}</a></td></tr>
-        <tr><td style="padding:8px 0;color:#8A8D87;">Employees</td><td style="padding:8px 0;">${employeeCount || 'Not specified'}</td></tr>
-        <tr><td style="padding:8px 0;color:#8A8D87;">State</td><td style="padding:8px 0;">${state || 'Not specified'}</td></tr>
-        <tr><td style="padding:8px 0;color:#8A8D87;">Intent</td><td style="padding:8px 0;">${intent || 'Not specified'}</td></tr>
+        ${message ? `<tr><td style="padding:8px 0;color:#8A8D87;vertical-align:top;">Message</td><td style="padding:8px 0;line-height:1.6;">${message}</td></tr>` : ''}
       </table>
     </div>
   `

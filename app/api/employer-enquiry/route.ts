@@ -9,13 +9,10 @@ const supabaseAdmin = createClient(
 
 export async function POST(request: NextRequest) {
   const body = await request.json() as {
-    contactName?: string
+    name?: string
     company?: string
-    role?: string
     email?: string
-    employeeCount?: string
-    state?: string
-    intent?: string
+    message?: string
     website?: string
   }
 
@@ -24,9 +21,9 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: true })
   }
 
-  const { contactName, company, role = '', email, employeeCount = '', state = '', intent = '' } = body
+  const { name, company, email, message = '' } = body
 
-  if (!contactName?.trim() || !company?.trim() || !email?.trim()) {
+  if (!name?.trim() || !company?.trim() || !email?.trim()) {
     return Response.json({ error: 'Name, company, and email are required.' }, { status: 400 })
   }
 
@@ -38,22 +35,16 @@ export async function POST(request: NextRequest) {
   try {
     await Promise.all([
       supabaseAdmin.from('employer_enquiries').insert({
-        contact_name: contactName.trim(),
+        contact_name: name.trim(),
         company: company.trim(),
-        role: role.trim(),
         email: email.trim(),
-        employee_count: employeeCount.trim(),
-        state: state.trim(),
-        intent: intent.trim(),
+        message: message.trim() || null,
       }),
       sendEmployerEnquiryEmail({
-        contactName: contactName.trim(),
+        name: name.trim(),
         company: company.trim(),
-        role: role.trim(),
         email: email.trim(),
-        employeeCount: employeeCount.trim(),
-        state: state.trim(),
-        intent: intent.trim(),
+        message: message.trim(),
       }),
     ])
     return Response.json({ ok: true })
