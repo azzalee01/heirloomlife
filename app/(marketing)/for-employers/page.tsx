@@ -250,7 +250,7 @@ export default function ForEmployersPage() {
       </section>
 
       {/* ── Privacy ────────────────────────────────────────────────────────── */}
-      <section style={{ paddingBlock: '3.5rem', background: 'var(--mkt-ink)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+      <section style={{ paddingBlock: '3.5rem', background: 'var(--mkt-ink-text)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div className="md:px-10 md:flex md:items-center md:justify-between md:gap-16" style={{ ...W, maxWidth: 900 }}>
           <div style={{ marginBottom: '1rem' }}>
             <p style={{ ...LABEL, color: 'var(--teal)' }}>Private by design</p>
@@ -368,7 +368,7 @@ export default function ForEmployersPage() {
               padding: '1.75rem',
               border: '2px solid var(--mkt-line)',
               borderRadius: 10,
-              background: 'var(--mkt-ink)',
+              background: 'var(--mkt-ink-text)',
               display: 'flex',
               flexDirection: 'column',
             }}>
