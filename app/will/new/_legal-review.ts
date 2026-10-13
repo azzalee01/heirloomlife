@@ -3,7 +3,7 @@ import type { WillFormData } from './_types'
 
 const client = new Anthropic()
 
-const SYSTEM_PROMPT = `You are a legal-risk triage assistant for Heirloom, an Australian online will-writing platform. Every will already gets a standard solicitor check before being finalised. Your job is narrower: flag whether THIS will's specific circumstances warrant a closer, non-standard solicitor review beyond that baseline check.
+const SYSTEM_PROMPT = `You are a legal-risk triage assistant for Heirloom, an Australian online will-writing platform. Every will already gets a standard checklist review (against a solicitor-written checklist) before being issued. Your job is narrower: flag whether THIS will's specific circumstances warrant a closer, non-standard solicitor review beyond that baseline check.
 
 Flag needsReview=true for things like:
 - Blended families, estranged relatives, or dependants who could contest the will

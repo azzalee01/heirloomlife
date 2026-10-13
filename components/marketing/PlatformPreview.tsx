@@ -570,11 +570,11 @@ export default function PlatformPreview() {
                       <div>
                         <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--ink)' }}>Sample Last Will &amp; Testament</div>
                         <div style={{ fontSize: 10, color: 'var(--neutral)', marginTop: 1 }}>
-                          Version {willVersion} · {willStatus === 'pending' ? 'Awaiting review' : 'Solicitor reviewed 12 Jun 2026'}
+                          Version {willVersion} · {willStatus === 'pending' ? 'Awaiting review' : 'Reviewed 12 Jun 2026'}
                         </div>
                       </div>
                       <div style={{ marginLeft: 'auto', fontSize: 9, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase', paddingLeft: 7, borderLeft: `2px solid ${willStatus === 'pending' ? '#f59e0b' : 'var(--teal)'}`, color: willStatus === 'pending' ? '#92400e' : 'var(--teal-deep)', flexShrink: 0 }}>
-                        {willStatus === 'pending' ? 'Awaiting review' : 'Solicitor reviewed'}
+                        {willStatus === 'pending' ? 'Awaiting review' : 'Reviewed'}
                       </div>
                     </div>
                     <div style={{ padding: '0 14px' }}>

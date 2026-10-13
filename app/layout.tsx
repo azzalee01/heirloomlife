@@ -36,7 +36,7 @@ const organizationSchema = {
   '@type': 'Organization',
   name: 'Heirloom Life',
   url: BASE_URL,
-  description: 'Solicitor-reviewed Wills and a Living Vault to keep your estate plan current. Built for Australians.',
+  description: 'Australian Wills reviewed against a solicitor-written checklist, and a Living Vault to keep your estate plan current. Built for Australians.',
   areaServed: 'AU',
 }
 

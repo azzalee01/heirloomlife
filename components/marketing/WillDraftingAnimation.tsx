@@ -43,7 +43,7 @@ const TRUST_ITEMS = [
   {
     d1: 'M4 10h16v11a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 21Z',
     d2: 'M8 10V7a4 4 0 0 1 8 0v3',
-    text: 'Solicitor reviewed, securely stored',
+    text: 'Reviewed before issue, securely stored',
   },
   {
     d1: 'M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83',
@@ -165,7 +165,7 @@ export default function WillDraftingAnimation() {
                   fontSize: 10, fontWeight: 700, letterSpacing: '.07em',
                   textTransform: 'uppercase' as const, color: '#1A7D79',
                 }}>
-                  Solicitor reviewed
+                  Reviewed before issue
                 </span>
               </div>
             </div>

@@ -77,7 +77,7 @@ const ROWS: { label: string; heirloom: CellValue; safewill: CellValue; willed: C
     willed:   { kind: 'text', lines: ['$15/yr', 'optional (first year free)'] },
   },
   {
-    label: 'Solicitor review',
+    label: 'Review before issue',
     heirloom: { kind: 'text', lines: ['Checklist review, included'] },
     safewill: { kind: 'text', lines: ['Included', '(affiliate law firm review)'] },
     willed:   { kind: 'text', lines: ['"Vetted" by legal team'] },
