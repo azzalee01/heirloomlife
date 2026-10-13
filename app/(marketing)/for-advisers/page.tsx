@@ -146,10 +146,10 @@ export default function ForAdvisersPage() {
       </section>
 
       {/* ── Privacy callout ────────────────────────────────────────────────── */}
-      <section style={{ paddingBlock: '3.5rem', background: 'var(--mkt-ink-text)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+      <section style={{ paddingBlock: '3.5rem', background: 'var(--teal-deep)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div className="md:px-10 md:flex md:items-center md:justify-between md:gap-16" style={{ ...W, maxWidth: 900 }}>
           <div style={{ marginBottom: '1rem' }}>
-            <p style={{ ...LABEL, color: 'var(--teal)' }}>Privacy, by design</p>
+            <p style={{ ...LABEL, color: 'rgba(255,255,255,0.6)' }}>Privacy, by design</p>
             <h2 style={{
               margin: '.75rem 0 0',
               fontFamily: 'var(--font-display)',
@@ -173,8 +173,8 @@ export default function ForAdvisersPage() {
               'Their assets or instructions',
               'Any data from the Heirloom platform',
             ].map((item) => (
-              <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '.65rem', fontSize: '.88rem', color: 'rgba(255,255,255,0.65)' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '.65rem', fontSize: '.88rem', color: 'rgba(255,255,255,0.8)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M18 6L6 18M6 6l12 12"/>
                 </svg>
                 {item}

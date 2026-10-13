@@ -250,10 +250,10 @@ export default function ForEmployersPage() {
       </section>
 
       {/* ── Privacy ────────────────────────────────────────────────────────── */}
-      <section style={{ paddingBlock: '3.5rem', background: 'var(--mkt-ink-text)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+      <section style={{ paddingBlock: '3.5rem', background: 'var(--teal-deep)', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
         <div className="md:px-10 md:flex md:items-center md:justify-between md:gap-16" style={{ ...W, maxWidth: 900 }}>
           <div style={{ marginBottom: '1rem' }}>
-            <p style={{ ...LABEL, color: 'var(--teal)' }}>Private by design</p>
+            <p style={{ ...LABEL, color: 'rgba(255,255,255,0.6)' }}>Private by design</p>
             <h2 style={{
               margin: '.75rem 0 .75rem',
               fontFamily: 'var(--font-display)',
@@ -264,7 +264,7 @@ export default function ForEmployersPage() {
             }}>
               Your organisation sees nothing.
             </h2>
-            <p style={{ margin: 0, maxWidth: '28rem', fontSize: '.9rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.55)' }}>
+            <p style={{ margin: 0, maxWidth: '28rem', fontSize: '.9rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.7)' }}>
               Estate planning is deeply personal. Every employee interacts directly with Heirloom under our own privacy policy. No Will details, beneficiary names, or asset information ever reaches your organisation.
             </p>
           </div>
@@ -276,8 +276,8 @@ export default function ForEmployersPage() {
               'Instructions or wishes',
               'Any platform activity',
             ].map((item) => (
-              <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '.65rem', fontSize: '.88rem', color: 'rgba(255,255,255,0.65)' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <li key={item} style={{ display: 'flex', alignItems: 'center', gap: '.65rem', fontSize: '.88rem', color: 'rgba(255,255,255,0.8)' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M18 6L6 18M6 6l12 12"/>
                 </svg>
                 {item}
@@ -368,20 +368,20 @@ export default function ForEmployersPage() {
               padding: '1.75rem',
               border: '2px solid var(--mkt-line)',
               borderRadius: 10,
-              background: 'var(--mkt-ink-text)',
+              background: '#fff',
               display: 'flex',
               flexDirection: 'column',
             }}>
-              <p style={{ margin: '0 0 .35rem', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)' }}>
+              <p style={{ margin: '0 0 .35rem', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--mkt-stone)' }}>
                 Enterprise
               </p>
-              <p style={{ margin: '0 0 1.25rem', fontSize: '.95rem', color: 'rgba(255,255,255,0.5)' }}>
+              <p style={{ margin: '0 0 1.25rem', fontSize: '.95rem', color: 'var(--mkt-stone)' }}>
                 500+ Wills
               </p>
-              <p style={{ margin: '0 0 .25rem', fontFamily: 'var(--font-display)', fontSize: '2.2rem', lineHeight: 1, fontWeight: 400, color: '#fff' }}>
+              <p style={{ margin: '0 0 .25rem', fontFamily: 'var(--font-display)', fontSize: '2.2rem', lineHeight: 1, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>
                 Custom
               </p>
-              <p style={{ margin: '0 0 1.5rem', fontSize: '.8rem', color: 'rgba(255,255,255,0.45)' }}>
+              <p style={{ margin: '0 0 1.5rem', fontSize: '.8rem', color: 'var(--mkt-stone)' }}>
                 Volume pricing · invoiced annually
               </p>
               <a
@@ -391,9 +391,9 @@ export default function ForEmployersPage() {
                   display: 'block', textAlign: 'center',
                   padding: '.65rem 1rem', borderRadius: 6,
                   fontSize: '.875rem', fontWeight: 600, textDecoration: 'none',
-                  background: 'rgba(255,255,255,0.1)',
-                  color: '#fff',
-                  border: '1.5px solid rgba(255,255,255,0.15)',
+                  background: 'transparent',
+                  color: 'var(--mkt-ink-text)',
+                  border: '1.5px solid var(--mkt-line)',
                 }}
               >
                 Contact us
