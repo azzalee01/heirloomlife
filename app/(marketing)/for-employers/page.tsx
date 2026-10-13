@@ -22,16 +22,20 @@ const LABEL: React.CSSProperties = {
 
 const WHY_ITEMS = [
   {
-    heading: 'Financial wellbeing, made tangible.',
-    body: 'A Will is one of the most important financial decisions a person makes — and most employees have never made one. Offering access to Heirloom turns financial wellbeing from a talking point into something your people can actually act on.',
+    heading: 'Financial stress is a workplace problem.',
+    body: 'Employees who haven\'t sorted their estate carry that anxiety with them. Not knowing what happens to their family if something goes wrong is a real, persistent concern — and one that\'s entirely solvable. Offering Heirloom removes that burden.',
   },
   {
-    heading: 'Support at life\'s biggest moments.',
-    body: 'Marriage, a new child, a mortgage, a promotion — these are the moments when estate planning matters most. Giving your team access to Heirloom means they\'re supported when it counts, not left to find help on their own.',
+    heading: 'A benefits package that actually stands out.',
+    body: 'Health cover, EAP, and super are expected. A Will benefit is still uncommon enough to be memorable. It signals that your organisation thinks about employees\' lives beyond the office — and beyond their tenure.',
+  },
+  {
+    heading: 'The right support at the right moment.',
+    body: 'A new child, a home purchase, a marriage — these are the moments when employees are most likely to think about their estate. Being there at those milestones with a practical, meaningful benefit is how you build long-term loyalty.',
   },
   {
     heading: 'No complexity for HR.',
-    body: 'Heirloom operates entirely independently of your organisation. You enrol. We do the rest. There are no ongoing obligations, no data obligations, and no legal involvement required from your team.',
+    body: 'Heirloom operates entirely independently of your organisation. You enrol. We do the rest. There are no ongoing obligations, no data handling requirements, and no legal involvement required from your team.',
   },
 ]
 
@@ -62,6 +66,30 @@ const INCLUDED = [
   'Updates if life changes — your team keeps their Will current as circumstances evolve',
 ]
 
+const TIERS = [
+  {
+    name: 'Starter',
+    wills: 10,
+    perWill: 129,
+    total: 1290,
+    popular: false,
+  },
+  {
+    name: 'Team',
+    wills: 50,
+    perWill: 109,
+    total: 5450,
+    popular: true,
+  },
+  {
+    name: 'Company',
+    wills: 100,
+    perWill: 99,
+    total: 9900,
+    popular: false,
+  },
+]
+
 const FAQ = [
   {
     q: 'Can employees keep their Will after they leave the company?',
@@ -73,7 +101,7 @@ const FAQ = [
   },
   {
     q: 'How does billing work?',
-    a: 'We offer flexible pricing to suit organisations of different sizes. Typical structures are prepaid access codes or an annual per-employee arrangement. We\'ll confirm the right model for your organisation during our initial conversation.',
+    a: 'You purchase a pack of Will codes at a fixed rate. Codes are distributed to employees and redeemed when they complete their Will. Unused codes don\'t expire. Enterprise arrangements are invoiced separately — get in touch to discuss.',
   },
   {
     q: 'Can employees\' spouses or partners also use the benefit?',
@@ -111,15 +139,15 @@ export default function ForEmployersPage() {
             Give your employees access to simple, guided Will preparation as part of your financial wellbeing programme. Help them plan for their families and their futures — without adding complexity for your HR team.
           </p>
           <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            <a href="#enquire" className="mkt-btn-ink-l">Book a demo</a>
-            <a href="#how-it-works" style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
-              See how it works
+            <a href="#pricing" className="mkt-btn-ink-l">See packages</a>
+            <a href="#enquire" style={{ fontSize: '.95rem', color: 'var(--mkt-stone)', textDecoration: 'underline', textUnderlineOffset: 3 }}>
+              Get in touch
             </a>
           </div>
         </div>
       </section>
 
-      {/* ── Why offer Heirloom ─────────────────────────────────────────────── */}
+      {/* ── Why it's good for business ─────────────────────────────────────── */}
       <section style={{ paddingBlock: '5.5rem', background: '#fff', borderBottom: '1px solid var(--mkt-line)' }}>
         <div className="md:px-10" style={W}>
           <div style={{ maxWidth: '36rem', marginBottom: '3rem' }}>
@@ -136,7 +164,7 @@ export default function ForEmployersPage() {
             </h2>
           </div>
           <div
-            className="md:grid-cols-3"
+            className="md:grid-cols-2"
             style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}
           >
             {WHY_ITEMS.map(({ heading, body }) => (
@@ -259,35 +287,123 @@ export default function ForEmployersPage() {
         </div>
       </section>
 
-      {/* ── Pricing note ───────────────────────────────────────────────────── */}
-      <section style={{ paddingBlock: '4rem', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10 md:flex md:items-center md:justify-between md:gap-12" style={{ ...W, maxWidth: 860 }}>
-          <div>
-            <p style={LABEL}>Pricing</p>
+      {/* ── Pricing ────────────────────────────────────────────────────────── */}
+      <section id="pricing" style={{ paddingBlock: '5.5rem', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', scrollMarginTop: '5rem' }}>
+        <div className="md:px-10" style={W}>
+          <div style={{ maxWidth: '36rem', marginBottom: '3rem' }}>
+            <p style={LABEL}>Packages</p>
             <h2 style={{
-              margin: '.75rem 0 .5rem',
+              margin: '.9rem 0 .5rem',
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(1.5rem, 2.5vw, 2.2rem)',
-              lineHeight: 1.12,
+              fontSize: 'clamp(1.9rem, 3.5vw, 2.8rem)',
+              lineHeight: 1.08,
               fontWeight: 400,
               color: 'var(--mkt-ink-text)',
             }}>
-              Flexible pricing for businesses of all sizes.
+              Simple, fixed-rate packages.
             </h2>
-            <p style={{ margin: 0, maxWidth: '32rem', fontSize: '.9rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
-              We offer both prepaid access codes and annual per-employee arrangements. We&apos;ll confirm the right model for your organisation during our initial conversation — no pricing pressure, just an honest conversation about what fits.
+            <p style={{ margin: 0, fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>
+              Buy a pack of Will codes. Distribute to your team. Employees redeem in their own time. Unused codes don&apos;t expire.
             </p>
           </div>
-          <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', flexShrink: 0 }}>
-            <a href="#enquire" className="mkt-btn-ink-l">Book a demo</a>
-            <a href="#enquire" style={{
-              padding: '.65rem 1.4rem', fontSize: '.9rem', fontWeight: 600,
-              border: '1.5px solid var(--mkt-ink)', color: 'var(--mkt-ink-text)',
-              borderRadius: 6, textDecoration: 'none',
+
+          <div
+            className="md:grid-cols-4"
+            style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.25rem', alignItems: 'stretch' }}
+          >
+            {TIERS.map(({ name, wills, perWill, total, popular }) => (
+              <div
+                key={name}
+                style={{
+                  position: 'relative',
+                  padding: '1.75rem',
+                  border: `2px solid ${popular ? 'var(--teal)' : 'var(--mkt-line)'}`,
+                  borderRadius: 10,
+                  background: popular ? 'rgba(42,180,174,.04)' : '#fff',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                {popular && (
+                  <span style={{
+                    position: 'absolute', top: '-1px', left: '50%', transform: 'translateX(-50%) translateY(-50%)',
+                    background: 'var(--teal)', color: '#fff',
+                    fontSize: '.65rem', fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase',
+                    padding: '.25rem .75rem', borderRadius: 99, whiteSpace: 'nowrap',
+                  }}>
+                    Most popular
+                  </span>
+                )}
+                <p style={{ margin: '0 0 .35rem', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'var(--mkt-stone)' }}>
+                  {name}
+                </p>
+                <p style={{ margin: '0 0 1.25rem', fontSize: '.95rem', color: 'var(--mkt-stone)' }}>
+                  {wills} Wills
+                </p>
+                <p style={{ margin: '0 0 .25rem', fontFamily: 'var(--font-display)', fontSize: '2.2rem', lineHeight: 1, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>
+                  ${total.toLocaleString()}
+                </p>
+                <p style={{ margin: '0 0 1.5rem', fontSize: '.8rem', color: 'var(--mkt-stone)' }}>
+                  ${perWill} per Will · includes GST
+                </p>
+                <a
+                  href="#enquire"
+                  style={{
+                    marginTop: 'auto',
+                    display: 'block', textAlign: 'center',
+                    padding: '.65rem 1rem', borderRadius: 6,
+                    fontSize: '.875rem', fontWeight: 600, textDecoration: 'none',
+                    background: popular ? 'var(--teal)' : 'transparent',
+                    color: popular ? '#fff' : 'var(--mkt-ink-text)',
+                    border: popular ? 'none' : '1.5px solid var(--mkt-line)',
+                  }}
+                >
+                  Get this package
+                </a>
+              </div>
+            ))}
+
+            {/* Enterprise card */}
+            <div style={{
+              padding: '1.75rem',
+              border: '2px solid var(--mkt-line)',
+              borderRadius: 10,
+              background: 'var(--mkt-ink)',
+              display: 'flex',
+              flexDirection: 'column',
             }}>
-              Request a proposal
-            </a>
+              <p style={{ margin: '0 0 .35rem', fontSize: '.72rem', fontWeight: 700, letterSpacing: '.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)' }}>
+                Enterprise
+              </p>
+              <p style={{ margin: '0 0 1.25rem', fontSize: '.95rem', color: 'rgba(255,255,255,0.5)' }}>
+                500+ Wills
+              </p>
+              <p style={{ margin: '0 0 .25rem', fontFamily: 'var(--font-display)', fontSize: '2.2rem', lineHeight: 1, fontWeight: 400, color: '#fff' }}>
+                Custom
+              </p>
+              <p style={{ margin: '0 0 1.5rem', fontSize: '.8rem', color: 'rgba(255,255,255,0.45)' }}>
+                Volume pricing · invoiced annually
+              </p>
+              <a
+                href="#enquire"
+                style={{
+                  marginTop: 'auto',
+                  display: 'block', textAlign: 'center',
+                  padding: '.65rem 1rem', borderRadius: 6,
+                  fontSize: '.875rem', fontWeight: 600, textDecoration: 'none',
+                  background: 'rgba(255,255,255,0.1)',
+                  color: '#fff',
+                  border: '1.5px solid rgba(255,255,255,0.15)',
+                }}
+              >
+                Contact us
+              </a>
+            </div>
           </div>
+
+          <p style={{ marginTop: '1.5rem', fontSize: '.8rem', color: 'var(--mkt-stone)' }}>
+            All packages include full Heirloom access for each Will — guided preparation, review, signing guidance, and Living Vault. Employees retain access after leaving the organisation.
+          </p>
         </div>
       </section>
 
@@ -328,6 +444,10 @@ export default function ForEmployersPage() {
           <div style={{ background: '#fff', border: '1px solid var(--mkt-line)', borderRadius: 8, padding: 'clamp(1.5rem, 4vw, 2.5rem)' }}>
             <EmployerEnquiryForm />
           </div>
+          <p style={{ marginTop: '1.25rem', fontSize: '.82rem', color: 'var(--mkt-stone)', textAlign: 'center' }}>
+            Or email us directly at{' '}
+            <a href="mailto:hello@heirloomlife.com.au" style={{ color: 'var(--teal-deep)' }}>hello@heirloomlife.com.au</a>
+          </p>
         </div>
       </section>
     </>
