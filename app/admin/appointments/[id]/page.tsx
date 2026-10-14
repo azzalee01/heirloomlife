@@ -68,14 +68,20 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
           {appt.customer_phone ? ` · ${appt.customer_phone}` : ''}
           {appt.booked_by_name ? ` · booked by ${appt.booked_by_name}` : ''}
         </p>
-        <div className="mt-3 flex items-center gap-2">
-          <span className="text-xs font-medium" style={{ color: 'var(--neutral)' }}>Customer link:</span>
-          <code className="flex-1 truncate rounded border px-2 py-1 text-xs" style={{ borderColor: 'var(--line)', background: 'var(--paper-warm)', color: 'var(--ink)' }}>
-            {customerJoinUrl}
-          </code>
-          <a href={customerJoinUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary text-xs" style={{ whiteSpace: 'nowrap' }}>
-            Open
-          </a>
+        <div className="mt-3 space-y-1">
+          <span className="text-xs font-medium" style={{ color: 'var(--neutral)' }}>Customer link</span>
+          <div className="flex gap-2">
+            <input
+              readOnly
+              value={customerJoinUrl}
+              onFocus={(e) => e.currentTarget.select()}
+              className="flex-1 rounded border px-2 py-1 text-xs"
+              style={{ borderColor: 'var(--line)', background: 'var(--paper-warm)', color: 'var(--ink)' }}
+            />
+            <a href={customerJoinUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary text-xs" style={{ whiteSpace: 'nowrap' }}>
+              Open
+            </a>
+          </div>
         </div>
         {appt.escalated && (
           <p className="mt-2 inline-block rounded px-2 py-1 text-sm font-medium" style={{ background: '#fef2f2', color: '#b91c1c' }}>
