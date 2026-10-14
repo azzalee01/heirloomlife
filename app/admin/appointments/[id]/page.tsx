@@ -6,6 +6,7 @@ import { getHostUser, loadAppointment } from '@/src/lib/appointments/server'
 import { getWitnessNamesFromEvents } from '@/src/lib/appointments/witnessing'
 import { APPOINTMENT_TZ } from '@/src/lib/appointments/constants'
 import { joinUrl } from '@/src/lib/appointments/links'
+import CopyLinkButton from './_components/CopyLinkButton'
 import HostRoom from './_components/HostRoom'
 import CopilotPanel from './_components/CopilotPanel'
 import RecordingsPanel from './_components/RecordingsPanel'
@@ -68,21 +69,7 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
           {appt.customer_phone ? ` · ${appt.customer_phone}` : ''}
           {appt.booked_by_name ? ` · booked by ${appt.booked_by_name}` : ''}
         </p>
-        <div className="mt-3 space-y-1">
-          <span className="text-xs font-medium" style={{ color: 'var(--neutral)' }}>Customer link</span>
-          <div className="flex gap-2">
-            <input
-              readOnly
-              value={customerJoinUrl}
-              onFocus={(e) => e.currentTarget.select()}
-              className="flex-1 rounded border px-2 py-1 text-xs"
-              style={{ borderColor: 'var(--line)', background: 'var(--paper-warm)', color: 'var(--ink)' }}
-            />
-            <a href={customerJoinUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary text-xs" style={{ whiteSpace: 'nowrap' }}>
-              Open
-            </a>
-          </div>
-        </div>
+        <CopyLinkButton url={customerJoinUrl} />
         {appt.escalated && (
           <p className="mt-2 inline-block rounded px-2 py-1 text-sm font-medium" style={{ background: '#fef2f2', color: '#b91c1c' }}>
             Escalated: capacity / undue-influence concern raised. Do not finalise without solicitor review.
