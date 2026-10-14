@@ -201,6 +201,52 @@ export default function HomePage() {
         </Reveal>
       </section>
 
+      {/* ─── GUARDIANSHIP ─────────────────────────────────────────────────── */}
+      <section style={{ ...SECTION_PAD, background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)' }}>
+        <Reveal
+          className="md:px-10 lg:grid lg:gap-16 lg:items-center"
+          style={{ ...W, gridTemplateColumns: '1fr 1fr' }}
+        >
+          <div>
+            <span style={SECTION_LABEL}>Guardianship</span>
+            <H2>If something happened to you, who would raise your children?</H2>
+            <Sub>Most parents have an assumption. Without a Will, that&apos;s all it is — an assumption. A court doesn&apos;t know what you would have wanted. Name a guardian directly in your Will so there&apos;s no ambiguity when it matters most.</Sub>
+            <div style={{ marginTop: '2rem' }}>
+              <Link href="/start" className="mkt-btn-ink-l">
+                Name a guardian
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-12 lg:mt-0" style={{ borderRadius: 12, background: '#fff', border: '1px solid var(--mkt-line)', boxShadow: '0 20px 60px rgba(15,30,28,0.08)', overflow: 'hidden' }}>
+            <div style={{ padding: '.9rem 1.25rem', borderBottom: '1px solid var(--mkt-line)', background: 'var(--mkt-surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <span style={{ fontSize: '.75rem', fontWeight: 600, color: 'var(--mkt-stone)' }}>Step 3 of 7 — Guardian for Minor Children</span>
+              <Pill variant="quiet">In progress</Pill>
+            </div>
+            <div style={{ padding: '1.5rem' }}>
+              <p style={{ fontSize: '.78rem', fontWeight: 600, color: 'var(--mkt-ink-text)', margin: '0 0 .35rem' }}>Guardian&apos;s full name</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.6rem', marginBottom: '1rem' }}>
+                <div style={{ padding: '.6rem .75rem', borderRadius: 6, border: '1px solid var(--teal)', fontSize: '.875rem', color: 'var(--mkt-ink-text)', background: '#fff' }}>Sarah</div>
+                <div style={{ padding: '.6rem .75rem', borderRadius: 6, border: '1px solid var(--mkt-line)', fontSize: '.875rem', color: 'var(--mkt-ink-text)', background: '#fff' }}>Williams</div>
+              </div>
+              <p style={{ fontSize: '.78rem', fontWeight: 600, color: 'var(--mkt-ink-text)', margin: '0 0 .35rem' }}>Relationship to you</p>
+              <div style={{ padding: '.6rem .75rem', borderRadius: 6, border: '1px solid var(--mkt-line)', fontSize: '.875rem', color: 'var(--mkt-ink-text)', background: '#fff', marginBottom: '1.25rem' }}>Sister</div>
+              <div style={{ padding: '.85rem 1rem', borderRadius: 8, background: 'rgba(42,180,174,0.06)', border: '1px solid rgba(42,180,174,0.2)', display: 'flex', gap: '.6rem', alignItems: 'flex-start' }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: 1 }} aria-hidden>
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <p style={{ margin: 0, fontSize: '.8rem', lineHeight: 1.55, color: 'var(--mkt-ink-text)' }}>
+                  <strong>Sarah Williams</strong> has been named as guardian for any children under 18 at the time of your death.
+                </p>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </section>
+
       {/* ─── LIVING VAULT / COMMAND CENTRE ────────────────────────────────── */}
       <section id="living-vault" style={{ ...SECTION_PAD, background: 'var(--mkt-surface-2)' }}>
         <Reveal className="md:px-10" style={W}>

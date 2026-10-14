@@ -155,6 +155,41 @@ export default function TheWillPage() {
         </div>
       </section>
 
+      {/* ── Guardianship ──────────────────────────────────────────────────── */}
+      <section style={{ ...SECTION_PAD, background: '#fff', borderTop: '1px solid var(--mkt-line)' }}>
+        <div className="md:px-10 md:flex md:items-center md:gap-16" style={{ ...W }}>
+          <div style={{ flexShrink: 0, maxWidth: '36rem', marginBottom: '2rem' }}>
+            <span style={SECTION_LABEL}>Guardianship</span>
+            <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.9rem, 3.2vw, 2.8rem)', lineHeight: 1.1, letterSpacing: '-.02em', fontWeight: 500, color: 'var(--mkt-ink-text)', margin: '.75rem 0 1rem' }}>
+              If something happened to you, who would raise your children?
+            </h2>
+            <p style={{ fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: '0 0 1rem' }}>
+              Most parents have a vague plan — &ldquo;the grandparents would sort it out&rdquo; — but no legal mechanism to enforce it. Without a Will, a court decides who raises your children. Not you.
+            </p>
+            <p style={{ fontSize: '.95rem', lineHeight: 1.7, color: 'var(--mkt-stone)', margin: 0 }}>
+              Heirloom lets you name a guardian directly in your Will — with their contact details — so your wishes are clear and legally recorded.
+            </p>
+          </div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem', minWidth: 0 }}>
+            {[
+              { heading: 'Name your guardian', body: 'Specify who you want to raise your children if both parents are unable to. You can name a primary guardian and a backup.' },
+              { heading: 'Include their contact details', body: 'Phone, email, and relationship are recorded in your Will so there is no confusion about who to contact.' },
+              { heading: 'Update if circumstances change', body: 'Relationships change. Children grow up. Your guardian appointment updates with a single change in your Vault — no need to rewrite your Will.' },
+            ].map(({ heading, body }) => (
+              <div key={heading} style={{ display: 'flex', gap: '1rem', padding: '1.25rem', borderRadius: 8, border: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden style={{ flexShrink: 0, marginTop: 2 }}>
+                  <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                <div>
+                  <p style={{ margin: '0 0 .25rem', fontSize: '.9rem', fontWeight: 600, color: 'var(--mkt-ink-text)' }}>{heading}</p>
+                  <p style={{ margin: 0, fontSize: '.85rem', lineHeight: 1.6, color: 'var(--mkt-stone)' }}>{body}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Signing ───────────────────────────────────────────────────────── */}
       <section id="signing" style={{ ...SECTION_PAD, background: '#fff', borderTop: '1px solid var(--mkt-line)', scrollMarginTop: '6rem' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
