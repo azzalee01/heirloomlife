@@ -16,7 +16,6 @@ export const metadata: Metadata = {
   },
 };
 import MarketingFooter from '@/components/marketing/MarketingFooter'
-import WillDraftingAnimation from '@/components/marketing/WillDraftingAnimation'
 import JourneyLine from '@/components/marketing/JourneyLine'
 import PlatformPreview from '@/components/marketing/PlatformPreview'
 import Reveal from '@/components/marketing/Reveal'
@@ -112,11 +111,6 @@ export default function HomePage() {
       {/* ─── JOURNEY LINE ─────────────────────────────────────────────────── */}
       <section style={{ background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)', paddingBlock: '5.5rem', overflow: 'hidden' }}>
         <JourneyLine />
-      </section>
-
-      {/* ─── WILL DRAFTING ANIMATION ──────────────────────────────────────── */}
-      <section style={{ background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)', overflow: 'hidden' }}>
-        <WillDraftingAnimation />
       </section>
 
       {/* ─── PLATFORM DEMO ────────────────────────────────────────────────── */}
@@ -289,38 +283,6 @@ export default function HomePage() {
         </Reveal>
       </section>
 
-      {/* ─── STATS ────────────────────────────────────────────────────────── */}
-      <section style={SECTION_PAD}>
-        <Reveal className="md:px-10" style={W}>
-          <div style={{ maxWidth: '40rem' }}>
-            <span style={SECTION_LABEL}>Why now</span>
-            <H2>Estate planning has been deprioritised,<br/>not because it doesn&#8217;t matter.</H2>
-          </div>
-          <div className="md:grid-cols-3" style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '1fr', borderTop: '1px solid var(--mkt-line)', borderLeft: '1px solid var(--mkt-line)' }}>
-            {[
-              { num: '10', label: 'Guided steps from first login to a complete, structured Will' },
-              { num: '8', label: 'States and territories  -  your Will is drafted to the specific legal requirements of wherever you live' },
-              { num: '1', label: "Place your Will, your Vault, and your executor's instructions all live" },
-            ].map(stat => (
-              <div key={stat.num} style={{ borderRight: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)', padding: '2.4rem 2rem' }}>
-                <p style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(3rem, 5vw, 4.6rem)', lineHeight: .9, color: 'var(--mkt-ink-text)', margin: 0 }}>{stat.num}</p>
-                <p style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--mkt-line)', fontSize: '.8rem', color: 'var(--mkt-stone)', letterSpacing: '.02em' }}>{stat.label}</p>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-      </section>
-
-      {/* ─── MANIFESTO ────────────────────────────────────────────────────── */}
-      <section style={{ ...SECTION_PAD, background: '#fff', borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)' }}>
-        <Reveal className="md:px-10" style={W}>
-          <p style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal)', marginBottom: '2rem' }}>Why Heirloom exists</p>
-          <blockquote style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: 'clamp(1.7rem, 2.9vw, 2.6rem)', lineHeight: 1.25, letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', maxWidth: '46rem', margin: 0 }}>
-            A Will isn&#8217;t paperwork—it&#8217;s the last conversation you get to have with the people you love. It deserves better than a template and a filing cabinet.
-          </blockquote>
-        </Reveal>
-      </section>
-
       {/* ─── EMAIL CAPTURE ────────────────────────────────────────────────── */}
       <section style={{ ...SECTION_PAD, background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)' }}>
         <Reveal className="md:px-10" style={{ ...W, maxWidth: 640 }}>
@@ -353,18 +315,6 @@ export default function HomePage() {
           </div>
           <Link href="/book" className="mkt-btn-ink-m" style={{ flexShrink: 0 }}>
             Book a guided call
-          </Link>
-        </div>
-      </section>
-
-      {/* ─── FOR ADVISERS BAND ────────────────────────────────────────────── */}
-      <section style={{ borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)', background: 'var(--mkt-surface)' }}>
-        <div className="md:px-10 md:flex-row md:items-center md:justify-between" style={{ ...W, display: 'flex', flexDirection: 'column', gap: '1.5rem', paddingBlock: '2.2rem' }}>
-          <h2 style={{ fontSize: 'clamp(1.4rem, 2vw, 1.9rem)', fontWeight: 500, letterSpacing: '-.02em', maxWidth: '32rem', margin: 0, color: 'var(--mkt-ink-text)' }}>
-            Refer your clients into an estate plan they&#8217;ll actually finish.
-          </h2>
-          <Link href="/for-advisers" className="mkt-btn-ink-m" style={{ flexShrink: 0 }}>
-            Partner with Heirloom
           </Link>
         </div>
       </section>
