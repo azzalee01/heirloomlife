@@ -5,6 +5,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { getHostUser, loadAppointment } from '@/src/lib/appointments/server'
 import { getWitnessNamesFromEvents } from '@/src/lib/appointments/witnessing'
 import { APPOINTMENT_TZ } from '@/src/lib/appointments/constants'
+import { joinUrl } from '@/src/lib/appointments/links'
 import HostRoom from './_components/HostRoom'
 import CopilotPanel from './_components/CopilotPanel'
 import RecordingsPanel from './_components/RecordingsPanel'
@@ -55,6 +56,8 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
       .order('segment_index', { ascending: true }),
   ])
 
+  const customerJoinUrl = joinUrl(appt.id, appt.token_version)
+
   return (
     <div className="mx-auto max-w-4xl space-y-8 px-5 py-8">
       <div>
@@ -65,6 +68,15 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
           {appt.customer_phone ? ` · ${appt.customer_phone}` : ''}
           {appt.booked_by_name ? ` · booked by ${appt.booked_by_name}` : ''}
         </p>
+        <div className="mt-3 flex items-center gap-2">
+          <span className="text-xs font-medium" style={{ color: 'var(--neutral)' }}>Customer link:</span>
+          <code className="flex-1 truncate rounded border px-2 py-1 text-xs" style={{ borderColor: 'var(--line)', background: 'var(--paper-warm)', color: 'var(--ink)' }}>
+            {customerJoinUrl}
+          </code>
+          <a href={customerJoinUrl} target="_blank" rel="noopener noreferrer" className="btn btn-secondary text-xs" style={{ whiteSpace: 'nowrap' }}>
+            Open
+          </a>
+        </div>
         {appt.escalated && (
           <p className="mt-2 inline-block rounded px-2 py-1 text-sm font-medium" style={{ background: '#fef2f2', color: '#b91c1c' }}>
             Escalated: capacity / undue-influence concern raised. Do not finalise without solicitor review.
