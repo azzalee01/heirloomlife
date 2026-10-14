@@ -57,7 +57,8 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
       .order('segment_index', { ascending: true }),
   ])
 
-  const customerJoinUrl = joinUrl(appt.id, appt.token_version)
+  let customerJoinUrl: string | null = null
+  try { customerJoinUrl = joinUrl(appt.id, appt.token_version) } catch { /* APPOINTMENT_LINK_SECRET not configured */ }
 
   return (
     <div className="mx-auto max-w-4xl space-y-8 px-5 py-8">
@@ -69,7 +70,10 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
           {appt.customer_phone ? ` · ${appt.customer_phone}` : ''}
           {appt.booked_by_name ? ` · booked by ${appt.booked_by_name}` : ''}
         </p>
-        <CopyLinkButton url={customerJoinUrl} />
+        {customerJoinUrl
+          ? <CopyLinkButton url={customerJoinUrl} />
+          : <p className="mt-2 text-xs" style={{ color: '#b91c1c' }}>Customer link unavailable — APPOINTMENT_LINK_SECRET is not configured in Vercel env vars.</p>
+        }
         {appt.escalated && (
           <p className="mt-2 inline-block rounded px-2 py-1 text-sm font-medium" style={{ background: '#fef2f2', color: '#b91c1c' }}>
             Escalated: capacity / undue-influence concern raised. Do not finalise without solicitor review.
