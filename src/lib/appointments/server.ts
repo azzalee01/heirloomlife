@@ -45,6 +45,8 @@ export interface AppointmentRow {
   testator_signed_confirmed_at: string | null
   testator_upload_path: string | null
   executed_will_path: string | null
+  will_version_id: string | null
+  content_hash: string | null
 }
 
 const NOT_FOUND = 'Appointment not found'

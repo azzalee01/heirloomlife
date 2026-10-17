@@ -1,5 +1,6 @@
 'use server'
 
+import { createHash, randomUUID } from 'crypto'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { createWitnessingRoom, createMeetingToken, getRoomRecordings, getRecordingAccessLink } from '@/src/lib/daily'
@@ -24,6 +25,67 @@ async function getOwnedWill() {
 
   return { supabase, user, willId: will.id }
 }
+
+// ─── Version capture ────────────────────────────────────────────────────────
+
+interface VersionCapture {
+  versionId: string
+  contentHash: string
+  documentText: string
+}
+
+/**
+ * Fetches the latest will_version and the current document text for a will,
+ * computes a SHA-256 hash of the document text, and stores an immutable copy
+ * in the witnessing-booking-docs bucket.  Called at booking time so the exact
+ * document presented to witnesses is locked before the Daily room is created.
+ *
+ * Throws if no version exists or if document_text has not yet been assembled —
+ * both indicate the will is not ready to be witnessed.
+ */
+async function captureWillVersion(willId: string, sessionId: string): Promise<VersionCapture> {
+  const [versionRes, willRes] = await Promise.all([
+    supabaseAdmin
+      .from('will_versions')
+      .select('id')
+      .eq('will_id', willId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    supabaseAdmin
+      .from('wills')
+      .select('document_text')
+      .eq('id', willId)
+      .single(),
+  ])
+
+  if (!versionRes.data) {
+    throw new Error('Your Will has no saved versions yet. Please complete and save your Will before booking a witnessing session.')
+  }
+  const documentText = willRes.data?.document_text as string | null
+  if (!documentText) {
+    throw new Error('Your Will document has not been assembled yet. Please complete your Will before booking a witnessing session.')
+  }
+
+  const contentHash = createHash('sha256').update(documentText, 'utf8').digest('hex')
+
+  // Store an immutable snapshot of the document so witnesses and testator
+  // sign the exact same text regardless of later edits.
+  const { error: uploadError } = await supabaseAdmin.storage
+    .from('witnessing-booking-docs')
+    .upload(`sessions/${sessionId}/will.txt`, Buffer.from(documentText, 'utf8'), {
+      contentType: 'text/plain; charset=utf-8',
+      upsert: false,
+    })
+  if (uploadError) {
+    // Non-fatal — the hash is the authoritative integrity check.
+    console.error('[captureWillVersion] Storage upload failed for session', sessionId, uploadError)
+  }
+
+  return { versionId: versionRes.data.id as string, contentHash, documentText }
+}
+
+// ─── Entitlement check ───────────────────────────────────────────────────────
 
 // Server-side rules for booking a remote signing session (creating a room costs money, so the page gate is not enough):
 // a paid Will, an NSW address, and only the one session included with the Will. Re-witnessing updates is coming soon.
@@ -76,11 +138,17 @@ export async function scheduleWitnessingSession(input: {
   const recordingEnabled = input.recordSession
   const testatorName = (user.user_metadata?.full_name as string | undefined) ?? user.email ?? 'Your contact'
 
+  // Capture the will version before creating the Daily room (costs money).
+  // Throws if the will has no version or no assembled document text.
+  const sessionId = randomUUID()
+  const { versionId, contentHash } = await captureWillVersion(willId, sessionId)
+
   const room = await createWitnessingRoom(input.scheduledAt, recordingEnabled)
 
   const { data: session, error } = await supabase
     .from('witnessing_sessions')
     .insert({
+      id: sessionId,
       will_id: willId,
       scheduled_at: input.scheduledAt,
       status: 'scheduled',
@@ -88,6 +156,8 @@ export async function scheduleWitnessingSession(input: {
       room_url: room.url,
       recording_enabled: recordingEnabled,
       recording_status: recordingEnabled ? 'none' : null,
+      will_version_id: versionId,
+      content_hash: contentHash,
     })
     .select('id')
     .single()
@@ -167,11 +237,20 @@ export async function bookWitnessSlot(slotId: string, recordSession: boolean) {
     .single()
   if (slotError || !slot) throw new Error('That slot is no longer available  -  please pick another.')
 
+  // Capture the will version before creating the Daily room.
+  const sessionId = randomUUID()
+  const { versionId, contentHash } = await captureWillVersion(willId, sessionId).catch(async (err) => {
+    // Roll back the slot claim before surfacing the error.
+    await supabase.from('heirloom_witness_slots').update({ is_booked: false }).eq('id', slotId)
+    throw err
+  })
+
   const room = await createWitnessingRoom(slot.scheduled_at as string, recordingEnabled)
 
   const { data: session, error } = await supabase
     .from('witnessing_sessions')
     .insert({
+      id: sessionId,
       will_id: willId,
       scheduled_at: slot.scheduled_at,
       witness_source: 'heirloom_provided',
@@ -180,6 +259,8 @@ export async function bookWitnessSlot(slotId: string, recordSession: boolean) {
       room_url: room.url,
       recording_enabled: recordingEnabled,
       recording_status: recordingEnabled ? 'none' : null,
+      will_version_id: versionId,
+      content_hash: contentHash,
     })
     .select('id')
     .single()
@@ -204,11 +285,47 @@ export async function getJoinToken(sessionId: string, displayName: string) {
 
   const { data: session, error } = await supabase
     .from('witnessing_sessions')
-    .select('id, room_url, will_id, status')
+    .select('id, room_url, will_id, status, will_version_id, content_hash, version_stale')
     .eq('id', sessionId)
     .eq('will_id', willId)
     .single()
   if (error || !session) throw new Error('Session not found')
+
+  // Sessions booked before version locking shipped cannot be verified.
+  if (!session.will_version_id) {
+    throw new Error(
+      'This session was booked before will-version locking was enabled. Please cancel and rebook to use the current signing flow.'
+    )
+  }
+
+  // Version comparison is the authoritative integrity check.  Even if the
+  // version_stale flag was not set (e.g. the flag update failed), a newer
+  // version means the testator edited their Will after booking.
+  const { data: latestVersion } = await supabaseAdmin
+    .from('will_versions')
+    .select('id')
+    .eq('will_id', willId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (!latestVersion || latestVersion.id !== session.will_version_id) {
+    // Ensure the flag is set for the UI even if _versioning.ts missed it.
+    await supabaseAdmin
+      .from('witnessing_sessions')
+      .update({ version_stale: true })
+      .eq('id', sessionId)
+    throw new Error(
+      'Your Will was updated after this session was booked. Please cancel this session and rebook to sign your current Will.'
+    )
+  }
+
+  // Belt-and-braces: also block if the flag was set by any other path.
+  if (session.version_stale) {
+    throw new Error(
+      'Your Will was updated after this session was booked. Please cancel this session and rebook to sign your current Will.'
+    )
+  }
 
   const roomName = new URL(session.room_url as string).pathname.replace('/', '')
   const token = await createMeetingToken(roomName, displayName, true)
@@ -269,16 +386,43 @@ export async function getInviteDetails(accessToken: string) {
 export async function getWitnessJoinToken(accessToken: string, displayName: string) {
   const { data: attestation, error } = await supabaseAdmin
     .from('witness_attestations')
-    .select('session_id, witnessing_sessions(room_url)')
+    .select('session_id, witnessing_sessions(room_url, will_id, will_version_id, version_stale)')
     .eq('access_token', accessToken)
     .single()
   if (error || !attestation) throw new Error('Invite not found')
 
-  const roomUrl = (attestation.witnessing_sessions as unknown as { room_url: string }).room_url
-  const roomName = new URL(roomUrl).pathname.replace('/', '')
+  const sessionData = attestation.witnessing_sessions as unknown as {
+    room_url: string
+    will_id: string
+    will_version_id: string | null
+    version_stale: boolean
+  }
+
+  if (!sessionData.will_version_id) {
+    throw new Error('This session was booked before will-version locking was enabled. Please ask the testator to cancel and rebook.')
+  }
+
+  // Witnesses must not be able to join a session for a stale will.
+  const { data: latestVersion } = await supabaseAdmin
+    .from('will_versions')
+    .select('id')
+    .eq('will_id', sessionData.will_id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (!latestVersion || latestVersion.id !== sessionData.will_version_id || sessionData.version_stale) {
+    await supabaseAdmin
+      .from('witnessing_sessions')
+      .update({ version_stale: true })
+      .eq('id', attestation.session_id)
+    throw new Error('The testator updated their Will after this session was booked. The session must be rebooked before witnesses can join.')
+  }
+
+  const roomName = new URL(sessionData.room_url).pathname.replace('/', '')
   const token = await createMeetingToken(roomName, displayName, false)
 
-  return { roomUrl, token }
+  return { roomUrl: sessionData.room_url, token }
 }
 
 // ─── Re-witnessing reminders ────────────────────────────────────────────────
