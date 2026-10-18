@@ -347,7 +347,20 @@ export async function getJoinToken(sessionId: string, displayName: string) {
   const token = await createMeetingToken(roomName, displayName, true)
 
   if (session.status === 'scheduled') {
-    await supabase.from('witnessing_sessions').update({ status: 'in_progress', started_at: new Date().toISOString() }).eq('id', sessionId)
+    // Optimistic lock: only update if the row is still 'scheduled'.
+    // If another request already transitioned it, the WHERE clause matches
+    // zero rows — surfaced as an error rather than silently allowing two
+    // concurrent sessions to appear to start.
+    const { data: started, error: startError } = await supabase
+      .from('witnessing_sessions')
+      .update({ status: 'in_progress', started_at: new Date().toISOString() })
+      .eq('id', sessionId)
+      .eq('status', 'scheduled')
+      .select('id')
+    if (startError) throw new Error('Could not start session. Please try again.')
+    if (!started || (started as unknown[]).length === 0) {
+      throw new Error('Session status transition failed — please refresh and try again.')
+    }
   }
 
   return { roomUrl: session.room_url as string, token }
@@ -358,11 +371,44 @@ export async function completeSession(sessionId: string) {
 
   const { data: session, error } = await supabase
     .from('witnessing_sessions')
-    .select('id, room_url, recording_enabled')
+    .select('id, room_url, recording_enabled, will_version_id, version_stale')
     .eq('id', sessionId)
     .eq('will_id', willId)
     .single()
   if (error || !session) throw new Error('Session not found')
+
+  // Legacy session (no version ID) — cannot verify document integrity.
+  if (!session.will_version_id) {
+    throw new Error(
+      'This session was booked before version locking was enabled and cannot be completed. Please contact Heirloom support.'
+    )
+  }
+
+  // Stale flag — Will was edited after this session was booked.
+  if (session.version_stale) {
+    throw new Error(
+      'This session cannot be completed: the Will was updated after it was booked. Please cancel and rebook.'
+    )
+  }
+
+  // Version mismatch — belt-and-braces check independent of the stale flag.
+  const { data: latestVersion } = await supabaseAdmin
+    .from('will_versions')
+    .select('id')
+    .eq('will_id', willId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (!latestVersion || latestVersion.id !== session.will_version_id) {
+    await supabaseAdmin
+      .from('witnessing_sessions')
+      .update({ version_stale: true })
+      .eq('id', sessionId)
+    throw new Error(
+      'This session cannot be completed: the Will was updated after it was booked. Please cancel and rebook.'
+    )
+  }
 
   await supabase
     .from('witnessing_sessions')

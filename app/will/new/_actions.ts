@@ -199,11 +199,10 @@ export async function saveStep(
   // Pre-mutation witnessing lock. Runs BEFORE any normalized-table write.
   // Skip for brand-new wills (willId === null → just created, no sessions
   // can exist yet) and the review step (no mutation happens).
-  // Throws without changing session state if an in_progress session exists.
-  let scheduledSessionIds: string[] = []
+  // Delegates to will_edit_lock() — atomic check + scheduled stale marking.
+  // Throws if an in_progress session exists or if the DB query fails.
   if (willId !== null && step !== 'review') {
-    const lock = await assertNoActiveSigning(id!)
-    scheduledSessionIds = lock.scheduledIds
+    await assertNoActiveSigning(id!)
   }
 
   switch (step) {
@@ -414,14 +413,18 @@ export async function saveStep(
   // Keep triage_flags current on every step save.
   await supabase.from('wills').update({ triage_flags: formData.triageFlags }).eq('id', id)
 
-  // Post-mutation: mark any previously-scheduled sessions stale. Non-fatal —
-  // getJoinToken independently enforces the lock via version-ID mismatch.
-  if (scheduledSessionIds.length > 0) {
-    await markSessionsStaleAfterEdit(id!, scheduledSessionIds)
+  // Post-mutation race check: catch any session that went in_progress during
+  // the write window (after the pre-mutation RPC but before mutations completed).
+  // Always runs for existing wills so the race window is never skipped.
+  if (willId !== null) {
+    await markSessionsStaleAfterEdit(id!)
   }
 
-  // Snapshot the resulting state into version history (skip 'review', which
-  // never mutates anything). A non-lock DB failure here doesn't block the save.
+  // Snapshot the resulting state into version history (skip 'review').
+  // If version recording fails: mark ALL active sessions stale immediately.
+  // Without a new version row, getJoinToken's version-ID comparison cannot
+  // detect that the Will content has changed, leaving sessions apparently valid
+  // for altered content. Invalidating them is the correct compensating action.
   let versionId: string | null = null
   if (step !== 'review') {
     try {
@@ -430,6 +433,24 @@ export async function saveStep(
       versionId = result.versionId
     } catch (versionError) {
       console.error('Version recording failed for', id, versionError)
+      // Compensating action: invalidate all active sessions — we cannot assert
+      // the Will is at a known version without a successful version row.
+      const { data: activeSessions } = await supabaseAdmin
+        .from('witnessing_sessions')
+        .select('id')
+        .eq('will_id', id!)
+        .in('status', ['scheduled', 'in_progress'])
+      const activeIds = (activeSessions ?? []).map((s) => (s as { id: string }).id)
+      if (activeIds.length > 0) {
+        try {
+          await supabaseAdmin
+            .from('witnessing_sessions')
+            .update({ version_stale: true })
+            .in('id', activeIds)
+        } catch (e) {
+          console.error('[saveStep] stale-after-version-fail failed', id, e)
+        }
+      }
     }
   }
 
@@ -508,9 +529,8 @@ export async function completeWill(willId: string): Promise<void> {
     throw new Error('WILL_PAYMENT_REQUIRED')
   }
 
-  // Pre-mutation witnessing lock — check BEFORE updating status.
-  // Throws without changing session state if an in_progress session exists.
-  const { scheduledIds: completionScheduledIds } = await assertNoActiveSigning(willId)
+  // Pre-mutation witnessing lock — atomic check + scheduled stale marking.
+  await assertNoActiveSigning(willId)
 
   // wills_protect_server_columns trigger blocks 'authenticated' role from
   // writing status/document_text — must use service-role client for these.
@@ -521,8 +541,8 @@ export async function completeWill(willId: string): Promise<void> {
     .eq('user_id', user.id)
   if (error) throw new Error(error.message)
 
-  // Post-mutation: mark any scheduled sessions stale after status change.
-  await markSessionsStaleAfterEdit(willId, completionScheduledIds)
+  // Post-mutation race check.
+  await markSessionsStaleAfterEdit(willId)
 
   // Draft the will document from the completed intake data. A drafting
   // failure shouldn't block submission  -  the solicitor review still covers it.
