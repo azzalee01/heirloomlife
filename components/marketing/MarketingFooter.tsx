@@ -89,16 +89,19 @@ export default function MarketingFooter() {
         <div style={{
           marginTop: '3rem', paddingTop: '1.5rem',
           borderTop: '1px solid var(--mkt-line)',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          flexWrap: 'wrap', gap: '1rem',
           fontSize: '.78rem', color: 'var(--mkt-stone)',
         }}>
-          <p style={{ margin: 0 }}>© 2026 Heirloom Life Pty Ltd. All rights reserved.</p>
-          <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <Link href="/terms" className="mkt-link" style={{ fontSize: '.78rem' }}>Terms</Link>
-            <Link href="/privacy" className="mkt-link" style={{ fontSize: '.78rem' }}>Privacy</Link>
-            <Link href="/refund-policy" className="mkt-link" style={{ fontSize: '.78rem' }}>Refunds</Link>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+            <p style={{ margin: 0 }}>© 2026 Heirloom Life Pty Ltd. All rights reserved.</p>
+            <div style={{ display: 'flex', gap: '1.5rem' }}>
+              <Link href="/terms" className="mkt-link" style={{ fontSize: '.78rem' }}>Terms</Link>
+              <Link href="/privacy" className="mkt-link" style={{ fontSize: '.78rem' }}>Privacy</Link>
+              <Link href="/refund-policy" className="mkt-link" style={{ fontSize: '.78rem' }}>Refunds</Link>
+            </div>
           </div>
+          <p style={{ margin: '.75rem 0 0', lineHeight: 1.6 }}>
+            Heirloom Life is an online service providing Will preparation and document storage. We are not a law firm and are not a substitute for a lawyer&apos;s advice about complex estate planning matters.
+          </p>
         </div>
 
       </div>
