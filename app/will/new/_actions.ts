@@ -422,9 +422,13 @@ export async function saveStep(
 
   // Snapshot the resulting state into version history (skip 'review').
   // If version recording fails: mark ALL active sessions stale immediately.
-  // Without a new version row, getJoinToken's version-ID comparison cannot
-  // detect that the Will content has changed, leaving sessions apparently valid
-  // for altered content. Invalidating them is the correct compensating action.
+  // The will_versions INSERT is the authoritative boundary protected by the
+  // will_versions_signing_lock DB trigger. Any failure here — including
+  // P0001 from the trigger — means the edit cannot be associated with a
+  // known version. Invalidate all active sessions first (so no session can
+  // complete against an un-versioned edit), then re-throw so the caller
+  // knows the save did not fully succeed. Never return success on a failed
+  // version insert.
   let versionId: string | null = null
   if (step !== 'review') {
     try {
@@ -432,9 +436,8 @@ export async function saveStep(
       const result = await recordVersion(supabase, id!, step, changeSummary ?? `Updated ${STEP_LABELS[step]}`, latest, isAmendmentToLiveWill)
       versionId = result.versionId
     } catch (versionError) {
-      console.error('Version recording failed for', id, versionError)
-      // Compensating action: invalidate all active sessions — we cannot assert
-      // the Will is at a known version without a successful version row.
+      console.error('[saveStep] version recording failed for will', id, versionError)
+      // Compensating action: invalidate all active sessions.
       const { data: activeSessions } = await supabaseAdmin
         .from('witnessing_sessions')
         .select('id')
@@ -451,6 +454,8 @@ export async function saveStep(
           console.error('[saveStep] stale-after-version-fail failed', id, e)
         }
       }
+      // Re-throw: a failed version insert is never a successful save.
+      throw versionError
     }
   }
 

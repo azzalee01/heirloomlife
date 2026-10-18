@@ -85,6 +85,10 @@ export async function markSessionsStaleAfterEdit(willId: string): Promise<void> 
 /**
  * Snapshots the current will state into version history. Session-locking is
  * the caller's responsibility via assertNoActiveSigning (before mutations).
+ *
+ * Throws on any insert failure — including P0001 raised by the
+ * will_versions_signing_lock trigger when a witnessing session is in_progress.
+ * Callers must not treat a failed version insert as a successful save.
  */
 export async function recordVersion(
   supabase: SupabaseClient,
@@ -93,12 +97,12 @@ export async function recordVersion(
   changeSummary: string,
   formData: WillFormData,
   runReview: boolean
-): Promise<{ versionId: string | null }> {
+): Promise<{ versionId: string }> {
   const { needsReview, reasons } = runReview
     ? await assessLegalReviewNeed(formData)
     : { needsReview: false, reasons: [] as string[] }
 
-  const { data } = await supabase.from('will_versions').insert({
+  const { data, error } = await supabase.from('will_versions').insert({
     will_id: willId,
     changed_section: changedSection,
     change_summary: changeSummary,
@@ -107,6 +111,19 @@ export async function recordVersion(
     needs_review_reasons: reasons,
   }).select('id').single()
 
+  if (error || !data?.id) {
+    const pgErr = error as { code?: string; message?: string } | null
+    if (pgErr?.code === 'P0001') {
+      throw new Error(
+        pgErr.message ??
+          'Will edit blocked: a witnessing session is currently in progress.'
+      )
+    }
+    throw new Error(
+      `Version snapshot failed: ${pgErr?.message ?? 'unknown error'}. Your changes were saved but could not be versioned. Please try again.`
+    )
+  }
+
   if (runReview) {
     await supabase
       .from('wills')
@@ -114,5 +131,5 @@ export async function recordVersion(
       .eq('id', willId)
   }
 
-  return { versionId: (data?.id as string) ?? null }
+  return { versionId: data.id as string }
 }

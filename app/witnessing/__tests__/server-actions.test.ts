@@ -366,13 +366,11 @@ describe('saveStep — version recording failure triggers stale compensation', (
       }
     })
 
-    // saveStep should not throw — version failure is caught
-    const result = await saveStep(WILL_ID, 'personal', buildFormData())
-    expect(result.id).toBe(WILL_ID)
-    expect(result.versionId).toBeNull()
+    // saveStep MUST throw — a failed version insert is never a successful save.
+    await expect(saveStep(WILL_ID, 'personal', buildFormData())).rejects.toThrow()
 
-    // Call 1 = markSessionsStaleAfterEdit race check; call 2+ = compensating action.
-    // Both must have run, proving the catch block executed and queried for active sessions.
+    // The compensating stale action must have run before the throw:
+    // call 1 = markSessionsStaleAfterEdit race check, call 2+ = compensating select.
     expect(adminWitCallCount).toBeGreaterThanOrEqual(2)
   })
 })

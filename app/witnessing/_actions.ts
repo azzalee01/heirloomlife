@@ -45,33 +45,35 @@ interface VersionCapture {
  * both indicate the will is not ready to be witnessed.
  */
 async function captureWillVersion(willId: string, sessionId: string): Promise<VersionCapture> {
-  const [versionRes, willRes] = await Promise.all([
-    supabaseAdmin
-      .from('will_versions')
-      .select('id')
-      .eq('will_id', willId)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle(),
-    supabaseAdmin
-      .from('wills')
-      .select('document_text')
-      .eq('id', willId)
-      .single(),
-  ])
+  // Fetch the latest version ID and current document_text serially so they
+  // are read from the same consistent point in time.
+  const { data: latestVersion } = await supabaseAdmin
+    .from('will_versions')
+    .select('id')
+    .eq('will_id', willId)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
 
-  if (!versionRes.data) {
+  if (!latestVersion) {
     throw new Error('Your Will has no saved versions yet. Please complete and save your Will before booking a witnessing session.')
   }
-  const documentText = willRes.data?.document_text as string | null
+
+  const { data: willRow } = await supabaseAdmin
+    .from('wills')
+    .select('document_text')
+    .eq('id', willId)
+    .single()
+
+  const documentText = willRow?.document_text as string | null
   if (!documentText) {
     throw new Error('Your Will document has not been assembled yet. Please complete your Will before booking a witnessing session.')
   }
 
   const contentHash = createHash('sha256').update(documentText, 'utf8').digest('hex')
 
-  // Store an immutable snapshot of the document so witnesses and testator
-  // sign the exact same text regardless of later edits.
+  // Upload immutable snapshot so witnesses and testator sign the exact same
+  // text regardless of later edits.
   const { error: uploadError } = await supabaseAdmin.storage
     .from('witnessing-booking-docs')
     .upload(`sessions/${sessionId}/will.txt`, Buffer.from(documentText, 'utf8'), {
@@ -84,7 +86,22 @@ async function captureWillVersion(willId: string, sessionId: string): Promise<Ve
     )
   }
 
-  return { versionId: versionRes.data.id as string, contentHash, documentText }
+  // Verify the upload: re-download and re-hash to confirm the stored bytes
+  // match what was computed.  A mismatch here means the Storage write was
+  // corrupted and the session must not proceed.
+  const { data: verifyBlob, error: verifyError } = await supabaseAdmin.storage
+    .from('witnessing-booking-docs')
+    .download(`sessions/${sessionId}/will.txt`)
+  if (verifyError || !verifyBlob) {
+    throw new Error('Will document upload could not be verified. Please try again.')
+  }
+  const storedContent = await verifyBlob.text()
+  const storedHash = createHash('sha256').update(storedContent, 'utf8').digest('hex')
+  if (storedHash !== contentHash) {
+    throw new Error('Will document upload integrity check failed. Please contact Heirloom support.')
+  }
+
+  return { versionId: latestVersion.id as string, contentHash, documentText }
 }
 
 // ─── Entitlement check ───────────────────────────────────────────────────────
@@ -371,7 +388,7 @@ export async function completeSession(sessionId: string) {
 
   const { data: session, error } = await supabase
     .from('witnessing_sessions')
-    .select('id, room_url, recording_enabled, will_version_id, version_stale')
+    .select('id, room_url, recording_enabled, will_version_id, version_stale, content_hash')
     .eq('id', sessionId)
     .eq('will_id', willId)
     .single()
@@ -409,6 +426,20 @@ export async function completeSession(sessionId: string) {
       'This session cannot be completed: the Will was updated after it was booked. Please cancel and rebook.'
     )
   }
+
+  // Document hash verification — confirm the locked Storage document still
+  // matches the hash captured at booking time before marking complete.
+  if (!session.content_hash) {
+    throw new Error('This session has no locked document hash and cannot be completed. Please contact Heirloom support.')
+  }
+  const { data: lockedBlob, error: fetchError } = await supabaseAdmin.storage
+    .from('witnessing-booking-docs')
+    .download(`sessions/${sessionId}/will.txt`)
+  if (fetchError || !lockedBlob) {
+    throw new Error('The locked Will document for this session could not be retrieved and the session cannot be completed. Please contact Heirloom support.')
+  }
+  const lockedContent = await lockedBlob.text()
+  verifyDocumentIntegrity(lockedContent, session.content_hash as string)
 
   await supabase
     .from('witnessing_sessions')
