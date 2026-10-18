@@ -141,7 +141,6 @@ export async function POST(request: NextRequest) {
     if (raw.startsWith('```')) {
       raw = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
     }
-    console.log('[will/upload] Claude raw (first 300):', raw.slice(0, 300))
     extractedData = JSON.parse(raw)
   } catch (err) {
     console.error('[will/upload] Anthropic extraction error:', err)

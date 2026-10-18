@@ -203,6 +203,14 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   // Only count beneficiaries that will actually render
   const activePeople = people.filter((p) => p.name.trim() && (parseFloat(p.percentage) || 0) > 0)
   const activeCharities = charities.filter((c) => c.name.trim() && (parseFloat(c.percentage) || 0) > 0)
+
+  if (activePeople.length === 0 && activeCharities.length === 0) {
+    throw new Error(
+      'Will cannot be generated: no beneficiaries have been added. ' +
+      'Please add at least one beneficiary before generating your Will.'
+    )
+  }
+
   if (activePeople.length > 0 || activeCharities.length > 0) {
     instances.push({
       code: 'RES-01',
