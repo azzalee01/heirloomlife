@@ -6,6 +6,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { createWitnessingRoom, createMeetingToken, getRoomRecordings, getRecordingAccessLink } from '@/src/lib/daily'
 import { sendWitnessInviteEmail } from '@/src/lib/email'
 import { hasWillAccess, hasUsedIncludedSigning } from '@/src/lib/entitlements'
+import { verifyDocumentIntegrity } from '@/app/will/new/_versioning'
 
 async function getOwnedWill() {
   const supabase = await createSupabaseServerClient()
@@ -78,8 +79,9 @@ async function captureWillVersion(willId: string, sessionId: string): Promise<Ve
       upsert: false,
     })
   if (uploadError) {
-    // Non-fatal — the hash is the authoritative integrity check.
-    console.error('[captureWillVersion] Storage upload failed for session', sessionId, uploadError)
+    throw new Error(
+      `Could not lock the Will document for this signing session. Please try again. (${uploadError.message})`
+    )
   }
 
   return { versionId: versionRes.data.id as string, contentHash, documentText }
@@ -327,6 +329,20 @@ export async function getJoinToken(sessionId: string, displayName: string) {
     )
   }
 
+  // Verify the immutable locked document: fetch from Storage and re-hash.
+  // A missing or modified document is a fatal integrity failure.
+  if (!session.content_hash) {
+    throw new Error('This session has no locked document hash. Please contact Heirloom support.')
+  }
+  const { data: lockedBlob, error: fetchError } = await supabaseAdmin.storage
+    .from('witnessing-booking-docs')
+    .download(`sessions/${sessionId}/will.txt`)
+  if (fetchError || !lockedBlob) {
+    throw new Error('The locked Will document for this session could not be retrieved. Please contact Heirloom support.')
+  }
+  const lockedContent = await lockedBlob.text()
+  verifyDocumentIntegrity(lockedContent, session.content_hash as string)
+
   const roomName = new URL(session.room_url as string).pathname.replace('/', '')
   const token = await createMeetingToken(roomName, displayName, true)
 
@@ -386,7 +402,7 @@ export async function getInviteDetails(accessToken: string) {
 export async function getWitnessJoinToken(accessToken: string, displayName: string) {
   const { data: attestation, error } = await supabaseAdmin
     .from('witness_attestations')
-    .select('session_id, witnessing_sessions(room_url, will_id, will_version_id, version_stale)')
+    .select('session_id, witnessing_sessions(room_url, will_id, will_version_id, version_stale, content_hash)')
     .eq('access_token', accessToken)
     .single()
   if (error || !attestation) throw new Error('Invite not found')
@@ -396,6 +412,7 @@ export async function getWitnessJoinToken(accessToken: string, displayName: stri
     will_id: string
     will_version_id: string | null
     version_stale: boolean
+    content_hash: string | null
   }
 
   if (!sessionData.will_version_id) {
@@ -418,6 +435,19 @@ export async function getWitnessJoinToken(accessToken: string, displayName: stri
       .eq('id', attestation.session_id)
     throw new Error('The testator updated their Will after this session was booked. The session must be rebooked before witnesses can join.')
   }
+
+  // Verify the immutable locked document: fetch from Storage and re-hash.
+  if (!sessionData.content_hash) {
+    throw new Error('This session has no locked document hash. Please contact Heirloom support.')
+  }
+  const { data: lockedBlob, error: fetchError } = await supabaseAdmin.storage
+    .from('witnessing-booking-docs')
+    .download(`sessions/${attestation.session_id}/will.txt`)
+  if (fetchError || !lockedBlob) {
+    throw new Error('The locked Will document for this session could not be retrieved. Please contact Heirloom support.')
+  }
+  const lockedContent = await lockedBlob.text()
+  verifyDocumentIntegrity(lockedContent, sessionData.content_hash)
 
   const roomName = new URL(sessionData.room_url).pathname.replace('/', '')
   const token = await createMeetingToken(roomName, displayName, false)
