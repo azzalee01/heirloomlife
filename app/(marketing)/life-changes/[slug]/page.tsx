@@ -38,9 +38,9 @@ export default async function LifeChangePage({ params }: Props) {
 
   return (
     <>
-      <section style={{ position: 'relative', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden', minHeight: 480 }}>
+      <section style={{ position: 'relative', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden', minHeight: 420 }}>
         {/* Text — z-indexed above image */}
-        <div className="md:px-10" style={{ position: 'relative', zIndex: 1, maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem', paddingBlock: '3.25rem' }}>
+        <div className="md:px-10" style={{ position: 'relative', zIndex: 1, maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem', paddingBlock: '2.5rem' }}>
           <div style={{ maxWidth: '40rem' }}>
             <Link href="/life-changes" style={{ fontSize: '.78rem', color: 'var(--teal-deep)', textDecoration: 'none', fontWeight: 600 }}>← All life changes</Link>
             <h1 style={{ margin: '1.5rem 0 0', maxWidth: '45rem', fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', lineHeight: 1.03, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>{event.title}</h1>
