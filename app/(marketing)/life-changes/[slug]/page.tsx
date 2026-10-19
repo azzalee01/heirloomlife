@@ -38,7 +38,7 @@ export default async function LifeChangePage({ params }: Props) {
 
   return (
     <>
-      <section style={{ position: 'relative', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden', minHeight: 400 }}>
+      <section style={{ position: 'relative', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden', minHeight: 480 }}>
         {/* Text — z-indexed above image */}
         <div className="md:px-10" style={{ position: 'relative', zIndex: 1, maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem', paddingBlock: '3.25rem' }}>
           <div style={{ maxWidth: '40rem' }}>
@@ -49,19 +49,19 @@ export default async function LifeChangePage({ params }: Props) {
         </div>
         {/* Image — absolute, bleeds to right edge */}
         {event.heroImage && (
-          <div className="hidden lg:block" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '52%' }}>
+          <div className="hidden lg:block" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '55%' }}>
             <Image
               src={event.heroImage}
               alt={event.title}
               fill
               priority
               quality={90}
-              sizes="(min-width: 1024px) 760px, 100vw"
+              sizes="(min-width: 1024px) 800px, 100vw"
               style={{
                 objectFit: 'cover',
-                objectPosition: 'center top',
-                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 22%, black 48%)',
-                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 22%, black 48%)',
+                objectPosition: 'center 30%',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 28%)',
+                maskImage: 'linear-gradient(to right, transparent 0%, black 28%)',
               }}
             />
           </div>
