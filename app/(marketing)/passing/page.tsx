@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     url: 'https://www.heirloomlife.com.au/passing',
     siteName: 'Heirloom Life',
     type: 'website',
-    images: [{ url: '/images/editorial/passing.jpg' }],
+    images: [{ url: '/images/editorial/passing.webp' }],
   },
 }
 
@@ -52,7 +52,7 @@ export default function PassingIndexPage() {
             Guides for executors, families, and anyone navigating what comes after a death. Clear, practical, and specific to Australian law.
           </p>
           </div>
-          <EditorialBanner src="/images/editorial/passing.jpg" alt="A calm home setting with an envelope and personal keepsakes" />
+          <EditorialBanner src="/images/editorial/passing.webp" alt="A calm home setting with an envelope and personal keepsakes" />
         </div>
       </section>
 
