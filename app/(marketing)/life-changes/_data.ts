@@ -12,6 +12,7 @@ export type LifeChange = {
   productStep: string
   sources: { label: string; href: string }[]
   heroImage?: string
+  heroObjectPosition?: string
 }
 
 const WILLS_SOURCE = {
@@ -65,6 +66,7 @@ export const LIFE_CHANGES: LifeChange[] = [
   },
   {
     heroImage: '/images/life-changes/separation-divorce.webp',
+    heroObjectPosition: 'center bottom',
     slug: 'separation-divorce',
     title: 'Separation or divorce',
     shortTitle: 'Separation or divorce',
