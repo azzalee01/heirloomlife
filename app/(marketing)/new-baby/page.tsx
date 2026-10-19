@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import Reveal from '@/components/marketing/Reveal'
+import LifeEventHeroImage from '@/components/marketing/LifeEventHeroImage'
 
 export const metadata: Metadata = {
   title: 'Name a Guardian for Your Child | Heirloom Life',
@@ -53,51 +54,76 @@ function Pill({ children, variant = 'teal' }: { children: React.ReactNode; varia
 }
 
 export default function NewBabyPage() {
+  const showArt = process.env.NEXT_PUBLIC_LIFE_EVENT_HERO_ART === 'true'
+
+  const heroCopy = (
+    <>
+      <span style={{ ...SECTION_LABEL, marginBottom: '1.5rem' }}>New baby</span>
+      <h1 style={{
+        fontFamily: 'var(--font-display)',
+        fontSize: 'clamp(3.2rem, 7vw, 6.4rem)',
+        lineHeight: 0.95,
+        letterSpacing: '-.025em',
+        color: 'var(--mkt-ink-text)',
+        margin: 0,
+      }}>
+        Who raises your child?<br />
+        <em style={{
+          fontStyle: 'italic',
+          color: 'var(--mkt-ink-text)',
+          textDecoration: 'underline',
+          textDecorationColor: 'var(--teal)',
+          textDecorationThickness: '2px',
+          textUnderlineOffset: '8px',
+        }}>Without a Will,<br />a court decides.</em>
+      </h1>
+      <p style={{ marginTop: '2.25rem', maxWidth: '28rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
+        Name a guardian for your child. Free to draft, in about 15 minutes.
+      </p>
+      <div style={{ marginTop: '2.5rem', display: 'flex', gap: '.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <Link href="/start" className="mkt-btn-ink-l">
+          Name a guardian
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </Link>
+        <Link href="/how-it-works" className="mkt-btn-ink-l" style={{ background: 'transparent', border: '1.5px solid var(--teal)', color: 'var(--teal-deep)' }}>
+          How it works
+        </Link>
+      </div>
+      <p style={{ marginTop: '1.25rem', fontSize: '.8rem', color: 'var(--mkt-stone)' }}>
+        Free to draft &middot; about 15 minutes &middot; <strong style={{ color: 'var(--mkt-ink-text)' }}>$149 to issue</strong>
+      </p>
+      <p style={{ margin: '.5rem 0 0', fontSize: '.72rem', color: 'var(--mkt-stone)', opacity: .6 }}>
+        General information only, not legal advice.
+      </p>
+    </>
+  )
+
   return (
     <>
       {/* ── Hero ── */}
       <section style={{ position: 'relative', background: 'var(--mkt-surface)', color: 'var(--mkt-ink-text)', overflow: 'hidden' }}>
-        <div style={{ ...W, paddingTop: '10rem', paddingBottom: '8rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <span style={{ ...SECTION_LABEL, marginBottom: '1.5rem' }}>New baby</span>
-          <h1 style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(3.2rem, 7vw, 6.4rem)',
-            lineHeight: 0.95,
-            letterSpacing: '-.025em',
-            color: 'var(--mkt-ink-text)',
-            margin: 0,
-          }}>
-            Who raises your child?<br />
-            <em style={{
-              fontStyle: 'italic',
-              color: 'var(--mkt-ink-text)',
-              textDecoration: 'underline',
-              textDecorationColor: 'var(--teal)',
-              textDecorationThickness: '2px',
-              textUnderlineOffset: '8px',
-            }}>Without a Will,<br />a court decides.</em>
-          </h1>
-          <p style={{ marginTop: '2.25rem', maxWidth: '28rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-            Name a guardian for your child. Free to draft, in about 15 minutes.
-          </p>
-          <div style={{ marginTop: '2.5rem', display: 'flex', gap: '.75rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <Link href="/start" className="mkt-btn-ink-l">
-              Name a guardian
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-                <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </Link>
-            <Link href="/how-it-works" className="mkt-btn-ink-l" style={{ background: 'transparent', border: '1.5px solid var(--teal)', color: 'var(--teal-deep)' }}>
-              How it works
-            </Link>
+        {showArt ? (
+          <div
+            className="lg:flex lg:items-center lg:gap-16"
+            style={{ ...W, paddingTop: '7rem', paddingBottom: '3.5rem' }}
+          >
+            <div className="flex flex-col items-center text-center lg:items-start lg:text-left lg:flex-1">
+              {heroCopy}
+            </div>
+            <div className="mt-10 lg:mt-0 w-full lg:w-[560px] lg:shrink-0">
+              <LifeEventHeroImage
+                src="/images/life-events/new-baby.webp"
+                alt="Two parents leaning over a newborn in the mother's arms, with a cot visible behind"
+              />
+            </div>
           </div>
-          <p style={{ marginTop: '1.25rem', fontSize: '.8rem', color: 'var(--mkt-stone)' }}>
-            Free to draft &middot; about 15 minutes &middot; <strong style={{ color: 'var(--mkt-ink-text)' }}>$149 to issue</strong>
-          </p>
-          <p style={{ margin: '.5rem 0 0', fontSize: '.72rem', color: 'var(--mkt-stone)', opacity: .6 }}>
-            General information only, not legal advice.
-          </p>
-        </div>
+        ) : (
+          <div style={{ ...W, paddingTop: '10rem', paddingBottom: '8rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {heroCopy}
+          </div>
+        )}
       </section>
 
       {/* ── Why it matters ── */}
