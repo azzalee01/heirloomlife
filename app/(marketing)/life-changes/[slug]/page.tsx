@@ -55,11 +55,11 @@ export default async function LifeChangePage({ params }: Props) {
               alt={event.title}
               fill
               priority
-              quality={85}
-              sizes="52vw"
+              quality={90}
+              sizes="(min-width: 1024px) 760px, 100vw"
               style={{
                 objectFit: 'cover',
-                objectPosition: 'center',
+                objectPosition: 'center top',
                 WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 22%, black 48%)',
                 maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 22%, black 48%)',
               }}
