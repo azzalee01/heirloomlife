@@ -42,32 +42,32 @@ export default function TheWillPage() {
       {/* ── Hero ──────────────────────────────────────────────────────────── */}
       <section style={{ paddingTop: '7rem', paddingBottom: '5.5rem', background: 'var(--mkt-surface)' }}>
         <div className="md:px-10" style={W}>
-          <div style={{ maxWidth: '44rem' }}>
             <span style={SECTION_LABEL}>The Will</span>
             <h1 style={{
               fontFamily: "var(--font-display)",
-              fontSize: 'clamp(2.6rem, 5vw, 4.6rem)', lineHeight: 1.04,
-              letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: 0,
+              fontSize: 'clamp(2rem, 4vw, 3.2rem)', lineHeight: 1.06,
+              letterSpacing: '-.01em', color: 'var(--mkt-ink-text)', margin: '0 0 1.75rem',
             }}>
               Not a document you sign once<br/>
               and hope you never think about{' '}
               <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>again</em>.
             </h1>
-            <p style={{ marginTop: '1.75rem', maxWidth: '34rem', fontSize: '1.1rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault  -  readable in plain English, reviewed against solicitor-written standards, and versioned every time your life moves forward.
-            </p>
-            <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <Link href="/start" className="mkt-btn-ink-l">
-                Start your Will
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-              <Link href="/how-it-works" className="mkt-btn-ghost-l">
-                How it works
-              </Link>
+            <div style={{ maxWidth: '34rem' }}>
+              <p style={{ fontSize: '1.1rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: 0 }}>
+                Most Wills are static PDFs, filed away and forgotten until it&#8217;s too late to matter. Yours lives in your Vault — readable in plain English, reviewed against solicitor-written standards, and versioned every time your life moves forward.
+              </p>
+              <div style={{ marginTop: '2.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <Link href="/start" className="mkt-btn-ink-l">
+                  Start your Will
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </Link>
+                <Link href="/how-it-works" className="mkt-btn-ghost-l">
+                  How it works
+                </Link>
+              </div>
             </div>
-          </div>
         </div>
       </section>
 
