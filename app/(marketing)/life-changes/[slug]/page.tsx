@@ -38,32 +38,35 @@ export default async function LifeChangePage({ params }: Props) {
 
   return (
     <>
-      <section style={{ background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden' }}>
-        <div className="md:px-10 lg:flex" style={{ maxWidth: 1240, marginInline: 'auto' }}>
-          <div className="lg:flex-1" style={{ paddingInline: '1.5rem', paddingBlock: '3.25rem' }}>
+      <section style={{ position: 'relative', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden', minHeight: 400 }}>
+        {/* Text — z-indexed above image */}
+        <div className="md:px-10" style={{ position: 'relative', zIndex: 1, maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem', paddingBlock: '3.25rem' }}>
+          <div style={{ maxWidth: '40rem' }}>
             <Link href="/life-changes" style={{ fontSize: '.78rem', color: 'var(--teal-deep)', textDecoration: 'none', fontWeight: 600 }}>← All life changes</Link>
             <h1 style={{ margin: '1.5rem 0 0', maxWidth: '45rem', fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', lineHeight: 1.03, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>{event.title}</h1>
-            <p style={{ margin: '1.4rem 0 0', maxWidth: '36rem', fontSize: '1.08rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>{event.introduction}</p>
+            <p style={{ margin: '1.4rem 0 0', maxWidth: '34rem', fontSize: '1.08rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>{event.introduction}</p>
           </div>
-          {event.heroImage && (
-            <div className="hidden lg:block lg:w-[520px] lg:shrink-0" style={{ position: 'relative' }}>
-              <Image
-                src={event.heroImage}
-                alt={event.title}
-                fill
-                priority
-                quality={85}
-                sizes="520px"
-                style={{
-                  objectFit: 'cover',
-                  objectPosition: 'center',
-                  WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 18%)',
-                  maskImage: 'linear-gradient(to right, transparent 0%, black 18%)',
-                }}
-              />
-            </div>
-          )}
         </div>
+        {/* Image — absolute, bleeds to right edge */}
+        {event.heroImage && (
+          <div className="hidden lg:block" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '52%' }}>
+            <Image
+              src={event.heroImage}
+              alt={event.title}
+              fill
+              priority
+              quality={85}
+              sizes="52vw"
+              style={{
+                objectFit: 'cover',
+                objectPosition: 'center',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 22%, black 48%)',
+                maskImage: 'linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 22%, black 48%)',
+              }}
+            />
+          </div>
+        )}
+        {/* Mobile image */}
         {event.heroImage && (
           <div className="lg:hidden" style={{ paddingInline: '1.5rem', paddingBottom: '2.5rem' }}>
             <Image
