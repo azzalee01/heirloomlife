@@ -45,7 +45,7 @@ const NT_WILLS = { label: 'Northern Territory Wills Act 2000', href: 'https://le
 
 export const LIFE_CHANGES: LifeChange[] = [
   {
-    heroImage: '/images/life-events/just-married.webp',
+    heroImage: '/images/life-changes/getting-married.webp',
     slug: 'getting-married',
     title: 'Getting married or committing to a partner',
     shortTitle: 'Getting married',
@@ -64,7 +64,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [NSW_SUCCESSION, QLD_SUCCESSION, SA_SUCCESSION, TAS_WILLS, WA_WILLS, ACT_WILLS, VIC_WILLS, NT_WILLS, WILLS_SOURCE, SUPER_SOURCE],
   },
   {
-    heroImage: '/images/life-events/just-married.webp',
+    heroImage: '/images/life-changes/separation-divorce.webp',
     slug: 'separation-divorce',
     title: 'Separation or divorce',
     shortTitle: 'Separation or divorce',
@@ -83,7 +83,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [NSW_SUCCESSION, QLD_SUCCESSION, SA_SUCCESSION, TAS_WILLS, WA_WILLS, ACT_WILLS, VIC_WILLS, NT_WILLS, WILLS_SOURCE, SUPER_SOURCE],
   },
   {
-    heroImage: '/images/life-events/new-baby.webp',
+    heroImage: '/images/life-changes/new-child.webp',
     slug: 'new-child',
     title: 'Having or adopting a child',
     shortTitle: 'A new child',
@@ -102,7 +102,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [SUPER_SOURCE],
   },
   {
-    heroImage: '/images/life-events/new-home.webp',
+    heroImage: '/images/life-changes/buying-selling-property.webp',
     slug: 'buying-selling-property',
     title: 'Buying or selling property',
     shortTitle: 'Property bought or sold',
@@ -121,7 +121,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [],
   },
   {
-    heroImage: '/images/life-events/new-baby.webp',
+    heroImage: '/images/life-changes/serious-illness.webp',
     slug: 'serious-illness',
     title: 'A serious diagnosis or change in health',
     shortTitle: 'Serious illness',
@@ -140,7 +140,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [LEGALAID_NSW_WILLS],
   },
   {
-    heroImage: '/images/life-events/new-home.webp',
+    heroImage: '/images/life-changes/starting-selling-business.webp',
     slug: 'starting-selling-business',
     title: 'Starting, buying or selling a business',
     shortTitle: 'A business change',
@@ -159,7 +159,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [],
   },
   {
-    heroImage: '/images/life-events/new-baby.webp',
+    heroImage: '/images/life-changes/receiving-inheritance.webp',
     slug: 'receiving-inheritance',
     title: 'Receiving an inheritance',
     shortTitle: 'Receiving an inheritance',
@@ -178,7 +178,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [],
   },
   {
-    heroImage: '/images/life-events/new-home.webp',
+    heroImage: '/images/life-changes/moving-interstate.webp',
     slug: 'moving-interstate',
     title: 'Moving interstate or overseas',
     shortTitle: 'Moving jurisdiction',
