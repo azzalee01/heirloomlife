@@ -59,7 +59,7 @@ export default async function LifeChangePage({ params }: Props) {
               sizes="(min-width: 1024px) 800px, 100vw"
               style={{
                 objectFit: 'cover',
-                objectPosition: event.heroObjectPosition ?? 'center top',
+                objectPosition: event.heroObjectPosition ?? 'center center',
                 WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 28%)',
                 maskImage: 'linear-gradient(to right, transparent 0%, black 28%)',
               }}

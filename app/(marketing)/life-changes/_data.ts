@@ -66,7 +66,6 @@ export const LIFE_CHANGES: LifeChange[] = [
   },
   {
     heroImage: '/images/life-changes/separation-divorce.webp',
-    heroObjectPosition: 'center bottom',
     slug: 'separation-divorce',
     title: 'Separation or divorce',
     shortTitle: 'Separation or divorce',
