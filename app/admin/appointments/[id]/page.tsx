@@ -44,6 +44,20 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
     ? await getWitnessNamesFromEvents(id)
     : null
 
+  // Version staleness for the linked will — compare the version captured at
+  // link time to the current latest version.
+  let isVersionStale = false
+  if (appt.will_id && appt.will_version_id) {
+    const { data: latestVersion } = await supabaseAdmin
+      .from('will_versions')
+      .select('id')
+      .eq('will_id', appt.will_id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    isVersionStale = !!latestVersion && latestVersion.id !== appt.will_version_id
+  }
+
   const [{ data: events }, { data: recordings }] = await Promise.all([
     supabaseAdmin
       .from('appointment_events')
@@ -100,6 +114,9 @@ export default async function HostAppointmentPage({ params }: { params: Promise<
         hasTestatorUpload={Boolean(appt.testator_upload_path)}
         hasExecutedWill={Boolean(appt.executed_will_path)}
         dailyRoomName={appt.daily_room_name ?? null}
+        lockedVersionId={appt.will_version_id ?? null}
+        contentHashSuffix={appt.content_hash ? appt.content_hash.slice(-8) : null}
+        isVersionStale={isVersionStale}
       />
 
       <section>

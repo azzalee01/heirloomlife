@@ -66,8 +66,8 @@ async function mirrorRecordingToStorage(appointmentId: string, recordingId: stri
 export async function POST(request: NextRequest) {
   const secret = process.env.DAILY_WEBHOOK_HMAC_SECRET
   if (!secret) {
-    console.warn('[daily-webhook] DAILY_WEBHOOK_HMAC_SECRET not set — request not verified')
-    return NextResponse.json({ ok: true })
+    console.error('[daily-webhook] DAILY_WEBHOOK_HMAC_SECRET is not configured — rejecting request')
+    return NextResponse.json({ error: 'Webhook not configured' }, { status: 500 })
   }
 
   const rawBody = await request.text()

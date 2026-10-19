@@ -90,7 +90,7 @@ export default async function WitnessingPage() {
 
   const { data: sessionRows } = await supabase
     .from('witnessing_sessions')
-    .select('id, scheduled_at, status, recording_enabled, recording_status, recording_url, witness_attestations(id, witness_name, attested_at)')
+    .select('id, scheduled_at, status, recording_enabled, recording_status, recording_url, version_stale, witness_attestations(id, witness_name, attested_at)')
     .eq('will_id', will.id)
     .order('scheduled_at', { ascending: false })
 
@@ -104,12 +104,17 @@ export default async function WitnessingPage() {
     recordingEnabled: s.recording_enabled as boolean,
     recordingStatus: s.recording_status as string | null,
     recordingUrl: s.recording_url as string | null,
+    versionStale: (s.version_stale as boolean | null) ?? false,
     witnesses: ((s.witness_attestations ?? []) as { id: string; witness_name: string; attested_at: string | null }[]).map((w) => ({
       id: w.id,
       name: w.witness_name,
       attested: !!w.attested_at,
     })),
   }))
+
+  const hasStaleSession = sessions.some(
+    (s) => s.versionStale && (s.status === 'scheduled' || s.status === 'in_progress')
+  )
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--paper)' }}>
@@ -132,6 +137,27 @@ export default async function WitnessingPage() {
         <p className="text-sm" style={{ color: 'var(--neutral)' }}>
           Schedule a remote witnessing session for signing your Will over audio-visual link. Your witness must see you sign in real time.
         </p>
+
+        {hasStaleSession && (
+          <div
+            role="alert"
+            className="flex gap-3 rounded border p-4"
+            style={{ borderColor: '#f59e0b', background: '#fffbeb' }}
+          >
+            <svg className="shrink-0 mt-0.5" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b45309" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div>
+              <p className="text-sm font-semibold" style={{ color: '#92400e' }}>
+                Your Will was updated after your session was booked
+              </p>
+              <p className="mt-1 text-sm" style={{ color: '#78350f' }}>
+                Witnesses cannot join a session for an outdated Will. Please cancel this session and rebook — your updated Will will be locked for the new session.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Show booking form for first session, or when re-witnessing credits are available */}
         {(!includedSigningUsed || rewitCredits > 0) && <ScheduleSessionForm />}

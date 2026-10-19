@@ -5,7 +5,7 @@ import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from './_data'
 import { assembleWillDocument } from './_assembly'
-import { recordVersion } from './_versioning'
+import { recordVersion, assertNoActiveSigning, markSessionsStaleAfterEdit } from './_versioning'
 import { STEP_LABELS, type WillFormData, type StepId, type PersonalWishesData } from './_types'
 import { sendResumeEmail } from '@/src/lib/email'
 
@@ -190,11 +190,20 @@ export async function saveStep(
       willStatus = (data.status as string | undefined) ?? 'draft'
     }
   }
-  // Only a will that's already been completed once is a "live" document  - 
+  // Only a will that's already been completed once is a "live" document  -
   // edits to it (via the wizard or the AI chat) warrant a fresh legal review.
   // Steps during the original intake wizard are skipped since the data is
   // incomplete until all steps are done (see completeWill).
   const isAmendmentToLiveWill = willStatus !== 'draft'
+
+  // Pre-mutation witnessing lock. Runs BEFORE any normalized-table write.
+  // Skip for brand-new wills (willId === null → just created, no sessions
+  // can exist yet) and the review step (no mutation happens).
+  // Delegates to will_edit_lock() — atomic check + scheduled stale marking.
+  // Throws if an in_progress session exists or if the DB query fails.
+  if (willId !== null && step !== 'review') {
+    await assertNoActiveSigning(id!)
+  }
 
   switch (step) {
     // ─── Personal details ────────────────────────────────────────────────────
@@ -404,8 +413,22 @@ export async function saveStep(
   // Keep triage_flags current on every step save.
   await supabase.from('wills').update({ triage_flags: formData.triageFlags }).eq('id', id)
 
-  // Snapshot the resulting state into version history (skip 'review', which
-  // never mutates anything). A failure here shouldn't block the save itself.
+  // Post-mutation race check: catch any session that went in_progress during
+  // the write window (after the pre-mutation RPC but before mutations completed).
+  // Always runs for existing wills so the race window is never skipped.
+  if (willId !== null) {
+    await markSessionsStaleAfterEdit(id!)
+  }
+
+  // Snapshot the resulting state into version history (skip 'review').
+  // If version recording fails: mark ALL active sessions stale immediately.
+  // The will_versions INSERT is the authoritative boundary protected by the
+  // will_versions_signing_lock DB trigger. Any failure here — including
+  // P0001 from the trigger — means the edit cannot be associated with a
+  // known version. Invalidate all active sessions first (so no session can
+  // complete against an un-versioned edit), then re-throw so the caller
+  // knows the save did not fully succeed. Never return success on a failed
+  // version insert.
   let versionId: string | null = null
   if (step !== 'review') {
     try {
@@ -413,7 +436,26 @@ export async function saveStep(
       const result = await recordVersion(supabase, id!, step, changeSummary ?? `Updated ${STEP_LABELS[step]}`, latest, isAmendmentToLiveWill)
       versionId = result.versionId
     } catch (versionError) {
-      console.error('Version recording failed for', id, versionError)
+      console.error('[saveStep] version recording failed for will', id, versionError)
+      // Compensating action: invalidate all active sessions.
+      const { data: activeSessions } = await supabaseAdmin
+        .from('witnessing_sessions')
+        .select('id')
+        .eq('will_id', id!)
+        .in('status', ['scheduled', 'in_progress'])
+      const activeIds = (activeSessions ?? []).map((s) => (s as { id: string }).id)
+      if (activeIds.length > 0) {
+        try {
+          await supabaseAdmin
+            .from('witnessing_sessions')
+            .update({ version_stale: true })
+            .in('id', activeIds)
+        } catch (e) {
+          console.error('[saveStep] stale-after-version-fail failed', id, e)
+        }
+      }
+      // Re-throw: a failed version insert is never a successful save.
+      throw versionError
     }
   }
 
@@ -492,6 +534,9 @@ export async function completeWill(willId: string): Promise<void> {
     throw new Error('WILL_PAYMENT_REQUIRED')
   }
 
+  // Pre-mutation witnessing lock — atomic check + scheduled stale marking.
+  await assertNoActiveSigning(willId)
+
   // wills_protect_server_columns trigger blocks 'authenticated' role from
   // writing status/document_text — must use service-role client for these.
   const { error } = await supabaseAdmin
@@ -500,6 +545,9 @@ export async function completeWill(willId: string): Promise<void> {
     .eq('id', willId)
     .eq('user_id', user.id)
   if (error) throw new Error(error.message)
+
+  // Post-mutation race check.
+  await markSessionsStaleAfterEdit(willId)
 
   // Draft the will document from the completed intake data. A drafting
   // failure shouldn't block submission  -  the solicitor review still covers it.

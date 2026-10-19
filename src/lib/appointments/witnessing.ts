@@ -1,5 +1,6 @@
 'use server'
 
+import { createHash } from 'crypto'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { sendExecutedWillEmail } from '@/src/lib/email'
@@ -20,10 +21,34 @@ export async function linkWillToAppointment(
   try {
     const { appt } = await requireHostForAppt(appointmentId)
     if (appt.witnessing_status !== 'none') return { ok: false, error: 'A will is already linked.' }
-    const { data: will } = await supabaseAdmin.from('wills').select('id').eq('id', willId).maybeSingle()
-    if (!will) return { ok: false, error: 'Will not found.' }
-    await supabaseAdmin.from('appointments').update({ will_id: willId, witnessing_status: 'will_linked' }).eq('id', appointmentId)
-    await logEvent(appointmentId, 'witnessing_will_linked', 'host', { metadata: { will_id: willId } })
+
+    const [willRes, versionRes] = await Promise.all([
+      supabaseAdmin.from('wills').select('id, document_text').eq('id', willId).maybeSingle(),
+      supabaseAdmin
+        .from('will_versions')
+        .select('id')
+        .eq('will_id', willId)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+    ])
+    if (!willRes.data) return { ok: false, error: 'Will not found.' }
+
+    const documentText = willRes.data.document_text as string | null
+    const contentHash = documentText
+      ? createHash('sha256').update(documentText, 'utf8').digest('hex')
+      : null
+
+    await supabaseAdmin.from('appointments').update({
+      will_id: willId,
+      witnessing_status: 'will_linked',
+      will_version_id: versionRes.data?.id ?? null,
+      content_hash: contentHash,
+    }).eq('id', appointmentId)
+
+    await logEvent(appointmentId, 'witnessing_will_linked', 'host', {
+      metadata: { will_id: willId, will_version_id: versionRes.data?.id ?? null },
+    })
     return { ok: true }
   } catch { return { ok: false, error: 'Could not link the will.' } }
 }

@@ -9,6 +9,7 @@ export interface WitnessingSessionSummary {
   recordingEnabled: boolean
   recordingStatus: string | null
   recordingUrl: string | null
+  versionStale?: boolean
   witnesses: { id: string; name: string; attested: boolean }[]
 }
 
@@ -51,6 +52,15 @@ export default function SessionList({ sessions }: { sessions: WitnessingSessionS
                 </p>
               </div>
               <div className="flex items-center gap-2">
+                {s.versionStale && (s.status === 'scheduled' || s.status === 'in_progress') && (
+                  <span
+                    className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"
+                    style={{ background: '#fef3c7', color: '#92400e' }}
+                    title="Will updated after booking — session must be rebooked"
+                  >
+                    Will updated
+                  </span>
+                )}
                 {s.recordingEnabled && (
                   <span
                     className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide"

@@ -1,26 +1,8 @@
 'use server'
 
-import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
+import { requireHost } from '@/src/lib/appointments/server'
 import { sendAmendmentApprovedEmail, sendAmendmentRejectedEmail } from '@/src/lib/email'
-
-async function requireStaffAuth() {
-  const supabase = await createSupabaseServerClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Unauthenticated')
-
-  const { data: profile } = await supabaseAdmin
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
-
-  if ((profile as { role?: string } | null)?.role !== 'staff') {
-    throw new Error('Forbidden')
-  }
-
-  return user
-}
 
 /**
  * Atomically promote a pending amendment to the live Will.
@@ -33,11 +15,11 @@ async function requireStaffAuth() {
  *   - Marks the version row as 'approved' (historical record preserved)
  */
 export async function promoteAmendment(versionId: string): Promise<void> {
-  const user = await requireStaffAuth()
+  const host = await requireHost()
 
   const { error } = await supabaseAdmin.rpc('promote_will_amendment', {
     p_version_id: versionId,
-    p_reviewed_by: user.id,
+    p_reviewed_by: host.id,
   })
 
   if (error) throw new Error(error.message)
@@ -64,7 +46,7 @@ export async function promoteAmendment(versionId: string): Promise<void> {
 }
 
 export async function rejectAmendment(versionId: string, reason: string): Promise<void> {
-  await requireStaffAuth()
+  await requireHost()
 
   // Mark the version as rejected
   const { data: version, error: vErr } = await supabaseAdmin

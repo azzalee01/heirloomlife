@@ -21,6 +21,9 @@ interface Props {
   hasTestatorUpload: boolean
   hasExecutedWill: boolean
   dailyRoomName: string | null
+  lockedVersionId: string | null   // will_versions.id captured at link time
+  contentHashSuffix: string | null // last 8 hex chars of SHA-256(document_text)
+  isVersionStale: boolean          // true if will was edited after linking
 }
 
 export default function WitnessingPanel({
@@ -34,6 +37,9 @@ export default function WitnessingPanel({
   hasTestatorUpload,
   hasExecutedWill,
   dailyRoomName,
+  lockedVersionId,
+  contentHashSuffix,
+  isVersionStale,
 }: Props) {
   const [status, setStatus] = useState(witnessingStatus)
   const [willId, setWillId] = useState(suggestedWillId ?? linkedWillId ?? '')
@@ -114,6 +120,29 @@ export default function WitnessingPanel({
       <h2 className="text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
         Witnessing
       </h2>
+
+      {/* Version lock info */}
+      {lockedVersionId && (
+        <div
+          className="flex items-start gap-2 rounded border px-3 py-2 text-xs"
+          style={{
+            borderColor: isVersionStale ? '#f59e0b' : 'var(--line)',
+            background: isVersionStale ? '#fffbeb' : 'var(--paper)',
+          }}
+        >
+          <span style={{ color: isVersionStale ? '#92400e' : 'var(--neutral)' }}>
+            Locked version: <code className="font-mono">{lockedVersionId.slice(0, 8)}…</code>
+            {contentHashSuffix && (
+              <> · hash: <code className="font-mono">…{contentHashSuffix}</code></>
+            )}
+          </span>
+          {isVersionStale && (
+            <span className="ml-1 font-semibold" style={{ color: '#b45309' }}>
+              ⚠ Will edited after linking — ask testator to re-link before proceeding
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Step indicator */}
       <ol className="flex flex-wrap gap-2 text-xs">
