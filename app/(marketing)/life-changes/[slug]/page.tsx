@@ -68,16 +68,21 @@ export default async function LifeChangePage({ params }: Props) {
         )}
         {/* Mobile image */}
         {event.heroImage && (
-          <div className="lg:hidden" style={{ paddingInline: '1.5rem', paddingBottom: '2.5rem' }}>
-            <Image
-              src={event.heroImage}
-              alt={event.title}
-              width={1080}
-              height={830}
-              quality={85}
-              sizes="100vw"
-              style={{ width: '100%', height: 'auto', display: 'block' }}
-            />
+          <div className="lg:hidden" style={{ paddingBottom: '2.5rem' }}>
+            <div style={{
+              WebkitMaskImage: 'linear-gradient(to right, black 0%, black 52%, transparent 86%)',
+              maskImage: 'linear-gradient(to right, black 0%, black 52%, transparent 86%)',
+            }}>
+              <Image
+                src={event.heroImage}
+                alt={event.title}
+                width={1080}
+                height={830}
+                quality={85}
+                sizes="100vw"
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
+            </div>
           </div>
         )}
       </section>
