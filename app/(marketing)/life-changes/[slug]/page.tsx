@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import LifeEventHeroImage from '@/components/marketing/LifeEventHeroImage'
 import { getLifeChange, LIFE_CHANGES } from '../_data'
 import { PRICING } from '@/src/lib/pricing'
 
@@ -38,10 +39,17 @@ export default async function LifeChangePage({ params }: Props) {
   return (
     <>
       <section style={{ background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden' }}>
-        <div className="md:px-10" style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem', paddingBlock: '3.25rem' }}>
+        <div className="md:px-10 lg:flex lg:items-center lg:gap-16" style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem', paddingBlock: '3.25rem' }}>
+          <div className="lg:flex-1">
             <Link href="/life-changes" style={{ fontSize: '.78rem', color: 'var(--teal-deep)', textDecoration: 'none', fontWeight: 600 }}>← All life changes</Link>
             <h1 style={{ margin: '1.5rem 0 0', maxWidth: '45rem', fontSize: 'clamp(2.6rem, 5.4vw, 4.8rem)', lineHeight: 1.03, fontWeight: 400, color: 'var(--mkt-ink-text)' }}>{event.title}</h1>
             <p style={{ margin: '1.4rem 0 0', maxWidth: '36rem', fontSize: '1.08rem', lineHeight: 1.7, color: 'var(--mkt-stone)' }}>{event.introduction}</p>
+          </div>
+          {event.heroImage && (
+            <div className="mt-10 lg:mt-0 lg:w-[480px] lg:shrink-0">
+              <LifeEventHeroImage src={event.heroImage} alt={event.title} />
+            </div>
+          )}
         </div>
       </section>
 

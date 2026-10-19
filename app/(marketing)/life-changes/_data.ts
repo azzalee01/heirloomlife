@@ -11,6 +11,7 @@ export type LifeChange = {
   advice: string
   productStep: string
   sources: { label: string; href: string }[]
+  heroImage?: string
 }
 
 const WILLS_SOURCE = {
@@ -44,6 +45,7 @@ const NT_WILLS = { label: 'Northern Territory Wills Act 2000', href: 'https://le
 
 export const LIFE_CHANGES: LifeChange[] = [
   {
+    heroImage: '/images/life-events/just-married.webp',
     slug: 'getting-married',
     title: 'Getting married or committing to a partner',
     shortTitle: 'Getting married',
@@ -62,6 +64,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [NSW_SUCCESSION, QLD_SUCCESSION, SA_SUCCESSION, TAS_WILLS, WA_WILLS, ACT_WILLS, VIC_WILLS, NT_WILLS, WILLS_SOURCE, SUPER_SOURCE],
   },
   {
+    heroImage: '/images/life-events/just-married.webp',
     slug: 'separation-divorce',
     title: 'Separation or divorce',
     shortTitle: 'Separation or divorce',
@@ -80,6 +83,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [NSW_SUCCESSION, QLD_SUCCESSION, SA_SUCCESSION, TAS_WILLS, WA_WILLS, ACT_WILLS, VIC_WILLS, NT_WILLS, WILLS_SOURCE, SUPER_SOURCE],
   },
   {
+    heroImage: '/images/life-events/new-baby.webp',
     slug: 'new-child',
     title: 'Having or adopting a child',
     shortTitle: 'A new child',
@@ -98,6 +102,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [SUPER_SOURCE],
   },
   {
+    heroImage: '/images/life-events/new-home.webp',
     slug: 'buying-selling-property',
     title: 'Buying or selling property',
     shortTitle: 'Property bought or sold',
@@ -116,6 +121,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [],
   },
   {
+    heroImage: '/images/life-events/new-baby.webp',
     slug: 'serious-illness',
     title: 'A serious diagnosis or change in health',
     shortTitle: 'Serious illness',
@@ -134,6 +140,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [LEGALAID_NSW_WILLS],
   },
   {
+    heroImage: '/images/life-events/new-home.webp',
     slug: 'starting-selling-business',
     title: 'Starting, buying or selling a business',
     shortTitle: 'A business change',
@@ -152,6 +159,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [],
   },
   {
+    heroImage: '/images/life-events/new-baby.webp',
     slug: 'receiving-inheritance',
     title: 'Receiving an inheritance',
     shortTitle: 'Receiving an inheritance',
@@ -170,6 +178,7 @@ export const LIFE_CHANGES: LifeChange[] = [
     sources: [],
   },
   {
+    heroImage: '/images/life-events/new-home.webp',
     slug: 'moving-interstate',
     title: 'Moving interstate or overseas',
     shortTitle: 'Moving jurisdiction',
