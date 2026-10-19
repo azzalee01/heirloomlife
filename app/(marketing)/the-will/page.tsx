@@ -215,7 +215,7 @@ export default function TheWillPage() {
       </section>
 
       {/* ── Solicitor review note ─────────────────────────────────────────── */}
-      <section id="solicitor-review" style={{ ...SECTION_PAD, background: 'var(--mkt-surface-2)', scrollMarginTop: '6rem' }}>
+      <section id="solicitor-review" style={{ paddingBlock: '3.5rem', background: 'var(--mkt-surface-2)', scrollMarginTop: '6rem' }}>
         <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
           <h2 style={{ fontFamily: "var(--font-body)", fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)', fontWeight: 500, letterSpacing: '-.02em', color: 'var(--mkt-ink-text)', margin: '0 0 1.25rem' }}>
             Reviewed before issue.
@@ -228,7 +228,7 @@ export default function TheWillPage() {
 
       {/* ── State note ────────────────────────────────────────────────────── */}
       <section style={{ paddingBlock: '3.5rem', background: 'var(--mkt-surface-2)', borderTop: '1px solid var(--mkt-line)', borderBottom: '1px solid var(--mkt-line)' }}>
-        <div className="md:px-10 md:flex-row md:items-center md:justify-between" style={{ ...W, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div className="md:px-10 flex flex-col md:flex-row md:items-center md:justify-between" style={{ ...W, gap: '1.5rem' }}>
           <p style={{ maxWidth: '38rem', fontSize: '.92rem', lineHeight: 1.65, color: 'var(--mkt-stone)', margin: 0 }}>
             Australian succession law is state-based. Heirloom Life is available across all states and territories. Wills are currently drafted to NSW legal requirements (Succession Act 2006). Signing and witnessing guidance for other states is included with your download.
           </p>
