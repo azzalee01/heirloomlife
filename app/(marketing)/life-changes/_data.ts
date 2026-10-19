@@ -47,6 +47,7 @@ const NT_WILLS = { label: 'Northern Territory Wills Act 2000', href: 'https://le
 export const LIFE_CHANGES: LifeChange[] = [
   {
     heroImage: '/images/life-changes/getting-married.webp',
+    heroObjectPosition: 'center top',
     slug: 'getting-married',
     title: 'Getting married or committing to a partner',
     shortTitle: 'Getting married',
