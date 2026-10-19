@@ -54,8 +54,6 @@ function Pill({ children, variant = 'teal' }: { children: React.ReactNode; varia
 }
 
 export default function NewHomePage() {
-  const showArt = process.env.NEXT_PUBLIC_LIFE_EVENT_HERO_ART === 'true'
-
   const heroCopy = (
     <>
       <span style={{ ...SECTION_LABEL, marginBottom: '1.5rem' }}>New home</span>
@@ -105,8 +103,7 @@ export default function NewHomePage() {
     <>
       {/* ── Hero ── */}
       <section style={{ position: 'relative', background: 'var(--mkt-surface)', color: 'var(--mkt-ink-text)', overflow: 'hidden' }}>
-        {showArt ? (
-          <div
+        <div
             className="lg:flex lg:items-center lg:gap-16"
             style={{ ...W, paddingTop: '7rem', paddingBottom: '3.5rem' }}
           >
@@ -120,11 +117,6 @@ export default function NewHomePage() {
               />
             </div>
           </div>
-        ) : (
-          <div style={{ ...W, paddingTop: '10rem', paddingBottom: '8rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {heroCopy}
-          </div>
-        )}
       </section>
 
       {/* ── Why it matters ── */}
