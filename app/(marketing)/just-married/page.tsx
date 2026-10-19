@@ -1,7 +1,7 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import type { Metadata } from 'next'
 import Reveal from '@/components/marketing/Reveal'
-import LifeEventHeroImage from '@/components/marketing/LifeEventHeroImage'
 
 export const metadata: Metadata = {
   title: 'Just Married? Your Old Will May No Longer Apply | Heirloom Life',
@@ -101,21 +101,39 @@ export default function JustMarriedPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section style={{ position: 'relative', background: 'var(--mkt-surface)', color: 'var(--mkt-ink-text)', overflow: 'hidden' }}>
-        <div
-            className="lg:flex lg:items-center lg:gap-16"
-            style={{ ...W, paddingTop: '7rem', paddingBottom: '3.5rem' }}
-          >
-            <div className="flex flex-col items-center text-center lg:items-start lg:text-left lg:flex-1">
-              {heroCopy}
-            </div>
-            <div className="mt-10 lg:mt-0 w-full lg:w-[560px] lg:shrink-0">
-              <LifeEventHeroImage
-                src="/images/life-events/just-married.webp"
-                alt="A newlywed couple looking at each other, the bride holding a bouquet"
-              />
-            </div>
+      <section style={{ position: 'relative', background: 'var(--mkt-surface-2)', borderBottom: '1px solid var(--mkt-line)', overflow: 'hidden', minHeight: 560 }}>
+        {/* Text — z-indexed above image */}
+        <div className="md:px-10" style={{ position: 'relative', zIndex: 1, maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem', paddingTop: '7rem', paddingBottom: '3.5rem' }}>
+          <div className="flex flex-col items-center text-center lg:items-start lg:text-left" style={{ maxWidth: '45rem' }}>
+            {heroCopy}
           </div>
+        </div>
+        {/* Image — absolute, bleeds to right edge */}
+        <div className="hidden lg:block" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '55%' }}>
+          <Image
+            src="/images/life-events/just-married.webp"
+            alt="A newlywed couple looking at each other, the bride holding a bouquet"
+            fill
+            priority
+            quality={85}
+            sizes="(min-width: 1024px) 800px, 100vw"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center top',
+              WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 28%)',
+              maskImage: 'linear-gradient(to right, transparent 0%, black 28%)',
+            }}
+          />
+        </div>
+        {/* Mobile image */}
+        <div className="lg:hidden" style={{ paddingBottom: '2.5rem' }}>
+          <div style={{
+            WebkitMaskImage: 'linear-gradient(to right, black 0%, black 52%, transparent 86%)',
+            maskImage: 'linear-gradient(to right, black 0%, black 52%, transparent 86%)',
+          }}>
+            <Image src="/images/life-events/just-married.webp" alt="A newlywed couple looking at each other, the bride holding a bouquet" width={1080} height={830} quality={85} sizes="100vw" style={{ width: '100%', height: 'auto', display: 'block' }} />
+          </div>
+        </div>
       </section>
 
       {/* ── Why it matters ── */}
