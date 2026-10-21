@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { Metadata } from 'next'
 import Reveal from '@/components/marketing/Reveal'
+import { PRICING } from '@/src/lib/pricing'
 
 export const metadata: Metadata = {
   title: 'Just Married? Your Old Will May No Longer Apply | Heirloom Life',
@@ -90,7 +91,7 @@ export default function JustMarriedPage() {
         </Link>
       </div>
       <p style={{ marginTop: '1.25rem', fontSize: '.8rem', color: 'var(--mkt-stone)' }}>
-        Free to draft &middot; about 15 minutes &middot; <strong style={{ color: 'var(--mkt-ink-text)' }}>$149 to issue</strong>
+        Free to draft &middot; about 15 minutes &middot; <strong style={{ color: 'var(--mkt-ink-text)' }}>${PRICING.willAud} to issue</strong>
       </p>
       <p style={{ margin: '.5rem 0 0', fontSize: '.72rem', color: 'var(--mkt-stone)', opacity: .6 }}>
         General information only, not legal advice.
@@ -217,7 +218,7 @@ export default function JustMarriedPage() {
               </div>
             </div>
             {[
-              { tag: 'Solicitor review', h: 'Reviewed before issue.', p: 'Every Will is checked against a solicitor-written checklist. Complex situations — blended families, trusts — are flagged and escalated.' },
+              { tag: 'Reviewed before issue', h: 'Reviewed before issue.', p: 'Every Will is checked against a solicitor-written checklist. Complex situations — blended families, trusts — are flagged and escalated.' },
               { tag: 'Living Vault', h: 'Update it as life changes.', p: 'Children, property, business — your Will lives in your Heirloom Vault and can be updated whenever your life moves forward.' },
             ].map(card => (
               <div key={card.tag} style={{ borderRadius: 14, background: '#fff', padding: '2rem', border: '1px solid var(--mkt-line)', position: 'relative', overflow: 'hidden' }}>
@@ -238,7 +239,7 @@ export default function JustMarriedPage() {
             Your Will didn&apos;t get the memo.<br />Redo it free.
           </h2>
           <p style={{ margin: '0 0 .5rem', fontSize: '1rem', lineHeight: 1.7, color: 'rgba(255,255,255,0.75)' }}>
-            Free to draft. $149 when you&apos;re ready to issue.
+            Free to draft. ${PRICING.willAud} when you&apos;re ready to issue.
           </p>
           <p style={{ margin: '0 0 2.5rem', fontSize: '.88rem', color: 'rgba(255,255,255,0.5)' }}>About 15 minutes from start to draft.</p>
           <Link href="/start" style={{ display: 'inline-flex', alignItems: 'center', gap: '.5rem', background: '#fff', color: 'var(--teal-deep)', fontWeight: 700, fontSize: '1rem', padding: '.9rem 2rem', borderRadius: 99, textDecoration: 'none' }}>

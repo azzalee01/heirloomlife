@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { LIFE_CHANGES } from '../../life-changes/_data'
+import { PRICING } from '@/src/lib/pricing'
 
 const LP_COPY: Record<string, { headline: string; em: string; sub: string }> = {
   'getting-married': {
@@ -75,8 +76,8 @@ const W: React.CSSProperties = {
 }
 
 const TRUST_ITEMS = [
-  { label: 'Solicitor-reviewed', desc: 'Checked before issue' },
   { label: 'Plain English', desc: 'Readable, not legalese' },
+  { label: 'Reviewed before issue', desc: 'Checked against a legal checklist' },
   { label: 'Kept current', desc: 'Update as life changes' },
 ]
 
@@ -137,7 +138,7 @@ export default async function LifeEventLandingPage({
             </Link>
           </div>
           <p style={{ marginTop: '1.5rem', fontSize: '.8rem', color: 'var(--mkt-ink-text)', textShadow: '0 1px 8px rgba(245,240,232,1), 0 2px 20px rgba(245,240,232,0.95)' }}>
-            Free to draft · about 15 minutes · <strong>$149 to issue</strong>
+            Free to draft · about 15 minutes · <strong>${PRICING.willAud} to issue</strong>
           </p>
         </div>
       </section>
