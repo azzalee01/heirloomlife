@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import InfoTooltip from './_components/InfoTooltip'
+import EditorialBanner from '@/components/marketing/EditorialBanner'
 import { PRICING } from '@/src/lib/pricing'
 
 export const metadata = {
@@ -12,7 +13,7 @@ export const metadata = {
     url: 'https://www.heirloomlife.com.au/why-heirloom',
     siteName: 'Heirloom Life',
     type: 'website',
-    images: [{ url: '/images/editorial/learn.jpg' }],
+    images: [{ url: '/images/editorial/why-heirloom.webp' }],
   },
 }
 
@@ -155,22 +156,25 @@ export default function WhyHeirloomPage() {
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────────── */}
-      <section style={{ paddingTop: '8rem', paddingBottom: '4rem', background: 'var(--mkt-surface)' }}>
-        <div className="md:px-10" style={{ ...W, maxWidth: 720 }}>
-          <span style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block' }}>
-            Why Heirloom
-          </span>
-          <h1 style={{
-            fontFamily: "var(--font-body)",
-            fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
-            letterSpacing: '-.02em', fontWeight: 500,
-            color: 'var(--mkt-ink-text)', margin: 0,
-          }}>
-            How we compare.
-          </h1>
-          <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
-            We think the differences are worth knowing before you start. Here they are, plainly.
-          </p>
+      <section style={{ background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
+        <div className="relative md:flex md:min-h-[30rem] md:items-center md:px-10" style={{ ...W, maxWidth: 1240 }}>
+          <div className="relative z-10 md:w-[54%]" style={{ maxWidth: '44rem', paddingBlock: '7rem 5.5rem' }}>
+            <span style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.1rem', display: 'block' }}>
+              Why Heirloom
+            </span>
+            <h1 style={{
+              fontFamily: "var(--font-body)",
+              fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
+              letterSpacing: '-.02em', fontWeight: 500,
+              color: 'var(--mkt-ink-text)', margin: 0,
+            }}>
+              How we compare.
+            </h1>
+            <p style={{ marginTop: '1.1rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)', maxWidth: '34rem' }}>
+              We think the differences are worth knowing before you start. Here they are, plainly.
+            </p>
+          </div>
+          <EditorialBanner src="/images/editorial/why-heirloom.webp" alt="" position="center 48%" />
         </div>
       </section>
 
