@@ -126,6 +126,7 @@ export const LIFE_CHANGES: LifeChange[] = [
   },
   {
     heroImage: '/images/life-changes/serious-illness.webp',
+    heroObjectPosition: 'center 45%',
     slug: 'serious-illness',
     title: 'A serious diagnosis or change in health',
     shortTitle: 'Serious illness',
