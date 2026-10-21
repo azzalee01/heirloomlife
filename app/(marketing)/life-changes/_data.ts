@@ -186,6 +186,7 @@ export const LIFE_CHANGES: LifeChange[] = [
   },
   {
     heroImage: '/images/life-changes/moving-interstate.webp',
+    heroObjectPosition: 'center 52%',
     slug: 'moving-interstate',
     title: 'Moving interstate or overseas',
     shortTitle: 'Moving jurisdiction',
