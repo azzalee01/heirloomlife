@@ -80,15 +80,15 @@ export default function HomePage() {
           priority
           quality={90}
           sizes="100vw"
-          style={{ objectFit: 'cover', objectPosition: '58% 22%' }}
+          style={{ objectFit: 'cover', objectPosition: '58% 62%' }}
           aria-hidden="true"
         />
         {/* Gradient scrim — protects text readability top and bottom */}
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1,
-          background: 'linear-gradient(to bottom, rgba(245,240,232,0.72) 0%, transparent 28%, transparent 52%, rgba(245,240,232,0.97) 100%)',
+          background: 'linear-gradient(to bottom, rgba(245,240,232,0.96) 0%, rgba(245,240,232,0.82) 22%, rgba(245,240,232,0.32) 46%, rgba(245,240,232,0.08) 60%, rgba(245,240,232,0.97) 100%)',
         }} />
-        <div style={{ ...W, position: 'relative', zIndex: 2, paddingTop: '12rem', paddingBottom: '9rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ ...W, position: 'relative', zIndex: 2, paddingTop: '12rem', paddingBottom: '12rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h1 style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(3.4rem, 7.5vw, 6.8rem)',
