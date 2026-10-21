@@ -115,9 +115,17 @@ export default function HomePage() {
                 Book a guided call
               </Link>
             </div>
-            <p style={{ margin: 0, fontSize: '.8rem', color: 'var(--mkt-ink-text)', textShadow: '0 1px 8px rgba(245,240,232,0.95)' }}>
+            <p style={{
+              margin: 0, fontSize: '.82rem',
+              color: 'var(--mkt-ink-text)',
+              background: 'rgba(245,240,232,0.82)',
+              backdropFilter: 'blur(8px)',
+              WebkitBackdropFilter: 'blur(8px)',
+              padding: '0.35rem 1rem',
+              borderRadius: '2rem',
+            }}>
               Already have a Will?{' '}
-              <Link href="/start?mode=upload" style={{ color: 'var(--teal-deep)', fontWeight: 500, textDecoration: 'underline' }}>
+              <Link href="/start?mode=upload" style={{ color: 'var(--mkt-ink-text)', fontWeight: 600, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
                 Upload it and we&apos;ll take care of you.
               </Link>
             </p>
