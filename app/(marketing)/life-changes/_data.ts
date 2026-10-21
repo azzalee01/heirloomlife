@@ -106,6 +106,7 @@ export const LIFE_CHANGES: LifeChange[] = [
   },
   {
     heroImage: '/images/life-changes/buying-selling-property.webp',
+    heroObjectPosition: 'center 40%',
     slug: 'buying-selling-property',
     title: 'Buying or selling property',
     shortTitle: 'Property bought or sold',
