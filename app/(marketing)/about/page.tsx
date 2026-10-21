@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import EditorialBanner from '@/components/marketing/EditorialBanner'
 
 export const metadata: Metadata = {
   title: 'About | Heirloom Life',
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
     url: 'https://www.heirloomlife.com.au/about',
     siteName: 'Heirloom Life',
     type: 'website',
-    images: [{ url: '/images/editorial/learn.jpg' }],
+    images: [{ url: '/images/editorial/about.webp' }],
   },
 }
 
@@ -24,18 +25,21 @@ export default function AboutPage() {
   return (
     <>
       {/* Hero */}
-      <section style={{ paddingTop: '4rem', paddingBottom: '5.5rem', background: 'var(--mkt-surface)' }}>
-        <div className="md:px-10" style={{ maxWidth: 760, marginInline: 'auto', paddingInline: '1.5rem' }}>
-          <span style={SECTION_LABEL}>About</span>
-          <h1 style={{
-            fontFamily: "var(--font-body)",
-            fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
-            letterSpacing: '-.02em', fontWeight: 500,
-            color: 'var(--mkt-ink-text)', margin: 0,
-          }}>
-            Built because the alternative is a form you fill in once and{' '}
-            <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>forget</em>.
-          </h1>
+      <section style={{ background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
+        <div className="relative md:flex md:min-h-[30rem] md:items-center md:px-10" style={{ maxWidth: 1240, marginInline: 'auto', paddingInline: '1.5rem' }}>
+          <div className="relative z-10 md:w-[54%]" style={{ maxWidth: '44rem', paddingBlock: '7rem 5.5rem' }}>
+            <span style={SECTION_LABEL}>About</span>
+            <h1 style={{
+              fontFamily: "var(--font-body)",
+              fontSize: 'clamp(2.2rem, 4vw, 3.4rem)', lineHeight: 1.08,
+              letterSpacing: '-.02em', fontWeight: 500,
+              color: 'var(--mkt-ink-text)', margin: 0,
+            }}>
+              Built because the alternative is a form you fill in once and{' '}
+              <em style={{ fontFamily: "var(--font-display)", fontStyle: 'italic', fontWeight: 400, color: 'var(--teal-deep)' }}>forget</em>.
+            </h1>
+          </div>
+          <EditorialBanner src="/images/editorial/about.webp" alt="" position="center 55%" />
         </div>
       </section>
 
