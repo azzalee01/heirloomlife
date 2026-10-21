@@ -117,6 +117,12 @@ export default function HomePage() {
       {/* ─── JOURNEY LINE ─────────────────────────────────────────────────── */}
       <section style={{ background: 'var(--mkt-surface)', borderTop: '1px solid var(--mkt-line)', paddingBlock: '5.5rem', overflow: 'hidden' }}>
         <JourneyLine />
+        <div style={{ ...W, marginTop: '3.5rem', textAlign: 'center' }}>
+          <p style={{ margin: '0 0 1.25rem', fontSize: '.95rem', color: 'var(--mkt-stone)' }}>
+            Not sure where your situation fits? Talk it through with us.
+          </p>
+          <Link href="/book" className="mkt-btn-ghost-l">Book a guided call</Link>
+        </div>
       </section>
 
       {/* ─── PLATFORM DEMO ────────────────────────────────────────────────── */}
