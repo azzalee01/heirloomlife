@@ -165,6 +165,7 @@ export const LIFE_CHANGES: LifeChange[] = [
   },
   {
     heroImage: '/images/life-changes/receiving-inheritance.webp',
+    heroObjectPosition: 'center 55%',
     slug: 'receiving-inheritance',
     title: 'Receiving an inheritance',
     shortTitle: 'Receiving an inheritance',
