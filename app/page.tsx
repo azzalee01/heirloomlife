@@ -80,7 +80,7 @@ export default function HomePage() {
           priority
           quality={90}
           sizes="100vw"
-          style={{ objectFit: 'cover', objectPosition: '58% 62%' }}
+          style={{ objectFit: 'cover', objectPosition: '48% 62%' }}
           aria-hidden="true"
         />
         {/* Gradient scrim — protects text readability top and bottom */}
@@ -100,7 +100,7 @@ export default function HomePage() {
             Protect what matters,<br />
             <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
           </h1>
-          <p style={{ marginTop: '2.25rem', maxWidth: '26rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
+          <p style={{ marginTop: '2.25rem', maxWidth: '26rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-ink-text)', textShadow: '0 1px 10px rgba(245,240,232,0.9)' }}>
             Complete your Will in 15 minutes.<br/>Keep it current as life changes.
           </p>
           <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.75rem' }}>
@@ -111,11 +111,11 @@ export default function HomePage() {
                   <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </Link>
-              <Link href="/book" className="mkt-btn-ink-l" style={{ background: 'transparent', border: '1.5px solid var(--teal)', color: 'var(--teal-deep)' }}>
+              <Link href="/book" className="mkt-btn-ink-l" style={{ background: 'rgba(245,240,232,0.65)', border: '1.5px solid var(--teal)', color: 'var(--teal-deep)', backdropFilter: 'blur(4px)' }}>
                 Book a guided call
               </Link>
             </div>
-            <p style={{ margin: 0, fontSize: '.8rem', color: 'var(--mkt-stone)' }}>
+            <p style={{ margin: 0, fontSize: '.8rem', color: 'var(--mkt-ink-text)', textShadow: '0 1px 8px rgba(245,240,232,0.95)' }}>
               Already have a Will?{' '}
               <Link href="/start?mode=upload" style={{ color: 'var(--teal-deep)', fontWeight: 500, textDecoration: 'underline' }}>
                 Upload it and we&apos;ll take care of you.
