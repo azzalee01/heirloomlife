@@ -108,7 +108,7 @@ export default async function LifeEventLandingPage({
         />
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1,
-          background: 'linear-gradient(to bottom, rgba(245,240,232,0.78) 0%, rgba(245,240,232,0.42) 20%, rgba(245,240,232,0.15) 44%, rgba(245,240,232,0.12) 58%, rgba(245,240,232,0.80) 100%)',
+          background: 'linear-gradient(to bottom, rgba(245,240,232,0.88) 0%, rgba(245,240,232,0.66) 20%, rgba(245,240,232,0.52) 42%, rgba(245,240,232,0.48) 58%, rgba(245,240,232,0.88) 100%)',
         }} />
         <div style={{ ...W, position: 'relative', zIndex: 2, paddingTop: '12rem', paddingBottom: '12rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <span style={{ fontSize: '.72rem', letterSpacing: '.16em', textTransform: 'uppercase', fontWeight: 600, color: 'var(--teal-deep)', marginBottom: '1.5rem', display: 'block' }}>
@@ -125,7 +125,7 @@ export default async function LifeEventLandingPage({
             {copy.headline}<br />
             <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>{copy.em}</em>
           </h1>
-          <p style={{ marginTop: '2.25rem', maxWidth: '26rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-ink-text)', textShadow: '0 1px 12px rgba(245,240,232,0.85)' }}>
+          <p style={{ marginTop: '2.25rem', maxWidth: '26rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-ink-text)', textShadow: '0 1px 8px rgba(245,240,232,1), 0 2px 20px rgba(245,240,232,0.95)' }}>
             {copy.sub}
           </p>
           <div style={{ marginTop: '2.5rem' }}>
@@ -136,7 +136,7 @@ export default async function LifeEventLandingPage({
               </svg>
             </Link>
           </div>
-          <p style={{ marginTop: '1.5rem', fontSize: '.8rem', color: 'var(--mkt-ink-text)', textShadow: '0 1px 10px rgba(245,240,232,0.9)' }}>
+          <p style={{ marginTop: '1.5rem', fontSize: '.8rem', color: 'var(--mkt-ink-text)', textShadow: '0 1px 8px rgba(245,240,232,1), 0 2px 20px rgba(245,240,232,0.95)' }}>
             Free to draft · about 15 minutes · <strong>$149 to issue</strong>
           </p>
         </div>

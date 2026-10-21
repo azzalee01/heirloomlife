@@ -84,7 +84,7 @@ export default function HomePage() {
         />
         <div style={{
           position: 'absolute', inset: 0, zIndex: 1,
-          background: 'linear-gradient(to bottom, rgba(245,240,232,0.78) 0%, rgba(245,240,232,0.42) 20%, rgba(245,240,232,0.15) 44%, rgba(245,240,232,0.12) 58%, rgba(245,240,232,0.80) 100%)',
+          background: 'linear-gradient(to bottom, rgba(245,240,232,0.88) 0%, rgba(245,240,232,0.66) 20%, rgba(245,240,232,0.52) 42%, rgba(245,240,232,0.48) 58%, rgba(245,240,232,0.88) 100%)',
         }} />
         <div style={{ ...W, position: 'relative', zIndex: 2, paddingTop: '12rem', paddingBottom: '12rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h1 style={{
@@ -98,7 +98,7 @@ export default function HomePage() {
             Protect what matters,<br />
             <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
           </h1>
-          <p style={{ marginTop: '2.25rem', maxWidth: '26rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-ink-text)', textShadow: '0 1px 12px rgba(245,240,232,0.85)' }}>
+          <p style={{ marginTop: '2.25rem', maxWidth: '26rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-ink-text)', textShadow: '0 1px 8px rgba(245,240,232,1), 0 2px 20px rgba(245,240,232,0.95)' }}>
             Complete your Will in 15 minutes.<br />Keep it current as life changes.
           </p>
           <div style={{ marginTop: '2.5rem' }}>
