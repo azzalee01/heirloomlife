@@ -145,6 +145,7 @@ export const LIFE_CHANGES: LifeChange[] = [
   },
   {
     heroImage: '/images/life-changes/starting-selling-business.webp',
+    heroObjectPosition: 'center 52%',
     slug: 'starting-selling-business',
     title: 'Starting, buying or selling a business',
     shortTitle: 'A business change',
