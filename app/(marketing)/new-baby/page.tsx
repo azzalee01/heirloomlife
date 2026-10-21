@@ -111,15 +111,15 @@ export default function NewBabyPage() {
         {/* Image — absolute, bleeds to right edge */}
         <div className="hidden lg:block" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '55%' }}>
           <Image
-            src="/images/life-events/new-baby.webp"
-            alt="Two parents leaning over a newborn in the mother's arms, with a cot visible behind"
+            src="/images/life-changes/new-child.webp"
+            alt=""
             fill
             priority
             quality={85}
             sizes="(min-width: 1024px) 800px, 100vw"
             style={{
               objectFit: 'cover',
-              objectPosition: 'center top',
+              objectPosition: 'center 55%',
               WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 28%)',
               maskImage: 'linear-gradient(to right, transparent 0%, black 28%)',
             }}
@@ -131,7 +131,7 @@ export default function NewBabyPage() {
             WebkitMaskImage: 'linear-gradient(to right, black 0%, black 52%, transparent 86%)',
             maskImage: 'linear-gradient(to right, black 0%, black 52%, transparent 86%)',
           }}>
-            <Image src="/images/life-events/new-baby.webp" alt="Two parents leaning over a newborn in the mother's arms, with a cot visible behind" width={1080} height={830} quality={85} sizes="100vw" style={{ width: '100%', height: 'auto', display: 'block' }} />
+            <Image src="/images/life-changes/new-child.webp" alt="" width={1080} height={830} quality={85} sizes="100vw" style={{ width: '100%', height: 'auto', display: 'block' }} />
           </div>
         </div>
       </section>
