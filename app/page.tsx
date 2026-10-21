@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import MarketingNav from '@/components/marketing/MarketingNav'
-import EditorialBanner from '@/components/marketing/EditorialBanner'
 
 export const metadata: Metadata = {
   title: 'Heirloom Life — Australian Wills and Estate Planning',
@@ -71,33 +71,44 @@ export default function HomePage() {
       <MarketingNav />
 
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
-      <section style={{ background: 'var(--mkt-surface-2)', overflow: 'hidden' }}>
-        <div className="relative md:flex md:min-h-[42rem] md:items-center md:px-10" style={{ ...W, maxWidth: 1240 }}>
-          <div className="relative z-10 md:w-[54%]" style={{ maxWidth: '44rem', paddingBlock: '8rem 6.5rem' }}>
-            <h1 style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(3rem, 5.5vw, 5.2rem)',
-              lineHeight: 0.95,
-              letterSpacing: '-.025em',
-              color: 'var(--mkt-ink-text)',
-              margin: 0,
-            }}>
-              Protect what matters,<br />
-              <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
-            </h1>
-            <p style={{ marginTop: '2rem', maxWidth: '30rem', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-stone)' }}>
-              Complete your Will in 15 minutes. Keep it current as life changes.
-            </p>
-            <div style={{ marginTop: '2.5rem' }}>
-              <Link href="/start?path=retail" className="mkt-btn-ink-l">
-                Create my Will
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </Link>
-            </div>
+      <section style={{ position: 'relative', background: '#f5f0e8', overflow: 'hidden' }}>
+        <Image
+          src="/images/editorial/hero-painting.webp"
+          alt=""
+          fill
+          priority
+          quality={90}
+          sizes="100vw"
+          style={{ objectFit: 'cover', objectPosition: '48% 62%' }}
+          aria-hidden="true"
+        />
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 1,
+          background: 'linear-gradient(to bottom, rgba(245,240,232,0.78) 0%, rgba(245,240,232,0.42) 20%, rgba(245,240,232,0.15) 44%, rgba(245,240,232,0.12) 58%, rgba(245,240,232,0.80) 100%)',
+        }} />
+        <div style={{ ...W, position: 'relative', zIndex: 2, paddingTop: '12rem', paddingBottom: '12rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <h1 style={{
+            fontFamily: 'var(--font-display)',
+            fontSize: 'clamp(3.4rem, 7.5vw, 6.8rem)',
+            lineHeight: 0.93,
+            letterSpacing: '-.025em',
+            color: 'var(--mkt-ink-text)',
+            margin: 0,
+          }}>
+            Protect what matters,<br />
+            <em style={{ fontStyle: 'italic', color: 'var(--teal-deep)' }}>through every chapter</em>.
+          </h1>
+          <p style={{ marginTop: '2.25rem', maxWidth: '26rem', marginInline: 'auto', fontSize: '1.05rem', lineHeight: 1.65, color: 'var(--mkt-ink-text)', textShadow: '0 1px 12px rgba(245,240,232,0.85)' }}>
+            Complete your Will in 15 minutes.<br />Keep it current as life changes.
+          </p>
+          <div style={{ marginTop: '2.5rem' }}>
+            <Link href="/start?path=retail" className="mkt-btn-ink-l">
+              Create my Will
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="#2ab4ae" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </Link>
           </div>
-          <EditorialBanner src="/images/editorial/hero-painting.webp" alt="" position="48% 62%" />
         </div>
       </section>
 
