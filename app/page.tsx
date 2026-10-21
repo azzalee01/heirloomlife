@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import MarketingNav from '@/components/marketing/MarketingNav'
 
 export const metadata: Metadata = {
@@ -70,8 +71,24 @@ export default function HomePage() {
       <MarketingNav />
 
       {/* ─── HERO ─────────────────────────────────────────────────────────── */}
-      <section style={{ position: 'relative', background: 'var(--mkt-surface)', color: 'var(--mkt-ink-text)', overflow: 'hidden' }}>
-        <div style={{ ...W, paddingTop: '12rem', paddingBottom: '9rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <section style={{ position: 'relative', background: '#f5f0e8', color: 'var(--mkt-ink-text)', overflow: 'hidden' }}>
+        {/* Painting background */}
+        <Image
+          src="/images/editorial/hero-painting.webp"
+          alt=""
+          fill
+          priority
+          quality={90}
+          sizes="100vw"
+          style={{ objectFit: 'cover', objectPosition: '58% 22%' }}
+          aria-hidden="true"
+        />
+        {/* Gradient scrim — protects text readability top and bottom */}
+        <div style={{
+          position: 'absolute', inset: 0, zIndex: 1,
+          background: 'linear-gradient(to bottom, rgba(245,240,232,0.72) 0%, transparent 28%, transparent 52%, rgba(245,240,232,0.97) 100%)',
+        }} />
+        <div style={{ ...W, position: 'relative', zIndex: 2, paddingTop: '12rem', paddingBottom: '9rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <h1 style={{
             fontFamily: 'var(--font-display)',
             fontSize: 'clamp(3.4rem, 7.5vw, 6.8rem)',
