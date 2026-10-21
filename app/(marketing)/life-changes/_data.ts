@@ -86,6 +86,7 @@ export const LIFE_CHANGES: LifeChange[] = [
   },
   {
     heroImage: '/images/life-changes/new-child.webp',
+    heroObjectPosition: 'center 55%',
     slug: 'new-child',
     title: 'Having or adopting a child',
     shortTitle: 'A new child',
