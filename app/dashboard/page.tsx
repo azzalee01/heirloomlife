@@ -240,7 +240,8 @@ export default async function DashboardPage({
               Signing
             </h2>
             <p className="text-sm mb-4" style={{ color: 'var(--ink)' }}>
-              Your Will must be signed in front of two witnesses to be legally valid.
+              Your Will must be signed in front of two witnesses to be legally valid. Book a video
+              call and we&rsquo;ll witness your signing together.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
@@ -251,11 +252,11 @@ export default async function DashboardPage({
                 How to sign your Will
               </Link>
               <Link
-                href="/witnessing"
+                href="/book"
                 className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold rounded-lg"
                 style={{ background: 'var(--paper-warm)', color: 'var(--ink)', border: '1px solid var(--line)' }}
               >
-                Arrange witnessing
+                Book your witnessing call
               </Link>
             </div>
           </section>

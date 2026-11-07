@@ -1,5 +1,6 @@
 'use server'
 
+import { createHash } from 'crypto'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { createAppointmentToken } from '@/src/lib/daily'
@@ -23,6 +24,37 @@ import type { ActionResult, AppointmentView, ViewerAccess } from '@/src/lib/appo
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const PHONE_RE = /^[0-9+()\-\s]{6,20}$/
+
+// When a signed-in customer books their own witnessing call, link their Will to the appointment
+// up front so the host doesn't have to do it manually. Mirrors linkWillToAppointment's write
+// (which is host-only), capturing the current version + content hash for the version-lock check.
+async function resolveAutoWillLink(userId: string): Promise<
+  { will_id: string; will_version_id: string | null; content_hash: string | null } | null
+> {
+  const { data: will } = await supabaseAdmin
+    .from('wills')
+    .select('id, document_text')
+    .eq('user_id', userId)
+    .order('updated_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+  if (!will) return null
+
+  const { data: version } = await supabaseAdmin
+    .from('will_versions')
+    .select('id')
+    .eq('will_id', will.id as string)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  const documentText = will.document_text as string | null
+  return {
+    will_id: will.id as string,
+    will_version_id: (version?.id as string) ?? null,
+    content_hash: documentText ? createHash('sha256').update(documentText, 'utf8').digest('hex') : null,
+  }
+}
 
 export async function getOpenSlots(): Promise<Slot[]> {
   try {
@@ -111,6 +143,10 @@ async function bookAppointmentInner(input: BookingInput): Promise<ActionResult<{
   const supabase = await createSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
 
+  // Auto-link the Will only when a signed-in customer books for themselves (not a family member
+  // booking on someone else's behalf). The host flow can still link manually if this comes back null.
+  const autoLink = user?.id && !bookedByName ? await resolveAutoWillLink(user.id) : null
+
   const { data: row, error } = await supabaseAdmin
     .from('appointments')
     .insert({
@@ -123,6 +159,7 @@ async function bookAppointmentInner(input: BookingInput): Promise<ActionResult<{
       booked_by_email: bookedByEmail,
       starts_at: slot.startsAt,
       ends_at: slot.endsAt,
+      ...(autoLink ? { ...autoLink, witnessing_status: 'will_linked' } : {}),
     })
     .select('id, token_version')
     .single()
@@ -137,6 +174,11 @@ async function bookAppointmentInner(input: BookingInput): Promise<ActionResult<{
   await logEvent(row.id as string, 'booked', 'customer', {
     metadata: { source: 'website', booked_for_someone_else: Boolean(bookedByName) },
   })
+  if (autoLink) {
+    await logEvent(row.id as string, 'witnessing_will_linked', 'customer', {
+      metadata: { will_id: autoLink.will_id, will_version_id: autoLink.will_version_id, source: 'auto' },
+    })
+  }
 
   const link = joinUrl(row.id as string, row.token_version as number)
   const base = { appointmentId: row.id as string, startsAt: slot.startsAt, endsAt: slot.endsAt, joinUrl: link }

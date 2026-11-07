@@ -69,8 +69,8 @@ export default async function DocumentsPage() {
             ) : will ? (
               <p className="text-sm" style={{ color: 'var(--neutral)' }}>
                 Your Will hasn&apos;t been witnessed yet.{' '}
-                <a href="/witnessing" style={{ color: 'var(--teal-deep)', textDecoration: 'underline' }}>
-                  Arrange witnessing
+                <a href="/book" style={{ color: 'var(--teal-deep)', textDecoration: 'underline' }}>
+                  Book your witnessing call
                 </a>{' '}
                 to get your executed Will stored here.
               </p>
