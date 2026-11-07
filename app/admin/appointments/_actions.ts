@@ -5,6 +5,8 @@ import { createAppointmentToken, getRecordingAccessLink, listAppointmentRecordin
 import { ensureRoomFor, loadAppointment, logEvent, requireHost } from '@/src/lib/appointments/server'
 import { HOST_JOIN_CLOSES_MINUTES_AFTER_END, HOST_JOIN_OPENS_MINUTES_BEFORE } from '@/src/lib/appointments/constants'
 import type { ActionResult, EventType } from '@/src/lib/appointments/types'
+import { buildRatingUrl } from '@/src/lib/appointments/links'
+import { sendPostCallEmail } from '@/src/lib/email'
 
 // Host-only. Each action re-verifies the host (page-level checks do not extend to server actions).
 
@@ -85,7 +87,26 @@ async function finish(appointmentId: string, status: 'completed' | 'no_show'): P
 }
 
 export async function completeAppointment(appointmentId: string) {
-  return finish(appointmentId, 'completed')
+  const result = await finish(appointmentId, 'completed')
+  if (result.ok) {
+    // Re-load to get customer details; non-fatal if email fails.
+    const appt = await loadAppointment(appointmentId)
+    if (appt?.customer_email) {
+      try {
+        const ratingUrls = [1, 2, 3, 4, 5].map((n) =>
+          buildRatingUrl(appointmentId, n)
+        ) as [string, string, string, string, string]
+        await sendPostCallEmail({
+          to: appt.customer_email,
+          name: appt.customer_name ?? appt.customer_email,
+          ratingUrls,
+        })
+      } catch (err) {
+        console.error('completeAppointment: post-call email failed:', err)
+      }
+    }
+  }
+  return result
 }
 export async function markNoShow(appointmentId: string) {
   return finish(appointmentId, 'no_show')

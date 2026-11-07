@@ -637,3 +637,55 @@ export async function sendAppointmentReminderEmail(params: {
     return false
   }
 }
+
+export async function sendPostCallEmail(params: {
+  to: string
+  name: string
+  ratingUrls: [string, string, string, string, string] // indexes 0-4 = stars 1-5
+}): Promise<boolean> {
+  const { to, name, ratingUrls } = params
+  const firstName = name.split(' ')[0]
+
+  const starRow = [1, 2, 3, 4, 5]
+    .map((n) => {
+      const stars = '★'.repeat(n) + '☆'.repeat(5 - n)
+      return `<a href="${ratingUrls[n - 1]}" style="display:inline-block;margin:0 4px;padding:10px 14px;background:rgba(42,180,174,0.08);border:1px solid rgba(42,180,174,0.3);color:#163E3B;font-size:18px;text-decoration:none;border-radius:4px;" title="${n} star${n > 1 ? 's' : ''}">${stars}</a>`
+    })
+    .join('')
+
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:22px;color:#0E1310;margin:0 0 16px;">Thank you, ${esc(firstName)}.</h1>
+      <p style="margin:0 0 16px;color:#0E1310;font-size:16px;line-height:1.65;">
+        Your call is done. We hope it was helpful and that you feel a little more settled knowing your wishes are in order.
+      </p>
+      <p style="margin:0 0 8px;color:#0E1310;font-size:14px;line-height:1.6;font-weight:600;">How did we go?</p>
+      <p style="margin:0 0 16px;color:#5A6360;font-size:14px;line-height:1.6;">Rate your session — it takes one click.</p>
+      <div style="margin:0 0 28px;">${starRow}</div>
+      <p style="margin:0 0 16px;color:#0E1310;font-size:15px;line-height:1.65;">
+        We&rsquo;re with you every step of the way. If you have any questions or need anything at all, just reply to this email.
+      </p>
+      <p style="margin:0;color:#8A8D87;font-size:12px;line-height:1.5;">
+        Heirloom Life is not a law firm. Your Will is a template document and must be signed and witnessed to be legally valid.
+      </p>
+    </div>
+  `
+
+  try {
+    const { error } = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to,
+      subject: `Thank you for your Heirloom call, ${firstName}`,
+      html,
+    })
+    if (error) {
+      console.error(`Resend rejected post-call email to ${to}:`, error)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error(`Failed to send post-call email to ${to}:`, err)
+    return false
+  }
+}

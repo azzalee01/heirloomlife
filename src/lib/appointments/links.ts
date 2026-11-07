@@ -48,3 +48,22 @@ export function appBaseUrl(): string {
 export function joinUrl(appointmentId: string, tokenVersion: number): string {
   return `${appBaseUrl()}/appointments/join/${buildAccessToken(appointmentId, tokenVersion)}`
 }
+
+// ─── Post-call star rating ────────────────────────────────────────────────────
+// Message: `rate:${appointmentId}:${score}` — score is part of the signed payload
+// so a customer can't modify the URL to submit a different rating.
+
+function signRating(appointmentId: string, score: number): string {
+  return createHmac('sha256', secret()).update(`rate:${appointmentId}:${score}`).digest('base64url')
+}
+
+export function buildRatingUrl(appointmentId: string, score: number): string {
+  const sig = signRating(appointmentId, score)
+  return `${appBaseUrl()}/api/appointments/rate?id=${appointmentId}&score=${score}&sig=${encodeURIComponent(sig)}`
+}
+
+export function verifyRatingSignature(appointmentId: string, score: number, sig: string): boolean {
+  const expected = Buffer.from(signRating(appointmentId, score))
+  const given = Buffer.from(sig)
+  return expected.length === given.length && timingSafeEqual(expected, given)
+}
