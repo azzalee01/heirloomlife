@@ -3,12 +3,14 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getHostUser } from '@/src/lib/appointments/server'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
+import { PRICING } from '@/src/lib/pricing'
 
 export const metadata: Metadata = { title: 'Accounts (admin)', robots: { index: false, follow: false } }
 export const dynamic = 'force-dynamic'
 
 const PLAN_LABEL: Record<string, string> = {
   will:  'Will',
+  vault: 'Vault',
   free:  'Free',
 }
 
@@ -21,7 +23,45 @@ const STATUS_STYLE: Record<string, React.CSSProperties> = {
 const WILL_STYLE: Record<string, React.CSSProperties> = {
   draft:     { background: 'var(--paper-warm)', color: 'var(--neutral)' },
   approved:  { background: '#ecfdf5', color: '#065f46' },
+  executed:  { background: '#ecfdf5', color: '#065f46' },
   pending_review: { background: '#fffbeb', color: '#92400e' },
+}
+
+const money = (n: number) => `$${n.toLocaleString('en-AU')}`
+const shortDate = (iso: string | null | undefined) =>
+  iso ? new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : null
+
+type WillRow = {
+  id: string; status: string; payment_status: string | null
+  has_downloaded: boolean; needs_review: boolean; created_at: string
+  executed_at: string | null
+}
+type ProfileRow = {
+  id: string; email: string | null; full_name: string | null; phone: string | null
+  plan: string | null; plan_status: string | null
+  updates_status: string | null; updates_active_until: string | null
+  rewit_credits: number | null; created_at: string
+  wills: WillRow[] | null
+}
+
+// Revenue is derived from the plan + add-ons (there is no payments table). Treated as an estimate.
+function revenueFor(p: ProfileRow): { total: number; products: string[] } {
+  let total = 0
+  const products: string[] = []
+  if (p.plan === 'will' || p.plan === 'vault') {
+    total += PRICING.willAud
+    products.push(`Will ${money(PRICING.willAud)}`)
+  }
+  if (p.updates_status === 'active') {
+    total += PRICING.updatesAudPerYear
+    products.push(`Updates ${money(PRICING.updatesAudPerYear)}/yr`)
+  }
+  const rewit = p.rewit_credits ?? 0
+  if (rewit > 0) {
+    total += rewit * PRICING.rewitAud
+    products.push(`${rewit}× re-witness ${money(rewit * PRICING.rewitAud)}`)
+  }
+  return { total, products }
 }
 
 function Badge({ label, style }: { label: string; style?: React.CSSProperties }) {
@@ -29,6 +69,16 @@ function Badge({ label, style }: { label: string; style?: React.CSSProperties })
     <span className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium" style={style}>
       {label}
     </span>
+  )
+}
+
+function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+  return (
+    <div className="rounded-xl border bg-white px-4 py-3" style={{ borderColor: 'var(--line)' }}>
+      <div className="text-xs uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>{label}</div>
+      <div className="mt-1 text-xl font-semibold" style={{ color: 'var(--ink)', fontFamily: 'var(--font-display)' }}>{value}</div>
+      {sub && <div className="text-xs mt-0.5" style={{ color: 'var(--neutral)' }}>{sub}</div>}
+    </div>
   )
 }
 
@@ -42,55 +92,59 @@ export default async function AccountsPage({
 
   const { q, plan } = await searchParams
 
-  // Fetch all profiles with their latest will
-  const { data: profiles } = await supabaseAdmin
-    .from('profiles')
-    .select(`
-      id, email, full_name, phone, plan, plan_status,
-      updates_status, updates_active_until, created_at,
-      wills ( id, status, payment_status, created_at, has_downloaded, needs_review )
-    `)
-    .order('created_at', { ascending: false })
-    .limit(500)
+  const [{ data: profiles }, { data: apptRows }, { data: ratingRows }] = await Promise.all([
+    supabaseAdmin
+      .from('profiles')
+      .select(`
+        id, email, full_name, phone, plan, plan_status,
+        updates_status, updates_active_until, rewit_credits, created_at,
+        wills ( id, status, payment_status, created_at, has_downloaded, needs_review, executed_at )
+      `)
+      .order('created_at', { ascending: false })
+      .limit(500),
+    supabaseAdmin.from('appointments').select('user_id, status'),
+    supabaseAdmin.from('appointment_ratings').select('rating'),
+  ])
 
-  // Fetch appointment counts per user
-  const { data: apptCounts } = await supabaseAdmin
-    .from('appointments')
-    .select('user_id')
-    .in('status', ['scheduled', 'completed', 'in_progress'])
-
+  // Appointment counts per user (booked = scheduled/in_progress/completed).
   const countMap = new Map<string, number>()
-  for (const a of apptCounts ?? []) {
-    if (a.user_id) countMap.set(a.user_id, (countMap.get(a.user_id) ?? 0) + 1)
+  let sessionsBooked = 0
+  for (const a of apptRows ?? []) {
+    if (['scheduled', 'completed', 'in_progress'].includes(a.status as string)) {
+      sessionsBooked++
+      if (a.user_id) countMap.set(a.user_id as string, (countMap.get(a.user_id as string) ?? 0) + 1)
+    }
   }
 
+  const ratings = (ratingRows ?? []).map((r) => r.rating as number)
+  const avgRating = ratings.length ? ratings.reduce((a, b) => a + b, 0) / ratings.length : null
+
   // Filter
-  let rows = profiles ?? []
+  let rows = (profiles ?? []) as ProfileRow[]
   if (q) {
     const lq = q.toLowerCase()
-    rows = rows.filter(
-      (p) =>
-        p.email?.toLowerCase().includes(lq) ||
-        p.full_name?.toLowerCase().includes(lq),
-    )
+    rows = rows.filter((p) => p.email?.toLowerCase().includes(lq) || p.full_name?.toLowerCase().includes(lq))
   }
   if (plan) rows = rows.filter((p) => p.plan === plan)
 
+  // Aggregate analytics (over the filtered set).
   const total = rows.length
-  const withWill = rows.filter((p) => (p.wills as unknown[])?.length > 0).length
-  const paid = rows.filter((p) => p.plan_status === 'active').length
+  const withWill = rows.filter((p) => (p.wills ?? []).length > 0).length
+  const paid = rows.filter((p) => p.plan === 'will' || p.plan === 'vault').length
+  const executed = rows.filter((p) => (p.wills ?? []).some((w) => w.executed_at)).length
+  const totalRevenue = rows.reduce((sum, p) => sum + revenueFor(p).total, 0)
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
 
       {/* Header */}
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
             Accounts
           </h1>
           <p className="mt-1 text-sm" style={{ color: 'var(--neutral)' }}>
-            {total} accounts · {withWill} with a Will · {paid} active paid
+            {total} accounts · {withWill} with a Will · {paid} paid
           </p>
         </div>
 
@@ -113,31 +167,33 @@ export default async function AccountsPage({
             <option value="will">Will</option>
             <option value="free">Free</option>
           </select>
-          <button
-            type="submit"
-            className="rounded-lg px-4 py-2 text-sm font-medium text-white"
-            style={{ background: 'var(--teal)' }}
-          >
+          <button type="submit" className="rounded-lg px-4 py-2 text-sm font-medium text-white" style={{ background: 'var(--teal)' }}>
             Filter
           </button>
           {(q || plan) && (
-            <Link
-              href="/admin/accounts"
-              className="rounded-lg border px-4 py-2 text-sm"
-              style={{ borderColor: 'var(--line)', color: 'var(--neutral)' }}
-            >
+            <Link href="/admin/accounts" className="rounded-lg border px-4 py-2 text-sm" style={{ borderColor: 'var(--line)', color: 'var(--neutral)' }}>
               Clear
             </Link>
           )}
         </form>
       </div>
 
+      {/* Analytics summary */}
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <StatCard label="Revenue (est.)" value={money(totalRevenue)} sub="from plan + add-ons" />
+        <StatCard label="Paid Wills" value={String(paid)} sub={total ? `${Math.round((paid / total) * 100)}% of accounts` : undefined} />
+        <StatCard label="Wills completed" value={String(executed)} sub="executed & witnessed" />
+        <StatCard label="With a Will" value={String(withWill)} />
+        <StatCard label="Sessions booked" value={String(sessionsBooked)} />
+        <StatCard label="Avg rating" value={avgRating ? `${avgRating.toFixed(1)}★` : '—'} sub={ratings.length ? `${ratings.length} rated` : undefined} />
+      </div>
+
       {/* Table */}
       <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: 'var(--line)' }}>
-        <table className="w-full min-w-[800px] text-left text-sm">
+        <table className="w-full min-w-[920px] text-left text-sm">
           <thead style={{ background: 'var(--paper-warm)' }}>
             <tr>
-              {['Name / Email', 'Plan', 'Will', 'Calls', 'Updates', 'Joined', ''].map((h) => (
+              {['Name / Email', 'Plan', 'Paid', 'Products', 'Will', 'Completed', 'Calls', 'Joined', ''].map((h) => (
                 <th key={h} className="px-4 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>
                   {h}
                 </th>
@@ -147,18 +203,17 @@ export default async function AccountsPage({
           <tbody>
             {rows.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-10 text-center text-sm" style={{ color: 'var(--neutral)' }}>
+                <td colSpan={9} className="px-4 py-10 text-center text-sm" style={{ color: 'var(--neutral)' }}>
                   No accounts found.
                 </td>
               </tr>
             )}
             {rows.map((p) => {
-              const wills = (p.wills ?? []) as {
-                id: string; status: string; payment_status: string
-                has_downloaded: boolean; needs_review: boolean; created_at: string
-              }[]
+              const wills = p.wills ?? []
               const latestWill = wills[0]
+              const executedWill = wills.find((w) => w.executed_at)
               const appts = countMap.get(p.id) ?? 0
+              const rev = revenueFor(p)
 
               return (
                 <tr key={p.id} className="border-t" style={{ borderColor: 'var(--line)' }}>
@@ -180,19 +235,26 @@ export default async function AccountsPage({
                     />
                   </td>
 
-                  {/* Will */}
+                  {/* Paid (est. revenue) */}
+                  <td className="px-4 py-3 font-medium" style={{ color: rev.total > 0 ? 'var(--ink)' : 'var(--neutral)' }}>
+                    {rev.total > 0 ? money(rev.total) : '—'}
+                  </td>
+
+                  {/* Products */}
+                  <td className="px-4 py-3 text-xs" style={{ color: 'var(--neutral)' }}>
+                    {rev.products.length ? rev.products.join(' · ') : '—'}
+                  </td>
+
+                  {/* Will status */}
                   <td className="px-4 py-3">
                     {latestWill ? (
                       <div className="flex flex-col gap-1">
                         <Badge
-                          label={latestWill.status.replace('_', ' ')}
-                          style={WILL_STYLE[latestWill.status] ?? WILL_STYLE.draft}
+                          label={(executedWill ? 'executed' : latestWill.status).replace('_', ' ')}
+                          style={WILL_STYLE[executedWill ? 'executed' : latestWill.status] ?? WILL_STYLE.draft}
                         />
                         {latestWill.needs_review && (
                           <Badge label="needs review" style={{ background: '#fef2f2', color: '#b91c1c' }} />
-                        )}
-                        {latestWill.has_downloaded && (
-                          <Badge label="downloaded" style={{ background: 'var(--teal-light)', color: 'var(--teal-deep)' }} />
                         )}
                       </div>
                     ) : (
@@ -200,14 +262,15 @@ export default async function AccountsPage({
                     )}
                   </td>
 
+                  {/* Completed date */}
+                  <td className="px-4 py-3 text-xs" style={{ color: 'var(--neutral)' }}>
+                    {shortDate(executedWill?.executed_at) ?? '—'}
+                  </td>
+
                   {/* Calls */}
                   <td className="px-4 py-3">
                     {appts > 0 ? (
-                      <Link
-                        href={`/admin/appointments?user=${p.id}`}
-                        className="font-medium underline"
-                        style={{ color: 'var(--teal-deep)' }}
-                      >
+                      <Link href={`/admin/appointments?user=${p.id}`} className="font-medium underline" style={{ color: 'var(--teal-deep)' }}>
                         {appts}
                       </Link>
                     ) : (
@@ -215,27 +278,15 @@ export default async function AccountsPage({
                     )}
                   </td>
 
-                  {/* Updates */}
-                  <td className="px-4 py-3">
-                    {p.updates_status === 'active' ? (
-                      <Badge label="active" style={STATUS_STYLE.active} />
-                    ) : (
-                      <span style={{ color: 'var(--neutral)' }}>—</span>
-                    )}
-                  </td>
-
                   {/* Joined */}
                   <td className="px-4 py-3 text-xs" style={{ color: 'var(--neutral)' }}>
-                    {new Date(p.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    {shortDate(p.created_at)}
                   </td>
 
                   {/* Action */}
                   <td className="px-4 py-3 text-right">
                     {latestWill && (
-                      <Link
-                        href={`/admin/wills/${latestWill.id}`}
-                        className="btn btn-secondary text-xs"
-                      >
+                      <Link href={`/admin/wills/${latestWill.id}`} className="btn btn-secondary text-xs">
                         Will
                       </Link>
                     )}
