@@ -4,6 +4,7 @@ import { useState, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
+import { track } from '@/src/lib/analytics/events'
 import {
   type WillFormData,
   type StepId,
@@ -342,6 +343,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   async function handleEmailSubmit(email: string) {
     setShowEmailCapture(false)
     setEmailCaptured(true)
+    track('lead', { source: 'will_wizard_email_capture' })
     try {
       await storeAnonEmail(email)
     } catch {

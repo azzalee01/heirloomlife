@@ -3,6 +3,8 @@ import Stripe from 'stripe'
 import { getStripe, isProduct, subscriptionPeriodEnd } from '@/src/lib/stripe'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { sendPurchaseConfirmationEmail, sendRewitnessingConfirmationEmail } from '@/src/lib/email'
+import { sendMetaPurchase } from '@/src/lib/analytics/meta-capi'
+import type { Attribution } from '@/src/lib/analytics/utm'
 
 export const dynamic = 'force-dynamic'
 
@@ -118,6 +120,23 @@ export async function POST(request: NextRequest) {
         if (product === 'will') {
           updates.plan = 'will'
           updates.plan_status = 'active'
+
+          // Server-side ad conversion (source of truth). Deduped against the browser pixel via the
+          // Stripe session id as event id. Non-blocking: analytics must never fail a payment.
+          const attributionKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'gclid', 'fbclid'] as const
+          const attribution: Attribution = {}
+          for (const k of attributionKeys) {
+            const v = session.metadata?.[k]
+            if (v) attribution[k] = v
+          }
+          void sendMetaPurchase({
+            eventId: session.id,
+            value: (session.amount_total ?? 0) / 100,
+            currency: session.currency ?? 'aud',
+            email: (session.customer_details as { email?: string | null } | null)?.email ?? null,
+            attribution,
+            eventSourceUrl: `${process.env.APP_URL ?? ''}/dashboard?payment=success`,
+          })
         }
         if (product === 'rewit') {
           const { error: rewitErr } = await supabaseAdmin.rpc('increment_rewit_credits', { p_user_id: userId })

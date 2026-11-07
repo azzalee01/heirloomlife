@@ -2,6 +2,8 @@
 import { useCallback, useEffect } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from '@stripe/react-stripe-js'
+import { track } from '@/src/lib/analytics/events'
+import { PRICING } from '@/src/lib/pricing'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
@@ -18,6 +20,12 @@ export default function CheckoutModal({ product, addUpdates = false, onClose }: 
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = '' }
   }, [])
+
+  // Funnel signal for ad optimisation — fired once when the checkout opens.
+  useEffect(() => {
+    const value = product === 'will' ? PRICING.willAud : PRICING.updatesAudPerYear
+    track('initiate_checkout', { value, currency: 'AUD', product })
+  }, [product])
 
   // Close on Escape
   useEffect(() => {

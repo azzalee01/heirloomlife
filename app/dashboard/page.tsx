@@ -5,6 +5,7 @@ import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
 import IntroAnimationLoader from './_components/IntroAnimationLoader'
 import PartnerShareCard from './_components/PartnerShareCard'
+import PurchaseTracker from './_components/PurchaseTracker'
 
 type Will = { id: string; status: string; updated_at: string; executed_at: string | null }
 
@@ -50,6 +51,7 @@ export default async function DashboardPage({
 
   const sp = await searchParams
   const paymentSuccess = sp.payment === 'success'
+  const checkoutSessionId = typeof sp.session_id === 'string' ? sp.session_id : null
 
   const firstName =
     user.user_metadata?.full_name?.split(' ')[0] ??
@@ -115,6 +117,7 @@ export default async function DashboardPage({
       <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6 space-y-4 pb-28 md:pb-8">
 
         {/* Payment success */}
+        {paymentSuccess && checkoutSessionId && <PurchaseTracker sessionId={checkoutSessionId} />}
         {paymentSuccess && (
           <div className="rounded-lg border px-5 py-4 flex items-start gap-3" style={{ borderColor: '#bbf7d0', background: '#f0fdf4' }}>
             <svg className="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>

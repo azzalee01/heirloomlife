@@ -5,6 +5,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { isLiveState } from '@/src/lib/availability'
 import { hasWillAccess, hasUpdatesAccess } from '@/src/lib/entitlements'
 import { PRICING } from '@/src/lib/pricing'
+import { ATTRIBUTION_COOKIE, parseAttributionCookie } from '@/src/lib/analytics/utm'
 
 // Shown on the Stripe payment button whenever the annual updates add-on is in the basket (ACL: clear renewal terms).
 const UPDATES_RENEWAL_NOTICE =
@@ -167,6 +168,10 @@ export async function POST(request: NextRequest) {
   if (willId) metadata.will_id = willId
   if (charityReferralCode) metadata.partner_code = charityReferralCode
   if (coupleCode) metadata.couple_code = coupleCode
+  // Carry ad attribution (captured on landing) onto the session so the webhook can tie the
+  // purchase back to its campaign and send it to Meta CAPI.
+  const attribution = parseAttributionCookie(request.cookies.get(ATTRIBUTION_COOKIE)?.value)
+  for (const [k, v] of Object.entries(attribution)) metadata[k] = v
 
   const discounts = stripePromoId ? [{ promotion_code: stripePromoId }] : undefined
 
