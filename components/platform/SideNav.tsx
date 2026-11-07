@@ -313,7 +313,7 @@ export function SideNav({
                     </li>
                     <li>
                       <a
-                        href="mailto:support@heirloomlife.com.au"
+                        href="mailto:hello@heirloomlife.com.au"
                         className="flex items-center gap-2 rounded-md px-3 py-2 hover:bg-[var(--paper-warm)] transition-colors"
                         style={{ color: 'var(--ink)' }}
                       >
