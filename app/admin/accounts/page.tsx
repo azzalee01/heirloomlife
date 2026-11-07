@@ -3,16 +3,14 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getHostUser } from '@/src/lib/appointments/server'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
-import { PRICING } from '@/src/lib/pricing'
 
 export const metadata: Metadata = { title: 'Accounts (admin)', robots: { index: false, follow: false } }
 export const dynamic = 'force-dynamic'
 
-const PLAN_LABEL: Record<string, string> = {
-  will:  'Will',
-  vault: 'Vault',
-  free:  'Free',
-}
+// Internal accounts are excluded from customer analytics so test/staff entitlements don't inflate metrics.
+const INTERNAL_ROLES = new Set(['staff', 'admin'])
+
+const PLAN_LABEL: Record<string, string> = { will: 'Will', vault: 'Vault', free: 'Free' }
 
 const STATUS_STYLE: Record<string, React.CSSProperties> = {
   active:   { background: '#ecfdf5', color: '#065f46' },
@@ -27,49 +25,25 @@ const WILL_STYLE: Record<string, React.CSSProperties> = {
   pending_review: { background: '#fffbeb', color: '#92400e' },
 }
 
-const money = (n: number) => `$${n.toLocaleString('en-AU')}`
+const money = (cents: number) => `$${(cents / 100).toLocaleString('en-AU', { minimumFractionDigits: cents % 100 ? 2 : 0, maximumFractionDigits: 2 })}`
 const shortDate = (iso: string | null | undefined) =>
   iso ? new Date(iso).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }) : null
 
 type WillRow = {
-  id: string; status: string; payment_status: string | null
-  has_downloaded: boolean; needs_review: boolean; created_at: string
-  executed_at: string | null
+  id: string; status: string; needs_review: boolean; executed_at: string | null; created_at: string
 }
 type ProfileRow = {
   id: string; email: string | null; full_name: string | null; phone: string | null
-  plan: string | null; plan_status: string | null
-  updates_status: string | null; updates_active_until: string | null
-  rewit_credits: number | null; created_at: string
+  plan: string | null; plan_status: string | null; role: string | null
+  updates_status: string | null; created_at: string
   wills: WillRow[] | null
 }
-
-// Revenue is derived from the plan + add-ons (there is no payments table). Treated as an estimate.
-function revenueFor(p: ProfileRow): { total: number; products: string[] } {
-  let total = 0
-  const products: string[] = []
-  if (p.plan === 'will' || p.plan === 'vault') {
-    total += PRICING.willAud
-    products.push(`Will ${money(PRICING.willAud)}`)
-  }
-  if (p.updates_status === 'active') {
-    total += PRICING.updatesAudPerYear
-    products.push(`Updates ${money(PRICING.updatesAudPerYear)}/yr`)
-  }
-  const rewit = p.rewit_credits ?? 0
-  if (rewit > 0) {
-    total += rewit * PRICING.rewitAud
-    products.push(`${rewit}× re-witness ${money(rewit * PRICING.rewitAud)}`)
-  }
-  return { total, products }
+type PaymentRow = {
+  user_id: string | null; product: string; amount_total: number; amount_refunded: number; status: string
 }
 
 function Badge({ label, style }: { label: string; style?: React.CSSProperties }) {
-  return (
-    <span className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium" style={style}>
-      {label}
-    </span>
-  )
+  return <span className="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium" style={style}>{label}</span>
 }
 
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
@@ -92,19 +66,31 @@ export default async function AccountsPage({
 
   const { q, plan } = await searchParams
 
-  const [{ data: profiles }, { data: apptRows }, { data: ratingRows }] = await Promise.all([
+  const [{ data: profiles }, { data: apptRows }, { data: ratingRows }, { data: paymentRows }] = await Promise.all([
     supabaseAdmin
       .from('profiles')
       .select(`
-        id, email, full_name, phone, plan, plan_status,
-        updates_status, updates_active_until, rewit_credits, created_at,
-        wills ( id, status, payment_status, created_at, has_downloaded, needs_review, executed_at )
+        id, email, full_name, phone, plan, plan_status, role, updates_status, created_at,
+        wills ( id, status, needs_review, executed_at, created_at )
       `)
       .order('created_at', { ascending: false })
       .limit(500),
     supabaseAdmin.from('appointments').select('user_id, status'),
     supabaseAdmin.from('appointment_ratings').select('rating'),
+    // Real money, live mode only — the source of truth for revenue.
+    supabaseAdmin.from('payments').select('user_id, product, amount_total, amount_refunded, status').eq('livemode', true),
   ])
+
+  // Net paid + products per user, from the Stripe-backed ledger.
+  const payByUser = new Map<string, { net: number; products: Set<string> }>()
+  for (const pay of (paymentRows ?? []) as PaymentRow[]) {
+    if (!pay.user_id) continue
+    const net = (pay.amount_total ?? 0) - (pay.amount_refunded ?? 0)
+    const e = payByUser.get(pay.user_id) ?? { net: 0, products: new Set<string>() }
+    e.net += net
+    e.products.add(pay.product)
+    payByUser.set(pay.user_id, e)
+  }
 
   // Appointment counts per user (booked = scheduled/in_progress/completed).
   const countMap = new Map<string, number>()
@@ -119,20 +105,20 @@ export default async function AccountsPage({
   const ratings = (ratingRows ?? []).map((r) => r.rating as number)
   const avgRating = ratings.length ? ratings.reduce((a, b) => a + b, 0) / ratings.length : null
 
-  // Filter
-  let rows = (profiles ?? []) as ProfileRow[]
+  // Exclude internal/staff accounts, then apply UI filters.
+  let rows = ((profiles ?? []) as ProfileRow[]).filter((p) => !INTERNAL_ROLES.has(p.role ?? ''))
   if (q) {
     const lq = q.toLowerCase()
     rows = rows.filter((p) => p.email?.toLowerCase().includes(lq) || p.full_name?.toLowerCase().includes(lq))
   }
   if (plan) rows = rows.filter((p) => p.plan === plan)
 
-  // Aggregate analytics (over the filtered set).
+  // Aggregate analytics over the filtered customer set.
   const total = rows.length
   const withWill = rows.filter((p) => (p.wills ?? []).length > 0).length
-  const paid = rows.filter((p) => p.plan === 'will' || p.plan === 'vault').length
+  const paid = rows.filter((p) => (payByUser.get(p.id)?.net ?? 0) > 0).length
   const executed = rows.filter((p) => (p.wills ?? []).some((w) => w.executed_at)).length
-  const totalRevenue = rows.reduce((sum, p) => sum + revenueFor(p).total, 0)
+  const revenueCents = rows.reduce((sum, p) => sum + (payByUser.get(p.id)?.net ?? 0), 0)
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8">
@@ -140,15 +126,12 @@ export default async function AccountsPage({
       {/* Header */}
       <div className="mb-5 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-            Accounts
-          </h1>
+          <h1 className="text-2xl" style={{ fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>Accounts</h1>
           <p className="mt-1 text-sm" style={{ color: 'var(--neutral)' }}>
-            {total} accounts · {withWill} with a Will · {paid} paid
+            {total} customers · {withWill} with a Will · {paid} paid · staff accounts excluded
           </p>
         </div>
 
-        {/* Filters */}
         <form method="GET" className="flex gap-2">
           <input
             name="q"
@@ -157,36 +140,30 @@ export default async function AccountsPage({
             className="rounded-lg border px-3 py-2 text-sm outline-none focus:border-[var(--teal)]"
             style={{ borderColor: 'var(--line)', color: 'var(--ink)', width: 220 }}
           />
-          <select
-            name="plan"
-            defaultValue={plan ?? ''}
-            className="rounded-lg border px-3 py-2 text-sm outline-none"
-            style={{ borderColor: 'var(--line)', color: 'var(--ink)' }}
-          >
+          <select name="plan" defaultValue={plan ?? ''} className="rounded-lg border px-3 py-2 text-sm outline-none" style={{ borderColor: 'var(--line)', color: 'var(--ink)' }}>
             <option value="">All plans</option>
             <option value="will">Will</option>
             <option value="free">Free</option>
           </select>
-          <button type="submit" className="rounded-lg px-4 py-2 text-sm font-medium text-white" style={{ background: 'var(--teal)' }}>
-            Filter
-          </button>
+          <button type="submit" className="rounded-lg px-4 py-2 text-sm font-medium text-white" style={{ background: 'var(--teal)' }}>Filter</button>
           {(q || plan) && (
-            <Link href="/admin/accounts" className="rounded-lg border px-4 py-2 text-sm" style={{ borderColor: 'var(--line)', color: 'var(--neutral)' }}>
-              Clear
-            </Link>
+            <Link href="/admin/accounts" className="rounded-lg border px-4 py-2 text-sm" style={{ borderColor: 'var(--line)', color: 'var(--neutral)' }}>Clear</Link>
           )}
         </form>
       </div>
 
-      {/* Analytics summary */}
-      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <StatCard label="Revenue (est.)" value={money(totalRevenue)} sub="from plan + add-ons" />
-        <StatCard label="Paid Wills" value={String(paid)} sub={total ? `${Math.round((paid / total) * 100)}% of accounts` : undefined} />
+      {/* Analytics summary — revenue is live Stripe money (net of refunds) */}
+      <div className="mb-2 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+        <StatCard label="Revenue" value={money(revenueCents)} sub="live Stripe, net of refunds" />
+        <StatCard label="Paid customers" value={String(paid)} sub={total ? `${Math.round((paid / total) * 100)}% of ${total}` : undefined} />
         <StatCard label="Wills completed" value={String(executed)} sub="executed & witnessed" />
         <StatCard label="With a Will" value={String(withWill)} />
         <StatCard label="Sessions booked" value={String(sessionsBooked)} />
         <StatCard label="Avg rating" value={avgRating ? `${avgRating.toFixed(1)}★` : '—'} sub={ratings.length ? `${ratings.length} rated` : undefined} />
       </div>
+      <p className="mb-6 text-xs" style={{ color: 'var(--neutral)' }}>
+        Revenue reads from the Stripe-backed payment ledger. &ldquo;Plan&rdquo; shows access/entitlement, which can exist without a payment (e.g. staff).
+      </p>
 
       {/* Table */}
       <div className="overflow-x-auto rounded-xl border bg-white" style={{ borderColor: 'var(--line)' }}>
@@ -194,31 +171,24 @@ export default async function AccountsPage({
           <thead style={{ background: 'var(--paper-warm)' }}>
             <tr>
               {['Name / Email', 'Plan', 'Paid', 'Products', 'Will', 'Completed', 'Calls', 'Joined', ''].map((h) => (
-                <th key={h} className="px-4 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>
-                  {h}
-                </th>
+                <th key={h} className="px-4 py-3 text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--neutral)' }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 && (
-              <tr>
-                <td colSpan={9} className="px-4 py-10 text-center text-sm" style={{ color: 'var(--neutral)' }}>
-                  No accounts found.
-                </td>
-              </tr>
+              <tr><td colSpan={9} className="px-4 py-10 text-center text-sm" style={{ color: 'var(--neutral)' }}>No customers found.</td></tr>
             )}
             {rows.map((p) => {
               const wills = p.wills ?? []
               const latestWill = wills[0]
               const executedWill = wills.find((w) => w.executed_at)
               const appts = countMap.get(p.id) ?? 0
-              const rev = revenueFor(p)
+              const pay = payByUser.get(p.id)
+              const products = pay ? [...pay.products] : []
 
               return (
                 <tr key={p.id} className="border-t" style={{ borderColor: 'var(--line)' }}>
-
-                  {/* Name / Email */}
                   <td className="px-4 py-3">
                     <div className="font-medium leading-snug" style={{ color: 'var(--ink)' }}>
                       {p.full_name ?? <span style={{ color: 'var(--neutral)' }}>—</span>}
@@ -227,25 +197,19 @@ export default async function AccountsPage({
                     {p.phone && <div className="text-xs" style={{ color: 'var(--neutral)' }}>{p.phone}</div>}
                   </td>
 
-                  {/* Plan */}
                   <td className="px-4 py-3">
-                    <Badge
-                      label={PLAN_LABEL[p.plan ?? ''] ?? (p.plan ?? 'free')}
-                      style={STATUS_STYLE[p.plan_status ?? 'inactive']}
-                    />
+                    <Badge label={PLAN_LABEL[p.plan ?? ''] ?? (p.plan ?? 'free')} style={STATUS_STYLE[p.plan_status ?? 'inactive']} />
                   </td>
 
-                  {/* Paid (est. revenue) */}
-                  <td className="px-4 py-3 font-medium" style={{ color: rev.total > 0 ? 'var(--ink)' : 'var(--neutral)' }}>
-                    {rev.total > 0 ? money(rev.total) : '—'}
+                  {/* Paid (real, net) */}
+                  <td className="px-4 py-3 font-medium" style={{ color: pay && pay.net > 0 ? 'var(--ink)' : 'var(--neutral)' }}>
+                    {pay && pay.net > 0 ? money(pay.net) : '—'}
                   </td>
 
-                  {/* Products */}
                   <td className="px-4 py-3 text-xs" style={{ color: 'var(--neutral)' }}>
-                    {rev.products.length ? rev.products.join(' · ') : '—'}
+                    {products.length ? products.join(' · ') : '—'}
                   </td>
 
-                  {/* Will status */}
                   <td className="px-4 py-3">
                     {latestWill ? (
                       <div className="flex flex-col gap-1">
@@ -253,45 +217,26 @@ export default async function AccountsPage({
                           label={(executedWill ? 'executed' : latestWill.status).replace('_', ' ')}
                           style={WILL_STYLE[executedWill ? 'executed' : latestWill.status] ?? WILL_STYLE.draft}
                         />
-                        {latestWill.needs_review && (
-                          <Badge label="needs review" style={{ background: '#fef2f2', color: '#b91c1c' }} />
-                        )}
+                        {latestWill.needs_review && <Badge label="needs review" style={{ background: '#fef2f2', color: '#b91c1c' }} />}
                       </div>
-                    ) : (
-                      <span style={{ color: 'var(--neutral)' }}>—</span>
-                    )}
+                    ) : <span style={{ color: 'var(--neutral)' }}>—</span>}
                   </td>
 
-                  {/* Completed date */}
                   <td className="px-4 py-3 text-xs" style={{ color: 'var(--neutral)' }}>
                     {shortDate(executedWill?.executed_at) ?? '—'}
                   </td>
 
-                  {/* Calls */}
                   <td className="px-4 py-3">
                     {appts > 0 ? (
-                      <Link href={`/admin/appointments?user=${p.id}`} className="font-medium underline" style={{ color: 'var(--teal-deep)' }}>
-                        {appts}
-                      </Link>
-                    ) : (
-                      <span style={{ color: 'var(--neutral)' }}>—</span>
-                    )}
+                      <Link href={`/admin/appointments?user=${p.id}`} className="font-medium underline" style={{ color: 'var(--teal-deep)' }}>{appts}</Link>
+                    ) : <span style={{ color: 'var(--neutral)' }}>—</span>}
                   </td>
 
-                  {/* Joined */}
-                  <td className="px-4 py-3 text-xs" style={{ color: 'var(--neutral)' }}>
-                    {shortDate(p.created_at)}
-                  </td>
+                  <td className="px-4 py-3 text-xs" style={{ color: 'var(--neutral)' }}>{shortDate(p.created_at)}</td>
 
-                  {/* Action */}
                   <td className="px-4 py-3 text-right">
-                    {latestWill && (
-                      <Link href={`/admin/wills/${latestWill.id}`} className="btn btn-secondary text-xs">
-                        Will
-                      </Link>
-                    )}
+                    {latestWill && <Link href={`/admin/wills/${latestWill.id}`} className="btn btn-secondary text-xs">Will</Link>}
                   </td>
-
                 </tr>
               )
             })}

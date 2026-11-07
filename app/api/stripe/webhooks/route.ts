@@ -69,6 +69,39 @@ async function updateByCustomer(customerId: string, updates: Record<string, unkn
   if (error) throw error
 }
 
+// Write a row to the real payment ledger. Idempotent via the unique session/invoice id.
+// Non-fatal: a missing ledger row can be reconciled from Stripe; it must never fail a payment.
+async function recordPayment(p: {
+  userId?: string | null
+  email: string | null
+  product: string
+  amountTotal: number
+  currency: string
+  sessionId?: string | null
+  invoiceId?: string | null
+  paymentIntent?: string | null
+  customerId?: string | null
+  livemode: boolean
+}) {
+  const onConflict = p.sessionId ? 'stripe_session_id' : 'stripe_invoice_id'
+  const { error } = await supabaseAdmin.from('payments').upsert(
+    {
+      user_id: p.userId ?? null,
+      email: p.email,
+      product: p.product,
+      amount_total: p.amountTotal,
+      currency: p.currency.toLowerCase(),
+      stripe_session_id: p.sessionId ?? null,
+      stripe_invoice_id: p.invoiceId ?? null,
+      stripe_payment_intent: p.paymentIntent ?? null,
+      stripe_customer_id: p.customerId ?? null,
+      livemode: p.livemode,
+    },
+    { onConflict, ignoreDuplicates: true },
+  )
+  if (error) console.error('[webhook] payments ledger write failed (non-fatal)', { error: error.message })
+}
+
 // Release the idempotency claim so Stripe's retry is processed instead of being acknowledged and dropped.
 async function fail(eventId: string): Promise<Response> {
   const { error } = await supabaseAdmin.from('processed_webhook_events').delete().eq('stripe_event_id', eventId)
@@ -170,6 +203,21 @@ export async function POST(request: NextRequest) {
           })
           return fail(event.id)
         }
+
+        // Real money → payment ledger (source of truth for revenue). The session's amount_total is the
+        // actual charged total (net of any discount); for a combined Will + updates purchase it covers both.
+        await recordPayment({
+          userId,
+          email: (session.customer_details as { email?: string | null } | null)?.email ?? null,
+          product: includesUpdates ? 'will+updates' : product,
+          amountTotal: session.amount_total ?? 0,
+          currency: session.currency ?? 'aud',
+          sessionId: session.id,
+          invoiceId: typeof session.invoice === 'string' ? session.invoice : session.invoice?.id ?? null,
+          paymentIntent: typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id ?? null,
+          customerId: session.customer as string,
+          livemode: event.livemode,
+        })
 
         // Record charity partner referral if attributed
         if (product === 'will') {
@@ -299,6 +347,49 @@ export async function POST(request: NextRequest) {
             console.error('[webhook] invoice.payment_succeeded write failed', {
               eventId: event.id, customerId: invoice.customer, error: (err as Error).message,
             })
+            return fail(event.id)
+          }
+
+          // Record subscription RENEWALS only. The first invoice (billing_reason 'subscription_create')
+          // is already captured by the checkout.session.completed ledger write — recording it here too
+          // would double-count.
+          if (invoice.billing_reason === 'subscription_cycle') {
+            const customerId = invoice.customer as string
+            const { data: prof } = await supabaseAdmin
+              .from('profiles')
+              .select('id, email')
+              .eq('stripe_customer_id', customerId)
+              .maybeSingle()
+            const pi = (invoice as unknown as { payment_intent?: string | { id?: string } | null }).payment_intent
+            await recordPayment({
+              userId: (prof?.id as string) ?? null,
+              email: (prof?.email as string | null) ?? invoice.customer_email ?? null,
+              product: 'updates',
+              amountTotal: invoice.amount_paid ?? 0,
+              currency: invoice.currency ?? 'aud',
+              invoiceId: invoice.id,
+              paymentIntent: typeof pi === 'string' ? pi : pi?.id ?? null,
+              customerId,
+              livemode: event.livemode,
+            })
+          }
+        }
+        break
+      }
+
+      // Refunds (full or partial) reduce net revenue. Requires 'charge.refunded' enabled on the Stripe
+      // webhook endpoint. Matched to the ledger by payment intent.
+      case 'charge.refunded': {
+        const charge = event.data.object as Stripe.Charge
+        const pi = typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id ?? null
+        if (pi) {
+          const status = charge.amount_refunded >= charge.amount ? 'refunded' : 'partially_refunded'
+          const { error } = await supabaseAdmin
+            .from('payments')
+            .update({ amount_refunded: charge.amount_refunded, status })
+            .eq('stripe_payment_intent', pi)
+          if (error) {
+            console.error('[webhook] charge.refunded ledger update failed', { eventId: event.id, error: error.message })
             return fail(event.id)
           }
         }
