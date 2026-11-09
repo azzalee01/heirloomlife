@@ -474,7 +474,7 @@ export async function applyAmendment(
               ...formData.beneficiariesData,
               charities: [
                 ...formData.beneficiariesData.charities,
-                { ...entry, abn: str(input.abn) },
+                { ...entry, abn: str(input.abn), charityPartnerId: null },
               ],
             }
           : {

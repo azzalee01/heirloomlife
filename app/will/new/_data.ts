@@ -90,6 +90,7 @@ type BeneficiaryRow = {
   relationship: string | null
   share_percentage: number | null
   lapse_fallback: string | null
+  charity_partner_id: string | null
 }
 
 type GiftRow = {
@@ -368,7 +369,7 @@ export async function loadWillFormData(
     .map((b) => ({ id: b.id, name: [b.first_name, b.last_name].filter(Boolean).join(' '), relationship: str(b.relationship), percentage: numStr(b.share_percentage), substituteBeneficiary: str(b.lapse_fallback) }))
   const charities: CharityBeneficiary[] = beneficiaryRows
     .filter((b) => b.beneficiary_type === 'organisation')
-    .map((b) => ({ id: b.id, name: str(b.organisation_name), abn: str(b.abn), percentage: numStr(b.share_percentage), substituteBeneficiary: str(b.lapse_fallback) }))
+    .map((b) => ({ id: b.id, name: str(b.organisation_name), abn: str(b.abn), percentage: numStr(b.share_percentage), substituteBeneficiary: str(b.lapse_fallback), charityPartnerId: b.charity_partner_id ?? null }))
   const beneficiariesData: BeneficiariesData = { people, charities }
 
   const specificGifts: SpecificGift[] = ((giftRes.data ?? []) as GiftRow[]).map((g) => ({

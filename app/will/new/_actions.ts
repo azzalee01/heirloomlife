@@ -362,6 +362,8 @@ export async function saveStep(
           abn: b.abn || null,
           share_percentage: parseFloat(b.percentage) || 0,
           lapse_fallback: b.substituteBeneficiary || null,
+          // Attribution: non-null only when chosen from the partner picker.
+          charity_partner_id: b.charityPartnerId || null,
           order_index: bd.people.length + i,
         })),
       ]
@@ -548,6 +550,35 @@ export async function completeWill(willId: string): Promise<void> {
 
   // Post-mutation race check.
   await markSessionsStaleAfterEdit(willId)
+
+  // Charity partner attribution — record a completion event per partner bequest.
+  // The live link lives on beneficiaries.charity_partner_id; partner_referrals is
+  // the clean "Will completed" event (no-fee model, so billing columns stay unused).
+  // Non-fatal: a failure here must never block the customer's submission.
+  try {
+    const { data: partnerBequests } = await supabaseAdmin
+      .from('beneficiaries')
+      .select('charity_partner_id')
+      .eq('will_id', willId)
+      .not('charity_partner_id', 'is', null)
+    const partnerIds = [...new Set((partnerBequests ?? []).map((b) => b.charity_partner_id as string))]
+    if (partnerIds.length > 0) {
+      // Don't double-count on re-completion (amendments re-run completeWill).
+      const { data: existing } = await supabaseAdmin
+        .from('partner_referrals')
+        .select('partner_id')
+        .eq('will_id', willId)
+      const already = new Set((existing ?? []).map((r) => r.partner_id as string))
+      const toInsert = partnerIds
+        .filter((pid) => !already.has(pid))
+        .map((pid) => ({ partner_id: pid, will_id: willId, user_id: user.id }))
+      if (toInsert.length > 0) {
+        await supabaseAdmin.from('partner_referrals').insert(toInsert)
+      }
+    }
+  } catch (referralError) {
+    console.error('[completeWill] partner_referrals write failed (non-fatal)', willId, referralError)
+  }
 
   // Draft the will document from the completed intake data. A drafting
   // failure shouldn't block submission  -  the solicitor review still covers it.

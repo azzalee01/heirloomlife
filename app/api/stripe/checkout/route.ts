@@ -186,7 +186,10 @@ export async function POST(request: NextRequest) {
         metadata,
         ...(mode === 'subscription' ? { subscription_data: { metadata } } : {}),
         ...(includesUpdates ? { custom_text: { submit: { message: UPDATES_RENEWAL_NOTICE } } } : {}),
-        ...(discounts ? { discounts } : {}),
+        // A couple-code discount is applied programmatically; otherwise let the
+      // customer type a Stripe promotion code (e.g. the FREEWILL trial code).
+      // Stripe forbids `discounts` and `allow_promotion_codes` together.
+      ...(discounts ? { discounts } : { allow_promotion_codes: true }),
       })
       return Response.json({ clientSecret: session.client_secret })
     }
@@ -204,7 +207,10 @@ export async function POST(request: NextRequest) {
       metadata,
       ...(mode === 'subscription' ? { subscription_data: { metadata } } : {}),
       ...(includesUpdates ? { custom_text: { submit: { message: UPDATES_RENEWAL_NOTICE } } } : {}),
-      ...(discounts ? { discounts } : {}),
+      // A couple-code discount is applied programmatically; otherwise let the
+      // customer type a Stripe promotion code (e.g. the FREEWILL trial code).
+      // Stripe forbids `discounts` and `allow_promotion_codes` together.
+      ...(discounts ? { discounts } : { allow_promotion_codes: true }),
     })
 
     return Response.json({ url: session.url })

@@ -174,6 +174,10 @@ export interface CharityBeneficiary {
   abn: string
   percentage: string
   substituteBeneficiary: string
+  // Set when this gift was chosen from the partner picker (name + ABN then come
+  // from charity_partners and are read-only). null for a manually-entered charity.
+  // This is the attribution link — see beneficiaries.charity_partner_id.
+  charityPartnerId: string | null
 }
 
 export interface BeneficiariesData {

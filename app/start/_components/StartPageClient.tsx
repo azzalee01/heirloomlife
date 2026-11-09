@@ -87,6 +87,8 @@ function mergeExtracted(
         abn: String(c.abn ?? ''),
         percentage: String(c.percentage ?? ''),
         substituteBeneficiary: '',
+        // Charities parsed from an uploaded Will are manual, not partner-linked.
+        charityPartnerId: null,
       }))
       fields.add('beneficiariesData.charities')
     }
