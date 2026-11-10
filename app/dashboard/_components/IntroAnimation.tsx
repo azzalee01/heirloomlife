@@ -6,11 +6,21 @@ const INTRO_FLAG = 'show_intro'
 
 export default function IntroAnimation() {
   const [show] = useState<boolean>(() => {
-    const flag = sessionStorage.getItem(INTRO_FLAG)
-    if (flag) {
-      sessionStorage.removeItem(INTRO_FLAG)
-      return true
-    }
+    try {
+      // The server auth callback can't set sessionStorage, so it signals the
+      // intro via ?welcome=1. Consume it and strip it from the URL.
+      const url = new URL(window.location.href)
+      if (url.searchParams.get('welcome') === '1') {
+        url.searchParams.delete('welcome')
+        window.history.replaceState({}, '', url.pathname + url.search + url.hash)
+        return true
+      }
+      const flag = sessionStorage.getItem(INTRO_FLAG)
+      if (flag) {
+        sessionStorage.removeItem(INTRO_FLAG)
+        return true
+      }
+    } catch {}
     return false
   })
 

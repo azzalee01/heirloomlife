@@ -57,7 +57,7 @@ export default function RootLayout({
       <head>
         {/* Runs synchronously before first paint — covers the viewport so the intro overlay
             has no flash-of-platform before React hydrates and renders the overlay div. */}
-        <script dangerouslySetInnerHTML={{ __html: `try{if(sessionStorage.getItem('show_intro'))document.documentElement.classList.add('hl-intro-pending')}catch(e){}` }} />
+        <script dangerouslySetInnerHTML={{ __html: `try{if(sessionStorage.getItem('show_intro')||location.search.indexOf('welcome=1')>-1)document.documentElement.classList.add('hl-intro-pending')}catch(e){}` }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}

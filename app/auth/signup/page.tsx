@@ -4,6 +4,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/src/lib/supabase'
 
+// Only allow internal, single-slash paths as a post-signup destination.
+function sanitizeNext(raw: string | null): string {
+  if (!raw || !raw.startsWith('/') || raw.startsWith('//')) return '/dashboard'
+  return raw
+}
+
 export default function SignUpPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -16,11 +22,16 @@ export default function SignUpPage() {
     setError(null)
     setLoading(true)
 
+    // Returning to the questionnaire (e.g. ?next=/will/new) lets the anon-will
+    // migration run — the authenticated /will/new page re-saves the anon session.
+    const next = sanitizeNext(new URLSearchParams(window.location.search).get('next'))
+    const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
         data: { full_name: name },
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: redirectTo,
       },
     })
 
