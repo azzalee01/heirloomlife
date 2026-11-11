@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
   }
 
   const to = payload.user?.email
-  const { email_action_type: action, token_hash, token_hash_new, redirect_to, site_url } = payload.email_data
+  const { email_action_type: action, token_hash, token_hash_new, redirect_to } = payload.email_data
   if (!to || !token_hash) {
     return NextResponse.json({ error: { http_code: 400, message: 'Malformed payload' } }, { status: 400 })
   }
@@ -86,7 +86,10 @@ export async function POST(request: NextRequest) {
     } catch {}
   }
 
-  const base = (site_url ?? APP_URL).replace(/\/$/, '')
+  // Always build the link on OUR domain — /auth/confirm is our route. Never use
+  // the payload's site_url (it resolves to the Supabase API URL, which would leak
+  // a *.supabase.co link into the email).
+  const base = APP_URL
   const hash = action === 'email_change_new' && token_hash_new ? token_hash_new : token_hash
   const confirmUrl =
     `${base}/auth/confirm?token_hash=${encodeURIComponent(hash)}` +

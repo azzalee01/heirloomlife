@@ -52,9 +52,11 @@ describe('auth email hook', () => {
     const arg = (sendAuthEmail as ReturnType<typeof vi.fn>).mock.calls[0][0]
     expect(arg.to).toBe('delivered@resend.dev')
     expect(arg.action).toBe('magiclink')
-    // Points at our cross-device confirm route, carries token_hash + type, and
-    // preserves the original ?next=/will/new so the anon-will migration lands right.
-    expect(arg.confirmUrl).toContain('https://heirloomlife.com.au/auth/confirm')
+    // Points at OUR confirm route (never a *.supabase.co link — payload.site_url
+    // is ignored), carries token_hash + type, and preserves ?next=/will/new so the
+    // anon-will migration lands right.
+    expect(arg.confirmUrl).not.toMatch(/supabase/i)
+    expect(arg.confirmUrl).toContain('/auth/confirm?')
     expect(arg.confirmUrl).toContain('token_hash=pkce_abc123')
     expect(arg.confirmUrl).toContain('type=magiclink')
     expect(arg.confirmUrl).toContain('next=%2Fwill%2Fnew')
