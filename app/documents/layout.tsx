@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr';
-import { SideNavWrapper } from '@/app/dashboard/_components/SideNavWrapper';
+import AppShell from '@/components/platform/AppShell';
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -15,12 +15,5 @@ export default async function DocumentsLayout({ children }: { children: React.Re
     user.email?.split('@')[0] ??
     'there';
 
-  return (
-    <div className="flex h-screen overflow-hidden" style={{ background: 'var(--paper)' }}>
-      <SideNavWrapper userName={fullName} />
-      <div className="flex-1 min-w-0 overflow-y-auto">
-        {children}
-      </div>
-    </div>
-  );
+  return <AppShell userName={fullName}>{children}</AppShell>;
 }
