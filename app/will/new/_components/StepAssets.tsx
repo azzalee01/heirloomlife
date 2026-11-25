@@ -111,6 +111,7 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
             <option value="sole">Sole ownership</option>
             <option value="joint_tenants">Joint ownership (joint tenants)</option>
             <option value="tenants_in_common">Joint ownership (tenants in common)</option>
+            <option value="entity">Held by a trust, company or SMSF</option>
           </select>
         </div>
       </div>
@@ -121,6 +122,19 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
             Assets held as joint tenants pass automatically to the surviving owner and are <strong>not</strong>{' '}
             distributed by this will.
           </p>
+        </div>
+      )}
+
+      {/* DRAFT COPY — pending solicitor sign-off before launch. Mechanism (escalation) is final; wording is not. */}
+      {asset.ownershipType === 'entity' && (
+        <div className="border border-amber-100 bg-amber-50 px-3 py-2.5 space-y-2">
+          <p className="text-xs text-amber-700">
+            Assets held by a trust, company or self-managed super fund are <strong>not owned by you personally</strong>,
+            so a will cannot give them away. What happens to them is governed by the trust deed, company constitution
+            or fund rules — not your will. You can still record the asset here, but dealing with it needs a solicitor,
+            and we&apos;ll flag your will for review. Heirloom does not give advice about these structures.
+          </p>
+          <TriageFlag />
         </div>
       )}
 

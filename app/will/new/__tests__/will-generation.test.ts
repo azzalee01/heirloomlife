@@ -1687,3 +1687,38 @@ describe('Adversarial — Robert Hartley (life interest)', () => {
     expect(blockers.some((b) => b.includes('LIFE_INTEREST'))).toBe(true)
   })
 })
+
+// ── Entity-held asset gate (interim trust/company/SMSF guard) ────────────────
+
+describe('Entity-held asset — trust/company/SMSF ownership blocks release', () => {
+  const formData = baseFormData({
+    assets: [
+      {
+        id: '1', assetType: 'real_estate', ownershipType: 'entity',
+        propertyAddress: '12 Trust St, Sydney', estimatedValue: '900000',
+        bankName: '', bsb: '', accountNumber: '',
+        fundName: '', memberNumber: '', companyName: '', numberOfShares: '',
+        insurerName: '', policyNumber: '', coverAmount: '',
+        make: '', model: '', year: '', rego: '',
+        accessLocation: '', description: '', otherValue: '',
+        hasDeathBenefitNomination: false, deathBenefitNominees: '', isOverseas: false, overseasCountry: '',
+      },
+    ],
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+  })
+
+  it('raises a SOLICITOR_REQUIRED ENTITY_HELD_ASSET flag', () => {
+    const flags = assessComplexityFlags(formData)
+    const flag = flags.find((f) => f.code === 'ENTITY_HELD_ASSET')
+    expect(flag).toBeDefined()
+    expect(flag?.severity).toBe('SOLICITOR_REQUIRED')
+    expect(maxSeverity(flags)).toBe('SOLICITOR_REQUIRED')
+  })
+
+  it('blocks the Will from being released for execution', () => {
+    const text = renderWillText(formData)
+    const { can, blockers } = canReleaseForExecution(formData, text)
+    expect(can).toBe(false)
+    expect(blockers.some((b) => b.includes('ENTITY_HELD_ASSET'))).toBe(true)
+  })
+})
