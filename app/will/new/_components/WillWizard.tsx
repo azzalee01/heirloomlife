@@ -237,6 +237,15 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     })
   }
 
+  // Convert a thrown save error into a short, friendly message. Server Action
+  // errors are opaque/redacted in production, so we surface a controlled message
+  // (keeping our own witnessing-lock wording when it survives to the client).
+  function friendlySaveError(e: unknown): string {
+    const msg = e instanceof Error ? e.message : ''
+    if (msg.toLowerCase().includes('witnessing session')) return msg
+    return 'We couldn’t save your progress just now. Please check your connection and try again.'
+  }
+
   async function handleNext() {
     // Eligibility step: no DB save, just validate and advance
     if (isEligibilityStep) {
@@ -271,34 +280,37 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
           setShowEmailCapture(true)
         }
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'Failed to save. Please try again.')
+        setError(friendlySaveError(e))
       } finally {
         setSaving(false)
       }
       return
     }
 
-    // willId exists — advance instantly, save in the background
-    setSlideDir('right')
-    setStepKey(k => k + 1)
-    setStepIndex(nextIndex)
-    scrollContentToTop()
-    if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
-      setShowEmailCapture(true)
+    // willId exists — save FIRST, advance only on success. A failed save (DB/RPC
+    // error, or a witnessing-lock conflict) must never let the user move past
+    // unsaved data, so this blocks rather than saving optimistically in the
+    // background.
+    setSaving(true)
+    try {
+      const willIdAtSave = form.willId
+      const { id: savedId } = await saveStep(willIdAtSave, currentStaticStep, form)
+      // If saveStep created a new will (e.g. anon UUID replaced after auth), sync the ID.
+      if (savedId !== willIdAtSave) {
+        setForm((prev) => ({ ...prev, willId: savedId }))
+      }
+      setSlideDir('right')
+      setStepKey(k => k + 1)
+      setStepIndex(nextIndex)
+      scrollContentToTop()
+      if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
+        setShowEmailCapture(true)
+      }
+    } catch (e) {
+      setError(friendlySaveError(e))
+    } finally {
+      setSaving(false)
     }
-
-    const willIdAtSave = form.willId
-    pendingSaveRef.current = saveStep(willIdAtSave, currentStaticStep, form)
-    pendingSaveRef.current
-      .then(({ id: savedId }) => {
-        // If saveStep created a new will (e.g. anon UUID replaced after auth), sync the ID
-        if (savedId !== willIdAtSave) {
-          setForm((prev) => ({ ...prev, willId: savedId }))
-        }
-      })
-      .catch((e) => {
-        setError(e instanceof Error ? e.message : 'Your progress may not have saved. Please try again.')
-      })
   }
 
   function handleBack() {
