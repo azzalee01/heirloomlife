@@ -3,17 +3,14 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/src/lib/supabase'
-
-// Only allow internal, single-slash paths as a post-signup destination.
-function sanitizeNext(raw: string | null): string {
-  if (!raw || !raw.startsWith('/') || raw.startsWith('//')) return '/dashboard'
-  return raw
-}
+import { sanitizeNext } from '../_shared'
+import CheckYourEmail from '../_components/CheckYourEmail'
 
 export default function SignUpPage() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
+  const [sentNext, setSentNext] = useState('/dashboard')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -29,10 +26,7 @@ export default function SignUpPage() {
 
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: {
-        data: { full_name: name },
-        emailRedirectTo: redirectTo,
-      },
+      options: { data: { full_name: name }, emailRedirectTo: redirectTo },
     })
 
     if (error) {
@@ -41,6 +35,9 @@ export default function SignUpPage() {
       return
     }
 
+    // Remember the email for one-click resend on an expired-link error screen.
+    document.cookie = `hl_auth_email=${encodeURIComponent(email)}; path=/auth; max-age=3600; samesite=lax`
+    setSentNext(next)
     setSent(true)
     setLoading(false)
   }
@@ -63,23 +60,15 @@ export default function SignUpPage() {
             Heirloom Life
           </Link>
 
-          {sent ? (
-            <>
-              <h1 className="mt-5 text-2xl font-semibold text-[var(--ink)]">Check your email</h1>
-              <p className="mt-2 text-sm text-[var(--neutral)]">
-                We sent a link to <strong className="text-[var(--ink)]">{email}</strong>.<br/>
-                Click it to open your account.
-              </p>
-            </>
-          ) : (
-            <>
-              <h1 className="mt-5 text-2xl font-semibold text-[var(--ink)]">Start your Will</h1>
-              <p className="mt-2 text-sm text-[var(--neutral)]">Create your account  -  no password needed</p>
-            </>
-          )}
+          <h1 className="mt-5 text-2xl font-semibold text-[var(--ink)]">
+            {sent ? 'Check your email' : 'Start your Will'}
+          </h1>
+          {!sent && <p className="mt-2 text-sm text-[var(--neutral)]">Create your account  -  no password needed</p>}
         </div>
 
-        {!sent && (
+        {sent ? (
+          <CheckYourEmail email={email} next={sentNext} signUp={{ fullName: name }} />
+        ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-[var(--ink)] mb-1.5">
@@ -122,10 +111,8 @@ export default function SignUpPage() {
               disabled={loading}
               className="w-full py-3 px-4 text-sm font-semibold text-white transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ backgroundColor: 'var(--teal)' }}
-              onMouseEnter={(e) => { if (!loading) (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--teal-deep)' }}
-              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'var(--teal)' }}
             >
-              {loading ? 'Sending link…' : 'Continue'}
+              {loading ? 'Sending…' : 'Continue'}
             </button>
           </form>
         )}

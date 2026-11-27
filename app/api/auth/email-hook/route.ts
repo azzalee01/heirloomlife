@@ -39,6 +39,8 @@ function otpType(action: string): string {
 interface EmailHookPayload {
   user: { email?: string }
   email_data: {
+    token: string        // 6-digit OTP code (fallback to the link)
+    token_new?: string
     token_hash: string
     token_hash_new?: string
     redirect_to?: string
@@ -72,10 +74,14 @@ export async function POST(request: NextRequest) {
   }
 
   const to = payload.user?.email
-  const { email_action_type: action, token_hash, token_hash_new, redirect_to } = payload.email_data
+  const { email_action_type: action, token, token_new, token_hash, token_hash_new, redirect_to } = payload.email_data
   if (!to || !token_hash) {
     return NextResponse.json({ error: { http_code: 400, message: 'Malformed payload' } }, { status: 400 })
   }
+
+  // The 6-digit code fallback (enter-the-code path on the sign-in screens),
+  // matched to the same action as the link.
+  const code = action === 'email_change_new' && token_new ? token_new : token
 
   // Carry the post-auth destination from the original signInWithOtp emailRedirectTo
   // (e.g. /auth/callback?next=/will/new) through to the confirm redirect.
@@ -97,7 +103,7 @@ export async function POST(request: NextRequest) {
     `&next=${encodeURIComponent(next)}`
 
   try {
-    await sendAuthEmail({ to, action, confirmUrl })
+    await sendAuthEmail({ to, action, confirmUrl, code })
   } catch (err) {
     console.error(`Auth email hook: failed to send ${action} email to ${to}:`, err)
     return NextResponse.json({ error: { http_code: 500, message: 'Failed to send email' } }, { status: 500 })
