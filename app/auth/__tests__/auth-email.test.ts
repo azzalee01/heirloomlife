@@ -31,15 +31,16 @@ describe('renderAuthEmail', () => {
     expect(html).toContain(URL)
   })
 
-  it('renders the 6-digit code when provided (check 2)', () => {
-    const { html } = renderAuthEmail('magiclink', URL, '483920')
-    expect(html).toContain('483920')
-    expect(html).toMatch(/6-digit code/i)
+  it('renders the emailed code when provided — 8 digits, generic copy', () => {
+    const { html } = renderAuthEmail('magiclink', URL, '48392017')
+    expect(html).toContain('48392017')
+    expect(html).toMatch(/enter this code/i)
+    expect(html).not.toMatch(/6-digit/i) // copy is length-agnostic
   })
 
   it('omits the code section entirely when no code (no literal "undefined")', () => {
     const { html } = renderAuthEmail('magiclink', URL)
     expect(html).not.toMatch(/undefined/)
-    expect(html).not.toMatch(/6-digit code/i)
+    expect(html).not.toMatch(/enter this code/i)
   })
 })

@@ -143,13 +143,12 @@ export async function saveStep(
     return { id: await saveToAnonSession(formData), versionId: null }
   }
 
-  // Ensure a profiles row exists (fallback for users predating the trigger)
-  await supabase
-    .from('profiles')
-    .upsert(
-      { id: user.id, email: user.email ?? '', full_name: user.user_metadata?.full_name ?? null },
-      { onConflict: 'id', ignoreDuplicates: true }
-    )
+  // Timing for the save round-trip (region + query-count tuning).
+  const started = Date.now()
+
+  // NOTE: the per-save profiles upsert was removed — the handle_new_user DB
+  // trigger creates the profiles row on signup, and auth sign-in upserts it too,
+  // so it was a redundant round-trip on every save.
 
   // Create will record on the first save
   let id = willId
@@ -237,8 +236,6 @@ export async function saveStep(
               distribution_age: c.isDependent ? vestingAge : null,
             }))
           : []
-      await replaceRows(supabase, 'children', id, childRows)
-
       const hasMinors = cd.hasChildren === 'yes' && cd.children.some((c) => c.isDependent)
       const guardianRows =
         hasMinors && cd.guardian.firstName
@@ -255,7 +252,11 @@ export async function saveStep(
               },
             ]
           : []
-      await replaceRows(supabase, 'guardians', id, guardianRows)
+      // children and guardians are independent tables — write them concurrently.
+      await Promise.all([
+        replaceRows(supabase, 'children', id, childRows),
+        replaceRows(supabase, 'guardians', id, guardianRows),
+      ])
       break
     }
 
@@ -416,12 +417,10 @@ export async function saveStep(
   // Keep triage_flags current on every step save.
   await supabase.from('wills').update({ triage_flags: formData.triageFlags }).eq('id', id)
 
-  // Post-mutation race check: catch any session that went in_progress during
-  // the write window (after the pre-mutation RPC but before mutations completed).
-  // Always runs for existing wills so the race window is never skipped.
-  if (willId !== null) {
-    await markSessionsStaleAfterEdit(id!)
-  }
+  // (Removed the post-mutation markSessionsStaleAfterEdit round-trip: the
+  // pre-mutation will_edit_lock RPC already marks scheduled sessions stale, and
+  // the will_versions_signing_lock trigger on the recordVersion insert below
+  // blocks + compensates for any session that turned in_progress mid-write.)
 
   // Snapshot the resulting state into version history (skip 'review').
   // If version recording fails: mark ALL active sessions stale immediately.
@@ -462,6 +461,7 @@ export async function saveStep(
     }
   }
 
+  console.log(`[saveStep] step=${step} ${Date.now() - started}ms`)
   return { id: id!, versionId }
 }
 

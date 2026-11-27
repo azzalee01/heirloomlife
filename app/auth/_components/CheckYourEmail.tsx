@@ -61,24 +61,24 @@ export default function CheckYourEmail({
   return (
     <div className="text-left">
       <p className="text-sm text-[var(--neutral)] text-center mb-6">
-        We sent a sign-in link and a 6-digit code to{' '}
+        We sent a sign-in link and a code to{' '}
         <strong className="text-[var(--ink)]">{email}</strong>.
       </p>
 
       <form onSubmit={verifyCode} className="space-y-3">
         <label htmlFor="otp" className="block text-sm font-medium text-[var(--ink)]">
-          Enter the 6-digit code
+          Enter the code from your email
         </label>
         <input
           id="otp"
           inputMode="numeric"
           autoComplete="one-time-code"
           pattern="[0-9]*"
-          maxLength={6}
+          maxLength={10}
           value={code}
-          onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+          onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 10))}
           className={inp}
-          placeholder="123456"
+          placeholder="Enter the code"
         />
 
         {error && (
