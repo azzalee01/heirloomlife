@@ -79,7 +79,7 @@ export function renderAuthEmail(action: string, confirmUrl: string, code?: strin
   const codeBlock = code
     ? `
       <div style="margin:28px 0 0;padding-top:20px;border-top:1px solid #ECECEA;">
-        <p style="margin:0 0 8px;color:#8A8D87;font-size:12px;">Or enter this 6-digit code on the sign-in screen:</p>
+        <p style="margin:0 0 8px;color:#8A8D87;font-size:12px;">Or enter this code on the sign-in screen:</p>
         <p style="margin:0;font-family:'DM Sans',monospace;font-size:28px;font-weight:700;letter-spacing:8px;color:#0E1310;">${code}</p>
       </div>`
     : ''

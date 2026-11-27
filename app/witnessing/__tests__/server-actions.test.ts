@@ -321,25 +321,19 @@ describe('saveStep — version recording failure triggers stale compensation', (
 
     // Active session IDs that should be marked stale
     const activeSessionIds = ['sess-x', 'sess-y']
-    const markedIds: string[] = []
 
-    // Call order (from saveStep):
-    //   1. markSessionsStaleAfterEdit race check (in_progress only) → []
-    //   2. Compensating action select (scheduled + in_progress) → active sessions
-    //   3. Compensating action update (version_stale = true) → succeeds
+    // Call order (from saveStep, now that the per-save markSessionsStaleAfterEdit
+    // round-trip is removed): the only witnessing_sessions calls are the
+    // compensating action — select (scheduled + in_progress) then update.
     let adminWitCallCount = 0
     mockFrom.mockImplementation((table: string) => {
       if (table !== 'witnessing_sessions') return chain({ data: null, error: null })
       adminWitCallCount++
       if (adminWitCallCount === 1) {
-        // markSessionsStaleAfterEdit: no in_progress races
-        return chain({ data: [], error: null })
-      }
-      if (adminWitCallCount === 2) {
         // Compensating select: return active sessions
         return chain({ data: activeSessionIds.map(id => ({ id })), error: null })
       }
-      // adminWitCallCount === 3: compensating update → succeeds
+      // adminWitCallCount === 2: compensating update → succeeds
       return chain({ data: null, error: null })
     })
 
@@ -370,8 +364,8 @@ describe('saveStep — version recording failure triggers stale compensation', (
     await expect(saveStep(WILL_ID, 'personal', buildFormData())).rejects.toThrow()
 
     // The compensating stale action must have run before the throw:
-    // call 1 = markSessionsStaleAfterEdit race check, call 2+ = compensating select.
-    expect(adminWitCallCount).toBeGreaterThanOrEqual(2)
+    // call 1 = compensating select, call 2 = compensating update.
+    expect(adminWitCallCount).toBe(2)
   })
 })
 

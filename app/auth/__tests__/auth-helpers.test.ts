@@ -54,6 +54,13 @@ describe('verifyEmailCode (code type per flow + fallback)', () => {
     expect(v.mock.calls[0][0].type).toBe('signup')
   })
 
+  it('handles an 8-digit code (length-agnostic — Supabase emits 8 digits)', async () => {
+    const v = vi.fn().mockResolvedValue({ error: null })
+    const r = await verifyEmailCode(v, { email: 'a@b.com', token: '48392017', isSignUp: false })
+    expect(r.error).toBeNull()
+    expect(v).toHaveBeenCalledWith({ email: 'a@b.com', token: '48392017', type: 'email' })
+  })
+
   it('returns the error when both types fail', async () => {
     const v = vi.fn()
       .mockResolvedValueOnce({ error: { message: 'first' } })
