@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
 import { validateStep } from '../_step-validate'
+import { firstIncompleteStep } from '../_resume'
 import { track } from '@/src/lib/analytics/events'
 import {
   type WillFormData,
@@ -183,9 +184,11 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     buildWizardSteps(initialData)
   )
   const [stepIndex, setStepIndex] = useState(() => {
-    if (!initialStep) return 0
     const steps = buildWizardSteps(initialData)
-    const idx = steps.indexOf(initialStep)
+    // An explicit initialStep wins; otherwise resume a saved draft at the first
+    // incomplete step so reopening doesn't strand the user on Eligibility (locked).
+    const target = initialStep ?? firstIncompleteStep(initialData)
+    const idx = steps.indexOf(target)
     return idx >= 0 ? idx : 0
   })
   const [saving, setSaving] = useState(false)

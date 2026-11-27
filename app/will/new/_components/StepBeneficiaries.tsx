@@ -337,15 +337,10 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
                   <FieldError msg={fe[`beneficiary:${person.id}:percentage`]} />
                 </div>
               </div>
-              <div>
-                <label className={lbl}>If they don&apos;t survive me, their share goes to (optional)</label>
-                <input
-                  className={inp}
-                  placeholder="e.g. Their children equally, or a named person"
-                  value={person.substituteBeneficiary}
-                  onChange={(e) => updatePerson(person.id, { substituteBeneficiary: e.target.value })}
-                />
-              </div>
+              {/* Substitute/backup for each person is set on the dedicated
+                  "Backup for <name>" step (presets + custom). The old inline
+                  free-text input here showed raw preset sentinels like
+                  "__their_children__" after a reload, so it was removed. */}
             </div>
           ))
         )}
