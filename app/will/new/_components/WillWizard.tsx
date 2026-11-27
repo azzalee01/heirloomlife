@@ -313,6 +313,34 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     }
   }
 
+  // Backup step "Skip — I'll decide later": clear this beneficiary's substitute
+  // and advance. Blocking save (like handleNext) so a failed save can't advance.
+  async function handleBackupSkip() {
+    if (backupIndex < 0) return
+    const people = form.beneficiariesData.people.map((p, i) =>
+      i === backupIndex ? { ...p, substituteBeneficiary: '' } : p
+    )
+    const nextForm: WillFormData = { ...form, beneficiariesData: { ...form.beneficiariesData, people } }
+    setForm(nextForm)
+    setError(null)
+    const nextIndex = Math.min(stepIndex + 1, wizardSteps.length - 1)
+    setSaving(true)
+    try {
+      if (nextForm.willId) {
+        const { id: savedId } = await saveStep(nextForm.willId, 'beneficiaries', nextForm)
+        if (savedId !== nextForm.willId) setForm((prev) => ({ ...prev, willId: savedId }))
+      }
+      setSlideDir('right')
+      setStepKey((k) => k + 1)
+      setStepIndex(nextIndex)
+      scrollContentToTop()
+    } catch (e) {
+      setError(friendlySaveError(e))
+    } finally {
+      setSaving(false)
+    }
+  }
+
   function handleBack() {
     setError(null)
     setSlideDir('left')
@@ -468,11 +496,17 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
           <div className="flex gap-8 items-start sm:mt-6">
             <div className="flex-1 min-w-0">
 
-              {error && (
-                <div className="text-sm text-red-600 bg-red-50 border-b border-red-100 px-5 py-3 sm:border sm:mb-4">
-                  {error}
-                </div>
-              )}
+              {/* Reserved inline slot: on desktop the Next button lives inside the
+                  step card, so showing/clearing this error must not shift it. The
+                  slot holds a stable min-height on sm+; on mobile the nav is a fixed
+                  bottom bar, so no reservation is needed there. */}
+              <div aria-live="polite" className="sm:min-h-[3.5rem]">
+                {error && (
+                  <div role="alert" className="text-sm text-red-600 bg-red-50 border-b border-red-100 px-5 py-3 sm:border sm:mb-4">
+                    {error}
+                  </div>
+                )}
+              </div>
 
               {/* Step card — borderless full-bleed on mobile, framed on sm+ */}
               <div
@@ -553,6 +587,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                       )
                       update('beneficiariesData', { ...form.beneficiariesData, people })
                     }}
+                    onSkip={handleBackupSkip}
                   />
                 )}
                 {currentStaticStep === 'gifts' && (
