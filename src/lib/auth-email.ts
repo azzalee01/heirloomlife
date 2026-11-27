@@ -74,8 +74,15 @@ function copyFor(action: string): Copy {
   return COPY[action] ?? FALLBACK
 }
 
-export function renderAuthEmail(action: string, confirmUrl: string): { subject: string; html: string } {
+export function renderAuthEmail(action: string, confirmUrl: string, code?: string): { subject: string; html: string } {
   const c = copyFor(action)
+  const codeBlock = code
+    ? `
+      <div style="margin:28px 0 0;padding-top:20px;border-top:1px solid #ECECEA;">
+        <p style="margin:0 0 8px;color:#8A8D87;font-size:12px;">Or enter this 6-digit code on the sign-in screen:</p>
+        <p style="margin:0;font-family:'DM Sans',monospace;font-size:28px;font-weight:700;letter-spacing:8px;color:#0E1310;">${code}</p>
+      </div>`
+    : ''
   const html = `
     <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
       <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
@@ -88,6 +95,7 @@ export function renderAuthEmail(action: string, confirmUrl: string): { subject: 
       <a href="${confirmUrl}" style="display:inline-block;padding:12px 28px;background:#2AB4AE;color:#ffffff;font-size:14px;font-weight:600;text-decoration:none;border-radius:4px;">
         ${c.cta}
       </a>
+      ${codeBlock}
       <p style="margin:24px 0 0;color:#8A8D87;font-size:12px;line-height:1.5;">
         If the button doesn’t work, copy and paste this link into your browser:<br/>
         <a href="${confirmUrl}" style="color:#2AB4AE;word-break:break-all;">${confirmUrl}</a>
@@ -101,8 +109,8 @@ export function renderAuthEmail(action: string, confirmUrl: string): { subject: 
   return { subject: c.subject, html }
 }
 
-export async function sendAuthEmail(params: { to: string; action: string; confirmUrl: string }): Promise<void> {
-  const { to, action, confirmUrl } = params
-  const { subject, html } = renderAuthEmail(action, confirmUrl)
+export async function sendAuthEmail(params: { to: string; action: string; confirmUrl: string; code?: string }): Promise<void> {
+  const { to, action, confirmUrl, code } = params
+  const { subject, html } = renderAuthEmail(action, confirmUrl, code)
   await resendClient().emails.send({ from: FROM_ADDRESS, to, subject, html })
 }

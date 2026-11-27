@@ -30,4 +30,16 @@ describe('renderAuthEmail', () => {
     expect(subject).toBe('Heirloom Life')
     expect(html).toContain(URL)
   })
+
+  it('renders the 6-digit code when provided (check 2)', () => {
+    const { html } = renderAuthEmail('magiclink', URL, '483920')
+    expect(html).toContain('483920')
+    expect(html).toMatch(/6-digit code/i)
+  })
+
+  it('omits the code section entirely when no code (no literal "undefined")', () => {
+    const { html } = renderAuthEmail('magiclink', URL)
+    expect(html).not.toMatch(/undefined/)
+    expect(html).not.toMatch(/6-digit code/i)
+  })
 })
