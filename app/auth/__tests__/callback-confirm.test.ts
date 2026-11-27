@@ -3,12 +3,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 // Drive verify/exchange outcomes without a live project. redirect() is mocked to
 // throw a sentinel so we can read the destination (the real one throws too).
 // vi.hoisted so the mock factories (hoisted above imports) can reference them.
-const { mockExchange, mockVerify, mockGetUser, mockUpsert, mockRedirect } = vi.hoisted(() => ({
+const { mockExchange, mockVerify, mockGetUser, mockUpsert, mockRedirect, mockCookieGet, mockCookieSet } = vi.hoisted(() => ({
   mockExchange: vi.fn(),
   mockVerify: vi.fn(),
   mockGetUser: vi.fn(),
   mockUpsert: vi.fn(),
   mockRedirect: vi.fn((url: string) => { throw new Error(`REDIRECT:${url}`) }),
+  mockCookieGet: vi.fn(() => undefined),
+  mockCookieSet: vi.fn(),
 }))
 
 vi.mock('@/src/lib/supabase-ssr', () => ({
@@ -23,6 +25,9 @@ vi.mock('@/src/lib/supabase-ssr', () => ({
 }))
 
 vi.mock('next/navigation', () => ({ redirect: mockRedirect }))
+vi.mock('next/headers', () => ({ cookies: vi.fn(async () => ({ get: mockCookieGet, set: mockCookieSet })) }))
+
+const NO_USER = { data: { user: null } }
 
 import { confirmOtpAction, exchangeCodeAction } from '@/app/auth/_actions'
 import ConfirmPage from '@/app/auth/confirm/page'
@@ -49,12 +54,33 @@ beforeEach(() => {
 
 describe('GET does not verify the token (link-scanner safety)', () => {
   it('rendering /auth/confirm does not call verifyOtp', async () => {
+    mockGetUser.mockResolvedValue(NO_USER)
     await ConfirmPage({ searchParams: Promise.resolve({ token_hash: 't', type: 'magiclink', next: '/dashboard' }) })
     expect(mockVerify).not.toHaveBeenCalled()
   })
 
   it('rendering /auth/callback does not call exchangeCodeForSession', async () => {
+    mockGetUser.mockResolvedValue(NO_USER)
     await CallbackPage({ searchParams: Promise.resolve({ code: 'c', next: '/dashboard' }) })
+    expect(mockExchange).not.toHaveBeenCalled()
+  })
+})
+
+// Check 5: an already-signed-in user must not hit a dead-end — redirect to next,
+// and still never touch the token.
+describe('already signed in → redirect (no dead-end, no verify)', () => {
+  it('/auth/confirm redirects a signed-in user to next', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: { id: 'u1' } } })
+    const d = await dest(ConfirmPage({ searchParams: Promise.resolve({ token_hash: 't', type: 'magiclink', next: '/will/new' }) }) as unknown as Promise<void>)
+    expect(d).toMatch(/\/will\/new$/)
+    expect(mockVerify).not.toHaveBeenCalled()
+  })
+
+  it('/auth/callback redirects a signed-in user to /dashboard', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: { id: 'u1' } } })
+    const d = await dest(CallbackPage({ searchParams: Promise.resolve({ code: 'c', next: '//evil.com' }) }) as unknown as Promise<void>)
+    expect(d).toContain('/dashboard?welcome=1')
+    expect(d).not.toContain('evil.com')
     expect(mockExchange).not.toHaveBeenCalled()
   })
 })

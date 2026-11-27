@@ -1,9 +1,15 @@
 // Shared, non-action helpers for the auth confirm/callback flow.
 
-// Only allow internal, single-slash paths as a redirect target (no open redirects).
+// Same-origin relative paths only — defends against open redirects.
+// Requires a single leading slash, and rejects:
+//   - protocol-relative "//evil.com"
+//   - backslash tricks "/\evil.com" / "/\/evil.com" (browsers treat \ as /)
+//   - schemes "https://…", "javascript:…" (no leading slash → rejected)
 export function sanitizeNext(raw: string | null | undefined): string {
   const s = typeof raw === 'string' ? raw : ''
-  if (!s || !s.startsWith('/') || s.startsWith('//')) return '/dashboard'
+  if (!s.startsWith('/')) return '/dashboard'
+  if (s.startsWith('//')) return '/dashboard'
+  if (s.includes('\\')) return '/dashboard'
   return s
 }
 

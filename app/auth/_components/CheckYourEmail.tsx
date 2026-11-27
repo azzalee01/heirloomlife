@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/src/lib/supabase'
 import { destFor } from '../_shared'
+import { verifyEmailCode } from '../_verify-code'
+import { clearAuthEmail } from '../_actions'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 
@@ -30,12 +32,17 @@ export default function CheckYourEmail({
     setError(null)
     setLoading(true)
     // Email OTP code verification (works cross-device — the token isn't device-bound).
-    const { error } = await supabase.auth.verifyOtp({ email, token: code.trim(), type: 'email' })
+    // Sign-up uses type 'signup', sign-in uses 'email', with fallback either way.
+    const { error } = await verifyEmailCode(
+      (p) => supabase.auth.verifyOtp(p),
+      { email, token: code.trim(), isSignUp: Boolean(signUp) }
+    )
     if (error) {
       setError('That code is invalid or has expired. Check the most recent email, or resend below.')
       setLoading(false)
       return
     }
+    await clearAuthEmail() // signed in — drop the remembered-email cookie
     router.push(destFor(next))
   }
 

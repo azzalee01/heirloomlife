@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/src/lib/supabase'
 import { sanitizeNext } from '../_shared'
+import { rememberAuthEmail, resendAuthLink } from '../_actions'
 import CheckYourEmail from '../_components/CheckYourEmail'
 
 const LINK_ERRORS: Record<string, string> = {
@@ -11,81 +12,47 @@ const LINK_ERRORS: Record<string, string> = {
   link: 'That sign-in link was invalid. Get a new one below.',
 }
 
-const AUTH_EMAIL_COOKIE = 'hl_auth_email'
-
-function rememberEmail(email: string) {
-  document.cookie = `${AUTH_EMAIL_COOKIE}=${encodeURIComponent(email)}; path=/auth; max-age=3600; samesite=lax`
-}
-function readRememberedEmail(): string | null {
-  const m = document.cookie.match(/(?:^|; )hl_auth_email=([^;]+)/)
-  return m ? decodeURIComponent(m[1]) : null
-}
-
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
   const [sentNext, setSentNext] = useState('/dashboard')
-  const [error, setError] = useState<string | null>(() => {
+  const [params] = useState<{ error: string | null; resent: boolean }>(() => {
     try {
-      const code = new URLSearchParams(window.location.search).get('error')
-      return code ? LINK_ERRORS[code] ?? null : null
+      const sp = new URLSearchParams(window.location.search)
+      return { error: sp.get('error'), resent: sp.get('resent') === '1' }
     } catch {
-      return null
+      return { error: null, resent: false }
     }
   })
-  // When we arrive from an expired/invalid link, offer one-click resend if we
-  // remember the email the link was sent to.
-  const [rememberedEmail] = useState<string | null>(() => {
-    try {
-      const hasError = new URLSearchParams(window.location.search).get('error')
-      return hasError ? readRememberedEmail() : null
-    } catch {
-      return null
-    }
-  })
+  const [error, setError] = useState<string | null>(params.error ? LINK_ERRORS[params.error] ?? null : null)
   const [loading, setLoading] = useState(false)
 
   function currentNext(): string {
     return sanitizeNext(new URLSearchParams(window.location.search).get('next'))
   }
 
-  async function sendLink(toEmail: string): Promise<string | null> {
-    const next = currentNext()
-    const { error } = await supabase.auth.signInWithOtp({
-      email: toEmail,
-      // shouldCreateUser: false so a typo'd/unknown email doesn't silently create
-      // an empty account — we tell them to sign up instead.
-      options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
-    })
-    if (error) return error.message
-    rememberEmail(toEmail)
-    setSentNext(next)
-    return null
-  }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
     setLoading(true)
-    const err = await sendLink(email)
-    if (err) {
-      setError(/not.*found|signups? not allowed|user.*not/i.test(err)
+    const next = currentNext()
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      // shouldCreateUser: false so a typo'd/unknown email doesn't silently create
+      // an empty account — we tell them to sign up instead.
+      options: { shouldCreateUser: false, emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}` },
+    })
+    if (error) {
+      setError(/not.*found|signups? not allowed|user.*not/i.test(error.message)
         ? "We couldn't find an account for that email. Create one instead."
-        : err)
+        : error.message)
       setLoading(false)
       return
     }
+    await rememberAuthEmail(email) // httpOnly cookie for one-click resend on an expired link
+    setSentNext(next)
     setSent(true)
     setLoading(false)
-  }
-
-  async function resendFromError() {
-    if (!rememberedEmail) return
-    setError(null)
-    const err = await sendLink(rememberedEmail)
-    if (err) { setError(err); return }
-    setEmail(rememberedEmail)
-    setSent(true)
   }
 
   const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
@@ -132,18 +99,21 @@ export default function LoginPage() {
               />
             </div>
 
+            {params.resent && !error && (
+              <p className="text-sm text-[var(--teal-deep)] bg-[var(--paper-warm)] border border-[var(--line)] px-3 py-2">
+                We’ve sent a fresh sign-in link and code to your email.
+              </p>
+            )}
+
             {error && (
               <div className="text-sm text-red-600 bg-red-50 border border-red-100 px-3 py-2">
                 <p>{error}</p>
-                {rememberedEmail && (
-                  <button
-                    type="button"
-                    onClick={resendFromError}
-                    className="mt-1.5 font-semibold text-[var(--teal)]"
-                  >
-                    Resend sign-in link to {rememberedEmail}
+                {/* One-click resend — reads the httpOnly remembered-email cookie server-side. */}
+                <form action={resendAuthLink} className="mt-1.5">
+                  <button type="submit" className="font-semibold text-[var(--teal)]">
+                    Resend sign-in link
                   </button>
-                )}
+                </form>
               </div>
             )}
 

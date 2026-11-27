@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { Webhook } from 'standardwebhooks'
 import { sendAuthEmail } from '@/src/lib/auth-email'
+import { sanitizeNext } from '@/app/auth/_shared'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,12 +15,6 @@ export const dynamic = 'force-dynamic'
 // when you enable the hook). RESEND_API_KEY + RESEND_FROM_ADDRESS are reused.
 
 const APP_URL = (process.env.NEXT_PUBLIC_APP_URL ?? process.env.APP_URL ?? 'http://localhost:3000').replace(/\/$/, '')
-
-// Only allow internal, single-slash paths through to the confirm redirect.
-function sanitizeNext(raw: string | null): string {
-  if (!raw || !raw.startsWith('/') || raw.startsWith('//')) return '/dashboard'
-  return raw
-}
 
 // Supabase email_action_type -> verifyOtp type (EmailOtpType). The /auth/confirm
 // route passes this straight to supabase.auth.verifyOtp({ type }).
@@ -39,7 +34,7 @@ function otpType(action: string): string {
 interface EmailHookPayload {
   user: { email?: string }
   email_data: {
-    token: string        // 6-digit OTP code (fallback to the link)
+    token?: string       // 6-digit OTP code (fallback to the link); omit if absent
     token_new?: string
     token_hash: string
     token_hash_new?: string

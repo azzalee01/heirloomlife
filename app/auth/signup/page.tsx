@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { supabase } from '@/src/lib/supabase'
 import { sanitizeNext } from '../_shared'
+import { rememberAuthEmail } from '../_actions'
 import CheckYourEmail from '../_components/CheckYourEmail'
 
 export default function SignUpPage() {
@@ -35,8 +36,8 @@ export default function SignUpPage() {
       return
     }
 
-    // Remember the email for one-click resend on an expired-link error screen.
-    document.cookie = `hl_auth_email=${encodeURIComponent(email)}; path=/auth; max-age=3600; samesite=lax`
+    // Remember the email (httpOnly cookie) for one-click resend on an expired link.
+    await rememberAuthEmail(email)
     setSentNext(next)
     setSent(true)
     setLoading(false)

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { exchangeCodeAction } from '../_actions'
-import { sanitizeNext } from '../_shared'
+import { sanitizeNext, destFor } from '../_shared'
 import AuthCard from '../_components/AuthCard'
 import ContinueButton from '../_components/ContinueButton'
 
@@ -18,6 +20,11 @@ export default async function CallbackPage({
   const sp = await searchParams
   const code = sp.code ?? ''
   const next = sanitizeNext(sp.next)
+
+  // Already signed in? Skip the interstitial (session lookup, not a code exchange).
+  const supabase = await createSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) redirect(destFor(next))
 
   if (!code) {
     return (

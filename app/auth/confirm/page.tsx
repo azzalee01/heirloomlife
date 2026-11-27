@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { confirmOtpAction } from '../_actions'
-import { sanitizeNext } from '../_shared'
+import { sanitizeNext, destFor } from '../_shared'
 import AuthCard from '../_components/AuthCard'
 import ContinueButton from '../_components/ContinueButton'
 
@@ -20,6 +22,14 @@ export default async function ConfirmPage({
   const tokenHash = sp.token_hash ?? ''
   const type = sp.type ?? ''
   const next = sanitizeNext(sp.next)
+
+  // Already signed in? Skip the interstitial — just go where they were headed.
+  // This is a session lookup, NOT token verification, so it never consumes the
+  // one-time token (and scanners have no session, so they still see the page).
+  const supabase = await createSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) redirect(destFor(next))
+
   const valid = Boolean(tokenHash && type)
 
   if (!valid) {
