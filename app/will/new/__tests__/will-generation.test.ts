@@ -13,6 +13,7 @@ import { renderWillText } from '../_render'
 import { assessComplexityFlags, maxSeverity } from '../_complexity'
 import { resolveSubstituteBeneficiaryText, splitFullName, normalizeChildName } from '../_types'
 import { validateStep } from '../_step-validate'
+import { firstIncompleteStep } from '../_resume'
 import type { WillFormData } from '../_types'
 
 // ── Base fixture helpers ──────────────────────────────────────────────────────
@@ -1855,5 +1856,27 @@ describe('Charity beneficiary required-field validation', () => {
       },
     })
     expect(Object.keys(validateStep('beneficiaries', ok))).toHaveLength(0)
+  })
+})
+
+describe('firstIncompleteStep (draft resume)', () => {
+  it('a fresh draft with no eligibility data → eligibility', () => {
+    const fd = baseFormData({ personalDetails: basePerson({ state: '', dateOfBirth: '' }) })
+    expect(firstIncompleteStep(fd)).toBe('eligibility')
+  })
+
+  it('eligibility done but no name → personal', () => {
+    const fd = baseFormData({ personalDetails: basePerson({ firstName: '', lastName: '' }) })
+    expect(firstIncompleteStep(fd)).toBe('personal')
+  })
+
+  it('through executors but no beneficiary → beneficiaries (not Eligibility)', () => {
+    const fd = baseFormData({ beneficiariesData: { people: [], charities: [] } })
+    expect(firstIncompleteStep(fd)).toBe('beneficiaries')
+  })
+
+  it('a complete draft → review', () => {
+    const fd = baseFormData({ beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] } })
+    expect(firstIncompleteStep(fd)).toBe('review')
   })
 })
