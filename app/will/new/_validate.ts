@@ -115,6 +115,17 @@ export function validateWillForGeneration(formData: WillFormData): ValidationRes
     plainErrors.push('Alternate executor: last name is required when a first name is provided.')
   }
 
+  // ── Guardian (required when there are dependent/minor children) ───────────
+  const hasMinors =
+    formData.childrenData.hasChildren === 'yes' &&
+    formData.childrenData.children.some((c) => c.isDependent)
+  if (hasMinors) {
+    const g = formData.childrenData.guardian
+    if (!g.firstName.trim() || !g.lastName.trim() || !g.relationship.trim()) {
+      plainErrors.push('A guardian (first name, last name and relationship) is required when you have dependent children.')
+    }
+  }
+
   // ── Beneficiaries ─────────────────────────────────────────────────────────
   const activePeople = formData.beneficiariesData.people.filter(
     (p) => p.name.trim() && pct(p.percentage) > 0

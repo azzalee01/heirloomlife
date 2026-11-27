@@ -297,7 +297,7 @@ export function renderWillText(formData: WillFormData): string {
     let text =
       `${next()}. CHILDREN\n\n` +
       `My children are: ${formData.childrenData.children.map((c) => fullName(c.firstName, c.lastName)).join(', ')}.`
-    if (hasDependent && formData.childrenData.guardian.firstName) {
+    if (hasDependent && formData.childrenData.guardian.firstName.trim() && formData.childrenData.guardian.lastName.trim()) {
       const g = formData.childrenData.guardian
       text += ` Should any of my children be minors at the time of my death, I appoint ${fullName(g.firstName, g.lastName)}${g.relationship ? ` (${g.relationship})` : ''} as their guardian.`
     }

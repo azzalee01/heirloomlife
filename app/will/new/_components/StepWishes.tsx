@@ -161,7 +161,14 @@ export default function StepWishes({ formData, hasDependentChildren, onChange }:
           which it passes to your children.
         </p>
         {li.enabled && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          <div className="space-y-4 pt-1">
+            <div className="border border-amber-100 bg-amber-50 px-3 py-2.5">
+              <p className="text-xs text-amber-700">
+                A life interest / right to reside needs a solicitor. <strong>It isn&apos;t included in your template Will.</strong>{' '}
+                We&apos;ll record your wishes here, flag your Will for review, and connect you with a partner lawyer to draft it.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
               <label className={lbl}>Property</label>
               <input className={inp} placeholder="e.g. My home at 123 Example Street" value={li.propertyDescription} onChange={(e) => setLifeInterest({ propertyDescription: e.target.value })} />
@@ -191,37 +198,14 @@ export default function StepWishes({ formData, hasDependentChildren, onChange }:
               <label className={lbl}>Relationship</label>
               <input className={inp} value={li.remainderBeneficiaryRelationship} onChange={(e) => setLifeInterest({ remainderBeneficiaryRelationship: e.target.value })} />
             </div>
+            </div>
           </div>
         )}
       </section>
 
-      {/* Overseas assets / jurisdictions */}
-      <section className="space-y-3">
-        <p className={eyebrow}>International Assets</p>
-        <label className="flex items-center gap-2.5 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={formData.assetsOutsideAustralia}
-            onChange={(e) => onChange({ assetsOutsideAustralia: e.target.checked })}
-            className="w-4 h-4 accent-[var(--teal)]"
-          />
-          <span className="text-sm text-[var(--ink)]">I own assets outside Australia</span>
-        </label>
-        {formData.assetsOutsideAustralia && (
-          <div className="space-y-2">
-            <div>
-              <label className={lbl}>Which countries?</label>
-              <input
-                className={inp}
-                placeholder="e.g. New Zealand, United Kingdom"
-                value={formData.otherJurisdictions}
-                onChange={(e) => onChange({ otherJurisdictions: e.target.value })}
-              />
-            </div>
-            <TriageFlag />
-          </div>
-        )}
-      </section>
+      {/* Overseas assets are captured per-asset on the Assets step ("located
+          outside Australia"), which raises the OVERSEAS_ASSETS review flag. The
+          redundant top-level checkbox was removed. */}
 
       {/* Situation */}
       <section className="space-y-4">

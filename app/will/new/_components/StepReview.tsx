@@ -19,6 +19,7 @@ function triggeredFlagLabels(formData: WillFormData): string[] {
   if (formData.triageFlags.hasVulnerableBeneficiary) labels.push('a beneficiary with a disability or condition affecting mental capacity')
   if (formData.triageFlags.hasBeneficiaryFinancialChallenges) labels.push('a beneficiary with difficulty managing money')
   if (formData.triageFlags.hasComplexTrusts) labels.push('complex trust structures')
+  if (formData.lifeInterest.enabled) labels.push('a life interest or right to reside (needs bespoke solicitor drafting — not included in the template Will)')
   return labels
 }
 

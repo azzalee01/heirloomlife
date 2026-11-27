@@ -14,9 +14,15 @@ interface Props {
   data: ChildrenData
   onChange: (data: ChildrenData) => void
   extractedFields?: Set<string>
+  fieldErrors?: Record<string, string>
 }
 
-export default function StepChildren({ data, onChange, extractedFields }: Props) {
+function FieldError({ msg }: { msg?: string }) {
+  return msg ? <p className="mt-1 text-xs text-red-600">{msg}</p> : null
+}
+
+export default function StepChildren({ data, onChange, extractedFields, fieldErrors }: Props) {
+  const fe = fieldErrors ?? {}
   const hasExtracted = extractedFields && (
     extractedFields.has('childrenData.children') ||
     extractedFields.has('childrenData.hasChildren') ||
@@ -96,10 +102,12 @@ export default function StepChildren({ data, onChange, extractedFields }: Props)
                 <div>
                   <label className={lbl}>First name <span className="text-red-400">*</span></label>
                   <input required className={inp} value={child.firstName} onChange={(e) => updateChild(child.id, { firstName: e.target.value })} />
+                  <FieldError msg={fe[`child:${child.id}:firstName`]} />
                 </div>
                 <div>
                   <label className={lbl}>Last name <span className="text-red-400">*</span></label>
                   <input required className={inp} value={child.lastName} onChange={(e) => updateChild(child.id, { lastName: e.target.value })} />
+                  <FieldError msg={fe[`child:${child.id}:lastName`]} />
                 </div>
                 <div>
                   <label className={lbl}>Date of birth</label>
@@ -147,6 +155,7 @@ export default function StepChildren({ data, onChange, extractedFields }: Props)
                 value={data.guardian.firstName}
                 onChange={(e) => onChange({ ...data, guardian: { ...data.guardian, firstName: e.target.value } })}
               />
+              <FieldError msg={fe['guardian:firstName']} />
             </div>
             <div>
               <label className={lbl}>Last name <span className="text-red-400">*</span></label>
@@ -156,6 +165,7 @@ export default function StepChildren({ data, onChange, extractedFields }: Props)
                 value={data.guardian.lastName}
                 onChange={(e) => onChange({ ...data, guardian: { ...data.guardian, lastName: e.target.value } })}
               />
+              <FieldError msg={fe['guardian:lastName']} />
             </div>
             <div>
               <label className={lbl}>Relationship <span className="text-red-400">*</span></label>
@@ -166,6 +176,7 @@ export default function StepChildren({ data, onChange, extractedFields }: Props)
                 value={data.guardian.relationship}
                 onChange={(e) => onChange({ ...data, guardian: { ...data.guardian, relationship: e.target.value } })}
               />
+              <FieldError msg={fe['guardian:relationship']} />
             </div>
             <div>
               <label className={lbl}>Phone</label>

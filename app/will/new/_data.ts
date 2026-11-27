@@ -54,6 +54,7 @@ type WillRow = {
   pet_care: Record<string, unknown> | null
   life_interest: Record<string, unknown> | null
   triage_flags: Record<string, unknown> | null
+  minor_vesting_age: number | null
 }
 
 type ChildRow = { id: string; first_name: string | null; last_name: string | null; date_of_birth: string | null; is_dependent: boolean; distribution_age: number | null }
@@ -298,7 +299,7 @@ export async function loadWillFormData(
   userId: string,
   willIdParam?: string
 ): Promise<{ willId: string | null; formData: WillFormData }> {
-  const baseQuery = supabase.from('wills').select('id, survivorship_days, pet_care, life_interest, triage_flags').eq('user_id', userId)
+  const baseQuery = supabase.from('wills').select('id, survivorship_days, pet_care, life_interest, triage_flags, minor_vesting_age').eq('user_id', userId)
   const { data: willRows } = willIdParam
     ? await baseQuery.eq('id', willIdParam).limit(1)
     : await baseQuery.order('created_at', { ascending: false }).limit(1)
@@ -359,7 +360,13 @@ export async function loadWillFormData(
     hasChildren: children.length > 0 ? 'yes' : '',
     children,
     guardian,
-    ageOfVesting: firstDistributionAge != null ? String(firstDistributionAge) : EMPTY_WILL_FORM_DATA.childrenData.ageOfVesting,
+    // Prefer the will-level vesting age (survives with no dependent children);
+    // fall back to a dependent child's distribution_age, then the default.
+    ageOfVesting: willRow?.minor_vesting_age != null
+      ? String(willRow.minor_vesting_age)
+      : firstDistributionAge != null
+        ? String(firstDistributionAge)
+        : EMPTY_WILL_FORM_DATA.childrenData.ageOfVesting,
   }
 
   const executorRows = (executorRes.data ?? []) as ExecutorRow[]

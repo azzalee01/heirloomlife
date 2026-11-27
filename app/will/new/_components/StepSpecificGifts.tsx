@@ -20,9 +20,15 @@ function emptyGift(): SpecificGift {
 interface Props {
   data: SpecificGift[]
   onChange: (data: SpecificGift[]) => void
+  fieldErrors?: Record<string, string>
 }
 
-export default function StepSpecificGifts({ data, onChange }: Props) {
+function FieldError({ msg }: { msg?: string }) {
+  return msg ? <p className="mt-1 text-xs text-red-600">{msg}</p> : null
+}
+
+export default function StepSpecificGifts({ data, onChange, fieldErrors }: Props) {
+  const fe = fieldErrors ?? {}
   function updateGift(id: string, updates: Partial<SpecificGift>) {
     onChange(data.map((g) => (g.id === id ? { ...g, ...updates } : g)))
   }
@@ -77,7 +83,7 @@ export default function StepSpecificGifts({ data, onChange }: Props) {
                   <button
                     key={t}
                     type="button"
-                    onClick={() => updateGift(gift.id, { type: t })}
+                    onClick={() => updateGift(gift.id, { type: t, description: '', amount: t === 'item' ? '' : gift.amount })}
                     className="px-4 py-1.5 text-sm font-medium transition-colors"
                     style={
                       gift.type === t
@@ -101,6 +107,7 @@ export default function StepSpecificGifts({ data, onChange }: Props) {
                       value={gift.description}
                       onChange={(e) => updateGift(gift.id, { description: e.target.value })}
                     />
+                    <FieldError msg={fe[`gift:${gift.id}:description`]} />
                   </div>
                 ) : (
                   <>
@@ -113,6 +120,7 @@ export default function StepSpecificGifts({ data, onChange }: Props) {
                         value={gift.amount}
                         onChange={(e) => updateGift(gift.id, { amount: e.target.value })}
                       />
+                      <FieldError msg={fe[`gift:${gift.id}:amount`]} />
                     </div>
                     <div>
                       <label className={lbl}>Description (optional)</label>
@@ -134,6 +142,7 @@ export default function StepSpecificGifts({ data, onChange }: Props) {
                     value={gift.recipientName}
                     onChange={(e) => updateGift(gift.id, { recipientName: e.target.value })}
                   />
+                  <FieldError msg={fe[`gift:${gift.id}:recipientName`]} />
                 </div>
                 <div>
                   <label className={lbl}>Relationship</label>
