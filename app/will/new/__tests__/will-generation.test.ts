@@ -11,7 +11,7 @@ import { describe, it, expect } from 'vitest'
 import { validateWillForGeneration, validateRenderedText, validateExecutableWill, canReleaseForExecution } from '../_validate'
 import { renderWillText } from '../_render'
 import { assessComplexityFlags, maxSeverity } from '../_complexity'
-import { resolveSubstituteBeneficiaryText } from '../_types'
+import { resolveSubstituteBeneficiaryText, splitFullName, normalizeChildName } from '../_types'
 import type { WillFormData } from '../_types'
 
 // ── Base fixture helpers ──────────────────────────────────────────────────────
@@ -561,7 +561,7 @@ describe('Phase 14 Test 4 — Minor beneficiary / vesting age 25', () => {
   const formData = baseFormData({
     childrenData: {
       hasChildren: 'yes',
-      children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+      children: [{ id: '1', firstName: 'Tom', lastName: 'Smith', dateOfBirth: '2020-01-01', isDependent: true }],
       guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
       ageOfVesting: '25',
     },
@@ -786,7 +786,7 @@ describe('Phase 14 Test 13 — Long full-feature Will', () => {
     },
     childrenData: {
       hasChildren: 'yes',
-      children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+      children: [{ id: '1', firstName: 'Tom', lastName: 'Smith', dateOfBirth: '2020-01-01', isDependent: true }],
       guardian: { firstName: 'Helen', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
       ageOfVesting: '25',
     },
@@ -1042,7 +1042,7 @@ describe('Test G — Conditional definitions render only when relevant clauses r
     const formData = baseFormData({
       childrenData: {
         hasChildren: 'yes',
-        children: [{ id: '1', name: 'Tom', dateOfBirth: '2020-01-01', isDependent: true }],
+        children: [{ id: '1', firstName: 'Tom', lastName: '', dateOfBirth: '2020-01-01', isDependent: true }],
         guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
         ageOfVesting: '25',
       },
@@ -1108,7 +1108,7 @@ describe('Test I — Guardian relationship label context', () => {
     const formData = baseFormData({
       childrenData: {
         hasChildren: 'yes',
-        children: [{ id: '1', name: 'Tom', dateOfBirth: '2020-01-01', isDependent: true }],
+        children: [{ id: '1', firstName: 'Tom', lastName: '', dateOfBirth: '2020-01-01', isDependent: true }],
         guardian: { firstName: 'Catherine', lastName: 'Brown', relationship: 'Sister', phone: '', email: '' },
         ageOfVesting: '25',
       },
@@ -1124,7 +1124,7 @@ describe('Test J — Survivorship and trust interaction', () => {
   const formData = baseFormData({
     childrenData: {
       hasChildren: 'yes',
-      children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+      children: [{ id: '1', firstName: 'Tom', lastName: 'Smith', dateOfBirth: '2020-01-01', isDependent: true }],
       guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
       ageOfVesting: '25',
     },
@@ -1348,7 +1348,7 @@ describe('QA Test 7 — "child"/"children" definition included when referenced',
     const formData = baseFormData({
       childrenData: {
         hasChildren: 'yes',
-        children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+        children: [{ id: '1', firstName: 'Tom', lastName: 'Smith', dateOfBirth: '2020-01-01', isDependent: true }],
         guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Sibling', phone: '', email: '' },
         ageOfVesting: '25',
       },
@@ -1685,5 +1685,51 @@ describe('Adversarial — Robert Hartley (life interest)', () => {
     const { can, blockers } = canReleaseForExecution(robertFormData, text)
     expect(can).toBe(false)
     expect(blockers.some((b) => b.includes('LIFE_INTEREST'))).toBe(true)
+  })
+})
+
+// ── Children first/last name (+ legacy single-name drafts) ───────────────────
+
+describe('Children — separate first/last name', () => {
+  const formData = baseFormData({
+    childrenData: {
+      hasChildren: 'yes',
+      children: [
+        { id: '1', firstName: 'Tom', lastName: 'Smith', dateOfBirth: '2010-01-01', isDependent: false },
+        { id: '2', firstName: 'Mary Anne', lastName: 'Van der Berg', dateOfBirth: '2012-01-01', isDependent: false },
+      ],
+      guardian: { firstName: '', lastName: '', relationship: '', phone: '', email: '' },
+      ageOfVesting: '18',
+    },
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+  })
+
+  it('renders each child as "First Last" in the Will document', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('Tom Smith')
+    expect(text).toContain('Mary Anne Van der Berg')
+  })
+
+  it('splitFullName splits on the LAST space (matches the loader fallback + stopgap trigger)', () => {
+    expect(splitFullName('Jane Smith')).toEqual({ firstName: 'Jane', lastName: 'Smith' })
+    expect(splitFullName('Mary Anne Van der Berg')).toEqual({ firstName: 'Mary Anne Van der', lastName: 'Berg' })
+    expect(splitFullName('Madonna')).toEqual({ firstName: 'Madonna', lastName: '' })
+    expect(splitFullName('  ')).toEqual({ firstName: '', lastName: '' })
+  })
+
+  it('hydrates a legacy single-name draft (combined name in first_name, last_name empty)', () => {
+    // Mirrors the DB loader fallback in _data.ts: last_name empty → split first_name.
+    const legacyRow: { first_name: string; last_name: string | null } = { first_name: 'Jane Smith', last_name: null }
+    const { firstName, lastName } = legacyRow.last_name
+      ? { firstName: legacyRow.first_name, lastName: legacyRow.last_name }
+      : splitFullName(legacyRow.first_name)
+    expect(firstName).toBe('Jane')
+    expect(lastName).toBe('Smith')
+  })
+
+  it('normalizeChildName: new objects pass through, legacy {name} objects split', () => {
+    expect(normalizeChildName({ firstName: 'Jane', lastName: 'Smith' })).toEqual({ firstName: 'Jane', lastName: 'Smith' })
+    expect(normalizeChildName({ name: 'Jane Smith' })).toEqual({ firstName: 'Jane', lastName: 'Smith' })
+    expect(normalizeChildName({ name: 'Madonna' })).toEqual({ firstName: 'Madonna', lastName: '' })
   })
 })

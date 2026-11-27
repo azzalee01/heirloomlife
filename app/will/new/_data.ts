@@ -20,6 +20,7 @@ import type {
   TriageFlags,
   PersonalWishesData,
 } from './_types'
+import { splitFullName, normalizeChildName } from './_types'
 
 type SupabaseClient = Awaited<ReturnType<typeof createSupabaseServerClient>>
 
@@ -55,7 +56,7 @@ type WillRow = {
   triage_flags: Record<string, unknown> | null
 }
 
-type ChildRow = { id: string; first_name: string | null; date_of_birth: string | null; is_dependent: boolean; distribution_age: number | null }
+type ChildRow = { id: string; first_name: string | null; last_name: string | null; date_of_birth: string | null; is_dependent: boolean; distribution_age: number | null }
 type GuardianRow = { first_name: string | null; last_name: string | null; relationship: string | null; phone: string | null; email: string | null }
 type ExecutorRow = { first_name: string | null; last_name: string | null; relationship: string | null; phone: string | null; email: string | null; address_line_1: string | null; is_primary: boolean }
 
@@ -327,12 +328,21 @@ export async function loadWillFormData(
   const spouseDetails: SpouseDetails = spouse ? mapTestatorBase(spouse) : EMPTY_WILL_FORM_DATA.spouseDetails
 
   const childRows = (childrenRes.data ?? []) as ChildRow[]
-  const children: Child[] = childRows.map((c) => ({
-    id: c.id,
-    name: str(c.first_name),
-    dateOfBirth: str(c.date_of_birth),
-    isDependent: !!c.is_dependent,
-  }))
+  const children: Child[] = childRows.map((c) => {
+    // Legacy fallback: rows that only stored a combined name in first_name (no
+    // last_name) are split for display. Rows with a real last_name are used as-is.
+    const last = str(c.last_name)
+    const { firstName, lastName } = last
+      ? { firstName: str(c.first_name), lastName: last }
+      : splitFullName(c.first_name)
+    return {
+      id: c.id,
+      firstName,
+      lastName,
+      dateOfBirth: str(c.date_of_birth),
+      isDependent: !!c.is_dependent,
+    }
+  })
   const firstDistributionAge = childRows.find((c) => c.distribution_age != null)?.distribution_age
   const guardianRow = ((guardianRes.data ?? [])[0] as GuardianRow | undefined) ?? null
   const guardian: Guardian = guardianRow
@@ -444,5 +454,18 @@ export async function loadAnonSessionFormData(
     .single()
   if (!data?.form_data) return { ...EMPTY_WILL_FORM_DATA }
   // Merge with empty defaults so new fields added after session creation are present.
-  return { ...EMPTY_WILL_FORM_DATA, ...(data.form_data as Partial<WillFormData>), willId: sessionId }
+  const merged = { ...EMPTY_WILL_FORM_DATA, ...(data.form_data as Partial<WillFormData>), willId: sessionId }
+  // Normalise legacy children ({name}) from drafts created before the first/last split.
+  const rawChildren = (merged.childrenData?.children ?? []) as Array<Partial<Child> & { name?: string }>
+  merged.childrenData = {
+    ...EMPTY_WILL_FORM_DATA.childrenData,
+    ...merged.childrenData,
+    children: rawChildren.map((c) => ({
+      id: String(c.id ?? ''),
+      ...normalizeChildName(c),
+      dateOfBirth: str(c.dateOfBirth),
+      isDependent: !!c.isDependent,
+    })),
+  }
+  return merged
 }

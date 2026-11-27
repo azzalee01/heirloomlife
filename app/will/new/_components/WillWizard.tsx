@@ -237,6 +237,15 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     })
   }
 
+  // Convert a thrown save error into a short, friendly message. Server Action
+  // errors are opaque/redacted in production, so we surface a controlled message
+  // (keeping our own witnessing-lock wording when it survives to the client).
+  function friendlySaveError(e: unknown): string {
+    const msg = e instanceof Error ? e.message : ''
+    if (msg.toLowerCase().includes('witnessing session')) return msg
+    return 'We couldn’t save your progress just now. Please check your connection and try again.'
+  }
+
   async function handleNext() {
     // Eligibility step: no DB save, just validate and advance
     if (isEligibilityStep) {
@@ -271,34 +280,65 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
           setShowEmailCapture(true)
         }
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'Failed to save. Please try again.')
+        setError(friendlySaveError(e))
       } finally {
         setSaving(false)
       }
       return
     }
 
-    // willId exists — advance instantly, save in the background
-    setSlideDir('right')
-    setStepKey(k => k + 1)
-    setStepIndex(nextIndex)
-    scrollContentToTop()
-    if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
-      setShowEmailCapture(true)
+    // willId exists — save FIRST, advance only on success. A failed save (DB/RPC
+    // error, or a witnessing-lock conflict) must never let the user move past
+    // unsaved data, so this blocks rather than saving optimistically in the
+    // background.
+    setSaving(true)
+    try {
+      const willIdAtSave = form.willId
+      const { id: savedId } = await saveStep(willIdAtSave, currentStaticStep, form)
+      // If saveStep created a new will (e.g. anon UUID replaced after auth), sync the ID.
+      if (savedId !== willIdAtSave) {
+        setForm((prev) => ({ ...prev, willId: savedId }))
+      }
+      setSlideDir('right')
+      setStepKey(k => k + 1)
+      setStepIndex(nextIndex)
+      scrollContentToTop()
+      if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
+        setShowEmailCapture(true)
+      }
+    } catch (e) {
+      setError(friendlySaveError(e))
+    } finally {
+      setSaving(false)
     }
+  }
 
-    const willIdAtSave = form.willId
-    pendingSaveRef.current = saveStep(willIdAtSave, currentStaticStep, form)
-    pendingSaveRef.current
-      .then(({ id: savedId }) => {
-        // If saveStep created a new will (e.g. anon UUID replaced after auth), sync the ID
-        if (savedId !== willIdAtSave) {
-          setForm((prev) => ({ ...prev, willId: savedId }))
-        }
-      })
-      .catch((e) => {
-        setError(e instanceof Error ? e.message : 'Your progress may not have saved. Please try again.')
-      })
+  // Backup step "Skip — I'll decide later": clear this beneficiary's substitute
+  // and advance. Blocking save (like handleNext) so a failed save can't advance.
+  async function handleBackupSkip() {
+    if (backupIndex < 0) return
+    const people = form.beneficiariesData.people.map((p, i) =>
+      i === backupIndex ? { ...p, substituteBeneficiary: '' } : p
+    )
+    const nextForm: WillFormData = { ...form, beneficiariesData: { ...form.beneficiariesData, people } }
+    setForm(nextForm)
+    setError(null)
+    const nextIndex = Math.min(stepIndex + 1, wizardSteps.length - 1)
+    setSaving(true)
+    try {
+      if (nextForm.willId) {
+        const { id: savedId } = await saveStep(nextForm.willId, 'beneficiaries', nextForm)
+        if (savedId !== nextForm.willId) setForm((prev) => ({ ...prev, willId: savedId }))
+      }
+      setSlideDir('right')
+      setStepKey((k) => k + 1)
+      setStepIndex(nextIndex)
+      scrollContentToTop()
+    } catch (e) {
+      setError(friendlySaveError(e))
+    } finally {
+      setSaving(false)
+    }
   }
 
   function handleBack() {
@@ -456,11 +496,17 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
           <div className="flex gap-8 items-start sm:mt-6">
             <div className="flex-1 min-w-0">
 
-              {error && (
-                <div className="text-sm text-red-600 bg-red-50 border-b border-red-100 px-5 py-3 sm:border sm:mb-4">
-                  {error}
-                </div>
-              )}
+              {/* Reserved inline slot: on desktop the Next button lives inside the
+                  step card, so showing/clearing this error must not shift it. The
+                  slot holds a stable min-height on sm+; on mobile the nav is a fixed
+                  bottom bar, so no reservation is needed there. */}
+              <div aria-live="polite" className="sm:min-h-[3.5rem]">
+                {error && (
+                  <div role="alert" className="text-sm text-red-600 bg-red-50 border-b border-red-100 px-5 py-3 sm:border sm:mb-4">
+                    {error}
+                  </div>
+                )}
+              </div>
 
               {/* Step card — borderless full-bleed on mobile, framed on sm+ */}
               <div
@@ -541,6 +587,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                       )
                       update('beneficiariesData', { ...form.beneficiariesData, people })
                     }}
+                    onSkip={handleBackupSkip}
                   />
                 )}
                 {currentStaticStep === 'gifts' && (

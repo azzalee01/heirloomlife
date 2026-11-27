@@ -7,7 +7,7 @@ const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
 const eyebrow = 'text-xs font-semibold uppercase tracking-widest text-[var(--neutral)] mb-3'
 
 function emptyChild(): Child {
-  return { id: crypto.randomUUID(), name: '', dateOfBirth: '', isDependent: false }
+  return { id: crypto.randomUUID(), firstName: '', lastName: '', dateOfBirth: '', isDependent: false }
 }
 
 interface Props {
@@ -94,8 +94,12 @@ export default function StepChildren({ data, onChange, extractedFields }: Props)
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className={lbl}>Full name <span className="text-red-400">*</span></label>
-                  <input required className={inp} value={child.name} onChange={(e) => updateChild(child.id, { name: e.target.value })} />
+                  <label className={lbl}>First name <span className="text-red-400">*</span></label>
+                  <input required className={inp} value={child.firstName} onChange={(e) => updateChild(child.id, { firstName: e.target.value })} />
+                </div>
+                <div>
+                  <label className={lbl}>Last name <span className="text-red-400">*</span></label>
+                  <input required className={inp} value={child.lastName} onChange={(e) => updateChild(child.id, { lastName: e.target.value })} />
                 </div>
                 <div>
                   <label className={lbl}>Date of birth</label>

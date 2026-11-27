@@ -227,7 +227,8 @@ export async function saveStep(
         cd.hasChildren === 'yes'
           ? cd.children.map((c) => ({
               will_id: id,
-              first_name: c.name, // form collects a single name field
+              first_name: c.firstName,
+              last_name: c.lastName,
               date_of_birth: c.dateOfBirth || null,
               is_dependent: c.isDependent,
               // Testamentary trust: a minor/dependent beneficiary's share is
