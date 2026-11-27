@@ -1823,3 +1823,37 @@ describe('E2E bug fixes', () => {
     expect(validateStep('assets', okAssets)['asset:a1:assetType']).toBeTruthy()
   })
 })
+
+describe('Charity beneficiary required-field validation', () => {
+  it('flags a charity row with a name but no share, and vice versa', () => {
+    const noShare = baseFormData({
+      beneficiariesData: {
+        people: [],
+        charities: [{ id: 'ch1', name: 'RSPCA', abn: '', percentage: '', substituteBeneficiary: '', charityPartnerId: null }],
+      },
+    })
+    const e1 = validateStep('beneficiaries', noShare)
+    expect(e1['charity:ch1:percentage']).toBeTruthy()
+    expect(e1['charity:ch1:name']).toBeFalsy()
+
+    const noName = baseFormData({
+      beneficiariesData: {
+        people: [],
+        charities: [{ id: 'ch2', name: '', abn: '', percentage: '50', substituteBeneficiary: '', charityPartnerId: null }],
+      },
+    })
+    const e2 = validateStep('beneficiaries', noName)
+    expect(e2['charity:ch2:name']).toBeTruthy()
+    expect(e2['charity:ch2:percentage']).toBeFalsy()
+  })
+
+  it('a complete charity row passes', () => {
+    const ok = baseFormData({
+      beneficiariesData: {
+        people: [],
+        charities: [{ id: 'ch3', name: 'RSPCA', abn: '', percentage: '100', substituteBeneficiary: '', charityPartnerId: null }],
+      },
+    })
+    expect(Object.keys(validateStep('beneficiaries', ok))).toHaveLength(0)
+  })
+})

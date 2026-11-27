@@ -6,6 +6,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from './_data'
 import { assembleWillDocument } from './_assembly'
 import { recordVersion, assertNoActiveSigning, markSessionsStaleAfterEdit } from './_versioning'
+import { applyLifeInterestReview } from './_review-reasons'
 import { STEP_LABELS, type WillFormData, type StepId, type PersonalWishesData } from './_types'
 import { sendResumeEmail } from '@/src/lib/email'
 
@@ -153,6 +154,7 @@ export async function saveStep(
   // Create will record on the first save
   let id = willId
   let willStatus = 'draft'
+  let currentReviewReasons: string[] = []
   if (!id) {
     const cookieStore = await cookies()
     const partnerRef = cookieStore.get('hl_partner_ref')?.value ?? null
@@ -168,7 +170,7 @@ export async function saveStep(
     if (error) throw new Error(error.message)
     id = data.id as string
   } else {
-    const { data } = await supabase.from('wills').select('status').eq('id', id).single()
+    const { data } = await supabase.from('wills').select('status, needs_review_reasons').eq('id', id).single()
     if (!data) {
       // The provided willId doesn't match a will owned by this user — most likely
       // an anon session UUID that leaked in when the user authenticated mid-flow.
@@ -187,6 +189,7 @@ export async function saveStep(
       id = newWill.id as string
     } else {
       willStatus = (data.status as string | undefined) ?? 'draft'
+      currentReviewReasons = (data.needs_review_reasons as string[] | null) ?? []
     }
   }
   // Only a will that's already been completed once is a "live" document  -
@@ -418,15 +421,18 @@ export async function saveStep(
   }
 
   // Keep triage_flags + the minor-trust vesting age current on every step save.
-  // Life interest is not drafted into the template Will — ticking it flags the
-  // will for solicitor review (set here; the LIFE_INTEREST complexity flag is the
-  // hard gate). Only set when enabled so we don't clobber review state otherwise.
+  // Life interest isn't drafted into the template Will — ticking it flags the will
+  // for solicitor review; un-ticking removes ONLY that reason (and clears
+  // needs_review when none remain) without clobbering other review reasons.
+  const { reasons: reviewReasons, needsReview } = applyLifeInterestReview(
+    currentReviewReasons,
+    formData.lifeInterest.enabled
+  )
   await supabase.from('wills').update({
     triage_flags: formData.triageFlags,
     minor_vesting_age: parseInt(formData.childrenData.ageOfVesting, 10) || null,
-    ...(formData.lifeInterest.enabled
-      ? { needs_review: true, needs_review_reasons: ['Life interest / right to reside — requires bespoke solicitor drafting (not included in the template Will).'] }
-      : {}),
+    needs_review: needsReview,
+    needs_review_reasons: reviewReasons,
   }).eq('id', id)
 
   // (Removed the post-mutation markSessionsStaleAfterEdit round-trip: the

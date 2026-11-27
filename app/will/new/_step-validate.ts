@@ -46,8 +46,14 @@ export function validateStep(step: StepId, form: WillFormData): Record<string, s
         need(!p.percentage.trim(), `beneficiary:${p.id}:percentage`, 'Share % is required.')
       }
     }
-    // Charity rows: incomplete rows (blank name or zero share) are filtered out
-    // at assembly, so they don't block here.
+    // Charity rows: a row that's been started (name, share, or a picked partner)
+    // must have both a name and a share.
+    for (const c of form.beneficiariesData.charities) {
+      if (c.name.trim() || c.percentage.trim() || c.charityPartnerId) {
+        need(!c.name.trim(), `charity:${c.id}:name`, 'Charity name is required.')
+        need(!c.percentage.trim(), `charity:${c.id}:percentage`, 'Share % is required.')
+      }
+    }
   }
 
   return e

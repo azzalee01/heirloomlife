@@ -429,6 +429,7 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
                       <div>
                         <label className={lbl}>Charity name <span className="text-red-400">*</span></label>
                         <input required className={inp} placeholder="e.g. Local Animal Rescue Inc." value={charity.name} onChange={(e) => updateCharity(charity.id, { name: e.target.value })} />
+                        <FieldError msg={fe[`charity:${charity.id}:name`]} />
                       </div>
                       <div>
                         <label className={lbl}>ABN</label>
@@ -461,11 +462,14 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
 
                 {/* Share control shows once a charity is chosen (partner or manual) */}
                 {(linked || manual) && (
-                  <ShareControl
-                    value={charity.percentage}
-                    remainingForRow={remainingForRow(charity)}
-                    onChange={(v) => updateCharity(charity.id, { percentage: v })}
-                  />
+                  <>
+                    <ShareControl
+                      value={charity.percentage}
+                      remainingForRow={remainingForRow(charity)}
+                      onChange={(v) => updateCharity(charity.id, { percentage: v })}
+                    />
+                    <FieldError msg={fe[`charity:${charity.id}:percentage`]} />
+                  </>
                 )}
 
                 {(linked || manual) && (
