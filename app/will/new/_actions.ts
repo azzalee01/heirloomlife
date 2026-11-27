@@ -377,7 +377,10 @@ export async function saveStep(
     case 'gifts': {
       const rows = formData.specificGifts.map((g, i) => ({
         will_id: id,
-        gift_type: g.type,
+        // Map the UI toggle ('item' | 'cash') to a DB value allowed by
+        // specific_gifts_gift_type_check (cash | real_estate | shares |
+        // personal_property | percentage | residuary). 'item' is not valid.
+        gift_type: g.type === 'cash' ? 'cash' : 'personal_property',
         description: g.description || null,
         cash_amount: g.type === 'cash' ? g.amount || null : null,
         recipient_type: 'individual',
@@ -414,8 +417,17 @@ export async function saveStep(
       break
   }
 
-  // Keep triage_flags current on every step save.
-  await supabase.from('wills').update({ triage_flags: formData.triageFlags }).eq('id', id)
+  // Keep triage_flags + the minor-trust vesting age current on every step save.
+  // Life interest is not drafted into the template Will — ticking it flags the
+  // will for solicitor review (set here; the LIFE_INTEREST complexity flag is the
+  // hard gate). Only set when enabled so we don't clobber review state otherwise.
+  await supabase.from('wills').update({
+    triage_flags: formData.triageFlags,
+    minor_vesting_age: parseInt(formData.childrenData.ageOfVesting, 10) || null,
+    ...(formData.lifeInterest.enabled
+      ? { needs_review: true, needs_review_reasons: ['Life interest / right to reside — requires bespoke solicitor drafting (not included in the template Will).'] }
+      : {}),
+  }).eq('id', id)
 
   // (Removed the post-mutation markSessionsStaleAfterEdit round-trip: the
   // pre-mutation will_edit_lock RPC already marks scheduled sessions stale, and

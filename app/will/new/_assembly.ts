@@ -119,13 +119,8 @@ function buildGiftLine(
   return line
 }
 
-function buildLifeInterestEndCondition(formData: WillFormData): string {
-  const c = formData.lifeInterest.condition
-  if (c === 'death') return 'their death'
-  if (c === 'remarriage') return 'their remarriage or entering a new de facto relationship'
-  if (c === 'death_or_remarriage') return 'their death, remarriage, or entry into a new de facto relationship, whichever occurs first'
-  return 'the occurrence of the specified termination event'
-}
+// (buildLifeInterestEndCondition removed — LIFE-INT-01 is no longer auto-included;
+//  life interest is escalated to solicitor review instead. See section 10 below.)
 
 // DIVORCE-01 is a statutory note (Succession Act 2006 ss 12-13), not an operative provision.
 // LEGAL REVIEW REQUIRED before permanent removal: confirm no precedent obligation requires it
@@ -172,7 +167,7 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   let clauseNo = ed.hasAlternate && ed.alternate.firstName ? 3 : 2
 
   // ── 3. Guardian ───────────────────────────────────────────────────────────
-  if (requiresDelayedVestingTrust && cd.guardian.firstName) {
+  if (requiresDelayedVestingTrust && cd.guardian.firstName.trim() && cd.guardian.lastName.trim()) {
     const guardianName = fullName(cd.guardian.firstName, cd.guardian.lastName)
     instances.push({
       code: 'GUARD-01',
@@ -250,20 +245,14 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
     })
   }
 
-  // ── 10. Life interest ─────────────────────────────────────────────────────
-  if (formData.lifeInterest.enabled) {
-    const li = formData.lifeInterest
-    instances.push({
-      code: 'LIFE-INT-01',
-      heading: `${++clauseNo}. LIFE INTEREST / RIGHT TO RESIDE`,
-      vars: {
-        life_interest_property_description: li.propertyDescription,
-        life_tenant_name: li.lifeTenantName,
-        life_interest_end_condition: buildLifeInterestEndCondition(formData),
-        remainder_beneficiary_name: li.remainderBeneficiaryName,
-      },
-    })
-  }
+  // ── 10. Life interest — intentionally NOT auto-included ───────────────────
+  // LIFE-INT-01 is marked "never auto-include": a right-to-reside carries
+  // significant family-provision risk and needs bespoke solicitor drafting.
+  // When the testator ticks it, the will is ESCALATED instead — the LIFE_INTEREST
+  // complexity flag makes it SOLICITOR_REQUIRED (blocks executable release),
+  // saveStep sets needs_review + a reason, and the wizard/Review step show a
+  // solicitor-referral notice. The data is still persisted (wills.life_interest).
+  // See _complexity.ts, StepWishes, StepReview.
 
   // ── 11. Pet care ──────────────────────────────────────────────────────────
   if (formData.petCare.hasPets === 'yes') {

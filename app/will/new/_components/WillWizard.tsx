@@ -4,6 +4,7 @@ import { useState, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
+import { validateStep } from '../_step-validate'
 import { track } from '@/src/lib/analytics/events'
 import {
   type WillFormData,
@@ -189,6 +190,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [showEmailCapture, setShowEmailCapture] = useState(false)
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [showDownloadGate, setShowDownloadGate] = useState(false)
@@ -230,6 +232,10 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const benefTotal = totalAllocated(form.beneficiariesData)
 
   function update<K extends keyof WillFormData>(key: K, value: WillFormData[K]) {
+    // Any edit clears a stale save/validation banner (requirement: banner must
+    // clear on the next successful save OR edit).
+    setError(null)
+    setFieldErrors({})
     setForm((prev) => {
       const next = { ...prev, [key]: value }
       setWizardSteps(buildWizardSteps(next))
@@ -243,7 +249,12 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   function friendlySaveError(e: unknown): string {
     const msg = e instanceof Error ? e.message : ''
     if (msg.toLowerCase().includes('witnessing session')) return msg
-    return 'We couldn’t save your progress just now. Please check your connection and try again.'
+    // Only blame the connection for genuine network failures — a server/validation
+    // error must not tell the user to "check your connection".
+    if (/failed to fetch|networkerror|load failed|network request failed/i.test(msg)) {
+      return 'We couldn’t reach the server. Please check your connection and try again.'
+    }
+    return 'We couldn’t save your changes. Please review your details and try again.'
   }
 
   async function handleNext() {
@@ -263,6 +274,18 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       return
     }
 
+    // Client-side required-field validation. Skip backup sub-steps — their
+    // underlying beneficiary data was validated on the main beneficiaries step.
+    if (!isBackupStep) {
+      const fe = validateStep(currentStaticStep, form)
+      if (Object.keys(fe).length > 0) {
+        setFieldErrors(fe)
+        setError('Please complete the highlighted fields before continuing.')
+        return
+      }
+    }
+
+    setFieldErrors({})
     setError(null)
     const nextIndex = Math.min(stepIndex + 1, wizardSteps.length - 1)
 
@@ -553,6 +576,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     data={form.childrenData}
                     onChange={(childrenData: ChildrenData) => update('childrenData', childrenData)}
                     extractedFields={extractedFields}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'executors' && (
@@ -566,6 +590,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                   <StepAssets
                     data={form.assets}
                     onChange={(assets: Asset[]) => update('assets', assets)}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'beneficiaries' && !isBackupStep && (
@@ -575,6 +600,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     triageFlags={form.triageFlags}
                     onTriageFlagsChange={(triageFlags: TriageFlags) => update('triageFlags', triageFlags)}
                     extractedFields={extractedFields}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {isBackupStep && backupIndex >= 0 && form.beneficiariesData.people[backupIndex] && (
@@ -594,6 +620,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                   <StepSpecificGifts
                     data={form.specificGifts}
                     onChange={(specificGifts: SpecificGift[]) => update('specificGifts', specificGifts)}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'wishes' && (
