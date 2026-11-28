@@ -487,10 +487,10 @@ describe('Phase 14 Test 1 — Basic single beneficiary', () => {
     expect(text.toUpperCase()).toContain('EXECUTOR POWERS')
   })
 
-  it('does not render trustee powers when no trust arises', () => {
+  it('renders trustee powers (always included to back the under-vesting-age trust)', () => {
     const text = renderWillText(formData)
-    expect(text.toUpperCase()).not.toContain('TRUSTEE POWERS')
-    expect(text.toUpperCase()).not.toContain('TRUSTEE APPOINTMENT')
+    expect(text.toUpperCase()).toContain('TRUSTEE POWERS')
+    expect(text.toUpperCase()).toContain('TRUSTEE APPOINTMENT')
   })
 
   it('does not render digital assets definition when no digital assets', () => {
@@ -573,7 +573,7 @@ describe('Phase 14 Test 4 — Minor beneficiary / vesting age 25', () => {
 
   it('renders testamentary trust', () => {
     const text = renderWillText(formData)
-    expect(text.toUpperCase()).toContain('MINOR BENEFICIARY TRUST')
+    expect(text.toUpperCase()).toContain('TRUST FOR BENEFICIARIES UNDER THE VESTING AGE')
   })
 
   it('renders advancement powers', () => {
@@ -835,7 +835,7 @@ describe('Phase 14 Test 13 — Long full-feature Will', () => {
     expect(text.toUpperCase()).toContain('SPECIFIC GIFTS')
     expect(text.toUpperCase()).toContain('RESIDUARY ESTATE')
     expect(text.toUpperCase()).toContain('SURVIVORSHIP AND GIFT RULES')
-    expect(text.toUpperCase()).toContain('MINOR BENEFICIARY TRUST')
+    expect(text.toUpperCase()).toContain('TRUST FOR BENEFICIARIES UNDER THE VESTING AGE')
     expect(text.toUpperCase()).toContain('ADVANCEMENT POWERS')
     expect(text.toUpperCase()).toContain('CARE OF PETS')
     expect(text.toUpperCase()).toContain('DIGITAL ASSETS')
@@ -1040,7 +1040,7 @@ describe('Test F — No orphan "intestacy rules" definition', () => {
 })
 
 // TEST G — Conditional definitions: vesting age and minor
-describe('Test G — Conditional definitions render only when relevant clauses render', () => {
+describe('Test G — "vesting age" / "minor" definitions accompany the always-on trust', () => {
   it('includes "vesting age" and "minor" definitions when there are dependent children', () => {
     const formData = baseFormData({
       childrenData: {
@@ -1056,13 +1056,13 @@ describe('Test G — Conditional definitions render only when relevant clauses r
     expect(text).toContain('"minor"')
   })
 
-  it('omits "vesting age" and "minor" definitions when there are no dependent children', () => {
+  it('still includes "vesting age" and "minor" definitions with no children (trust is always present)', () => {
     const formData = baseFormData({
       beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
     })
     const text = renderWillText(formData)
-    expect(text).not.toContain('"vesting age"')
-    expect(text).not.toContain('"minor"')
+    expect(text).toContain('"vesting age"')
+    expect(text).toContain('"minor"')
   })
 })
 
