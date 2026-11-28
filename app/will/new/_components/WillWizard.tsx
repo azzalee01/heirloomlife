@@ -257,7 +257,15 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     if (/failed to fetch|networkerror|load failed|network request failed/i.test(msg)) {
       return 'We couldn’t reach the server. Please check your connection and try again.'
     }
-    return 'We couldn’t save your changes. Please review your details and try again.'
+    // Never a bare "we couldn't save": name the step, reassure that entries are kept,
+    // and surface a reference (Next.js attaches `digest` to server-action errors; the
+    // server also logs a structured line via logWizardError) so support can trace it.
+    const ref = (e as { digest?: string } | null)?.digest
+    const stepLabel = currentStaticStep ? `the ${currentStaticStep.replace(/_/g, ' ')} step` : 'your changes'
+    return (
+      `We couldn’t save ${stepLabel}. Your entries are kept — please try again.` +
+      (ref ? ` If it keeps happening, quote reference ${ref} to support.` : '')
+    )
   }
 
   async function handleNext() {

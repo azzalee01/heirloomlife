@@ -1,22 +1,14 @@
 'use client'
 
-import type { Asset, AssetType } from '../_types'
+import type { Asset } from '../_types'
 import TriageFlag from './TriageFlag'
 import TermDef from './TermDef'
+import { ASSET_TYPE_OPTIONS, OWNERSHIP_TYPE_OPTIONS } from '../_wizard-options'
 
 const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 const lbl = 'block text-sm font-medium text-[var(--ink)] mb-1.5'
 
-const ASSET_TYPE_LABELS: Record<AssetType, string> = {
-  real_estate: 'Real Estate',
-  bank_account: 'Bank Account',
-  superannuation: 'Superannuation',
-  shares: 'Shares / Investments',
-  life_insurance: 'Life Insurance',
-  vehicle: 'Vehicle',
-  digital_asset: 'Cryptocurrency',
-  other: 'Other',
-}
+// Labels/values are defined once in _wizard-options.ts (the DB-contract source of truth).
 
 function emptyCryptoAsset(): Asset {
   return {
@@ -101,8 +93,8 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove, assetTypeErro
           <label className={lbl}>Asset type <span className="text-red-400">*</span></label>
           <select required className={inp} value={asset.assetType} onChange={(e) => set('assetType', e.target.value)}>
             <option value="">Select type…</option>
-            {(Object.keys(ASSET_TYPE_LABELS) as AssetType[]).map((t) => (
-              <option key={t} value={t}>{ASSET_TYPE_LABELS[t]}</option>
+            {ASSET_TYPE_OPTIONS.map((t) => (
+              <option key={t.value} value={t.value}>{t.label}</option>
             ))}
           </select>
           {assetTypeError && <p className="mt-1 text-xs text-red-600">{assetTypeError}</p>}
@@ -111,10 +103,9 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove, assetTypeErro
           <label className={lbl}>Ownership <span className="text-red-400">*</span></label>
           <select required className={inp} value={asset.ownershipType} onChange={(e) => set('ownershipType', e.target.value)}>
             <option value="">Select…</option>
-            <option value="sole">Sole ownership</option>
-            <option value="joint_tenants">Joint ownership (joint tenants)</option>
-            <option value="tenants_in_common">Joint ownership (tenants in common)</option>
-            <option value="entity">Held by a trust, company or SMSF</option>
+            {OWNERSHIP_TYPE_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
           </select>
           {ownershipError && <p className="mt-1 text-xs text-red-600">{ownershipError}</p>}
         </div>

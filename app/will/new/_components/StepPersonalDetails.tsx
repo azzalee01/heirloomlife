@@ -1,6 +1,7 @@
 'use client'
 
 import type { PersonalDetails } from '../_types'
+import { MARITAL_STATUS_OPTIONS } from '../_wizard-options'
 
 const AU_STATES = ['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA']
 
@@ -119,12 +120,9 @@ export default function StepPersonalDetails({ data, onChange, extractedFields, f
         <label className={lbl}>Marital status <span className="text-red-400">*</span></label>
         <select required className={ic('maritalStatus')} value={data.maritalStatus} onChange={(e) => set('maritalStatus', e.target.value)}>
           <option value="">Select…</option>
-          <option value="single">Single</option>
-          <option value="married">Married</option>
-          <option value="domestic_partner">Domestic Partner</option>
-          <option value="divorced">Divorced</option>
-          <option value="separated">Separated</option>
-          <option value="widowed">Widowed</option>
+          {MARITAL_STATUS_OPTIONS.map((m) => (
+            <option key={m.value} value={m.value}>{m.label}</option>
+          ))}
         </select>
         <FieldError msg={fe['personal:maritalStatus']} />
       </div>

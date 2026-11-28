@@ -6,7 +6,8 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from './_data'
 import { assembleWillDocument } from './_assembly'
 import { recordVersion, assertNoActiveSigning, markSessionsStaleAfterEdit } from './_versioning'
-import { applyLifeInterestReview, applyWaMarriageReview } from './_review-reasons'
+import { computeReviewReasons } from './_review-reasons'
+import { logWizardError } from '@/src/lib/wizard-errors'
 import { STEP_LABELS, type WillFormData, type StepId, type PersonalWishesData } from './_types'
 import { sendResumeEmail } from '@/src/lib/email'
 
@@ -212,6 +213,9 @@ export async function saveStep(
     await assertNoActiveSigning(id!)
   }
 
+  // Any per-step mutation failure (e.g. a CHECK/FK violation) is logged as one
+  // structured line with the constraint name before being rethrown to the client.
+  try {
   switch (step) {
     // ─── Personal details ────────────────────────────────────────────────────
     case 'personal': {
@@ -424,25 +428,16 @@ export async function saveStep(
       // All data already saved from previous steps; nothing to do here.
       break
   }
+  } catch (error) {
+    logWizardError({ action: 'saveStep', step, willId: id, userId: user.id }, error)
+    throw error
+  }
 
   // Keep triage_flags + the minor-trust vesting age current on every step save.
-  // Life interest isn't drafted into the template Will — ticking it flags the will
-  // for solicitor review; un-ticking removes ONLY that reason (and clears
-  // needs_review when none remain) without clobbering other review reasons.
-  const { reasons: afterLifeInterest } = applyLifeInterestReview(
-    currentReviewReasons,
-    formData.lifeInterest.enabled
-  )
-  // WA testators with a spouse/partner get a review prompt: ending a marriage can
-  // revoke the whole Will under WA law. Review-only — no change to the Will text.
-  const pd = formData.personalDetails
-  const waMarriageRevocationApplies =
-    (pd.state ?? '').trim().toUpperCase() === 'WA' &&
-    (pd.maritalStatus === 'married' || pd.maritalStatus === 'domestic_partner')
-  const { reasons: reviewReasons, needsReview } = applyWaMarriageReview(
-    afterLifeInterest,
-    waMarriageRevocationApplies
-  )
+  // needs_review is recomputed from ALL complexity gates (entity-held asset, overseas
+  // assets, WA-with-partner, business, life interest, …) so no launch-blocking trigger
+  // can pass as a complete, review-free Will; any admin/amendment reason is preserved.
+  const { reasons: reviewReasons, needsReview } = computeReviewReasons(formData, currentReviewReasons)
   await supabase.from('wills').update({
     triage_flags: formData.triageFlags,
     minor_vesting_age: parseInt(formData.childrenData.ageOfVesting, 10) || null,

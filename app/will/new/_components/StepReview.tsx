@@ -13,6 +13,9 @@ function triggeredFlagLabels(formData: WillFormData): string[] {
   if (formData.assetsOutsideAustralia || formData.assets.some((a) => a.isOverseas)) {
     labels.push('overseas assets or non-Australian tax residency')
   }
+  if (formData.assets.some((a) => a.ownershipType === 'entity')) {
+    labels.push('an asset held by a trust, company or SMSF')
+  }
   if (formData.triageFlags.hasBusinessInterest) labels.push('business ownership or commercial interest')
   if (formData.triageFlags.hasBlendedFamily) labels.push('a blended family or children from different relationships')
   if (formData.triageFlags.hasExclusionIntent) labels.push('an intention to exclude a spouse, child, or close family member')

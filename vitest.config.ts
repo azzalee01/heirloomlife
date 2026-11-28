@@ -4,7 +4,7 @@ import path from 'path'
 export default defineConfig({
   test: {
     environment: 'node',
-    include: ['app/**/__tests__/**/*.test.ts'],
+    include: ['app/**/__tests__/**/*.test.ts', 'src/**/__tests__/**/*.test.ts'],
     globalSetup: ['./vitest.global-setup.ts'],
   },
   resolve: {

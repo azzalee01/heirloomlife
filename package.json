@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "sync:db-contract": "node scripts/sync-db-contract.mjs",
+    "smoke": "node scripts/smoke-wizard.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.112.1",
