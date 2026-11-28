@@ -1929,3 +1929,42 @@ describe('Required-field enforcement — executors + beneficiary relationship', 
     expect(text).toContain('[No executor full name provided]')
   })
 })
+
+describe('Required-field enforcement — personal / spouse / assets', () => {
+  it('About You: flags first/last/street/suburb/postcode/marital; not occupation/mobile/email', () => {
+    const fd = baseFormData({ personalDetails: basePerson({
+      firstName: '', lastName: '', addressLine1: '', suburb: '', postcode: '', maritalStatus: '',
+      occupation: '', phoneMobile: '', email: '',
+    }) })
+    const e = validateStep('personal', fd)
+    for (const k of ['firstName', 'lastName', 'addressLine1', 'suburb', 'postcode', 'maritalStatus']) {
+      expect(e[`personal:${k}`]).toBeTruthy()
+    }
+    // De-asterisked fields are NOT enforced.
+    expect(Object.keys(e).some((k) => /occupation|phoneMobile|email/.test(k))).toBe(false)
+  })
+
+  it('Your Partner: first/last required only when married; nothing when single', () => {
+    const married = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'married' }),
+      spouseDetails: { firstName: '', lastName: '', middleName: '', dateOfBirth: '', addressLine1: '', suburb: '', state: '', postcode: '', phoneMobile: '', email: '', occupation: '', previousWill: '', previousWillLocation: '' },
+    })
+    const em = validateStep('spouse', married)
+    expect(em['spouse:firstName']).toBeTruthy()
+    expect(em['spouse:lastName']).toBeTruthy()
+    expect(Object.keys(em)).toHaveLength(2) // nothing else enforced
+
+    const single = baseFormData({ personalDetails: basePerson({ maritalStatus: 'single' }) })
+    expect(Object.keys(validateStep('spouse', single))).toHaveLength(0)
+  })
+
+  it('Assets: ownership is now enforced alongside asset type', () => {
+    const fd = baseFormData({ assets: [{
+      id: 'a1', assetType: 'real_estate', ownershipType: '', propertyAddress: '', estimatedValue: '',
+      bankName: '', bsb: '', accountNumber: '', fundName: '', memberNumber: '', companyName: '', numberOfShares: '',
+      insurerName: '', policyNumber: '', coverAmount: '', make: '', model: '', year: '', rego: '',
+      accessLocation: '', description: '', otherValue: '', hasDeathBenefitNomination: false, deathBenefitNominees: '', isOverseas: false, overseasCountry: '',
+    }] })
+    expect(validateStep('assets', fd)['asset:a1:ownershipType']).toBeTruthy()
+  })
+})

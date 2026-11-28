@@ -77,9 +77,10 @@ interface AssetCardProps {
   onChange: (asset: Asset) => void
   onRemove: () => void
   assetTypeError?: string
+  ownershipError?: string
 }
 
-function AssetCard({ asset, index, showRemove, onChange, onRemove, assetTypeError }: AssetCardProps) {
+function AssetCard({ asset, index, showRemove, onChange, onRemove, assetTypeError, ownershipError }: AssetCardProps) {
   function set(field: keyof Asset, value: string) {
     onChange({ ...asset, [field]: value })
   }
@@ -114,6 +115,7 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove, assetTypeErro
             <option value="joint_tenants">Joint ownership (joint tenants)</option>
             <option value="tenants_in_common">Joint ownership (tenants in common)</option>
           </select>
+          {ownershipError && <p className="mt-1 text-xs text-red-600">{ownershipError}</p>}
         </div>
       </div>
 
@@ -348,6 +350,7 @@ export default function StepAssets({ data, onChange, fieldErrors }: Props) {
               onChange={(updated) => updateAsset(asset.id, updated)}
               onRemove={() => removeAsset(asset.id)}
               assetTypeError={fe[`asset:${asset.id}:assetType`]}
+              ownershipError={fe[`asset:${asset.id}:ownershipType`]}
             />
           ))}
 

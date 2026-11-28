@@ -564,6 +564,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     data={form.personalDetails}
                     onChange={(personalDetails: PersonalDetails) => update('personalDetails', personalDetails)}
                     extractedFields={extractedFields}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'spouse' && (
@@ -572,6 +573,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     onChange={(spouseDetails: SpouseDetails) => update('spouseDetails', spouseDetails)}
                     maritalStatus={form.personalDetails.maritalStatus}
                     extractedFields={extractedFields}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'children' && (
