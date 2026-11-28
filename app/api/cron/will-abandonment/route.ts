@@ -18,7 +18,9 @@ export async function GET(req: Request) {
 
   const { data: rows, error } = await supabaseAdmin
     .from('wills')
-    .select('user_id, updated_at, profiles!inner(abandonment_email_sent_at)')
+    // Disambiguate the embed: wills has two FKs to profiles (user_id + solicitor_id),
+    // so a bare profiles embed is ambiguous (PGRST201). We want the will OWNER.
+    .select('user_id, updated_at, profiles!wills_user_id_fkey!inner(abandonment_email_sent_at)')
     .eq('status', 'draft')
     .lt('updated_at', threeDaysAgo)
     .gt('updated_at', sevenDaysAgo)

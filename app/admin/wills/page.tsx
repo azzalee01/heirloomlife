@@ -20,7 +20,7 @@ export default async function WillsAdminPage() {
 
   const { data } = await supabaseAdmin
     .from('will_versions')
-    .select('id, will_id, change_summary, needs_review, needs_review_reasons, created_at, wills(user_id, profiles(email, full_name))')
+    .select('id, will_id, change_summary, needs_review, needs_review_reasons, created_at, wills(user_id, profiles!wills_user_id_fkey(email, full_name))')
     .eq('status', 'pending_review')
     .order('created_at', { ascending: true })
 

@@ -21,7 +21,7 @@ export default async function WillDetailPage({
   // Load will + profile
   const { data: will } = await supabaseAdmin
     .from('wills')
-    .select('id, status, user_id, profiles(email, full_name)')
+    .select('id, status, user_id, profiles!wills_user_id_fkey(email, full_name)')
     .eq('id', willId)
     .maybeSingle()
 
