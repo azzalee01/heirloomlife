@@ -14,6 +14,7 @@ import { assessComplexityFlags, maxSeverity } from '../_complexity'
 import { resolveSubstituteBeneficiaryText, splitFullName, normalizeChildName } from '../_types'
 import { validateStep } from '../_step-validate'
 import { firstIncompleteStep } from '../_resume'
+import { abandonmentKind } from '@/app/api/cron/will-abandonment/_classify'
 import type { WillFormData } from '../_types'
 
 // ── Base fixture helpers ──────────────────────────────────────────────────────
@@ -1878,5 +1879,17 @@ describe('firstIncompleteStep (draft resume)', () => {
   it('a complete draft → review', () => {
     const fd = baseFormData({ beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] } })
     expect(firstIncompleteStep(fd)).toBe('review')
+  })
+})
+
+describe('abandonmentKind (email segmentation)', () => {
+  it('an incomplete draft → nudge', () => {
+    const fd = baseFormData({ personalDetails: basePerson({ firstName: '', lastName: '' }) })
+    expect(abandonmentKind(fd)).toBe('nudge')
+  })
+  it('a fully-complete (unpaid) draft → ready', () => {
+    const fd = baseFormData({ beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] } })
+    expect(firstIncompleteStep(fd)).toBe('review')
+    expect(abandonmentKind(fd)).toBe('ready')
   })
 })

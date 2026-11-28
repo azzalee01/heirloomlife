@@ -22,3 +22,11 @@ describe('wills→profiles embeds are disambiguated (PGRST201 guard)', () => {
     })
   }
 })
+
+describe('abandonment cron never emails paid wills or opted-out users', () => {
+  it('filters status=draft (paid never) and excludes email_opt_out', () => {
+    const src = readFileSync(join(process.cwd(), 'app/api/cron/will-abandonment/route.ts'), 'utf8')
+    expect(src).toMatch(/\.eq\('status', 'draft'\)/)       // paid wills (non-draft) excluded
+    expect(src).toMatch(/profiles\.email_opt_out', false/) // opted-out users excluded
+  })
+})
