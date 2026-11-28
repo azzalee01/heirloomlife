@@ -27,7 +27,15 @@ const ITEMS = [
   },
   {
     title: 'Authentication',
-    body: 'Access to your account is managed through Supabase Auth, a purpose-built authentication service. New accounts use a magic-link email flow — no password is required to create your account. Returning users sign in with email and password. Session tokens are short-lived and signed.',
+    body: 'Signing in is passwordless. You use a one-time magic link or a six-digit code sent to your email — there is no password to create, reuse, or have stolen. Session tokens are short-lived and signed, and the sign-in links are built so that corporate email scanners cannot consume them before you do.',
+  },
+  {
+    title: 'Data residency',
+    body: 'Your account data and Will documents are stored in Australia (the AWS Sydney region, via Supabase), and the application servers run in Sydney. A few sub-processors that support the service process limited data in the US or EU (listed below) — so we say your data is stored in Australia, not that it never leaves Australia.',
+  },
+  {
+    title: 'Sub-processors',
+    body: 'We rely on a small number of trusted providers: Supabase (database and authentication, Australia), Vercel (application hosting, Sydney), Stripe (payments, US — we never see your full card details), Daily (video for guided witnessing, US), Resend (transactional email, US), Anthropic (the estate assistant, US) and PostHog (product analytics, EU). We keep this list current as it changes.',
   },
   {
     title: 'Executor access controls',
@@ -38,8 +46,12 @@ const ITEMS = [
     body: 'Every Will is reviewed against a solicitor-written checklist before being issued. The checklist was prepared by qualified Australian legal practitioners. For complex situations, an additional bespoke review via our partner lawyers can be requested through your Vault.',
   },
   {
+    title: 'If something goes wrong',
+    body: 'If a data breach occurs that is likely to result in serious harm, we will contain and assess it, and notify affected individuals and the Office of the Australian Information Commissioner as required under the Notifiable Data Breaches scheme (Privacy Act 1988). If you notice a security issue, email hello@heirloomlife.com.au and we will respond promptly.',
+  },
+  {
     title: 'What we are not claiming',
-    body: "We do not hold ISO 27001 certification at this time. We are not claiming specific penetration testing results, specific uptime SLAs, or specific data residency guarantees until these are formally verified and documented. This page will be updated when those confirmations are in place. Where engineering has not yet confirmed specifics, we have noted them here rather than omitting the uncertainty.",
+    body: 'We do not hold ISO 27001 or SOC 2 certification at this time, and we are not claiming specific penetration-testing results or uptime SLAs until these are formally verified and documented. This page is updated as those confirmations are in place — we would rather note the uncertainty than paper over it.',
   },
 ]
 
