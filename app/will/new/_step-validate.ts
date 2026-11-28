@@ -30,6 +30,18 @@ export function validateStep(step: StepId, form: WillFormData): Record<string, s
     }
   }
 
+  if (step === 'executors') {
+    const ed = form.executorsData
+    need(!ed.primary.firstName.trim(), 'executor:primary:firstName', 'First name is required.')
+    need(!ed.primary.lastName.trim(), 'executor:primary:lastName', 'Last name is required.')
+    need(!ed.primary.relationship.trim(), 'executor:primary:relationship', 'Relationship is required.')
+    if (ed.hasAlternate) {
+      need(!ed.alternate.firstName.trim(), 'executor:alternate:firstName', 'First name is required.')
+      need(!ed.alternate.lastName.trim(), 'executor:alternate:lastName', 'Last name is required.')
+      need(!ed.alternate.relationship.trim(), 'executor:alternate:relationship', 'Relationship is required.')
+    }
+  }
+
   if (step === 'gifts') {
     for (const g of form.specificGifts) {
       need(!g.recipientName.trim(), `gift:${g.id}:recipientName`, 'Recipient name is required.')
@@ -41,8 +53,9 @@ export function validateStep(step: StepId, form: WillFormData): Record<string, s
   if (step === 'beneficiaries') {
     // A partially-filled row (name xor share) is an error; fully-blank rows are ignored.
     for (const p of form.beneficiariesData.people) {
-      if (p.name.trim() || p.percentage.trim()) {
+      if (p.name.trim() || p.percentage.trim() || p.relationship.trim()) {
         need(!p.name.trim(), `beneficiary:${p.id}:name`, 'Beneficiary name is required.')
+        need(!p.relationship.trim(), `beneficiary:${p.id}:relationship`, 'Relationship is required.')
         need(!p.percentage.trim(), `beneficiary:${p.id}:percentage`, 'Share % is required.')
       }
     }

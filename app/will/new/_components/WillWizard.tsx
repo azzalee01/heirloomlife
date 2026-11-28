@@ -587,6 +587,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     data={form.executorsData}
                     onChange={(executorsData: ExecutorsData) => update('executorsData', executorsData)}
                     extractedFields={extractedFields}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'assets' && (

@@ -1893,3 +1893,39 @@ describe('abandonmentKind (email segmentation)', () => {
     expect(abandonmentKind(fd)).toBe('ready')
   })
 })
+
+describe('Required-field enforcement — executors + beneficiary relationship', () => {
+  const emptyExec = { firstName: '', lastName: '', relationship: '', phone: '', email: '', address: '' }
+
+  it('flags a primary executor missing first/last/relationship', () => {
+    const fd = baseFormData({ executorsData: { primary: emptyExec, hasAlternate: false, alternate: emptyExec } })
+    const e = validateStep('executors', fd)
+    expect(e['executor:primary:firstName']).toBeTruthy()
+    expect(e['executor:primary:lastName']).toBeTruthy()
+    expect(e['executor:primary:relationship']).toBeTruthy()
+  })
+
+  it('flags an incomplete alternate only when one has been added', () => {
+    const ok = { primary: baseExecutor(), hasAlternate: false, alternate: emptyExec }
+    expect(Object.keys(validateStep('executors', baseFormData({ executorsData: ok })))).toHaveLength(0)
+    const withAlt = { ...ok, hasAlternate: true, alternate: { ...emptyExec, firstName: 'Drew' } }
+    const e = validateStep('executors', baseFormData({ executorsData: withAlt }))
+    expect(e['executor:alternate:lastName']).toBeTruthy()
+    expect(e['executor:alternate:relationship']).toBeTruthy()
+  })
+
+  it('flags a beneficiary with a name but no relationship', () => {
+    const fd = baseFormData({ beneficiariesData: { people: [{ id: 'b1', name: 'Jane Doe', relationship: '', percentage: '100', substituteBeneficiary: '' }], charities: [] } })
+    expect(validateStep('beneficiaries', fd)['beneficiary:b1:relationship']).toBeTruthy()
+  })
+
+  it('Will text refuses an executor without a full name — no "I appoint Sam"', () => {
+    const fd = baseFormData({
+      executorsData: { primary: { ...emptyExec, firstName: 'Sam', relationship: 'Friend' }, hasAlternate: false, alternate: emptyExec },
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const text = renderWillText(fd)
+    expect(text).not.toContain('I appoint Sam as the Executor')
+    expect(text).toContain('[No executor full name provided]')
+  })
+})

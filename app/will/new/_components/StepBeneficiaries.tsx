@@ -326,6 +326,7 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
                 <div>
                   <label className={lbl}>Relationship <span className="text-red-400">*</span></label>
                   <input required className={inp} placeholder="e.g. Spouse, Child" value={person.relationship} onChange={(e) => updatePerson(person.id, { relationship: e.target.value })} />
+                  <FieldError msg={fe[`beneficiary:${person.id}:relationship`]} />
                 </div>
                 <div>
                   <label className={lbl}>Share (%) <span className="text-red-400">*</span></label>

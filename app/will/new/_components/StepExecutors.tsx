@@ -11,9 +11,16 @@ interface ExecutorFormProps {
   label: string
   data: ExecutorPerson
   onChange: (data: ExecutorPerson) => void
+  prefix: string
+  fieldErrors?: Record<string, string>
 }
 
-function ExecutorForm({ label, data, onChange }: ExecutorFormProps) {
+function FieldError({ msg }: { msg?: string }) {
+  return msg ? <p className="mt-1 text-xs text-red-600">{msg}</p> : null
+}
+
+function ExecutorForm({ label, data, onChange, prefix, fieldErrors }: ExecutorFormProps) {
+  const fe = fieldErrors ?? {}
   function set(field: keyof ExecutorPerson, value: string) {
     onChange({ ...data, [field]: value })
   }
@@ -25,14 +32,17 @@ function ExecutorForm({ label, data, onChange }: ExecutorFormProps) {
         <div>
           <label className={lbl}>First name <span className="text-red-400">*</span></label>
           <input required className={inp} value={data.firstName} onChange={(e) => set('firstName', e.target.value)} />
+          <FieldError msg={fe[`${prefix}:firstName`]} />
         </div>
         <div>
           <label className={lbl}>Last name <span className="text-red-400">*</span></label>
           <input required className={inp} value={data.lastName} onChange={(e) => set('lastName', e.target.value)} />
+          <FieldError msg={fe[`${prefix}:lastName`]} />
         </div>
         <div>
           <label className={lbl}>Relationship <span className="text-red-400">*</span></label>
           <input required className={inp} placeholder="e.g. Spouse, Sibling, Solicitor" value={data.relationship} onChange={(e) => set('relationship', e.target.value)} />
+          <FieldError msg={fe[`${prefix}:relationship`]} />
         </div>
         <div>
           <label className={lbl}>Phone</label>
@@ -55,9 +65,10 @@ interface Props {
   data: ExecutorsData
   onChange: (data: ExecutorsData) => void
   extractedFields?: Set<string>
+  fieldErrors?: Record<string, string>
 }
 
-export default function StepExecutors({ data, onChange, extractedFields }: Props) {
+export default function StepExecutors({ data, onChange, extractedFields, fieldErrors }: Props) {
   const hasExtracted = extractedFields && (
     extractedFields.has('executorsData.primary.firstName') ||
     extractedFields.has('executorsData.primary.lastName')
@@ -87,6 +98,8 @@ export default function StepExecutors({ data, onChange, extractedFields }: Props
         label="Primary Executor"
         data={data.primary}
         onChange={(primary) => onChange({ ...data, primary })}
+        prefix="executor:primary"
+        fieldErrors={fieldErrors}
       />
 
       {!data.hasAlternate ? (
@@ -119,6 +132,8 @@ export default function StepExecutors({ data, onChange, extractedFields }: Props
             label="Alternate Executor"
             data={data.alternate}
             onChange={(alternate) => onChange({ ...data, alternate })}
+            prefix="executor:alternate"
+            fieldErrors={fieldErrors}
           />
         </div>
       )}

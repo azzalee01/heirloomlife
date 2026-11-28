@@ -81,7 +81,12 @@ function buildTestatorRows(formData: WillFormData): Record<string, unknown>[] {
 
   const rows: Record<string, unknown>[] = [primaryRow]
 
-  if (pd.maritalStatus === 'married' || pd.maritalStatus === 'domestic_partner') {
+  // Only persist the spouse row once they're actually named. On the "About You"
+  // step the spouse fields are still blank (the spouse step comes later), and
+  // first_name/last_name are NOT NULL — inserting a blank row there is the P0 that
+  // broke married/domestic-partner saves.
+  if ((pd.maritalStatus === 'married' || pd.maritalStatus === 'domestic_partner')
+      && sd.firstName.trim() && sd.lastName.trim()) {
     rows.push({
       first_name: sd.firstName,
       middle_name: sd.middleName || null,
