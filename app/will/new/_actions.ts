@@ -6,7 +6,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from './_data'
 import { assembleWillDocument } from './_assembly'
 import { recordVersion, assertNoActiveSigning, markSessionsStaleAfterEdit } from './_versioning'
-import { applyLifeInterestReview } from './_review-reasons'
+import { applyLifeInterestReview, applyWaMarriageReview } from './_review-reasons'
 import { STEP_LABELS, type WillFormData, type StepId, type PersonalWishesData } from './_types'
 import { sendResumeEmail } from '@/src/lib/email'
 
@@ -429,9 +429,19 @@ export async function saveStep(
   // Life interest isn't drafted into the template Will — ticking it flags the will
   // for solicitor review; un-ticking removes ONLY that reason (and clears
   // needs_review when none remain) without clobbering other review reasons.
-  const { reasons: reviewReasons, needsReview } = applyLifeInterestReview(
+  const { reasons: afterLifeInterest } = applyLifeInterestReview(
     currentReviewReasons,
     formData.lifeInterest.enabled
+  )
+  // WA testators with a spouse/partner get a review prompt: ending a marriage can
+  // revoke the whole Will under WA law. Review-only — no change to the Will text.
+  const pd = formData.personalDetails
+  const waMarriageRevocationApplies =
+    (pd.state ?? '').trim().toUpperCase() === 'WA' &&
+    (pd.maritalStatus === 'married' || pd.maritalStatus === 'domestic_partner')
+  const { reasons: reviewReasons, needsReview } = applyWaMarriageReview(
+    afterLifeInterest,
+    waMarriageRevocationApplies
   )
   await supabase.from('wills').update({
     triage_flags: formData.triageFlags,
@@ -609,7 +619,13 @@ export async function completeWill(willId: string): Promise<void> {
   try {
     const { formData } = await loadWillFormData(supabase, user.id, willId)
     const documentText = await assembleWillDocument(formData)
-    await supabaseAdmin.from('wills').update({ document_text: documentText }).eq('id', willId).eq('user_id', user.id)
+    // Persist the testator's State/Territory used for clause selection, so the Will
+    // always re-renders from the same (NSW vs generic) clause set.
+    await supabaseAdmin
+      .from('wills')
+      .update({ document_text: documentText, jurisdiction: formData.personalDetails.state || null })
+      .eq('id', willId)
+      .eq('user_id', user.id)
 
     // Run the AI legal review exactly once here, now that all 7 steps are
     // in and the full picture is available  -  not on every step along the way.

@@ -3,6 +3,7 @@ import type { WillFormData } from './_types'
 import { resolveSubstituteBeneficiaryText, formatCurrency, formatAmountDigits, computeRequiresDelayedVestingTrust } from './_types'
 import { validateWillForGeneration, validateRenderedText } from './_validate'
 import { assessComplexityFlags, maxSeverity } from './_complexity'
+import { clauseJurisdictionForState, findNswStatuteCitations, type ClauseJurisdiction } from './_jurisdiction'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -24,24 +25,48 @@ function merge(text: string, vars: Vars): string {
 
 // ── Clause fetcher ─────────────────────────────────────────────────────────
 
-async function fetchClauseTexts(codes: string[]): Promise<Map<string, string>> {
+async function fetchClauseTexts(codes: string[], cj: ClauseJurisdiction): Promise<Map<string, string>> {
   const unique = [...new Set(codes)]
+  // NSW testators read only the 'nsw' rows — byte-identical to the pre-generic
+  // behaviour. Non-NSW testators read both and prefer the 'generic' row per code,
+  // falling back to 'nsw' only where no generic variant exists.
+  const jurisdictions = cj === 'nsw' ? ['nsw'] : ['generic', 'nsw']
   const { data, error } = await supabaseAdmin
     .from('clause_versions')
-    .select('clauses!inner(clause_code), clause_text')
+    .select('clause_text, status, version, clauses!inner(clause_code, jurisdiction)')
     .in('clauses.clause_code', unique)
+    .in('clauses.jurisdiction', jurisdictions)
     .in('status', ['production', 'draft'])
-    .order('status', { ascending: false }) // 'production' > 'draft' lexicographically — prefer production
-    .order('version', { ascending: false })
 
   if (error) throw new Error(`clause_versions fetch failed: ${error.message}`)
 
-  // Keep only the highest version per clause code
-  const map = new Map<string, string>()
-  for (const row of data ?? []) {
-    const code = (row.clauses as unknown as { clause_code: string }).clause_code
-    if (!map.has(code)) map.set(code, row.clause_text as string)
+  type Row = { code: string; jurisdiction: string; status: string; version: number; text: string }
+  const rows: Row[] = (data ?? []).map((r) => {
+    const c = r.clauses as unknown as { clause_code: string; jurisdiction: string }
+    return { code: c.clause_code, jurisdiction: c.jurisdiction, status: r.status as string, version: r.version as number, text: r.clause_text as string }
+  })
+
+  // Resolve the winning row per clause code: jurisdiction first (generic beats nsw
+  // only when serving a non-NSW Will), then status ('production' > 'draft'), then the
+  // highest version. For NSW this reduces to the original status/version ordering.
+  const jurisdictionRank = (j: string) => (cj === 'generic' && j === 'generic' ? 0 : j === 'nsw' ? 1 : 2)
+  const statusRank = (s: string) => (s === 'production' ? 0 : 1)
+  const better = (a: Row, b: Row): boolean => {
+    const ja = jurisdictionRank(a.jurisdiction), jb = jurisdictionRank(b.jurisdiction)
+    if (ja !== jb) return ja < jb
+    const sa = statusRank(a.status), sb = statusRank(b.status)
+    if (sa !== sb) return sa < sb
+    return a.version > b.version
   }
+
+  const best = new Map<string, Row>()
+  for (const row of rows) {
+    const cur = best.get(row.code)
+    if (!cur || better(row, cur)) best.set(row.code, row)
+  }
+
+  const map = new Map<string, string>()
+  for (const [code, row] of best) map.set(code, row.text)
   return map
 }
 
@@ -450,11 +475,25 @@ export async function assembleWillDocument(formData: WillFormData): Promise<stri
     )
   }
 
+  // Testator State/Territory picks the clause set: NSW → the NSW library (unchanged),
+  // anywhere else → the jurisdiction-neutral generic variants (nsw as fallback).
+  const cj = clauseJurisdictionForState(formData.personalDetails.state)
+
   const instances = selectClauses(formData)
   const codes = [...instances.map((i) => i.code), DIVORCE_NOTE_CODE]
-  const clauseTexts = await fetchClauseTexts([...new Set(codes)])
+  const clauseTexts = await fetchClauseTexts([...new Set(codes)], cj)
 
   const sections: string[] = [buildDocumentHeader(formData)]
+
+  // Safety net: a non-NSW (generic) Will must never contain an NSW-specific statute
+  // citation. If a selected clause falls back to NSW wording that carries one, fail
+  // the assembly loudly rather than issue an NSW-law document to a non-NSW testator.
+  const statuteLeaks: string[] = []
+  const checkLeak = (code: string, text: string) => {
+    if (cj !== 'generic') return
+    const found = findNswStatuteCitations(text)
+    if (found.length) statuteLeaks.push(`${code} (${found.join(', ')})`)
+  }
 
   for (const instance of instances) {
     const raw = clauseTexts.get(instance.code)
@@ -466,6 +505,7 @@ export async function assembleWillDocument(formData: WillFormData): Promise<stri
     }
 
     const body = merge(raw, instance.vars)
+    checkLeak(instance.code, body)
     sections.push(instance.heading ? `${instance.heading}\n\n${body}` : body)
   }
 
@@ -474,8 +514,17 @@ export async function assembleWillDocument(formData: WillFormData): Promise<stri
   // LEGAL REVIEW REQUIRED: confirm this positioning satisfies the approved precedent.
   const divorceNoteText = clauseTexts.get(DIVORCE_NOTE_CODE)
   if (divorceNoteText) {
-    sections.push(
-      `NOTE — EFFECT OF MARRIAGE AND DIVORCE\n\n${merge(divorceNoteText, {})}`
+    const note = merge(divorceNoteText, {})
+    checkLeak(DIVORCE_NOTE_CODE, note)
+    sections.push(`NOTE — EFFECT OF MARRIAGE AND DIVORCE\n\n${note}`)
+  }
+
+  // Fail before issuing an NSW-law document to a non-NSW testator.
+  if (statuteLeaks.length > 0) {
+    throw new Error(
+      `Will assembly blocked — a non-NSW (${formData.personalDetails.state || 'unknown state'}) Will would contain ` +
+      `NSW-specific statutory references in clause(s): ${statuteLeaks.join('; ')}. ` +
+      `A jurisdiction-neutral version of these clause(s) must be added before this Will can be issued.`
     )
   }
 
