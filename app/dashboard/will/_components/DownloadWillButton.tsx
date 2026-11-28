@@ -10,9 +10,10 @@ interface Props {
   hasDownloaded: boolean
   testatorName?: string
   funeralWishes?: FuneralWishes
+  state?: string
 }
 
-export default function DownloadWillButton({ willId, documentText, hasDownloaded, testatorName, funeralWishes }: Props) {
+export default function DownloadWillButton({ willId, documentText, hasDownloaded, testatorName, funeralWishes, state }: Props) {
   const [downloading, setDownloading] = useState(false)
 
   async function handleDownload() {
@@ -21,7 +22,7 @@ export default function DownloadWillButton({ willId, documentText, hasDownloaded
       await markWillDownloaded(willId)
 
       const { renderWillPdf } = await import('@/src/lib/pdf/renderWillPdf')
-      const bytes = await renderWillPdf(documentText, { testatorName, funeralWishes })
+      const bytes = await renderWillPdf(documentText, { testatorName, funeralWishes, state })
 
       const blob = new Blob([bytes as ArrayBuffer], { type: 'application/pdf' })
       const url = URL.createObjectURL(blob)
