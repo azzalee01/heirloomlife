@@ -13,9 +13,15 @@ interface Props {
   data: PersonalDetails
   onChange: (data: PersonalDetails) => void
   extractedFields?: Set<string>
+  fieldErrors?: Record<string, string>
 }
 
-export default function StepPersonalDetails({ data, onChange, extractedFields }: Props) {
+function FieldError({ msg }: { msg?: string }) {
+  return msg ? <p className="mt-1 text-xs text-red-600">{msg}</p> : null
+}
+
+export default function StepPersonalDetails({ data, onChange, extractedFields, fieldErrors }: Props) {
+  const fe = fieldErrors ?? {}
   function ex(field: string) { return extractedFields?.has(`personalDetails.${field}`) ?? false }
   function ic(field: string) { return ex(field) ? inpEx : inp }
   function set(field: keyof PersonalDetails, value: string) {
@@ -36,6 +42,7 @@ export default function StepPersonalDetails({ data, onChange, extractedFields }:
           <div>
             <label className={lbl}>First name <span className="text-red-400">*</span></label>
             <input required className={ic('firstName')} value={data.firstName} onChange={(e) => set('firstName', e.target.value)} />
+            <FieldError msg={fe['personal:firstName']} />
           </div>
           <div>
             <label className={lbl}>Middle name</label>
@@ -44,6 +51,7 @@ export default function StepPersonalDetails({ data, onChange, extractedFields }:
           <div>
             <label className={lbl}>Last name <span className="text-red-400">*</span></label>
             <input required className={ic('lastName')} value={data.lastName} onChange={(e) => set('lastName', e.target.value)} />
+            <FieldError msg={fe['personal:lastName']} />
           </div>
         </div>
       </section>
@@ -55,7 +63,7 @@ export default function StepPersonalDetails({ data, onChange, extractedFields }:
           <input type="date" required className={ic('dateOfBirth')} value={data.dateOfBirth} onChange={(e) => set('dateOfBirth', e.target.value)} />
         </div>
         <div>
-          <label className={lbl}>Occupation <span className="text-red-400">*</span></label>
+          <label className={lbl}>Occupation</label>
           <input required className={inp} placeholder="e.g. Software Engineer" value={data.occupation} onChange={(e) => set('occupation', e.target.value)} />
         </div>
       </div>
@@ -65,11 +73,11 @@ export default function StepPersonalDetails({ data, onChange, extractedFields }:
         <p className={eyebrow}>Contact</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={lbl}>Mobile <span className="text-red-400">*</span></label>
+            <label className={lbl}>Mobile</label>
             <input type="tel" required className={inp} placeholder="04XX XXX XXX" value={data.phoneMobile} onChange={(e) => set('phoneMobile', e.target.value)} />
           </div>
           <div>
-            <label className={lbl}>Email <span className="text-red-400">*</span></label>
+            <label className={lbl}>Email</label>
             <input type="email" required className={inp} value={data.email} onChange={(e) => set('email', e.target.value)} />
           </div>
         </div>
@@ -82,11 +90,13 @@ export default function StepPersonalDetails({ data, onChange, extractedFields }:
           <div>
             <label className={lbl}>Street address <span className="text-red-400">*</span></label>
             <input required className={ic('addressLine1')} placeholder="123 Example Street" value={data.addressLine1} onChange={(e) => set('addressLine1', e.target.value)} />
+            <FieldError msg={fe['personal:addressLine1']} />
           </div>
           <div className="grid grid-cols-4 gap-3">
             <div className="col-span-2">
               <label className={lbl}>Suburb <span className="text-red-400">*</span></label>
               <input required className={ic('suburb')} value={data.suburb} onChange={(e) => set('suburb', e.target.value)} />
+              <FieldError msg={fe['personal:suburb']} />
             </div>
             <div>
               <label className={lbl}>State <span className="text-red-400">*</span></label>
@@ -98,6 +108,7 @@ export default function StepPersonalDetails({ data, onChange, extractedFields }:
             <div>
               <label className={lbl}>Postcode <span className="text-red-400">*</span></label>
               <input required maxLength={4} className={ic('postcode')} value={data.postcode} onChange={(e) => set('postcode', e.target.value)} />
+              <FieldError msg={fe['personal:postcode']} />
             </div>
           </div>
         </div>
@@ -115,6 +126,7 @@ export default function StepPersonalDetails({ data, onChange, extractedFields }:
           <option value="separated">Separated</option>
           <option value="widowed">Widowed</option>
         </select>
+        <FieldError msg={fe['personal:maritalStatus']} />
       </div>
 
       {/* Previous will */}

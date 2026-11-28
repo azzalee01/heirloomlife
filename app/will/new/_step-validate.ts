@@ -7,9 +7,28 @@ export function validateStep(step: StepId, form: WillFormData): Record<string, s
   const e: Record<string, string> = {}
   const need = (missing: boolean, key: string, msg: string) => { if (missing) e[key] = msg }
 
+  if (step === 'personal') {
+    const pd = form.personalDetails
+    need(!pd.firstName.trim(), 'personal:firstName', 'First name is required.')
+    need(!pd.lastName.trim(), 'personal:lastName', 'Last name is required.')
+    need(!pd.addressLine1.trim(), 'personal:addressLine1', 'Street address is required.')
+    need(!pd.suburb.trim(), 'personal:suburb', 'Suburb is required.')
+    need(!pd.postcode.trim(), 'personal:postcode', 'Postcode is required.')
+    need(!pd.maritalStatus, 'personal:maritalStatus', 'Marital status is required.')
+  }
+
+  if (step === 'spouse') {
+    const married = form.personalDetails.maritalStatus === 'married' || form.personalDetails.maritalStatus === 'domestic_partner'
+    if (married) {
+      need(!form.spouseDetails.firstName.trim(), 'spouse:firstName', 'First name is required.')
+      need(!form.spouseDetails.lastName.trim(), 'spouse:lastName', 'Last name is required.')
+    }
+  }
+
   if (step === 'assets') {
     for (const a of form.assets) {
       need(!a.assetType, `asset:${a.id}:assetType`, 'Choose an asset type.')
+      need(!a.ownershipType, `asset:${a.id}:ownershipType`, 'Choose how this asset is owned.')
     }
   }
 
