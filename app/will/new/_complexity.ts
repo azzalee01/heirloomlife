@@ -176,3 +176,16 @@ export function maxSeverity(flags: ComplexityFlag[]): ComplexitySeverity | null 
   if (flags.length > 0) return 'LOW'
   return null
 }
+
+/**
+ * True when the Will cannot be auto-issued and must be prepared by a solicitor
+ * (a SOLICITOR_REQUIRED flag such as an entity-held asset or overseas assets).
+ *
+ * The single gate used by BOTH the checkout route — so we never take money for a Will we
+ * won't auto-deliver — and the dashboard, which shows a "request a solicitor review"
+ * notice instead of the paywall. REVIEW_RECOMMENDED flags (e.g. blended family) do NOT
+ * block: the Will still issues, with a review recommendation.
+ */
+export function willRequiresSolicitor(formData: WillFormData): boolean {
+  return maxSeverity(assessComplexityFlags(formData)) === 'SOLICITOR_REQUIRED'
+}

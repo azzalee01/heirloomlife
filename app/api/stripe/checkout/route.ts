@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server'
 import { getStripe, priceId, isProduct } from '@/src/lib/stripe'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import { supabaseAdmin } from '@/src/lib/supabase-server'
+import { loadWillFormData } from '@/app/will/new/_data'
+import { willRequiresSolicitor } from '@/app/will/new/_complexity'
 import { isLiveState } from '@/src/lib/availability'
 import { hasWillAccess, hasUpdatesAccess } from '@/src/lib/entitlements'
 import { PRICING } from '@/src/lib/pricing'
@@ -146,6 +148,24 @@ export async function POST(request: NextRequest) {
       .single()
     willId = (willRow?.id as string | null) ?? null
     charityReferralCode = (willRow?.partner_referral_code as string | null) ?? null
+
+    // Never take money for a Will we won't auto-deliver. A SOLICITOR_REQUIRED Will
+    // (e.g. a trust/company/SMSF-held asset, overseas assets) cannot be auto-issued —
+    // assembleWillDocument blocks it — so it must not reach checkout. Route the user to
+    // a solicitor review instead.
+    if (willId) {
+      const { formData } = await loadWillFormData(supabase, user.id, willId)
+      if (willRequiresSolicitor(formData)) {
+        console.warn('[checkout] blocked SOLICITOR_REQUIRED will', { userId: user.id, willId })
+        return Response.json(
+          {
+            error: 'This Will needs a solicitor review before it can be issued, so it can’t be purchased online yet. Request a solicitor review and we’ll help you complete it.',
+            code: 'SOLICITOR_REQUIRED',
+          },
+          { status: 403 },
+        )
+      }
+    }
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
