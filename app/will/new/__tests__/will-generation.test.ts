@@ -1968,3 +1968,20 @@ describe('Required-field enforcement — personal / spouse / assets', () => {
     expect(validateStep('assets', fd)['asset:a1:ownershipType']).toBeTruthy()
   })
 })
+
+describe('has_children persistence (resume + abandonment cron)', () => {
+  const noKids = { hasChildren: 'no' as const, children: [], guardian: { firstName: '', lastName: '', relationship: '', phone: '', email: '' }, ageOfVesting: '18' }
+  const unanswered = { ...noKids, hasChildren: '' as const }
+
+  it('answered "No children" is complete — not stuck on Children', () => {
+    const fd = baseFormData({ childrenData: noKids, beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] } })
+    expect(firstIncompleteStep(fd)).toBe('review')
+    expect(abandonmentKind(fd)).toBe('ready')
+  })
+
+  it('unanswered Children → resume to Children (and cron sees incomplete)', () => {
+    const fd = baseFormData({ childrenData: unanswered, beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] } })
+    expect(firstIncompleteStep(fd)).toBe('children')
+    expect(abandonmentKind(fd)).toBe('nudge')
+  })
+})
