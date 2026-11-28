@@ -4,6 +4,7 @@ import { resolveSubstituteBeneficiaryText, formatCurrency, formatAmountDigits, c
 import { validateWillForGeneration, validateRenderedText } from './_validate'
 import { assessComplexityFlags, maxSeverity } from './_complexity'
 import { clauseJurisdictionForState, findNswStatuteCitations, type ClauseJurisdiction } from './_jurisdiction'
+import { stripMarkdownEmphasis } from '@/src/lib/will-format'
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -508,14 +509,15 @@ export async function assembleWillDocument(formData: WillFormData): Promise<stri
     sections.push(instance.heading ? `${instance.heading}\n\n${body}` : body)
   }
 
-  // ── Post-execution statutory note (DIVORCE-01) ───────────────────────────
-  // Rendered as an un-numbered informational note after the execution clause.
-  // LEGAL REVIEW REQUIRED: confirm this positioning satisfies the approved precedent.
+  // ── Marriage/divorce note (DIVORCE-01) ───────────────────────────────────
+  // Emitted as a standard footer paragraph. The clause text already carries its own
+  // heading ("Effect of marriage and divorce"), so we do NOT prepend another one —
+  // prepending "NOTE — EFFECT OF MARRIAGE AND DIVORCE" previously duplicated the heading.
   const divorceNoteText = clauseTexts.get(DIVORCE_NOTE_CODE)
   if (divorceNoteText) {
     const note = merge(divorceNoteText, {})
     checkLeak(DIVORCE_NOTE_CODE, note)
-    sections.push(`NOTE — EFFECT OF MARRIAGE AND DIVORCE\n\n${note}`)
+    sections.push(note)
   }
 
   // Fail before issuing an NSW-law document to a non-NSW testator.
@@ -543,5 +545,7 @@ export async function assembleWillDocument(formData: WillFormData): Promise<stri
     )
   }
 
-  return assembled
+  // Present as plain text — strip markdown emphasis markers (**bold**, *italics*) so the
+  // issued/stored document and download never show literal asterisks. Words unchanged.
+  return stripMarkdownEmphasis(assembled)
 }

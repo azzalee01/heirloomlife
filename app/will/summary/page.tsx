@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { createSupabaseServerClient } from '@/src/lib/supabase-ssr'
 import LogoutButton from '@/src/components/LogoutButton'
+import { stripMarkdownEmphasis } from '@/src/lib/will-format'
 
 // ─── DB row types ─────────────────────────────────────────────────────────────
 
@@ -366,7 +367,7 @@ export default async function WillSummaryPage() {
             <div className="px-6 py-5">
               <Section title="Drafted Will Document">
                 <pre className="whitespace-pre-wrap font-sans text-sm text-[var(--ink)] leading-relaxed">
-                  {will.document_text}
+                  {stripMarkdownEmphasis(will.document_text)}
                 </pre>
               </Section>
             </div>
