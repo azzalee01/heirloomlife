@@ -436,6 +436,9 @@ export async function saveStep(
   await supabase.from('wills').update({
     triage_flags: formData.triageFlags,
     minor_vesting_age: parseInt(formData.childrenData.ageOfVesting, 10) || null,
+    // Persist the yes/no answer (null = not yet answered) so "No children" sticks.
+    has_children: formData.childrenData.hasChildren === 'yes' ? true
+      : formData.childrenData.hasChildren === 'no' ? false : null,
     needs_review: needsReview,
     needs_review_reasons: reviewReasons,
   }).eq('id', id)

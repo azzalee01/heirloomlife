@@ -55,6 +55,7 @@ type WillRow = {
   life_interest: Record<string, unknown> | null
   triage_flags: Record<string, unknown> | null
   minor_vesting_age: number | null
+  has_children: boolean | null
 }
 
 type ChildRow = { id: string; first_name: string | null; last_name: string | null; date_of_birth: string | null; is_dependent: boolean; distribution_age: number | null }
@@ -299,7 +300,7 @@ export async function loadWillFormData(
   userId: string,
   willIdParam?: string
 ): Promise<{ willId: string | null; formData: WillFormData }> {
-  const baseQuery = supabase.from('wills').select('id, survivorship_days, pet_care, life_interest, triage_flags, minor_vesting_age').eq('user_id', userId)
+  const baseQuery = supabase.from('wills').select('id, survivorship_days, pet_care, life_interest, triage_flags, minor_vesting_age, has_children').eq('user_id', userId)
   const { data: willRows } = willIdParam
     ? await baseQuery.eq('id', willIdParam).limit(1)
     : await baseQuery.order('created_at', { ascending: false }).limit(1)
@@ -357,7 +358,10 @@ export async function loadWillFormData(
     : EMPTY_WILL_FORM_DATA.childrenData.guardian
 
   const childrenData: ChildrenData = {
-    hasChildren: children.length > 0 ? 'yes' : '',
+    // Prefer the persisted answer (so "No" sticks); fall back to inferring from rows.
+    hasChildren: willRow?.has_children === true ? 'yes'
+      : willRow?.has_children === false ? 'no'
+      : children.length > 0 ? 'yes' : '',
     children,
     guardian,
     // Prefer the will-level vesting age (survives with no dependent children);
