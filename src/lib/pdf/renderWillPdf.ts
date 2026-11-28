@@ -1,3 +1,5 @@
+import { stripMarkdownEmphasis } from '@/src/lib/will-format'
+
 export interface FuneralWishes {
   funeralType?: string
   funeralRestingPlace?: string
@@ -10,9 +12,8 @@ function toTitleCase(s: string): string {
   return s.replace(/\w\S*/g, (txt) => txt[0].toUpperCase() + txt.slice(1).toLowerCase())
 }
 
-function stripInline(text: string): string {
-  return text.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*([^*]+?)\*/g, '$1')
-}
+// Shared with the renderer/display so bold markers are stripped identically everywhere.
+const stripInline = stripMarkdownEmphasis
 
 export async function renderWillPdf(
   documentText: string,
@@ -20,7 +21,7 @@ export async function renderWillPdf(
 ): Promise<ArrayBuffer> {
   // Normalise Unicode to ASCII-safe equivalents so jsPDF never emits WinAnsi
   // control-range bytes (0x80-0x9F) that Adobe Acrobat rejects as invalid.
-  const processedText = documentText
+  const processedText = stripMarkdownEmphasis(documentText)
     .replace(/\{\{[^}]+\}\}/g, '_______________')
     .replace(/—/g, '--')
     .replace(/–/g, '-')

@@ -150,6 +150,8 @@ describe('Will-generation invariants (generated matrix)', () => {
       expect(text, label).not.toContain('NaN')
       expect(text, label).not.toContain('[object')
       expect(text, label).not.toMatch(/\bnull\b/)
+      // No literal markdown emphasis markers in the issued Will text.
+      expect(text, label).not.toContain('**')
     }
   })
 

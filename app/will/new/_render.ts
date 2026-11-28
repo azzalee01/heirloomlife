@@ -1,6 +1,7 @@
 import type { WillFormData } from './_types'
 import { resolveSubstituteBeneficiaryText, formatCurrency, computeRequiresDelayedVestingTrust } from './_types'
 import { isNswState } from './_jurisdiction'
+import { stripMarkdownEmphasis } from '@/src/lib/will-format'
 
 // ─── Approved clause text library ──────────────────────────────────────────
 // These texts mirror the approved Supabase clause_versions for NSW.
@@ -487,5 +488,7 @@ export function renderWillText(formData: WillFormData): string {
     'IN WITNESS WHEREOF I have set my hand to this my Will, signed in the presence of two witnesses present at the same time, who attested and subscribed this Will in my presence.'
   )
 
-  return sections.join('\n\n')
+  // Present as plain text — strip markdown emphasis markers so **bold** sub-headings
+  // (Survivorship, Sale, Investment…) don't show literal asterisks. Words are unchanged.
+  return stripMarkdownEmphasis(sections.join('\n\n'))
 }
