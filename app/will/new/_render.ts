@@ -182,6 +182,14 @@ function fullName(...parts: (string | undefined)[]): string {
   return parts.filter(Boolean).join(' ')
 }
 
+// An executor must have a full name. If one is missing, emit a placeholder that
+// validateRenderedText (the /\[No executor/ check) flags, so the Will cannot be
+// released with "I appoint Sam" — rather than silently using a first name alone.
+function executorName(first: string, last: string): string {
+  if (!first.trim() || !last.trim()) return '[No executor full name provided]'
+  return `${first.trim()} ${last.trim()}`
+}
+
 function buildResidueText(formData: WillFormData): string {
   const { people, charities } = formData.beneficiariesData
   const survivorshipDays = formData.survivorshipDays || '30'
@@ -280,11 +288,11 @@ export function renderWillText(formData: WillFormData): string {
   if (primary.firstName) {
     let text =
       `${next()}. EXECUTORS\n\n` +
-      `I appoint ${fullName(primary.firstName, primary.lastName)}${primary.relationship ? ` (${primary.relationship})` : ''} as the Executor of this my Will.`
+      `I appoint ${executorName(primary.firstName, primary.lastName)}${primary.relationship ? ` (${primary.relationship})` : ''} as the Executor of this my Will.`
     if (formData.executorsData.hasAlternate) {
       const alt = formData.executorsData.alternate
       if (alt.firstName) {
-        text += ` If my Executor is unable or unwilling to act, I appoint ${fullName(alt.firstName, alt.lastName)}${alt.relationship ? ` (${alt.relationship})` : ''} as alternate Executor.`
+        text += ` If my Executor is unable or unwilling to act, I appoint ${executorName(alt.firstName, alt.lastName)}${alt.relationship ? ` (${alt.relationship})` : ''} as alternate Executor.`
       }
     }
     sections.push(text)

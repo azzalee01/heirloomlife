@@ -56,6 +56,13 @@ function fullName(first: string, last: string): string {
   return [first, last].filter(Boolean).join(' ')
 }
 
+// Executors must have a full name; a missing one emits a placeholder that
+// validateRenderedText flags (so the Will is refused, not issued as "Sam").
+function executorName(first: string, last: string): string {
+  if (!first.trim() || !last.trim()) return '[No executor full name provided]'
+  return `${first.trim()} ${last.trim()}`
+}
+
 function buildResidueDispositionText(formData: WillFormData): string {
   const { people, charities } = formData.beneficiariesData
 
@@ -138,8 +145,8 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   const requiresDelayedVestingTrust = computeRequiresDelayedVestingTrust(formData)
   const survivorshipDays = formData.survivorshipDays || '30'
   const tname = testatorName(formData)
-  const primaryExecName = fullName(ed.primary.firstName, ed.primary.lastName)
-  const backupExecName = fullName(ed.alternate.firstName, ed.alternate.lastName)
+  const primaryExecName = executorName(ed.primary.firstName, ed.primary.lastName)
+  const backupExecName = executorName(ed.alternate.firstName, ed.alternate.lastName)
 
   const instances: ClauseInstance[] = []
 
