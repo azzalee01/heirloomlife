@@ -1,0 +1,46 @@
+name: Wizard safety net
+
+# Offline gates run on every PR (fast, no secrets). The post-deploy smoke runs against
+# each Vercel Preview and blocks merge on failure.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  offline-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npx tsc --noEmit
+      # The UI→DB contract test + generation invariants + review-reason gates. Fails if a
+      # UI option lacks a migration, or a Will generation/needs_review invariant breaks.
+      - name: Unit + contract tests
+        run: npm test
+
+  preview-smoke:
+    runs-on: ubuntu-latest
+    # Requires repo secrets: PREVIEW_URL (or derive from the Vercel deployment) and
+    # WIZARD_HEALTH_SECRET (and optionally CRON_SECRET). Gate on their presence.
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Post-deploy smoke against the preview
+        env:
+          SMOKE_BASE_URL: ${{ secrets.PREVIEW_URL }}
+          WIZARD_HEALTH_SECRET: ${{ secrets.WIZARD_HEALTH_SECRET }}
+        run: |
+          if [ -z "$SMOKE_BASE_URL" ] || [ -z "$WIZARD_HEALTH_SECRET" ]; then
+            echo "PREVIEW_URL / WIZARD_HEALTH_SECRET not set — skipping smoke (configure to enforce)."
+            exit 0
+          fi
+          node scripts/smoke-wizard.mjs

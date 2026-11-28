@@ -3,13 +3,7 @@
 import { useState } from 'react'
 import { savePersonalWishes, saveStep } from '../_actions'
 import type { PersonalWishesData, WillFormData } from '../_types'
-
-const FUNERAL_TYPES = [
-  { value: 'burial', label: 'Burial' },
-  { value: 'cremation', label: 'Cremation' },
-  { value: 'donation', label: 'Body donation to medical science' },
-  { value: 'other', label: 'Other / no preference' },
-] as const
+import { FUNERAL_TYPE_OPTIONS as FUNERAL_TYPES } from '../_wizard-options'
 
 interface Props {
   willId: string | null
