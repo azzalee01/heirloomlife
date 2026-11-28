@@ -327,7 +327,11 @@ export function renderWillText(formData: WillFormData): string {
   const isNsw = isNswState(pd.state)
   const survivorshipDays = formData.survivorshipDays || '30'
   const hasDependent = computeRequiresDelayedVestingTrust(formData)
-  const hasTrust = hasDependent || formData.triageFlags.hasComplexTrusts
+  // The under-vesting-age trust is self-conditional ("if any beneficiary is under the
+  // vesting age"), so it is always included — protecting a minor beneficiary (e.g. a
+  // grandchild named directly) even when there are no children driving a trust. The
+  // vesting age follows the testator's choice when there are dependent children, else 25.
+  const vestingAge = hasDependent ? (formData.childrenData.ageOfVesting || '25') : '25'
   const hasDigitalAssets = formData.assets.some((a) => a.assetType === 'digital_asset')
   const hasChildrenRef =
     hasDependent ||
@@ -430,12 +434,11 @@ export function renderWillText(formData: WillFormData): string {
   // ── 7. Survivorship and Gift Rules (COMMON-GIFT-01) ───────────────────────
   sections.push(`${next()}. SURVIVORSHIP AND GIFT RULES\n\n${COMMON_GIFT_01(survivorshipDays)}`)
 
-  // ── 8. Minor Beneficiary Trust (MIN-01 + MIN-02) ─────────────────────────
-  if (hasDependent) {
-    const vestingAge = formData.childrenData.ageOfVesting || '25'
-    sections.push(`${next()}. MINOR BENEFICIARY TRUST\n\n${isNsw ? MIN_01(vestingAge) : GENERIC_MIN_01(vestingAge)}`)
-    sections.push(`${next()}. ADVANCEMENT POWERS\n\n${isNsw ? MIN_02 : GENERIC_MIN_02}`)
-  }
+  // ── 8. Trust for beneficiaries under the vesting age (MIN-01 + MIN-02) ────
+  // Always included (self-conditional). Heading no longer says "minor", so it does not
+  // clash with a vesting age of 21/25 or the "minor = 18" definition.
+  sections.push(`${next()}. TRUST FOR BENEFICIARIES UNDER THE VESTING AGE\n\n${isNsw ? MIN_01(vestingAge) : GENERIC_MIN_01(vestingAge)}`)
+  sections.push(`${next()}. ADVANCEMENT POWERS\n\n${isNsw ? MIN_02 : GENERIC_MIN_02}`)
 
   // ── 9. Care of Pets (PET-01) ──────────────────────────────────────────────
   if (formData.petCare.hasPets === 'yes') {
@@ -456,11 +459,9 @@ export function renderWillText(formData: WillFormData): string {
   // ── 11. Executor Powers (EXEC-03) — always ───────────────────────────────
   sections.push(`${next()}. EXECUTOR POWERS\n\n${EXEC_03}`)
 
-  // ── 12–13. Trustee Powers + Appointment — only when a trust can arise ─────
-  if (hasTrust) {
-    sections.push(`${next()}. TRUSTEE POWERS\n\n${isNsw ? TRUST_POWERS_01 : GENERIC_TRUST_POWERS_01}`)
-    sections.push(`${next()}. TRUSTEE APPOINTMENT\n\n${isNsw ? TRUSTEE_APPOINT_01 : GENERIC_TRUSTEE_APPOINT_01}`)
-  }
+  // ── 12–13. Trustee Powers + Appointment — always (a trust can always arise) ─
+  sections.push(`${next()}. TRUSTEE POWERS\n\n${isNsw ? TRUST_POWERS_01 : GENERIC_TRUST_POWERS_01}`)
+  sections.push(`${next()}. TRUSTEE APPOINTMENT\n\n${isNsw ? TRUSTEE_APPOINT_01 : GENERIC_TRUSTEE_APPOINT_01}`)
 
   // ── 14. Appropriation Power (APPROPRIATION-01) — always ──────────────────
   sections.push(`${next()}. APPROPRIATION POWER\n\n${isNsw ? APPROPRIATION_01 : GENERIC_APPROPRIATION_01}`)
@@ -473,8 +474,9 @@ export function renderWillText(formData: WillFormData): string {
 
   // ── 17. Definitions (DEFN-01 — dependency-aware) ─────────────────────────
   // "intestacy rules" intentionally excluded — no operative clause uses that defined term.
-  // "child"/"children" only when hasChildrenRef. "minor"/"vesting age" only when MIN-01/MIN-02 render.
-  sections.push(`${next()}. DEFINITIONS\n\n${isNsw ? buildDefinitions(hasDependent, hasChildrenRef) : GENERIC_DEFN_01}`)
+  // "child"/"children" only when hasChildrenRef. "minor"/"vesting age" always, since the
+  // under-vesting-age trust (MIN-01/MIN-02) is always included.
+  sections.push(`${next()}. DEFINITIONS\n\n${isNsw ? buildDefinitions(true, hasChildrenRef) : GENERIC_DEFN_01}`)
 
   // ── 18. Interpretation (INTERP-01) — always ──────────────────────────────
   sections.push(`${next()}. INTERPRETATION\n\n${isNsw ? INTERP_01 : GENERIC_INTERP_01}`)

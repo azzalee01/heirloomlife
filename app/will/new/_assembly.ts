@@ -262,20 +262,23 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
     vars: { survivorship_days: survivorshipDays },
   })
 
-  // ── 9. Testamentary trust ─────────────────────────────────────────────────
-  if (requiresDelayedVestingTrust) {
-    const vestingAge = cd.ageOfVesting || '25'
-    instances.push({
-      code: 'MIN-01',
-      heading: `${++clauseNo}. MINOR BENEFICIARY TRUST`,
-      vars: { vesting_age: vestingAge },
-    })
-    instances.push({
-      code: 'MIN-02',
-      heading: `${++clauseNo}. ADVANCEMENT POWERS`,
-      vars: {},
-    })
-  }
+  // ── 9. Trust for beneficiaries under the vesting age ──────────────────────
+  // Always included (self-conditional), so a minor beneficiary (e.g. a grandchild
+  // named directly) is protected even when there are no children. Heading no longer
+  // says "minor", avoiding the clash with a 21/25 vesting age and the "minor = 18"
+  // definition. Vesting age follows the testator's choice when there are dependent
+  // children, else defaults to 25.
+  const vestingAge = requiresDelayedVestingTrust ? (cd.ageOfVesting || '25') : '25'
+  instances.push({
+    code: 'MIN-01',
+    heading: `${++clauseNo}. TRUST FOR BENEFICIARIES UNDER THE VESTING AGE`,
+    vars: { vesting_age: vestingAge },
+  })
+  instances.push({
+    code: 'MIN-02',
+    heading: `${++clauseNo}. ADVANCEMENT POWERS`,
+    vars: {},
+  })
 
   // ── 10. Life interest — intentionally NOT auto-included ───────────────────
   // LIFE-INT-01 is marked "never auto-include": a right-to-reside carries
@@ -315,14 +318,10 @@ function selectClauses(formData: WillFormData): ClauseInstance[] {
   // ── 13. Executor powers ───────────────────────────────────────────────────
   instances.push({ code: 'EXEC-03', heading: `${++clauseNo}. EXECUTOR POWERS`, vars: {} })
 
-  // ── 14. Trustee powers — only when a trust can arise ─────────────────────
-  // TRUST-POWERS-01 and TRUSTEE-APPOINT-01 are conditional per their metadata:
-  // "Omit if the Will creates no trust and no beneficiary can be under the vesting age."
-  const hasTrust = requiresDelayedVestingTrust || tf.hasComplexTrusts
-  if (hasTrust) {
-    instances.push({ code: 'TRUST-POWERS-01', heading: `${++clauseNo}. TRUSTEE POWERS`, vars: {} })
-    instances.push({ code: 'TRUSTEE-APPOINT-01', heading: `${++clauseNo}. TRUSTEE APPOINTMENT`, vars: {} })
-  }
+  // ── 14. Trustee powers — always (the under-vesting-age trust can always arise) ─
+  // TRUST-POWERS-01 and TRUSTEE-APPOINT-01 back the always-included MIN-01/MIN-02 trust.
+  instances.push({ code: 'TRUST-POWERS-01', heading: `${++clauseNo}. TRUSTEE POWERS`, vars: {} })
+  instances.push({ code: 'TRUSTEE-APPOINT-01', heading: `${++clauseNo}. TRUSTEE APPOINTMENT`, vars: {} })
 
   // ── 15. Admin powers ─────────────────────────────────────────────────────
   instances.push({ code: 'APPROPRIATION-01', heading: `${++clauseNo}. APPROPRIATION POWER`, vars: {} })
