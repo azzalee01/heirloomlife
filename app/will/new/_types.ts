@@ -145,7 +145,7 @@ export interface ExecutorsData {
 export interface Asset {
   id: string
   assetType: AssetType | ''
-  ownershipType: 'sole' | 'joint_tenants' | 'tenants_in_common' | ''
+  ownershipType: 'sole' | 'joint_tenants' | 'tenants_in_common' | 'entity' | ''
   // real estate
   propertyAddress: string
   estimatedValue: string

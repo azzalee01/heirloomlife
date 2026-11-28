@@ -32,7 +32,7 @@ const TOOLS: Anthropic.Tool[] = [
           type: 'string',
           enum: ['real_estate', 'bank_account', 'superannuation', 'shares', 'life_insurance', 'vehicle', 'other'],
         },
-        ownershipType: { type: 'string', enum: ['sole', 'joint_tenants', 'tenants_in_common'] },
+        ownershipType: { type: 'string', enum: ['sole', 'joint_tenants', 'tenants_in_common', 'entity'] },
         propertyAddress: { type: 'string', description: 'Full address, for real_estate' },
         estimatedValue: { type: 'string', description: 'Estimated value in AUD' },
         bankName: { type: 'string' },

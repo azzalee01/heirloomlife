@@ -43,6 +43,21 @@ export function assessComplexityFlags(formData: WillFormData): ComplexityFlag[] 
     })
   }
 
+  // ── Asset held by a trust, company or SMSF (not personally owned) ─────────
+  // A will can only deal with property the person owns personally. An entity-held
+  // asset listed as a personal gift is a defective gift — block executable release
+  // and route to a solicitor. (Interim gate; full intake redesign pending sign-off.)
+  const entityHeldAsset = formData.assets.find((a) => a.ownershipType === 'entity')
+  if (entityHeldAsset) {
+    flags.push({
+      code: 'ENTITY_HELD_ASSET',
+      description:
+        'An asset held by a trust, company, or self-managed super fund has been noted. These are not owned personally and cannot be dealt with by a will — the trust deed, company constitution, or fund rules govern them. Specialist advice is required.',
+      severity: 'SOLICITOR_REQUIRED',
+      triggeredBy: `asset.ownershipType=entity (${entityHeldAsset.assetType || 'type not specified'})`,
+    })
+  }
+
   // ── Business / company / trust ownership ─────────────────────────────────
   if (tf.hasBusinessInterest) {
     flags.push({

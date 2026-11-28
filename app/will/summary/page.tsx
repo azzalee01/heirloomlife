@@ -149,6 +149,7 @@ const OWNERSHIP_LABELS: Record<string, string> = {
   sole: 'Sole ownership',
   joint_tenants: 'Joint tenants',
   tenants_in_common: 'Tenants in common',
+  entity: 'Held by a trust / company / SMSF',
 }
 
 const STATUS_CFG = {
