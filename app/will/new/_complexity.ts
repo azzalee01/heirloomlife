@@ -135,6 +135,24 @@ export function assessComplexityFlags(formData: WillFormData): ComplexityFlag[] 
     })
   }
 
+  // ── WA: ending of marriage may revoke the whole Will ─────────────────────
+  // WA is the one jurisdiction we currently serve where the general "marriage/divorce
+  // affects your Will" note warrants an explicit testator-facing warning. This is a
+  // review prompt only — it does NOT add any contrary-intention declaration to the Will
+  // text, and does not block automated finalisation.
+  const pd = formData.personalDetails
+  const isWa = (pd.state ?? '').trim().toUpperCase() === 'WA'
+  const hasSpouseOrPartner = pd.maritalStatus === 'married' || pd.maritalStatus === 'domestic_partner'
+  if (isWa && hasSpouseOrPartner) {
+    flags.push({
+      code: 'WA_MARRIAGE_REVOCATION',
+      description:
+        'Under Western Australian law, the ending of a marriage can revoke the whole Will. Review your Will after any marriage, divorce, or end of a registered relationship.',
+      severity: 'REVIEW_RECOMMENDED',
+      triggeredBy: `personalDetails.state=WA && maritalStatus=${pd.maritalStatus}`,
+    })
+  }
+
   // ── Minor children with no named guardian ─────────────────────────────────
   const hasDependents =
     formData.childrenData.hasChildren === 'yes' &&

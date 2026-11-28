@@ -4,6 +4,8 @@ import { useState, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { saveStep, completeWill, storeAnonEmail } from '../_actions'
+import { validateStep } from '../_step-validate'
+import { firstIncompleteStep } from '../_resume'
 import { track } from '@/src/lib/analytics/events'
 import {
   type WillFormData,
@@ -182,13 +184,16 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
     buildWizardSteps(initialData)
   )
   const [stepIndex, setStepIndex] = useState(() => {
-    if (!initialStep) return 0
     const steps = buildWizardSteps(initialData)
-    const idx = steps.indexOf(initialStep)
+    // An explicit initialStep wins; otherwise resume a saved draft at the first
+    // incomplete step so reopening doesn't strand the user on Eligibility (locked).
+    const target = initialStep ?? firstIncompleteStep(initialData)
+    const idx = steps.indexOf(target)
     return idx >= 0 ? idx : 0
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [showEmailCapture, setShowEmailCapture] = useState(false)
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [showDownloadGate, setShowDownloadGate] = useState(false)
@@ -230,11 +235,29 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
   const benefTotal = totalAllocated(form.beneficiariesData)
 
   function update<K extends keyof WillFormData>(key: K, value: WillFormData[K]) {
+    // Any edit clears a stale save/validation banner (requirement: banner must
+    // clear on the next successful save OR edit).
+    setError(null)
+    setFieldErrors({})
     setForm((prev) => {
       const next = { ...prev, [key]: value }
       setWizardSteps(buildWizardSteps(next))
       return next
     })
+  }
+
+  // Convert a thrown save error into a short, friendly message. Server Action
+  // errors are opaque/redacted in production, so we surface a controlled message
+  // (keeping our own witnessing-lock wording when it survives to the client).
+  function friendlySaveError(e: unknown): string {
+    const msg = e instanceof Error ? e.message : ''
+    if (msg.toLowerCase().includes('witnessing session')) return msg
+    // Only blame the connection for genuine network failures — a server/validation
+    // error must not tell the user to "check your connection".
+    if (/failed to fetch|networkerror|load failed|network request failed/i.test(msg)) {
+      return 'We couldn’t reach the server. Please check your connection and try again.'
+    }
+    return 'We couldn’t save your changes. Please review your details and try again.'
   }
 
   async function handleNext() {
@@ -254,6 +277,18 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
       return
     }
 
+    // Client-side required-field validation. Skip backup sub-steps — their
+    // underlying beneficiary data was validated on the main beneficiaries step.
+    if (!isBackupStep) {
+      const fe = validateStep(currentStaticStep, form)
+      if (Object.keys(fe).length > 0) {
+        setFieldErrors(fe)
+        setError('Please complete the highlighted fields before continuing.')
+        return
+      }
+    }
+
+    setFieldErrors({})
     setError(null)
     const nextIndex = Math.min(stepIndex + 1, wizardSteps.length - 1)
 
@@ -271,34 +306,65 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
           setShowEmailCapture(true)
         }
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'Failed to save. Please try again.')
+        setError(friendlySaveError(e))
       } finally {
         setSaving(false)
       }
       return
     }
 
-    // willId exists — advance instantly, save in the background
-    setSlideDir('right')
-    setStepKey(k => k + 1)
-    setStepIndex(nextIndex)
-    scrollContentToTop()
-    if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
-      setShowEmailCapture(true)
+    // willId exists — save FIRST, advance only on success. A failed save (DB/RPC
+    // error, or a witnessing-lock conflict) must never let the user move past
+    // unsaved data, so this blocks rather than saving optimistically in the
+    // background.
+    setSaving(true)
+    try {
+      const willIdAtSave = form.willId
+      const { id: savedId } = await saveStep(willIdAtSave, currentStaticStep, form)
+      // If saveStep created a new will (e.g. anon UUID replaced after auth), sync the ID.
+      if (savedId !== willIdAtSave) {
+        setForm((prev) => ({ ...prev, willId: savedId }))
+      }
+      setSlideDir('right')
+      setStepKey(k => k + 1)
+      setStepIndex(nextIndex)
+      scrollContentToTop()
+      if (!isAuthenticated && !emailCaptured && currentStaticStep === 'personal') {
+        setShowEmailCapture(true)
+      }
+    } catch (e) {
+      setError(friendlySaveError(e))
+    } finally {
+      setSaving(false)
     }
+  }
 
-    const willIdAtSave = form.willId
-    pendingSaveRef.current = saveStep(willIdAtSave, currentStaticStep, form)
-    pendingSaveRef.current
-      .then(({ id: savedId }) => {
-        // If saveStep created a new will (e.g. anon UUID replaced after auth), sync the ID
-        if (savedId !== willIdAtSave) {
-          setForm((prev) => ({ ...prev, willId: savedId }))
-        }
-      })
-      .catch((e) => {
-        setError(e instanceof Error ? e.message : 'Your progress may not have saved. Please try again.')
-      })
+  // Backup step "Skip — I'll decide later": clear this beneficiary's substitute
+  // and advance. Blocking save (like handleNext) so a failed save can't advance.
+  async function handleBackupSkip() {
+    if (backupIndex < 0) return
+    const people = form.beneficiariesData.people.map((p, i) =>
+      i === backupIndex ? { ...p, substituteBeneficiary: '' } : p
+    )
+    const nextForm: WillFormData = { ...form, beneficiariesData: { ...form.beneficiariesData, people } }
+    setForm(nextForm)
+    setError(null)
+    const nextIndex = Math.min(stepIndex + 1, wizardSteps.length - 1)
+    setSaving(true)
+    try {
+      if (nextForm.willId) {
+        const { id: savedId } = await saveStep(nextForm.willId, 'beneficiaries', nextForm)
+        if (savedId !== nextForm.willId) setForm((prev) => ({ ...prev, willId: savedId }))
+      }
+      setSlideDir('right')
+      setStepKey((k) => k + 1)
+      setStepIndex(nextIndex)
+      scrollContentToTop()
+    } catch (e) {
+      setError(friendlySaveError(e))
+    } finally {
+      setSaving(false)
+    }
   }
 
   function handleBack() {
@@ -456,11 +522,17 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
           <div className="flex gap-8 items-start sm:mt-6">
             <div className="flex-1 min-w-0">
 
-              {error && (
-                <div className="text-sm text-red-600 bg-red-50 border-b border-red-100 px-5 py-3 sm:border sm:mb-4">
-                  {error}
-                </div>
-              )}
+              {/* Reserved inline slot: on desktop the Next button lives inside the
+                  step card, so showing/clearing this error must not shift it. The
+                  slot holds a stable min-height on sm+; on mobile the nav is a fixed
+                  bottom bar, so no reservation is needed there. */}
+              <div aria-live="polite" className="sm:min-h-[3.5rem]">
+                {error && (
+                  <div role="alert" className="text-sm text-red-600 bg-red-50 border-b border-red-100 px-5 py-3 sm:border sm:mb-4">
+                    {error}
+                  </div>
+                )}
+              </div>
 
               {/* Step card — borderless full-bleed on mobile, framed on sm+ */}
               <div
@@ -492,6 +564,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     data={form.personalDetails}
                     onChange={(personalDetails: PersonalDetails) => update('personalDetails', personalDetails)}
                     extractedFields={extractedFields}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'spouse' && (
@@ -500,6 +573,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     onChange={(spouseDetails: SpouseDetails) => update('spouseDetails', spouseDetails)}
                     maritalStatus={form.personalDetails.maritalStatus}
                     extractedFields={extractedFields}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'children' && (
@@ -507,6 +581,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     data={form.childrenData}
                     onChange={(childrenData: ChildrenData) => update('childrenData', childrenData)}
                     extractedFields={extractedFields}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'executors' && (
@@ -514,12 +589,14 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     data={form.executorsData}
                     onChange={(executorsData: ExecutorsData) => update('executorsData', executorsData)}
                     extractedFields={extractedFields}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'assets' && (
                   <StepAssets
                     data={form.assets}
                     onChange={(assets: Asset[]) => update('assets', assets)}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'beneficiaries' && !isBackupStep && (
@@ -529,6 +606,7 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                     triageFlags={form.triageFlags}
                     onTriageFlagsChange={(triageFlags: TriageFlags) => update('triageFlags', triageFlags)}
                     extractedFields={extractedFields}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {isBackupStep && backupIndex >= 0 && form.beneficiariesData.people[backupIndex] && (
@@ -541,12 +619,14 @@ export default function WillWizard({ initialData, initialStep, isAuthenticated, 
                       )
                       update('beneficiariesData', { ...form.beneficiariesData, people })
                     }}
+                    onSkip={handleBackupSkip}
                   />
                 )}
                 {currentStaticStep === 'gifts' && (
                   <StepSpecificGifts
                     data={form.specificGifts}
                     onChange={(specificGifts: SpecificGift[]) => update('specificGifts', specificGifts)}
+                    fieldErrors={fieldErrors}
                   />
                 )}
                 {currentStaticStep === 'wishes' && (

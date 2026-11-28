@@ -63,6 +63,7 @@ type Testator = {
 type Child = {
   id: string
   first_name: string | null
+  last_name: string | null
   date_of_birth: string | null
   is_dependent: boolean
 }
@@ -422,7 +423,7 @@ export default async function WillSummaryPage() {
                     >
                       <div>
                         <p className="text-sm font-semibold text-[var(--ink)]">
-                          {c.first_name || `Child ${i + 1}`}
+                          {[c.first_name, c.last_name].filter(Boolean).join(' ') || `Child ${i + 1}`}
                         </p>
                         {c.date_of_birth && (
                           <p className="text-xs text-[var(--neutral)] mt-0.5">
@@ -682,7 +683,7 @@ export default async function WillSummaryPage() {
             <div className="px-6 py-6">
               <Section title="Personal Wishes">
                 <p className="text-xs text-[var(--neutral)] mb-4 -mt-2">
-                  These wishes are recorded for your executor's guidance. They are not legally binding.
+                  These wishes are recorded for your executor&apos;s guidance. They are not legally binding.
                 </p>
                 <div className="space-y-2.5">
                   {personalWishes.funeral_type && <Field label="Funeral preference" value={personalWishes.funeral_type.charAt(0).toUpperCase() + personalWishes.funeral_type.slice(1)} />}

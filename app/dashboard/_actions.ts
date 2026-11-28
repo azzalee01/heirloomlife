@@ -205,7 +205,7 @@ function summarizeWill(formData: WillFormData): string {
     parts.push(
       'Children: ' +
         formData.childrenData.children
-          .map((c) => `${c.name}${c.isDependent ? ' (minor/dependent)' : ''}`)
+          .map((c) => `${[c.firstName, c.lastName].filter(Boolean).join(' ')}${c.isDependent ? ' (minor/dependent)' : ''}`)
           .join(', ') +
         '.'
     )

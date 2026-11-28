@@ -14,9 +14,15 @@ interface Props {
   onChange: (data: SpouseDetails) => void
   maritalStatus: MaritalStatus | ''
   extractedFields?: Set<string>
+  fieldErrors?: Record<string, string>
 }
 
-export default function StepSpouseDetails({ data, onChange, maritalStatus, extractedFields }: Props) {
+function FieldError({ msg }: { msg?: string }) {
+  return msg ? <p className="mt-1 text-xs text-red-600">{msg}</p> : null
+}
+
+export default function StepSpouseDetails({ data, onChange, maritalStatus, extractedFields, fieldErrors }: Props) {
+  const fe = fieldErrors ?? {}
   function ex(field: string) { return extractedFields?.has(`spouseDetails.${field}`) ?? false }
   function ic(field: string) { return ex(field) ? inpEx : inp }
   function set(field: keyof SpouseDetails, value: string) {
@@ -39,6 +45,7 @@ export default function StepSpouseDetails({ data, onChange, maritalStatus, extra
           <div>
             <label className={lbl}>First name <span className="text-red-400">*</span></label>
             <input required className={ic('firstName')} value={data.firstName} onChange={(e) => set('firstName', e.target.value)} />
+            <FieldError msg={fe['spouse:firstName']} />
           </div>
           <div>
             <label className={lbl}>Middle name</label>
@@ -47,6 +54,7 @@ export default function StepSpouseDetails({ data, onChange, maritalStatus, extra
           <div>
             <label className={lbl}>Last name <span className="text-red-400">*</span></label>
             <input required className={ic('lastName')} value={data.lastName} onChange={(e) => set('lastName', e.target.value)} />
+            <FieldError msg={fe['spouse:lastName']} />
           </div>
         </div>
       </section>
@@ -54,11 +62,11 @@ export default function StepSpouseDetails({ data, onChange, maritalStatus, extra
       {/* Personal info */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className={lbl}>Date of birth <span className="text-red-400">*</span></label>
+          <label className={lbl}>Date of birth</label>
           <input type="date" required className={inp} value={data.dateOfBirth} onChange={(e) => set('dateOfBirth', e.target.value)} />
         </div>
         <div>
-          <label className={lbl}>Occupation <span className="text-red-400">*</span></label>
+          <label className={lbl}>Occupation</label>
           <input required className={inp} placeholder="e.g. Teacher" value={data.occupation} onChange={(e) => set('occupation', e.target.value)} />
         </div>
       </div>
@@ -68,11 +76,11 @@ export default function StepSpouseDetails({ data, onChange, maritalStatus, extra
         <p className={eyebrow}>Contact</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className={lbl}>Mobile <span className="text-red-400">*</span></label>
+            <label className={lbl}>Mobile</label>
             <input type="tel" required className={inp} placeholder="04XX XXX XXX" value={data.phoneMobile} onChange={(e) => set('phoneMobile', e.target.value)} />
           </div>
           <div>
-            <label className={lbl}>Email <span className="text-red-400">*</span></label>
+            <label className={lbl}>Email</label>
             <input type="email" required className={inp} value={data.email} onChange={(e) => set('email', e.target.value)} />
           </div>
         </div>
@@ -83,23 +91,23 @@ export default function StepSpouseDetails({ data, onChange, maritalStatus, extra
         <p className={eyebrow}>Address</p>
         <div className="space-y-3">
           <div>
-            <label className={lbl}>Street address <span className="text-red-400">*</span></label>
+            <label className={lbl}>Street address</label>
             <input required className={inp} placeholder="123 Example Street" value={data.addressLine1} onChange={(e) => set('addressLine1', e.target.value)} />
           </div>
           <div className="grid grid-cols-4 gap-3">
             <div className="col-span-2">
-              <label className={lbl}>Suburb <span className="text-red-400">*</span></label>
+              <label className={lbl}>Suburb</label>
               <input required className={inp} value={data.suburb} onChange={(e) => set('suburb', e.target.value)} />
             </div>
             <div>
-              <label className={lbl}>State <span className="text-red-400">*</span></label>
+              <label className={lbl}>State</label>
               <select required className={inp} value={data.state} onChange={(e) => set('state', e.target.value)}>
                 <option value=""> - </option>
                 {AU_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div>
-              <label className={lbl}>Postcode <span className="text-red-400">*</span></label>
+              <label className={lbl}>Postcode</label>
               <input required maxLength={4} className={inp} value={data.postcode} onChange={(e) => set('postcode', e.target.value)} />
             </div>
           </div>
@@ -109,7 +117,7 @@ export default function StepSpouseDetails({ data, onChange, maritalStatus, extra
       {/* Previous will */}
       <div>
         <p className="text-sm font-medium text-[var(--ink)] mb-3">
-          Has your {label.toLowerCase()} made a previous will? <span className="text-red-400">*</span>
+          Has your {label.toLowerCase()} made a previous will?
         </p>
         <div className="flex gap-6">
           {(['yes', 'no'] as const).map((v) => (

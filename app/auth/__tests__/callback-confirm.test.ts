@@ -1,12 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { NextRequest } from 'next/server'
 
-// Mock the server Supabase client so we can drive exchange/verify outcomes without
-// a live project or Next request context.
-const mockExchange = vi.fn()
-const mockVerify = vi.fn()
-const mockGetUser = vi.fn()
-const mockUpsert = vi.fn().mockResolvedValue({})
+// Drive verify/exchange outcomes without a live project. redirect() is mocked to
+// throw a sentinel so we can read the destination (the real one throws too).
+// vi.hoisted so the mock factories (hoisted above imports) can reference them.
+const { mockExchange, mockVerify, mockGetUser, mockUpsert, mockRedirect, mockCookieGet, mockCookieSet } = vi.hoisted(() => ({
+  mockExchange: vi.fn(),
+  mockVerify: vi.fn(),
+  mockGetUser: vi.fn(),
+  mockUpsert: vi.fn(),
+  mockRedirect: vi.fn((url: string) => { throw new Error(`REDIRECT:${url}`) }),
+  mockCookieGet: vi.fn(() => undefined),
+  mockCookieSet: vi.fn(),
+}))
 
 vi.mock('@/src/lib/supabase-ssr', () => ({
   createSupabaseServerClient: vi.fn(async () => ({
@@ -19,77 +24,122 @@ vi.mock('@/src/lib/supabase-ssr', () => ({
   })),
 }))
 
-import { GET as callbackGET } from '@/app/auth/callback/route'
-import { GET as confirmGET } from '@/app/auth/confirm/route'
+vi.mock('next/navigation', () => ({ redirect: mockRedirect }))
+vi.mock('next/headers', () => ({ cookies: vi.fn(async () => ({ get: mockCookieGet, set: mockCookieSet })) }))
+
+const NO_USER = { data: { user: null } }
+
+import { confirmOtpAction, exchangeCodeAction } from '@/app/auth/_actions'
+import ConfirmPage from '@/app/auth/confirm/page'
+import CallbackPage from '@/app/auth/callback/page'
 
 const USER = { data: { user: { id: 'u1', email: 'a@b.com', user_metadata: { full_name: 'A B' } } } }
-const loc = (res: Response) => res.headers.get('location') ?? ''
+
+function fd(obj: Record<string, string>): FormData {
+  const f = new FormData()
+  for (const k of Object.keys(obj)) f.set(k, obj[k])
+  return f
+}
+// Run an action; return the redirect destination (actions always redirect).
+async function dest(run: Promise<void>): Promise<string> {
+  try { await run; return '' } catch (e) { return (e as Error).message.replace('REDIRECT:', '') }
+}
 
 beforeEach(() => {
   vi.clearAllMocks()
   mockUpsert.mockResolvedValue({})
 })
 
-describe('/auth/callback (PKCE code exchange)', () => {
-  it('no code → redirect to login (error=link), never touches Supabase', async () => {
-    const res = await callbackGET(new NextRequest('http://localhost:3000/auth/callback'))
-    expect(res.status).toBe(307)
-    expect(loc(res)).toContain('/auth/login?error=link')
-    expect(mockExchange).not.toHaveBeenCalled()
-  })
+// ── The core scanner fix: a GET (page render) must NOT consume the token ──────
 
-  it('bad/expired code → login (error=expired), not a silent bounce', async () => {
-    mockExchange.mockResolvedValue({ error: { message: 'bad code' } })
-    const res = await callbackGET(new NextRequest('http://localhost:3000/auth/callback?code=x'))
-    expect(res.status).toBe(307)
-    expect(loc(res)).toContain('/auth/login?error=expired')
-  })
-
-  it('good code → dashboard + welcome flag, upserts profile', async () => {
-    mockExchange.mockResolvedValue({ error: null })
-    mockGetUser.mockResolvedValue(USER)
-    const res = await callbackGET(new NextRequest('http://localhost:3000/auth/callback?code=x&next=%2Fdashboard'))
-    expect(res.status).toBe(307)
-    expect(loc(res)).toContain('/dashboard?welcome=1')
-    expect(mockUpsert).toHaveBeenCalledTimes(1)
-  })
-
-  it('good code with next=/will/new → returns there (so anon-will migration runs), no welcome flag', async () => {
-    mockExchange.mockResolvedValue({ error: null })
-    mockGetUser.mockResolvedValue(USER)
-    const res = await callbackGET(new NextRequest('http://localhost:3000/auth/callback?code=x&next=%2Fwill%2Fnew'))
-    expect(loc(res)).toMatch(/\/will\/new$/)
-    expect(loc(res)).not.toContain('welcome')
-  })
-
-  it('rejects an open-redirect next (//evil.com) → falls back to /dashboard', async () => {
-    mockExchange.mockResolvedValue({ error: null })
-    mockGetUser.mockResolvedValue(USER)
-    const res = await callbackGET(new NextRequest('http://localhost:3000/auth/callback?code=x&next=%2F%2Fevil.com'))
-    expect(loc(res)).toContain('/dashboard?welcome=1')
-    expect(loc(res)).not.toContain('evil.com')
-  })
-})
-
-describe('/auth/confirm (token_hash, cross-device)', () => {
-  it('missing token → login (error=link)', async () => {
-    const res = await confirmGET(new NextRequest('http://localhost:3000/auth/confirm'))
-    expect(res.status).toBe(307)
-    expect(loc(res)).toContain('/auth/login?error=link')
+describe('GET does not verify the token (link-scanner safety)', () => {
+  it('rendering /auth/confirm does not call verifyOtp', async () => {
+    mockGetUser.mockResolvedValue(NO_USER)
+    await ConfirmPage({ searchParams: Promise.resolve({ token_hash: 't', type: 'magiclink', next: '/dashboard' }) })
     expect(mockVerify).not.toHaveBeenCalled()
   })
 
-  it('bad token → login (error=expired)', async () => {
-    mockVerify.mockResolvedValue({ error: { message: 'expired' } })
-    const res = await confirmGET(new NextRequest('http://localhost:3000/auth/confirm?token_hash=t&type=magiclink'))
-    expect(loc(res)).toContain('/auth/login?error=expired')
+  it('rendering /auth/callback does not call exchangeCodeForSession', async () => {
+    mockGetUser.mockResolvedValue(NO_USER)
+    await CallbackPage({ searchParams: Promise.resolve({ code: 'c', next: '/dashboard' }) })
+    expect(mockExchange).not.toHaveBeenCalled()
+  })
+})
+
+// Check 5: an already-signed-in user must not hit a dead-end — redirect to next,
+// and still never touch the token.
+describe('already signed in → redirect (no dead-end, no verify)', () => {
+  it('/auth/confirm redirects a signed-in user to next', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: { id: 'u1' } } })
+    const d = await dest(ConfirmPage({ searchParams: Promise.resolve({ token_hash: 't', type: 'magiclink', next: '/will/new' }) }) as unknown as Promise<void>)
+    expect(d).toMatch(/\/will\/new$/)
+    expect(mockVerify).not.toHaveBeenCalled()
   })
 
-  it('valid token → dashboard + welcome, verifyOtp called with the type', async () => {
+  it('/auth/callback redirects a signed-in user to /dashboard', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: { id: 'u1' } } })
+    const d = await dest(CallbackPage({ searchParams: Promise.resolve({ code: 'c', next: '//evil.com' }) }) as unknown as Promise<void>)
+    expect(d).toContain('/dashboard?welcome=1')
+    expect(d).not.toContain('evil.com')
+    expect(mockExchange).not.toHaveBeenCalled()
+  })
+})
+
+// ── The POST actions (button click) do the verification ──────────────────────
+
+describe('confirmOtpAction (token_hash, POST)', () => {
+  it('missing token → login?error=link, never calls verifyOtp', async () => {
+    expect(await dest(confirmOtpAction(fd({})))).toContain('/auth/login?error=link')
+    expect(mockVerify).not.toHaveBeenCalled()
+  })
+
+  it('bad token → login?error=expired', async () => {
+    mockVerify.mockResolvedValue({ error: { message: 'expired' } })
+    expect(await dest(confirmOtpAction(fd({ token_hash: 't', type: 'magiclink' })))).toContain('/auth/login?error=expired')
+  })
+
+  it('valid token → dashboard + welcome; verifyOtp called with the type; profile upserted', async () => {
     mockVerify.mockResolvedValue({ error: null })
     mockGetUser.mockResolvedValue(USER)
-    const res = await confirmGET(new NextRequest('http://localhost:3000/auth/confirm?token_hash=t&type=signup&next=%2Fdashboard'))
-    expect(loc(res)).toContain('/dashboard?welcome=1')
+    const d = await dest(confirmOtpAction(fd({ token_hash: 't', type: 'signup', next: '/dashboard' })))
+    expect(d).toContain('/dashboard?welcome=1')
     expect(mockVerify).toHaveBeenCalledWith({ type: 'signup', token_hash: 't' })
+    expect(mockUpsert).toHaveBeenCalledTimes(1)
+  })
+
+  it('next=/will/new → returns there, no welcome flag', async () => {
+    mockVerify.mockResolvedValue({ error: null })
+    mockGetUser.mockResolvedValue(USER)
+    const d = await dest(confirmOtpAction(fd({ token_hash: 't', type: 'magiclink', next: '/will/new' })))
+    expect(d).toMatch(/\/will\/new$/)
+    expect(d).not.toContain('welcome')
+  })
+
+  it('rejects an open-redirect next (//evil.com) → /dashboard', async () => {
+    mockVerify.mockResolvedValue({ error: null })
+    mockGetUser.mockResolvedValue(USER)
+    const d = await dest(confirmOtpAction(fd({ token_hash: 't', type: 'magiclink', next: '//evil.com' })))
+    expect(d).toContain('/dashboard?welcome=1')
+    expect(d).not.toContain('evil.com')
+  })
+})
+
+describe('exchangeCodeAction (PKCE code, POST)', () => {
+  it('no code → login?error=link, never exchanges', async () => {
+    expect(await dest(exchangeCodeAction(fd({})))).toContain('/auth/login?error=link')
+    expect(mockExchange).not.toHaveBeenCalled()
+  })
+
+  it('bad code → login?error=expired', async () => {
+    mockExchange.mockResolvedValue({ error: { message: 'bad code' } })
+    expect(await dest(exchangeCodeAction(fd({ code: 'x' })))).toContain('/auth/login?error=expired')
+  })
+
+  it('good code → dashboard + welcome, upserts profile', async () => {
+    mockExchange.mockResolvedValue({ error: null })
+    mockGetUser.mockResolvedValue(USER)
+    const d = await dest(exchangeCodeAction(fd({ code: 'x', next: '/dashboard' })))
+    expect(d).toContain('/dashboard?welcome=1')
+    expect(mockUpsert).toHaveBeenCalledTimes(1)
   })
 })

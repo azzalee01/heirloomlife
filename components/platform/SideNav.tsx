@@ -303,13 +303,15 @@ export function SideNav({
                   </div>
                   <ul className="text-sm space-y-0.5">
                     <li>
-                      <button
+                      <Link
+                        href="/dashboard/settings"
+                        onClick={() => setMenuOpen(false)}
                         className="w-full flex items-center gap-2 rounded-md px-3 py-2 hover:bg-[var(--paper-warm)] text-left transition-colors"
                         style={{ color: 'var(--ink)' }}
                       >
                         <Settings className="size-4" style={{ color: 'var(--neutral)' }} />
                         Settings
-                      </button>
+                      </Link>
                     </li>
                     <li>
                       <a

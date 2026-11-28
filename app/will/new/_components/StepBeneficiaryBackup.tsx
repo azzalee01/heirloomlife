@@ -1,11 +1,13 @@
 'use client'
 
+import { useState } from 'react'
 import type { PersonBeneficiary } from '../_types'
 
 interface Props {
   beneficiary: PersonBeneficiary
   otherBeneficiaries: PersonBeneficiary[]
   onChange: (substituteBeneficiary: string) => void
+  onSkip?: () => void
 }
 
 const PRESET_OPTIONS = [
@@ -18,10 +20,17 @@ function isPreset(value: string): boolean {
   return PRESET_OPTIONS.some((o) => o.value === value)
 }
 
-export default function StepBeneficiaryBackup({ beneficiary, onChange }: Props) {
+export default function StepBeneficiaryBackup({ beneficiary, onChange, onSkip }: Props) {
   const current = beneficiary.substituteBeneficiary
-  const isCustom = current !== '' && !isPreset(current)
-  const selected = isCustom ? '__custom__' : (current || '')
+  // "Custom" (someone else) is sticky local state: selecting it must keep the
+  // text input visible even while the typed name is still empty — otherwise the
+  // radio deselects and the name can never be entered/stored. A stored value
+  // that isn't a preset means we're already in custom mode.
+  const storedCustom = current !== '' && !isPreset(current)
+  const [customMode, setCustomMode] = useState(storedCustom)
+  const showCustom = customMode || storedCustom
+  const selected = showCustom ? '__custom__' : (isPreset(current) ? current : '')
+  const customValue = isPreset(current) ? '' : current
 
   const inp = 'w-full px-3 py-2.5 border border-[var(--line)] text-sm text-[var(--ink)] placeholder:text-[var(--neutral)] outline-none transition-[border-color,box-shadow] focus:border-[var(--teal)] focus:ring-2 focus:ring-[var(--teal)]/20 bg-white'
 
@@ -54,8 +63,10 @@ export default function StepBeneficiaryBackup({ beneficiary, onChange }: Props) 
               checked={selected === opt.value}
               onChange={() => {
                 if (opt.value === '__custom__') {
-                  onChange('') // reset to empty so user types
+                  setCustomMode(true)
+                  if (isPreset(current)) onChange('') // clear a stale preset so the typed name is stored fresh
                 } else {
+                  setCustomMode(false)
                   onChange(opt.value)
                 }
               }}
@@ -79,7 +90,7 @@ export default function StepBeneficiaryBackup({ beneficiary, onChange }: Props) 
       </div>
 
       {/* Custom name input */}
-      {(selected === '__custom__' || isCustom) && (
+      {showCustom && (
         <div>
           <label className="block text-sm font-medium mb-1.5" style={{ color: 'var(--ink)' }}>
             Name the backup beneficiary
@@ -88,7 +99,7 @@ export default function StepBeneficiaryBackup({ beneficiary, onChange }: Props) 
             type="text"
             className={inp}
             placeholder="Full name"
-            value={isCustom ? current : ''}
+            value={customValue}
             onChange={(e) => onChange(e.target.value)}
             autoFocus
           />
@@ -98,10 +109,10 @@ export default function StepBeneficiaryBackup({ beneficiary, onChange }: Props) 
         </div>
       )}
 
-      {/* Skip */}
+      {/* Skip: clear any selection AND advance (decide later). */}
       <button
         type="button"
-        onClick={() => onChange('')}
+        onClick={() => { onChange(''); onSkip?.() }}
         className="text-xs"
         style={{ color: 'var(--neutral)' }}
       >

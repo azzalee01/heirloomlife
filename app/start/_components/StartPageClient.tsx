@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import WillWizard from '@/app/will/new/_components/WillWizard'
 import type { WillFormData } from '@/app/will/new/_types'
+import { splitFullName } from '@/app/will/new/_types'
 import { EMPTY_WILL_FORM_DATA } from '@/app/will/new/_data'
 import { setPartnerCodeCookie } from '@/app/actions/partner'
 
@@ -40,12 +41,16 @@ function mergeExtracted(
     if (cd.hasChildren) { (merged.childrenData as unknown as Record<string, unknown>).hasChildren = cd.hasChildren; fields.add('childrenData.hasChildren') }
     const children = cd.children as unknown[] | undefined
     if (children && children.length > 0) {
-      merged.childrenData.children = (children as Record<string, unknown>[]).map(c => ({
-        id: crypto.randomUUID(),
-        name: String(c.name ?? ''),
-        dateOfBirth: String(c.dateOfBirth ?? ''),
-        isDependent: Boolean(c.isDependent),
-      }))
+      merged.childrenData.children = (children as Record<string, unknown>[]).map(c => {
+        const split = splitFullName(String(c.name ?? ''))
+        return {
+          id: crypto.randomUUID(),
+          firstName: typeof c.firstName === 'string' && c.firstName ? c.firstName : split.firstName,
+          lastName: typeof c.lastName === 'string' && c.lastName ? c.lastName : split.lastName,
+          dateOfBirth: String(c.dateOfBirth ?? ''),
+          isDependent: Boolean(c.isDependent),
+        }
+      })
       fields.add('childrenData.children')
     }
     const g = cd.guardian as Record<string, unknown> | null

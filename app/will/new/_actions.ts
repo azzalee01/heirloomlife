@@ -6,6 +6,7 @@ import { supabaseAdmin } from '@/src/lib/supabase-server'
 import { loadWillFormData } from './_data'
 import { assembleWillDocument } from './_assembly'
 import { recordVersion, assertNoActiveSigning, markSessionsStaleAfterEdit } from './_versioning'
+import { applyLifeInterestReview, applyWaMarriageReview } from './_review-reasons'
 import { STEP_LABELS, type WillFormData, type StepId, type PersonalWishesData } from './_types'
 import { sendResumeEmail } from '@/src/lib/email'
 
@@ -80,7 +81,12 @@ function buildTestatorRows(formData: WillFormData): Record<string, unknown>[] {
 
   const rows: Record<string, unknown>[] = [primaryRow]
 
-  if (pd.maritalStatus === 'married' || pd.maritalStatus === 'domestic_partner') {
+  // Only persist the spouse row once they're actually named. On the "About You"
+  // step the spouse fields are still blank (the spouse step comes later), and
+  // first_name/last_name are NOT NULL — inserting a blank row there is the P0 that
+  // broke married/domestic-partner saves.
+  if ((pd.maritalStatus === 'married' || pd.maritalStatus === 'domestic_partner')
+      && sd.firstName.trim() && sd.lastName.trim()) {
     rows.push({
       first_name: sd.firstName,
       middle_name: sd.middleName || null,
@@ -143,17 +149,17 @@ export async function saveStep(
     return { id: await saveToAnonSession(formData), versionId: null }
   }
 
-  // Ensure a profiles row exists (fallback for users predating the trigger)
-  await supabase
-    .from('profiles')
-    .upsert(
-      { id: user.id, email: user.email ?? '', full_name: user.user_metadata?.full_name ?? null },
-      { onConflict: 'id', ignoreDuplicates: true }
-    )
+  // Timing for the save round-trip (region + query-count tuning).
+  const started = Date.now()
+
+  // NOTE: the per-save profiles upsert was removed — the handle_new_user DB
+  // trigger creates the profiles row on signup, and auth sign-in upserts it too,
+  // so it was a redundant round-trip on every save.
 
   // Create will record on the first save
   let id = willId
   let willStatus = 'draft'
+  let currentReviewReasons: string[] = []
   if (!id) {
     const cookieStore = await cookies()
     const partnerRef = cookieStore.get('hl_partner_ref')?.value ?? null
@@ -169,7 +175,7 @@ export async function saveStep(
     if (error) throw new Error(error.message)
     id = data.id as string
   } else {
-    const { data } = await supabase.from('wills').select('status').eq('id', id).single()
+    const { data } = await supabase.from('wills').select('status, needs_review_reasons').eq('id', id).single()
     if (!data) {
       // The provided willId doesn't match a will owned by this user — most likely
       // an anon session UUID that leaked in when the user authenticated mid-flow.
@@ -188,6 +194,7 @@ export async function saveStep(
       id = newWill.id as string
     } else {
       willStatus = (data.status as string | undefined) ?? 'draft'
+      currentReviewReasons = (data.needs_review_reasons as string[] | null) ?? []
     }
   }
   // Only a will that's already been completed once is a "live" document  -
@@ -227,7 +234,8 @@ export async function saveStep(
         cd.hasChildren === 'yes'
           ? cd.children.map((c) => ({
               will_id: id,
-              first_name: c.name, // form collects a single name field
+              first_name: c.firstName,
+              last_name: c.lastName,
               date_of_birth: c.dateOfBirth || null,
               is_dependent: c.isDependent,
               // Testamentary trust: a minor/dependent beneficiary's share is
@@ -236,8 +244,6 @@ export async function saveStep(
               distribution_age: c.isDependent ? vestingAge : null,
             }))
           : []
-      await replaceRows(supabase, 'children', id, childRows)
-
       const hasMinors = cd.hasChildren === 'yes' && cd.children.some((c) => c.isDependent)
       const guardianRows =
         hasMinors && cd.guardian.firstName
@@ -254,7 +260,11 @@ export async function saveStep(
               },
             ]
           : []
-      await replaceRows(supabase, 'guardians', id, guardianRows)
+      // children and guardians are independent tables — write them concurrently.
+      await Promise.all([
+        replaceRows(supabase, 'children', id, childRows),
+        replaceRows(supabase, 'guardians', id, guardianRows),
+      ])
       break
     }
 
@@ -375,7 +385,10 @@ export async function saveStep(
     case 'gifts': {
       const rows = formData.specificGifts.map((g, i) => ({
         will_id: id,
-        gift_type: g.type,
+        // Map the UI toggle ('item' | 'cash') to a DB value allowed by
+        // specific_gifts_gift_type_check (cash | real_estate | shares |
+        // personal_property | percentage | residuary). 'item' is not valid.
+        gift_type: g.type === 'cash' ? 'cash' : 'personal_property',
         description: g.description || null,
         cash_amount: g.type === 'cash' ? g.amount || null : null,
         recipient_type: 'individual',
@@ -412,15 +425,38 @@ export async function saveStep(
       break
   }
 
-  // Keep triage_flags current on every step save.
-  await supabase.from('wills').update({ triage_flags: formData.triageFlags }).eq('id', id)
+  // Keep triage_flags + the minor-trust vesting age current on every step save.
+  // Life interest isn't drafted into the template Will — ticking it flags the will
+  // for solicitor review; un-ticking removes ONLY that reason (and clears
+  // needs_review when none remain) without clobbering other review reasons.
+  const { reasons: afterLifeInterest } = applyLifeInterestReview(
+    currentReviewReasons,
+    formData.lifeInterest.enabled
+  )
+  // WA testators with a spouse/partner get a review prompt: ending a marriage can
+  // revoke the whole Will under WA law. Review-only — no change to the Will text.
+  const pd = formData.personalDetails
+  const waMarriageRevocationApplies =
+    (pd.state ?? '').trim().toUpperCase() === 'WA' &&
+    (pd.maritalStatus === 'married' || pd.maritalStatus === 'domestic_partner')
+  const { reasons: reviewReasons, needsReview } = applyWaMarriageReview(
+    afterLifeInterest,
+    waMarriageRevocationApplies
+  )
+  await supabase.from('wills').update({
+    triage_flags: formData.triageFlags,
+    minor_vesting_age: parseInt(formData.childrenData.ageOfVesting, 10) || null,
+    // Persist the yes/no answer (null = not yet answered) so "No children" sticks.
+    has_children: formData.childrenData.hasChildren === 'yes' ? true
+      : formData.childrenData.hasChildren === 'no' ? false : null,
+    needs_review: needsReview,
+    needs_review_reasons: reviewReasons,
+  }).eq('id', id)
 
-  // Post-mutation race check: catch any session that went in_progress during
-  // the write window (after the pre-mutation RPC but before mutations completed).
-  // Always runs for existing wills so the race window is never skipped.
-  if (willId !== null) {
-    await markSessionsStaleAfterEdit(id!)
-  }
+  // (Removed the post-mutation markSessionsStaleAfterEdit round-trip: the
+  // pre-mutation will_edit_lock RPC already marks scheduled sessions stale, and
+  // the will_versions_signing_lock trigger on the recordVersion insert below
+  // blocks + compensates for any session that turned in_progress mid-write.)
 
   // Snapshot the resulting state into version history (skip 'review').
   // If version recording fails: mark ALL active sessions stale immediately.
@@ -461,6 +497,7 @@ export async function saveStep(
     }
   }
 
+  console.log(`[saveStep] step=${step} ${Date.now() - started}ms`)
   return { id: id!, versionId }
 }
 
@@ -585,7 +622,13 @@ export async function completeWill(willId: string): Promise<void> {
   try {
     const { formData } = await loadWillFormData(supabase, user.id, willId)
     const documentText = await assembleWillDocument(formData)
-    await supabaseAdmin.from('wills').update({ document_text: documentText }).eq('id', willId).eq('user_id', user.id)
+    // Persist the testator's State/Territory used for clause selection, so the Will
+    // always re-renders from the same (NSW vs generic) clause set.
+    await supabaseAdmin
+      .from('wills')
+      .update({ document_text: documentText, jurisdiction: formData.personalDetails.state || null })
+      .eq('id', willId)
+      .eq('user_id', user.id)
 
     // Run the AI legal review exactly once here, now that all 7 steps are
     // in and the full picture is available  -  not on every step along the way.

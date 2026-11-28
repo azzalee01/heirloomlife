@@ -180,9 +180,15 @@ interface Props {
   triageFlags: TriageFlags
   onTriageFlagsChange: (flags: TriageFlags) => void
   extractedFields?: Set<string>
+  fieldErrors?: Record<string, string>
 }
 
-export default function StepBeneficiaries({ data, onChange, triageFlags, onTriageFlagsChange, extractedFields }: Props) {
+function FieldError({ msg }: { msg?: string }) {
+  return msg ? <p className="mt-1 text-xs text-red-600">{msg}</p> : null
+}
+
+export default function StepBeneficiaries({ data, onChange, triageFlags, onTriageFlagsChange, extractedFields, fieldErrors }: Props) {
+  const fe = fieldErrors ?? {}
   const hasExtracted = extractedFields && extractedFields.has('beneficiariesData.people')
   const total = totalAllocated(data)
   const remaining = 100 - total
@@ -315,10 +321,12 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
                 <div>
                   <label className={lbl}>Full name <span className="text-red-400">*</span></label>
                   <input required className={inp} value={person.name} onChange={(e) => updatePerson(person.id, { name: e.target.value })} />
+                  <FieldError msg={fe[`beneficiary:${person.id}:name`]} />
                 </div>
                 <div>
                   <label className={lbl}>Relationship <span className="text-red-400">*</span></label>
                   <input required className={inp} placeholder="e.g. Spouse, Child" value={person.relationship} onChange={(e) => updatePerson(person.id, { relationship: e.target.value })} />
+                  <FieldError msg={fe[`beneficiary:${person.id}:relationship`]} />
                 </div>
                 <div>
                   <label className={lbl}>Share (%) <span className="text-red-400">*</span></label>
@@ -327,17 +335,13 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
                     className={inp} value={person.percentage}
                     onChange={(e) => updatePerson(person.id, { percentage: e.target.value })}
                   />
+                  <FieldError msg={fe[`beneficiary:${person.id}:percentage`]} />
                 </div>
               </div>
-              <div>
-                <label className={lbl}>If they don&apos;t survive me, their share goes to (optional)</label>
-                <input
-                  className={inp}
-                  placeholder="e.g. Their children equally, or a named person"
-                  value={person.substituteBeneficiary}
-                  onChange={(e) => updatePerson(person.id, { substituteBeneficiary: e.target.value })}
-                />
-              </div>
+              {/* Substitute/backup for each person is set on the dedicated
+                  "Backup for <name>" step (presets + custom). The old inline
+                  free-text input here showed raw preset sentinels like
+                  "__their_children__" after a reload, so it was removed. */}
             </div>
           ))
         )}
@@ -421,6 +425,7 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
                       <div>
                         <label className={lbl}>Charity name <span className="text-red-400">*</span></label>
                         <input required className={inp} placeholder="e.g. Local Animal Rescue Inc." value={charity.name} onChange={(e) => updateCharity(charity.id, { name: e.target.value })} />
+                        <FieldError msg={fe[`charity:${charity.id}:name`]} />
                       </div>
                       <div>
                         <label className={lbl}>ABN</label>
@@ -453,11 +458,14 @@ export default function StepBeneficiaries({ data, onChange, triageFlags, onTriag
 
                 {/* Share control shows once a charity is chosen (partner or manual) */}
                 {(linked || manual) && (
-                  <ShareControl
-                    value={charity.percentage}
-                    remainingForRow={remainingForRow(charity)}
-                    onChange={(v) => updateCharity(charity.id, { percentage: v })}
-                  />
+                  <>
+                    <ShareControl
+                      value={charity.percentage}
+                      remainingForRow={remainingForRow(charity)}
+                      onChange={(v) => updateCharity(charity.id, { percentage: v })}
+                    />
+                    <FieldError msg={fe[`charity:${charity.id}:percentage`]} />
+                  </>
                 )}
 
                 {(linked || manual) && (

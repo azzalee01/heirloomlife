@@ -19,6 +19,7 @@ function triggeredFlagLabels(formData: WillFormData): string[] {
   if (formData.triageFlags.hasVulnerableBeneficiary) labels.push('a beneficiary with a disability or condition affecting mental capacity')
   if (formData.triageFlags.hasBeneficiaryFinancialChallenges) labels.push('a beneficiary with difficulty managing money')
   if (formData.triageFlags.hasComplexTrusts) labels.push('complex trust structures')
+  if (formData.lifeInterest.enabled) labels.push('a life interest or right to reside (needs bespoke solicitor drafting — not included in the template Will)')
   return labels
 }
 
@@ -30,6 +31,11 @@ function formatFlagList(flags: string[]): string {
 
 export default function StepReview({ formData, onViewWill, saving }: Props) {
   const flags = triggeredFlagLabels(formData)
+  const state = (formData.personalDetails.state ?? '').trim().toUpperCase()
+  const waMarriageRevocation =
+    state === 'WA' &&
+    (formData.personalDetails.maritalStatus === 'married' ||
+      formData.personalDetails.maritalStatus === 'domestic_partner')
 
   return (
     <div className="space-y-5">
@@ -38,7 +44,21 @@ export default function StepReview({ formData, onViewWill, saving }: Props) {
         <p className="text-sm text-[var(--neutral)] mt-1">
           View your Will as a living document in your Vault — read it, download it, and keep it updated as life changes.
         </p>
+        {state && (
+          <p className="text-xs text-[var(--neutral)] mt-2">
+            Drafted for <span className="font-semibold text-[var(--ink)]">{state}</span>.
+          </p>
+        )}
       </div>
+
+      {waMarriageRevocation && (
+        <div className="border border-amber-200 bg-amber-50 px-4 py-4 space-y-2">
+          <p className="text-sm font-semibold text-amber-900">Western Australia: review your Will after any change to your marriage</p>
+          <p className="text-sm text-amber-800 leading-relaxed">
+            Under Western Australian law, the ending of a marriage can revoke your whole Will. Review your Will after any marriage, divorce, or the end of a registered relationship.
+          </p>
+        </div>
+      )}
 
       {flags.length > 0 && (
         <div className="border border-amber-200 bg-amber-50 px-4 py-4 space-y-2">

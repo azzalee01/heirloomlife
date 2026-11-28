@@ -88,9 +88,28 @@ export interface SpouseDetails {
 
 export interface Child {
   id: string
-  name: string
+  firstName: string
+  lastName: string
   dateOfBirth: string
   isDependent: boolean
+}
+
+/**
+ * Split a full name into first + last on the LAST space, mirroring the Sydney
+ * stopgap trigger (children_fill_last_name). Used to display legacy drafts that
+ * only stored a combined name, and to map single-name upload extractions.
+ */
+export function splitFullName(full: string | null | undefined): { firstName: string; lastName: string } {
+  const n = (full ?? '').trim()
+  const i = n.lastIndexOf(' ')
+  if (i === -1) return { firstName: n, lastName: '' }
+  return { firstName: n.slice(0, i).trim(), lastName: n.slice(i + 1).trim() }
+}
+
+/** Normalise a possibly-legacy child object ({name}) to {firstName,lastName}. */
+export function normalizeChildName(c: { firstName?: string; lastName?: string; name?: string }): { firstName: string; lastName: string } {
+  if (c.firstName || c.lastName) return { firstName: c.firstName ?? '', lastName: c.lastName ?? '' }
+  return splitFullName(c.name)
 }
 
 export interface Guardian {
@@ -298,7 +317,7 @@ export const SUBSTITUTE_BENEFICIARY_LABELS: Record<string, string> = {
 // Custom names pass through unchanged.
 // Pass primaryBeneficiaryName for __their_children__ to avoid ambiguous "their".
 export function resolveSubstituteBeneficiaryText(value: string | null | undefined, primaryBeneficiaryName?: string): string {
-    if (!value) return ''
+    if (!value || value === '__custom__') return '' // '__custom__' is a UI sentinel, never a name
     if (value === '__their_children__') {
         return primaryBeneficiaryName
             ? `${primaryBeneficiaryName}'s children, equally`

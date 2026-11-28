@@ -1,5 +1,6 @@
 import type { WillFormData } from './_types'
 import { resolveSubstituteBeneficiaryText, formatCurrency, computeRequiresDelayedVestingTrust } from './_types'
+import { isNswState } from './_jurisdiction'
 
 // ─── Approved clause text library ──────────────────────────────────────────
 // These texts mirror the approved Supabase clause_versions for NSW.
@@ -167,6 +168,83 @@ function RES_01(residuaryDisposition: string): string {
   )
 }
 
+// ─── Generic (jurisdiction-neutral) clause variants ──────────────────────────
+// Served to every non-NSW testator. Verbatim mirror of the 'generic' clause_versions
+// (solicitor-approved, per Aaron 2026-11-28). These carry NO State-specific statute
+// citation — construction is domicile-based and fallbacks use the defined term
+// "intestacy rules". Do not edit without updating the matching clause_versions row.
+// NSW testators keep the NSW consts above unchanged (byte-identical output).
+
+const GENERIC_APPROPRIATION_01 =
+  `My Executor may, in their absolute discretion, appropriate any property (whether real or personal) forming part of my estate towards the satisfaction of any legacy, share or pecuniary entitlement payable to any beneficiary, at such value as my Executor determines to be fair and reasonable at the date of appropriation.\n\n` +
+  `In making an appropriation, my Executor:\n\n` +
+  `(a) is not required to obtain the prior consent of the beneficiary;\n\n` +
+  `(b) shall give reasonable notice of the appropriation to the beneficiary or, if the beneficiary is under a legal disability, to their legal representative;\n\n` +
+  `(c) shall document the appropriation in writing; and\n\n` +
+  `(d) may take into account any tax consequences for the estate or the beneficiary.\n\n` +
+  `An appropriation duly made under this clause is final and binding on all persons interested in my estate.\n\n` +
+  `This power is in addition to any power of appropriation conferred by law.`
+
+const GENERIC_TRUST_POWERS_01 =
+  `Where my Executor acts as trustee of any trust arising under this Will, my Executor has the following investment and management powers, which are in addition to all powers conferred by law and are not limited by it:\n\n` +
+  `(a) **Investment** — to invest trust funds in any form of investment, including property, equities, managed funds and any other investment that a prudent person of business would consider appropriate, subject to any overriding duties of prudence and loyalty owed to the beneficiaries;\n\n` +
+  `(b) **Retention** — to retain any property forming part of the trust for such period as my Executor thinks fit without liability for loss, even if it is not otherwise an authorised investment;\n\n` +
+  `(c) **Variation** — to vary, transpose or realise any investment when and in such manner as my Executor thinks fit;\n\n` +
+  `(d) **Delegation** — to delegate investment functions to a person reasonably believed to be appropriately qualified, and to review that delegation at reasonable intervals, to the extent permitted by law;\n\n` +
+  `(e) **Professional advice** — to obtain and rely on the advice of investment or other professionals, and to act on that advice in good faith, without personal liability for any resulting loss.\n\n` +
+  `The powers conferred by this clause are in addition to, and not in derogation of, all other powers conferred by law or this Will.`
+
+const GENERIC_TRUSTEE_APPOINT_01 =
+  `My Executor (acting as trustee of any trust arising under this Will) may at any time, by deed, appoint one or more additional trustees or substitute trustees of that trust, provided that:\n\n` +
+  `(a) the total number of trustees shall not exceed four at any time;\n\n` +
+  `(b) every individual trustee must be at least 18 years of age and legally capable of acting as trustee at the time of appointment and throughout their tenure (unless a corporate trustee is appointed); and\n\n` +
+  `(c) a new trustee appointed under this clause shall have the same powers and obligations as the original trustee.\n\n` +
+  `This power is exercisable in addition to any power of appointment conferred by law.\n\n` +
+  `A trustee who retires, whether under this clause or under any law, is not released from any liability arising before their retirement.`
+
+const GENERIC_MIN_02 =
+  `In addition to any power conferred under this Will or by law, my Executor may at any time, in their absolute discretion, advance all or any part of the capital of any trust fund held for a minor beneficiary for the maintenance, education or other benefit of that beneficiary, without being required to bring the advancement into account when calculating the beneficiary's final entitlement unless my Executor specifies otherwise at the time of the advancement.\n\n` +
+  `In exercising this power, my Executor:\n\n` +
+  `(a) may pay any amount directly to the minor's parent or guardian, or directly to a school, medical provider or other person on behalf of the minor;\n\n` +
+  `(b) is not obliged to have regard to other resources available to the minor or their parent or guardian; and\n\n` +
+  `(c) shall keep a reasonable record of any advancements made.`
+
+const GENERIC_INTERP_01 =
+  `This Will is to be construed in accordance with the law of the State or Territory of Australia in which I am domiciled at the date of my death.\n\n` +
+  `If any provision of this Will is held to be void, invalid or unenforceable for any reason, that provision shall be severed from this Will and the remaining provisions shall continue in full force and effect as if this Will had been executed without the severed provision.\n\n` +
+  `A reference to any legislation includes any amendment, re-enactment or replacement of that legislation in force from time to time.\n\n` +
+  `Headings in this Will are for convenience only and do not affect its interpretation.\n\n` +
+  `If there is any uncertainty or ambiguity, this Will must be construed in a manner that gives effect to my apparent intention as gathered from the Will as a whole.`
+
+// Generic DEFN-01 is a single static block (unlike the NSW dependency-aware builder):
+// it is the approved wording and matches the whole-clause DB fetch used on download.
+const GENERIC_DEFN_01 =
+  `In this Will, unless the context otherwise requires:\n\n` +
+  `**"my estate"** means all real and personal property of which I am the beneficial owner at the date of my death, including property over which I have a general power of appointment;\n\n` +
+  `**"my Executor"** means the executor or executors for the time being of this Will, including any substituted executor, and includes my Executor acting as trustee where the context so requires;\n\n` +
+  `**"child"** and **"children"** include any person recognised as my child under the law applying to my estate and any child adopted by me, but does not include a stepchild unless expressly stated;\n\n` +
+  `**"minor"** means a person who has not yet attained the age of 18 years;\n\n` +
+  `**"vesting age"** means the age specified in a trust clause at which a beneficiary becomes absolutely entitled to trust property;\n\n` +
+  `**"intestacy rules"** means the law relating to the distribution of the estate of a person who dies without a valid will, as it applies to my estate.\n\n` +
+  `Words importing one gender include all genders. Words importing the singular include the plural and vice versa. A reference to a person includes a corporation.`
+
+function GENERIC_MIN_01(vestingAge: string): string {
+  return (
+    `If any beneficiary under this Will is under the age of ${vestingAge} years at the date on which they become entitled to receive a gift, my Executor shall hold that beneficiary's entitlement (the "Trust Property") on the following trusts:\n\n` +
+    `(a) my Executor shall hold the Trust Property and any income from it on trust for the beneficiary until they attain the vesting age or die under that age;\n\n` +
+    `(b) until the beneficiary attains the vesting age, my Executor may in their absolute discretion apply so much of the income and capital of the Trust Property as my Executor thinks fit for the maintenance, education, advancement and general benefit of the beneficiary;\n\n` +
+    `(c) on the beneficiary attaining the vesting age, my Executor shall transfer the Trust Property (including any undistributed income) to the beneficiary absolutely;\n\n` +
+    `(d) if the beneficiary dies before attaining the vesting age, the Trust Property shall pass to any backup beneficiary named for that gift or, if none, shall fall into the residue of my estate, except that if the Trust Property is itself the residue or a share of the residue, it shall instead pass to the other beneficiaries entitled to the residue in the proportions in which they take it or, if there are none, shall be distributed in accordance with the intestacy rules as if I had died without a Will.`
+  )
+}
+
+function GENERIC_RES_01(residuaryDisposition: string): string {
+  return (
+    `Subject to the payment of my debts, funeral expenses and the costs of administering my estate, I give the whole of the rest and residue of my estate ${residuaryDisposition}.\n\n` +
+    `If all persons otherwise entitled to receive a share of the residue under this clause (including any substitute beneficiaries) fail to survive me, or fail to satisfy any applicable survivorship condition, that share shall pass in accordance with the intestacy rules as if I had died without a Will.`
+  )
+}
+
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
 const MARITAL_LABELS: Record<string, string> = {
@@ -180,6 +258,14 @@ const MARITAL_LABELS: Record<string, string> = {
 
 function fullName(...parts: (string | undefined)[]): string {
   return parts.filter(Boolean).join(' ')
+}
+
+// An executor must have a full name. If one is missing, emit a placeholder that
+// validateRenderedText (the /\[No executor/ check) flags, so the Will cannot be
+// released with "I appoint Sam" — rather than silently using a first name alone.
+function executorName(first: string, last: string): string {
+  if (!first.trim() || !last.trim()) return '[No executor full name provided]'
+  return `${first.trim()} ${last.trim()}`
 }
 
 function buildResidueText(formData: WillFormData): string {
@@ -236,6 +322,9 @@ export function renderWillText(formData: WillFormData): string {
 
   const testatorName = fullName(pd.firstName, pd.middleName, pd.lastName) || '[Your name]'
   const address = [pd.addressLine1, pd.suburb, pd.state, pd.postcode].filter(Boolean).join(', ')
+  // NSW testators get the NSW clause library; every other State/Territory gets the
+  // jurisdiction-neutral generic variants. NSW output is unchanged.
+  const isNsw = isNswState(pd.state)
   const survivorshipDays = formData.survivorshipDays || '30'
   const hasDependent = computeRequiresDelayedVestingTrust(formData)
   const hasTrust = hasDependent || formData.triageFlags.hasComplexTrusts
@@ -280,11 +369,11 @@ export function renderWillText(formData: WillFormData): string {
   if (primary.firstName) {
     let text =
       `${next()}. EXECUTORS\n\n` +
-      `I appoint ${fullName(primary.firstName, primary.lastName)}${primary.relationship ? ` (${primary.relationship})` : ''} as the Executor of this my Will.`
+      `I appoint ${executorName(primary.firstName, primary.lastName)}${primary.relationship ? ` (${primary.relationship})` : ''} as the Executor of this my Will.`
     if (formData.executorsData.hasAlternate) {
       const alt = formData.executorsData.alternate
       if (alt.firstName) {
-        text += ` If my Executor is unable or unwilling to act, I appoint ${fullName(alt.firstName, alt.lastName)}${alt.relationship ? ` (${alt.relationship})` : ''} as alternate Executor.`
+        text += ` If my Executor is unable or unwilling to act, I appoint ${executorName(alt.firstName, alt.lastName)}${alt.relationship ? ` (${alt.relationship})` : ''} as alternate Executor.`
       }
     }
     sections.push(text)
@@ -296,8 +385,8 @@ export function renderWillText(formData: WillFormData): string {
   if (formData.childrenData.hasChildren === 'yes' && formData.childrenData.children.length > 0) {
     let text =
       `${next()}. CHILDREN\n\n` +
-      `My children are: ${formData.childrenData.children.map((c) => c.name).join(', ')}.`
-    if (hasDependent && formData.childrenData.guardian.firstName) {
+      `My children are: ${formData.childrenData.children.map((c) => fullName(c.firstName, c.lastName)).join(', ')}.`
+    if (hasDependent && formData.childrenData.guardian.firstName.trim() && formData.childrenData.guardian.lastName.trim()) {
       const g = formData.childrenData.guardian
       text += ` Should any of my children be minors at the time of my death, I appoint ${fullName(g.firstName, g.lastName)}${g.relationship ? ` (${g.relationship})` : ''} as their guardian.`
     }
@@ -332,7 +421,8 @@ export function renderWillText(formData: WillFormData): string {
     (c) => c.name.trim() && (parseFloat(c.percentage) || 0) > 0
   )
   if (activePeople.length > 0 || activeCharities.length > 0) {
-    sections.push(`${next()}. RESIDUARY ESTATE\n\n${RES_01(buildResidueText(formData))}`)
+    const residueText = buildResidueText(formData)
+    sections.push(`${next()}. RESIDUARY ESTATE\n\n${isNsw ? RES_01(residueText) : GENERIC_RES_01(residueText)}`)
   } else {
     sections.push(`${next()}. RESIDUARY ESTATE\n\n[No beneficiaries have been named yet.]`)
   }
@@ -343,8 +433,8 @@ export function renderWillText(formData: WillFormData): string {
   // ── 8. Minor Beneficiary Trust (MIN-01 + MIN-02) ─────────────────────────
   if (hasDependent) {
     const vestingAge = formData.childrenData.ageOfVesting || '25'
-    sections.push(`${next()}. MINOR BENEFICIARY TRUST\n\n${MIN_01(vestingAge)}`)
-    sections.push(`${next()}. ADVANCEMENT POWERS\n\n${MIN_02}`)
+    sections.push(`${next()}. MINOR BENEFICIARY TRUST\n\n${isNsw ? MIN_01(vestingAge) : GENERIC_MIN_01(vestingAge)}`)
+    sections.push(`${next()}. ADVANCEMENT POWERS\n\n${isNsw ? MIN_02 : GENERIC_MIN_02}`)
   }
 
   // ── 9. Care of Pets (PET-01) ──────────────────────────────────────────────
@@ -368,12 +458,12 @@ export function renderWillText(formData: WillFormData): string {
 
   // ── 12–13. Trustee Powers + Appointment — only when a trust can arise ─────
   if (hasTrust) {
-    sections.push(`${next()}. TRUSTEE POWERS\n\n${TRUST_POWERS_01}`)
-    sections.push(`${next()}. TRUSTEE APPOINTMENT\n\n${TRUSTEE_APPOINT_01}`)
+    sections.push(`${next()}. TRUSTEE POWERS\n\n${isNsw ? TRUST_POWERS_01 : GENERIC_TRUST_POWERS_01}`)
+    sections.push(`${next()}. TRUSTEE APPOINTMENT\n\n${isNsw ? TRUSTEE_APPOINT_01 : GENERIC_TRUSTEE_APPOINT_01}`)
   }
 
   // ── 14. Appropriation Power (APPROPRIATION-01) — always ──────────────────
-  sections.push(`${next()}. APPROPRIATION POWER\n\n${APPROPRIATION_01}`)
+  sections.push(`${next()}. APPROPRIATION POWER\n\n${isNsw ? APPROPRIATION_01 : GENERIC_APPROPRIATION_01}`)
 
   // ── 15. Delegation Power (DELEGATE-01) — always ──────────────────────────
   sections.push(`${next()}. DELEGATION POWER\n\n${DELEGATE_01}`)
@@ -384,10 +474,10 @@ export function renderWillText(formData: WillFormData): string {
   // ── 17. Definitions (DEFN-01 — dependency-aware) ─────────────────────────
   // "intestacy rules" intentionally excluded — no operative clause uses that defined term.
   // "child"/"children" only when hasChildrenRef. "minor"/"vesting age" only when MIN-01/MIN-02 render.
-  sections.push(`${next()}. DEFINITIONS\n\n${buildDefinitions(hasDependent, hasChildrenRef)}`)
+  sections.push(`${next()}. DEFINITIONS\n\n${isNsw ? buildDefinitions(hasDependent, hasChildrenRef) : GENERIC_DEFN_01}`)
 
   // ── 18. Interpretation (INTERP-01) — always ──────────────────────────────
-  sections.push(`${next()}. INTERPRETATION\n\n${INTERP_01}`)
+  sections.push(`${next()}. INTERPRETATION\n\n${isNsw ? INTERP_01 : GENERIC_INTERP_01}`)
 
   // IN WITNESS WHEREOF — sentinel for PDF renderer; replaced with the formatted
   // Execution & Attestation block. Plain-text preview shows it as-is.

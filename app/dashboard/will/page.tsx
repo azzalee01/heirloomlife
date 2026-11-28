@@ -144,6 +144,7 @@ export default async function TheWillPage() {
                 hasDownloaded={will.has_downloaded ?? false}
                 testatorName={[formData.personalDetails.firstName, formData.personalDetails.middleName, formData.personalDetails.lastName].filter(Boolean).join(' ')}
                 funeralWishes={formData.personalWishes}
+                state={formData.personalDetails.state}
               />
             )}
             <pre className="whitespace-pre-wrap font-sans text-sm text-[var(--ink)] leading-relaxed">{documentText}</pre>

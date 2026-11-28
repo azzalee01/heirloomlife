@@ -34,7 +34,7 @@ export async function promoteAmendment(versionId: string): Promise<void> {
   if (version) {
     const { data: will } = await supabaseAdmin
       .from('wills')
-      .select('profiles(email, full_name)')
+      .select('profiles!wills_user_id_fkey(email, full_name)')
       .eq('id', (version as { will_id: string }).will_id)
       .maybeSingle()
 
@@ -72,7 +72,7 @@ export async function rejectAmendment(versionId: string, reason: string): Promis
   // Notify the customer (best-effort)
   const { data: will } = await supabaseAdmin
     .from('wills')
-    .select('profiles(email, full_name)')
+    .select('profiles!wills_user_id_fkey(email, full_name)')
     .eq('id', willId)
     .maybeSingle()
 

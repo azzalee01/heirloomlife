@@ -11,7 +11,10 @@ import { describe, it, expect } from 'vitest'
 import { validateWillForGeneration, validateRenderedText, validateExecutableWill, canReleaseForExecution } from '../_validate'
 import { renderWillText } from '../_render'
 import { assessComplexityFlags, maxSeverity } from '../_complexity'
-import { resolveSubstituteBeneficiaryText } from '../_types'
+import { resolveSubstituteBeneficiaryText, splitFullName, normalizeChildName } from '../_types'
+import { validateStep } from '../_step-validate'
+import { firstIncompleteStep } from '../_resume'
+import { abandonmentKind } from '@/app/api/cron/will-abandonment/_classify'
 import type { WillFormData } from '../_types'
 
 // ── Base fixture helpers ──────────────────────────────────────────────────────
@@ -561,7 +564,7 @@ describe('Phase 14 Test 4 — Minor beneficiary / vesting age 25', () => {
   const formData = baseFormData({
     childrenData: {
       hasChildren: 'yes',
-      children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+      children: [{ id: '1', firstName: 'Tom', lastName: 'Smith', dateOfBirth: '2020-01-01', isDependent: true }],
       guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
       ageOfVesting: '25',
     },
@@ -786,7 +789,7 @@ describe('Phase 14 Test 13 — Long full-feature Will', () => {
     },
     childrenData: {
       hasChildren: 'yes',
-      children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+      children: [{ id: '1', firstName: 'Tom', lastName: 'Smith', dateOfBirth: '2020-01-01', isDependent: true }],
       guardian: { firstName: 'Helen', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
       ageOfVesting: '25',
     },
@@ -1042,7 +1045,7 @@ describe('Test G — Conditional definitions render only when relevant clauses r
     const formData = baseFormData({
       childrenData: {
         hasChildren: 'yes',
-        children: [{ id: '1', name: 'Tom', dateOfBirth: '2020-01-01', isDependent: true }],
+        children: [{ id: '1', firstName: 'Tom', lastName: '', dateOfBirth: '2020-01-01', isDependent: true }],
         guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
         ageOfVesting: '25',
       },
@@ -1108,7 +1111,7 @@ describe('Test I — Guardian relationship label context', () => {
     const formData = baseFormData({
       childrenData: {
         hasChildren: 'yes',
-        children: [{ id: '1', name: 'Tom', dateOfBirth: '2020-01-01', isDependent: true }],
+        children: [{ id: '1', firstName: 'Tom', lastName: '', dateOfBirth: '2020-01-01', isDependent: true }],
         guardian: { firstName: 'Catherine', lastName: 'Brown', relationship: 'Sister', phone: '', email: '' },
         ageOfVesting: '25',
       },
@@ -1124,7 +1127,7 @@ describe('Test J — Survivorship and trust interaction', () => {
   const formData = baseFormData({
     childrenData: {
       hasChildren: 'yes',
-      children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+      children: [{ id: '1', firstName: 'Tom', lastName: 'Smith', dateOfBirth: '2020-01-01', isDependent: true }],
       guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Aunt', phone: '', email: '' },
       ageOfVesting: '25',
     },
@@ -1348,7 +1351,7 @@ describe('QA Test 7 — "child"/"children" definition included when referenced',
     const formData = baseFormData({
       childrenData: {
         hasChildren: 'yes',
-        children: [{ id: '1', name: 'Tom Smith', dateOfBirth: '2020-01-01', isDependent: true }],
+        children: [{ id: '1', firstName: 'Tom', lastName: 'Smith', dateOfBirth: '2020-01-01', isDependent: true }],
         guardian: { firstName: 'Sarah', lastName: 'Jones', relationship: 'Sibling', phone: '', email: '' },
         ageOfVesting: '25',
       },
@@ -1720,5 +1723,300 @@ describe('Entity-held asset — trust/company/SMSF ownership blocks release', ()
     const { can, blockers } = canReleaseForExecution(formData, text)
     expect(can).toBe(false)
     expect(blockers.some((b) => b.includes('ENTITY_HELD_ASSET'))).toBe(true)
+  })
+})
+
+// ── Children first/last name (+ legacy single-name drafts) ───────────────────
+
+describe('Children — separate first/last name', () => {
+  const formData = baseFormData({
+    childrenData: {
+      hasChildren: 'yes',
+      children: [
+        { id: '1', firstName: 'Tom', lastName: 'Smith', dateOfBirth: '2010-01-01', isDependent: false },
+        { id: '2', firstName: 'Mary Anne', lastName: 'Van der Berg', dateOfBirth: '2012-01-01', isDependent: false },
+      ],
+      guardian: { firstName: '', lastName: '', relationship: '', phone: '', email: '' },
+      ageOfVesting: '18',
+    },
+    beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+  })
+
+  it('renders each child as "First Last" in the Will document', () => {
+    const text = renderWillText(formData)
+    expect(text).toContain('Tom Smith')
+    expect(text).toContain('Mary Anne Van der Berg')
+  })
+
+  it('splitFullName splits on the LAST space (matches the loader fallback + stopgap trigger)', () => {
+    expect(splitFullName('Jane Smith')).toEqual({ firstName: 'Jane', lastName: 'Smith' })
+    expect(splitFullName('Mary Anne Van der Berg')).toEqual({ firstName: 'Mary Anne Van der', lastName: 'Berg' })
+    expect(splitFullName('Madonna')).toEqual({ firstName: 'Madonna', lastName: '' })
+    expect(splitFullName('  ')).toEqual({ firstName: '', lastName: '' })
+  })
+
+  it('hydrates a legacy single-name draft (combined name in first_name, last_name empty)', () => {
+    // Mirrors the DB loader fallback in _data.ts: last_name empty → split first_name.
+    const legacyRow: { first_name: string; last_name: string | null } = { first_name: 'Jane Smith', last_name: null }
+    const { firstName, lastName } = legacyRow.last_name
+      ? { firstName: legacyRow.first_name, lastName: legacyRow.last_name }
+      : splitFullName(legacyRow.first_name)
+    expect(firstName).toBe('Jane')
+    expect(lastName).toBe('Smith')
+  })
+
+  it('normalizeChildName: new objects pass through, legacy {name} objects split', () => {
+    expect(normalizeChildName({ firstName: 'Jane', lastName: 'Smith' })).toEqual({ firstName: 'Jane', lastName: 'Smith' })
+    expect(normalizeChildName({ name: 'Jane Smith' })).toEqual({ firstName: 'Jane', lastName: 'Smith' })
+    expect(normalizeChildName({ name: 'Madonna' })).toEqual({ firstName: 'Madonna', lastName: '' })
+  })
+})
+
+// ── E2E prod-bug fixes ───────────────────────────────────────────────────────
+
+function overseasAsset(): WillFormData['assets'][number] {
+  return {
+    id: 'a1', assetType: 'real_estate', ownershipType: 'sole',
+    propertyAddress: '1 Queen St, Auckland', estimatedValue: '500000',
+    bankName: '', bsb: '', accountNumber: '', fundName: '', memberNumber: '',
+    companyName: '', numberOfShares: '', insurerName: '', policyNumber: '', coverAmount: '',
+    make: '', model: '', year: '', rego: '', accessLocation: '', description: '', otherValue: '',
+    hasDeathBenefitNomination: false, deathBenefitNominees: '', isOverseas: true, overseasCountry: 'New Zealand',
+  }
+}
+
+describe('E2E bug fixes', () => {
+  it('per-asset "outside Australia" toggle raises OVERSEAS_ASSETS (item 7)', () => {
+    const fd = baseFormData({
+      assets: [overseasAsset()],
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const flags = assessComplexityFlags(fd)
+    expect(flags.some((f) => f.code === 'OVERSEAS_ASSETS')).toBe(true)
+  })
+
+  it('renders an item specific gift (item 3 — all tabs)', () => {
+    const fd = baseFormData({
+      specificGifts: [
+        { id: 'g1', type: 'item', description: 'My gold watch', amount: '', recipientName: 'Jane Doe', recipientRelationship: 'Niece', substituteBeneficiary: '' },
+        { id: 'g2', type: 'cash', description: '', amount: '5000', recipientName: 'Sam Lee', recipientRelationship: 'Friend', substituteBeneficiary: '' },
+      ],
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const text = renderWillText(fd)
+    expect(text).toContain('My gold watch')
+    expect(text).toContain('Jane Doe')
+    expect(text).toContain('Sam Lee')
+  })
+
+  it('does not render a guardian with only a first name — no "Gina" alone (item 5)', () => {
+    const fd = baseFormData({
+      childrenData: {
+        hasChildren: 'yes',
+        children: [{ id: 'c1', firstName: 'Sam', lastName: 'Smith', dateOfBirth: '2015-01-01', isDependent: true }],
+        guardian: { firstName: 'Gina', lastName: '', relationship: '', phone: '', email: '' },
+        ageOfVesting: '18',
+      },
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    expect(renderWillText(fd)).not.toContain('I appoint Gina')
+  })
+
+  it('renders the chosen vesting age in the minor trust clause (item 2)', () => {
+    const fd = baseFormData({
+      childrenData: {
+        hasChildren: 'yes',
+        children: [{ id: 'c1', firstName: 'Sam', lastName: 'Smith', dateOfBirth: '2015-01-01', isDependent: true }],
+        guardian: { firstName: 'Gina', lastName: 'Grey', relationship: 'Aunt', phone: '', email: '' },
+        ageOfVesting: '25',
+      },
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    expect(renderWillText(fd)).toContain('under the age of 25')
+  })
+
+  it('validateStep flags a missing guardian and missing gift fields (item 4)', () => {
+    const noGuardian = baseFormData({
+      childrenData: {
+        hasChildren: 'yes',
+        children: [{ id: 'c1', firstName: 'Sam', lastName: 'Smith', dateOfBirth: '', isDependent: true }],
+        guardian: { firstName: '', lastName: '', relationship: '', phone: '', email: '' },
+        ageOfVesting: '18',
+      },
+    })
+    const ge = validateStep('children', noGuardian)
+    expect(ge['guardian:firstName']).toBeTruthy()
+    expect(ge['guardian:lastName']).toBeTruthy()
+    expect(ge['guardian:relationship']).toBeTruthy()
+
+    const badGift = baseFormData({
+      specificGifts: [{ id: 'g1', type: 'item', description: '', amount: '', recipientName: '', recipientRelationship: '', substituteBeneficiary: '' }],
+    })
+    const gge = validateStep('gifts', badGift)
+    expect(gge['gift:g1:description']).toBeTruthy()
+    expect(gge['gift:g1:recipientName']).toBeTruthy()
+
+    const okAssets = baseFormData({ assets: [{ ...overseasAsset(), assetType: '' }] })
+    expect(validateStep('assets', okAssets)['asset:a1:assetType']).toBeTruthy()
+  })
+})
+
+describe('Charity beneficiary required-field validation', () => {
+  it('flags a charity row with a name but no share, and vice versa', () => {
+    const noShare = baseFormData({
+      beneficiariesData: {
+        people: [],
+        charities: [{ id: 'ch1', name: 'RSPCA', abn: '', percentage: '', substituteBeneficiary: '', charityPartnerId: null }],
+      },
+    })
+    const e1 = validateStep('beneficiaries', noShare)
+    expect(e1['charity:ch1:percentage']).toBeTruthy()
+    expect(e1['charity:ch1:name']).toBeFalsy()
+
+    const noName = baseFormData({
+      beneficiariesData: {
+        people: [],
+        charities: [{ id: 'ch2', name: '', abn: '', percentage: '50', substituteBeneficiary: '', charityPartnerId: null }],
+      },
+    })
+    const e2 = validateStep('beneficiaries', noName)
+    expect(e2['charity:ch2:name']).toBeTruthy()
+    expect(e2['charity:ch2:percentage']).toBeFalsy()
+  })
+
+  it('a complete charity row passes', () => {
+    const ok = baseFormData({
+      beneficiariesData: {
+        people: [],
+        charities: [{ id: 'ch3', name: 'RSPCA', abn: '', percentage: '100', substituteBeneficiary: '', charityPartnerId: null }],
+      },
+    })
+    expect(Object.keys(validateStep('beneficiaries', ok))).toHaveLength(0)
+  })
+})
+
+describe('firstIncompleteStep (draft resume)', () => {
+  it('a fresh draft with no eligibility data → eligibility', () => {
+    const fd = baseFormData({ personalDetails: basePerson({ state: '', dateOfBirth: '' }) })
+    expect(firstIncompleteStep(fd)).toBe('eligibility')
+  })
+
+  it('eligibility done but no name → personal', () => {
+    const fd = baseFormData({ personalDetails: basePerson({ firstName: '', lastName: '' }) })
+    expect(firstIncompleteStep(fd)).toBe('personal')
+  })
+
+  it('through executors but no beneficiary → beneficiaries (not Eligibility)', () => {
+    const fd = baseFormData({ beneficiariesData: { people: [], charities: [] } })
+    expect(firstIncompleteStep(fd)).toBe('beneficiaries')
+  })
+
+  it('a complete draft → review', () => {
+    const fd = baseFormData({ beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] } })
+    expect(firstIncompleteStep(fd)).toBe('review')
+  })
+})
+
+describe('abandonmentKind (email segmentation)', () => {
+  it('an incomplete draft → nudge', () => {
+    const fd = baseFormData({ personalDetails: basePerson({ firstName: '', lastName: '' }) })
+    expect(abandonmentKind(fd)).toBe('nudge')
+  })
+  it('a fully-complete (unpaid) draft → ready', () => {
+    const fd = baseFormData({ beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] } })
+    expect(firstIncompleteStep(fd)).toBe('review')
+    expect(abandonmentKind(fd)).toBe('ready')
+  })
+})
+
+describe('Required-field enforcement — executors + beneficiary relationship', () => {
+  const emptyExec = { firstName: '', lastName: '', relationship: '', phone: '', email: '', address: '' }
+
+  it('flags a primary executor missing first/last/relationship', () => {
+    const fd = baseFormData({ executorsData: { primary: emptyExec, hasAlternate: false, alternate: emptyExec } })
+    const e = validateStep('executors', fd)
+    expect(e['executor:primary:firstName']).toBeTruthy()
+    expect(e['executor:primary:lastName']).toBeTruthy()
+    expect(e['executor:primary:relationship']).toBeTruthy()
+  })
+
+  it('flags an incomplete alternate only when one has been added', () => {
+    const ok = { primary: baseExecutor(), hasAlternate: false, alternate: emptyExec }
+    expect(Object.keys(validateStep('executors', baseFormData({ executorsData: ok })))).toHaveLength(0)
+    const withAlt = { ...ok, hasAlternate: true, alternate: { ...emptyExec, firstName: 'Drew' } }
+    const e = validateStep('executors', baseFormData({ executorsData: withAlt }))
+    expect(e['executor:alternate:lastName']).toBeTruthy()
+    expect(e['executor:alternate:relationship']).toBeTruthy()
+  })
+
+  it('flags a beneficiary with a name but no relationship', () => {
+    const fd = baseFormData({ beneficiariesData: { people: [{ id: 'b1', name: 'Jane Doe', relationship: '', percentage: '100', substituteBeneficiary: '' }], charities: [] } })
+    expect(validateStep('beneficiaries', fd)['beneficiary:b1:relationship']).toBeTruthy()
+  })
+
+  it('Will text refuses an executor without a full name — no "I appoint Sam"', () => {
+    const fd = baseFormData({
+      executorsData: { primary: { ...emptyExec, firstName: 'Sam', relationship: 'Friend' }, hasAlternate: false, alternate: emptyExec },
+      beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] },
+    })
+    const text = renderWillText(fd)
+    expect(text).not.toContain('I appoint Sam as the Executor')
+    expect(text).toContain('[No executor full name provided]')
+  })
+})
+
+describe('Required-field enforcement — personal / spouse / assets', () => {
+  it('About You: flags first/last/street/suburb/postcode/marital; not occupation/mobile/email', () => {
+    const fd = baseFormData({ personalDetails: basePerson({
+      firstName: '', lastName: '', addressLine1: '', suburb: '', postcode: '', maritalStatus: '',
+      occupation: '', phoneMobile: '', email: '',
+    }) })
+    const e = validateStep('personal', fd)
+    for (const k of ['firstName', 'lastName', 'addressLine1', 'suburb', 'postcode', 'maritalStatus']) {
+      expect(e[`personal:${k}`]).toBeTruthy()
+    }
+    // De-asterisked fields are NOT enforced.
+    expect(Object.keys(e).some((k) => /occupation|phoneMobile|email/.test(k))).toBe(false)
+  })
+
+  it('Your Partner: first/last required only when married; nothing when single', () => {
+    const married = baseFormData({
+      personalDetails: basePerson({ maritalStatus: 'married' }),
+      spouseDetails: { firstName: '', lastName: '', middleName: '', dateOfBirth: '', addressLine1: '', suburb: '', state: '', postcode: '', phoneMobile: '', email: '', occupation: '', previousWill: '', previousWillLocation: '' },
+    })
+    const em = validateStep('spouse', married)
+    expect(em['spouse:firstName']).toBeTruthy()
+    expect(em['spouse:lastName']).toBeTruthy()
+    expect(Object.keys(em)).toHaveLength(2) // nothing else enforced
+
+    const single = baseFormData({ personalDetails: basePerson({ maritalStatus: 'single' }) })
+    expect(Object.keys(validateStep('spouse', single))).toHaveLength(0)
+  })
+
+  it('Assets: ownership is now enforced alongside asset type', () => {
+    const fd = baseFormData({ assets: [{
+      id: 'a1', assetType: 'real_estate', ownershipType: '', propertyAddress: '', estimatedValue: '',
+      bankName: '', bsb: '', accountNumber: '', fundName: '', memberNumber: '', companyName: '', numberOfShares: '',
+      insurerName: '', policyNumber: '', coverAmount: '', make: '', model: '', year: '', rego: '',
+      accessLocation: '', description: '', otherValue: '', hasDeathBenefitNomination: false, deathBenefitNominees: '', isOverseas: false, overseasCountry: '',
+    }] })
+    expect(validateStep('assets', fd)['asset:a1:ownershipType']).toBeTruthy()
+  })
+})
+
+describe('has_children persistence (resume + abandonment cron)', () => {
+  const noKids = { hasChildren: 'no' as const, children: [], guardian: { firstName: '', lastName: '', relationship: '', phone: '', email: '' }, ageOfVesting: '18' }
+  const unanswered = { ...noKids, hasChildren: '' as const }
+
+  it('answered "No children" is complete — not stuck on Children', () => {
+    const fd = baseFormData({ childrenData: noKids, beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] } })
+    expect(firstIncompleteStep(fd)).toBe('review')
+    expect(abandonmentKind(fd)).toBe('ready')
+  })
+
+  it('unanswered Children → resume to Children (and cron sees incomplete)', () => {
+    const fd = baseFormData({ childrenData: unanswered, beneficiariesData: { people: [personBeneficiary('James Smith', '100')], charities: [] } })
+    expect(firstIncompleteStep(fd)).toBe('children')
+    expect(abandonmentKind(fd)).toBe('nudge')
   })
 })

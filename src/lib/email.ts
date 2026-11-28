@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { renderWillAbandonmentEmail } from './abandonment-email'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -41,6 +42,37 @@ export async function sendResumeEmail(params: { to: string; sessionId: string })
   } catch (err) {
     console.error(`Failed to send resume email to ${to}:`, err)
   }
+}
+
+export async function sendAccountDeletionRequestEmail(params: {
+  userId: string
+  email: string
+  name: string | null
+}) {
+  const { userId, email, name } = params
+
+  const html = `
+    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:520px;margin:0 auto;padding:32px 24px;">
+      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
+      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 20px;">Account deletion request</h1>
+      <p style="margin:0 0 16px;color:#0E1310;font-size:14px;line-height:1.6;">
+        A customer has requested deletion of their Heirloom Life account. Action per the data-retention policy — a Will is a legal document, so confirm retention obligations before erasing anything.
+      </p>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;color:#0E1310;">
+        <tr><td style="padding:8px 0;color:#8A8D87;width:120px;">Name</td><td style="padding:8px 0;font-weight:600;">${name ?? '—'}</td></tr>
+        <tr><td style="padding:8px 0;color:#8A8D87;">Email</td><td style="padding:8px 0;"><a href="mailto:${email}" style="color:#2AB4AE;">${email}</a></td></tr>
+        <tr><td style="padding:8px 0;color:#8A8D87;">User ID</td><td style="padding:8px 0;font-family:monospace;font-size:12px;">${userId}</td></tr>
+      </table>
+    </div>
+  `
+
+  await resend.emails.send({
+    from: FROM_ADDRESS,
+    to: 'hello@heirloomlife.com.au',
+    replyTo: email,
+    subject: `Account deletion request: ${email}`,
+    html,
+  })
 }
 
 export async function sendPartnerEnquiryEmail(params: {
@@ -198,40 +230,21 @@ ${button}
   }
 }
 
-export async function sendWillAbandonmentEmail(params: { to: string; firstName: string | null }) {
-  const { to, firstName } = params
-  const greeting = firstName ? `Hi ${firstName},` : 'Hi,'
-  const dashboardUrl = `${APP_URL}/dashboard`
-
-  const html = `
-    <div style="font-family:-apple-system,'DM Sans',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
-      <p style="font-family:Georgia,serif;font-style:italic;color:#2AB4AE;font-size:20px;margin:0 0 24px;">Heirloom</p>
-      <h1 style="font-family:Georgia,serif;font-size:20px;color:#0E1310;margin:0 0 16px;">${greeting}</h1>
-      <p style="margin:0 0 16px;color:#0E1310;font-size:14px;line-height:1.6;">
-        You started a Will with Heirloom a few days ago but haven't finished yet. It's still there  -  your answers are saved and you can pick up right where you left off.
-      </p>
-      <p style="margin:0 0 24px;color:#0E1310;font-size:14px;line-height:1.6;">
-        Most people finish in about 20 minutes.
-      </p>
-      <a href="${dashboardUrl}" style="display:inline-block;padding:12px 24px;background:rgba(42,180,174,0.1);border:1px solid rgba(42,180,174,0.35);color:#163E3B;font-size:14px;font-weight:600;text-decoration:none;">
-        Continue your Will
-      </a>
-      <p style="margin:24px 0 0;color:#8A8D87;font-size:12px;line-height:1.5;">
-        If you've already finished or have a question, reply to this email  -  we're happy to help.
-      </p>
-      <p style="margin:16px 0 0;color:#8A8D87;font-size:11px;line-height:1.5;">
-        Heirloom Life is not a law firm and this is not legal advice. Your Will is a template document and must be signed and witnessed to be legally valid.
-      </p>
-    </div>
-  `
-
+export async function sendWillAbandonmentEmail(params: {
+  to: string
+  firstName: string | null
+  kind: 'nudge' | 'ready'
+  unsubscribeUrl: string
+}) {
+  const { to, firstName, kind, unsubscribeUrl } = params
+  const { subject, html } = renderWillAbandonmentEmail({
+    firstName,
+    kind,
+    dashboardUrl: `${APP_URL}/dashboard`,
+    unsubscribeUrl,
+  })
   try {
-    await resend.emails.send({
-      from: FROM_ADDRESS,
-      to,
-      subject: 'Your Will is still waiting  -  Heirloom Life',
-      html,
-    })
+    await resend.emails.send({ from: FROM_ADDRESS, to, subject, html })
   } catch (err) {
     console.error(`Failed to send abandonment email to ${to}:`, err)
   }

@@ -76,9 +76,11 @@ interface AssetCardProps {
   showRemove: boolean
   onChange: (asset: Asset) => void
   onRemove: () => void
+  assetTypeError?: string
+  ownershipError?: string
 }
 
-function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardProps) {
+function AssetCard({ asset, index, showRemove, onChange, onRemove, assetTypeError, ownershipError }: AssetCardProps) {
   function set(field: keyof Asset, value: string) {
     onChange({ ...asset, [field]: value })
   }
@@ -103,6 +105,7 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
               <option key={t} value={t}>{ASSET_TYPE_LABELS[t]}</option>
             ))}
           </select>
+          {assetTypeError && <p className="mt-1 text-xs text-red-600">{assetTypeError}</p>}
         </div>
         <div>
           <label className={lbl}>Ownership <span className="text-red-400">*</span></label>
@@ -113,6 +116,7 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
             <option value="tenants_in_common">Joint ownership (tenants in common)</option>
             <option value="entity">Held by a trust, company or SMSF</option>
           </select>
+          {ownershipError && <p className="mt-1 text-xs text-red-600">{ownershipError}</p>}
         </div>
       </div>
 
@@ -304,9 +308,11 @@ function AssetCard({ asset, index, showRemove, onChange, onRemove }: AssetCardPr
 interface Props {
   data: Asset[]
   onChange: (data: Asset[]) => void
+  fieldErrors?: Record<string, string>
 }
 
-export default function StepAssets({ data, onChange }: Props) {
+export default function StepAssets({ data, onChange, fieldErrors }: Props) {
+  const fe = fieldErrors ?? {}
   const nonCryptoAssets = data.filter((a) => a.assetType !== 'digital_asset')
   const cryptoAssets = data.filter((a) => a.assetType === 'digital_asset')
 
@@ -357,6 +363,8 @@ export default function StepAssets({ data, onChange }: Props) {
               showRemove={data.length > 0}
               onChange={(updated) => updateAsset(asset.id, updated)}
               onRemove={() => removeAsset(asset.id)}
+              assetTypeError={fe[`asset:${asset.id}:assetType`]}
+              ownershipError={fe[`asset:${asset.id}:ownershipType`]}
             />
           ))}
 
