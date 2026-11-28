@@ -11,6 +11,8 @@ import VersionHistory, { type VersionSummary } from './_components/VersionHistor
 import DownloadWillButton from './_components/DownloadWillButton'
 import DownloadExecutedWillButton from './_components/DownloadExecutedWillButton'
 import UnlockWillBanner from './_components/UnlockWillBanner'
+import SolicitorReviewNotice from './_components/SolicitorReviewNotice'
+import { willRequiresSolicitor } from '@/app/will/new/_complexity'
 import { completeWill } from '@/app/will/new/_actions'
 
 export default async function TheWillPage() {
@@ -68,6 +70,10 @@ export default async function TheWillPage() {
   }
 
   const { formData } = await loadWillFormData(supabase, user.id, will.id)
+  // A SOLICITOR_REQUIRED Will cannot be auto-issued (assembleWillDocument throws). We
+  // show a "request a solicitor review" notice instead of the paywall, and mark the
+  // on-screen draft as preliminary — never present it as an issuable document.
+  const requiresSolicitor = willRequiresSolicitor(formData)
   let documentText: string
   try {
     documentText = await assembleWillDocument(formData)
@@ -119,6 +125,15 @@ export default async function TheWillPage() {
         <div className="bg-white border border-[var(--line)] overflow-hidden">
           <div className="h-[3px] w-full" style={{ backgroundColor: 'var(--teal)' }} />
           <div className="px-6 py-6 space-y-5">
+            {requiresSolicitor && (
+              <div className="rounded border border-amber-200 bg-amber-50 px-4 py-3">
+                <p className="text-sm font-semibold text-amber-900">Preliminary draft — not yet an issued Will</p>
+                <p className="text-xs text-amber-800 mt-1 leading-relaxed">
+                  This is a preview only. Because your estate needs a solicitor to prepare it,
+                  Heirloom can’t issue this Will automatically. Request a solicitor review below.
+                </p>
+              </div>
+            )}
             {will.executed_at && (
               <div className="rounded border px-4 py-3 flex items-start gap-3" style={{ borderColor: 'var(--teal)', background: 'rgba(42,180,174,0.06)' }}>
                 <svg className="shrink-0 mt-0.5" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-deep)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -137,7 +152,7 @@ export default async function TheWillPage() {
               </div>
             )}
 
-            {hasPaidForWill && (
+            {hasPaidForWill && !requiresSolicitor && (
               <DownloadWillButton
                 willId={will.id}
                 documentText={documentText}
@@ -151,8 +166,9 @@ export default async function TheWillPage() {
           </div>
         </div>
 
-        {/* Payment CTA for users who haven't yet unlocked */}
-        {!hasPaidForWill && <UnlockWillBanner />}
+        {/* Payment CTA — but a SOLICITOR_REQUIRED Will can't be auto-issued, so we never
+            show checkout for it; the review notice is the primary action instead. */}
+        {!hasPaidForWill && (requiresSolicitor ? <SolicitorReviewNotice /> : <UnlockWillBanner />)}
 
         {/* Executor Information — non-testamentary; does not form part of the Will */}
         {(() => {
